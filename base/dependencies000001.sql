@@ -28,7 +28,7 @@ ALTER TABLE ONLY corres.tcorrespondencia
  
 ALTER TABLE ONLY corres.tcorrespondencia
     ADD CONSTRAINT fk_tcorrespondencia__id_depto
-    FOREIGN KEY (id_depto) REFERENCES orga.tdepto(id_depto);
+    FOREIGN KEY (id_depto) REFERENCES param.tdepto(id_depto);
 
  
 ALTER TABLE ONLY corres.tcorrespondencia

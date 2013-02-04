@@ -155,7 +155,7 @@ BEGIN
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-                        inner join  orga.tdepto depto on depto.id_depto=cor.id_depto
+                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                         
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
@@ -275,7 +275,7 @@ BEGIN
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-                        inner join  orga.tdepto depto on depto.id_depto=cor.id_depto
+                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         left join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         left join param.tinstitucion institucion on institucion.id_institucion=cor.id_institucion
@@ -435,7 +435,7 @@ BEGIN
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 						inner join orga.vfuncionario emp_recepciona on emp_recepciona.id_funcionario=cor.id_funcionario
-						inner join orga.tdepto depto on depto.id_depto=cor.id_depto
+						inner join param.tdepto depto on depto.id_depto=cor.id_depto
 						--inner join param.tdocumento docume on docume.id_documento=cor.id_documento
 						inner join orga.tuo uo on uo.id_uo=cor.id_uo
 						inner join param.tgestion ges on ges.id_gestion=cor.id_gestion
@@ -470,7 +470,7 @@ BEGIN
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 						inner join orga.vfuncionario emp_recepciona on emp_recepciona.id_funcionario=cor.id_funcionario
-						inner join orga.tdepto depto on depto.id_depto=cor.id_depto
+						inner join param.tdepto depto on depto.id_depto=cor.id_depto
 						--inner join param.tdocumento docume on docume.id_documento=cor.id_documento
 						inner join orga.tuo uo on uo.id_uo=cor.id_uo
 						inner join param.tgestion ges on ges.id_gestion=cor.id_gestion

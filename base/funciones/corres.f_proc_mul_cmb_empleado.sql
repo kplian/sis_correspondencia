@@ -124,10 +124,10 @@ BEGIN
                       dep.id_depto
                   INTO
                       v_id_depto
-                  FROM orga.tdepto_uo duo
+                  FROM param.tdepto_uo duo
                   INNER JOIN segu.tsubsistema sis 
                    ON sis.codigo = ''CORRES''
-                  INNER JOIN orga.tdepto dep 
+                  INNER JOIN param.tdepto dep 
                    ON dep.id_depto = duo.id_depto
                   WHERE duo.id_uo = ANY (v_id_uo); 
     
