@@ -74,19 +74,18 @@ VALUES (2, NULL, '2011-12-13 09:37:05', NULL, 'activo', 5, 'responder');
 /* Data for table corres.tgrupo  (LIMIT 0,1) */
 
 INSERT INTO corres.tgrupo (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_grupo, nombre, correo, obs)
-VALUES (2, 2, '2012-01-10 11:10:54', '2012-01-10 11:12:12', 'activo', 1, 'Gerencia de Tecnologias', 'gti@kplian.com', 'xxxxxxxxxxxxxxxxx');
+VALUES (1, null, '2012-01-10 11:10:54', '2012-01-10 11:12:12', 'activo', 1, 'Gerencia de Tecnologias', 'gti@kplian.com', 'xxxxxxxxxxxxxxxxx');
 
 
 /* Data for table corres.tgrupo_funcionario  (LIMIT 0,3) */
 
 INSERT INTO corres.tgrupo_funcionario (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_grupo_funcionario, id_grupo, id_funcionario)
-VALUES (2, NULL, '2012-01-10 11:43:19', NULL, 'activo', 1, NULL, 4);
+VALUES (1, NULL, '2012-01-10 11:43:19', NULL, 'activo', 1, 1, 4);
 
 INSERT INTO corres.tgrupo_funcionario (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_grupo_funcionario, id_grupo, id_funcionario)
-VALUES (2, NULL, '2012-01-10 11:43:27', NULL, 'activo', 2, NULL, 4);
+VALUES (1, NULL, '2012-01-10 11:43:27', NULL, 'activo', 2, 1, 4);
 
-INSERT INTO corres.tgrupo_funcionario (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_grupo_funcionario, id_grupo, id_funcionario)
-VALUES (2, NULL, '2012-01-10 11:43:34', NULL, 'activo', 3, NULL, 2);
+
 
 
 
@@ -307,4 +306,5 @@ VALUES (1, NULL, '2011-06-05 00:00:00', '2011-06-05 10:41:00', 'activo', 119, 7,
 
 INSERT INTO param.tperiodo (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_periodo, periodo, id_gestion, fecha_ini, fecha_fin)
 VALUES (11, NULL, '2011-06-05 00:00:00', '2011-06-05 10:41:00', 'activo', 117, 5, 8, '2012-05-01', '2012-05-31');
+
 
