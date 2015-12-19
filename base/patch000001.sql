@@ -114,3 +114,22 @@ ALTER TABLE corres.tgrupo_funcionario OWNER TO postgres;
 /***********************************F-SCP-FRH-CORRES-0-24/01/2013*****************************************/
 
 
+
+
+/***********************************I-SCP-RAC-CORRES-0-17/12/2015*****************************************/
+
+
+
+--------------- SQL ---------------
+
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN numero TYPE VARCHAR COLLATE pg_catalog."default";
+
+
+
+/***********************************F-SCP-RAC-CORRES-0-17/12/2015*****************************************/
+
+
+
+
+

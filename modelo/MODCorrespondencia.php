@@ -384,15 +384,15 @@ class MODCorrespondencia extends MODbase{
 		
 		//apartir del tipo  del archivo obtiene la extencion
 		$ext = pathinfo($this->arregloFiles['file_correspondencia']['name']);
- 		$this->arreglo['extension']= strtolower($ext['extension']);
+ 		$this->arreglo['extension'] = strtolower($ext['extension']);
 		
 		if($this->arreglo['extension']!='pdf'){
 			 throw new Exception("Solo se admiten archivos PDF");
 		}
 		
-		$verion = $this->arreglo['version'] +1;
-		$this->arreglo['version']=$verion;
-		$ruta_dir = './../../sis_correspondencia/control/_archivo/'.$this->arreglo['id_gestion'];
+		$verion = $this->arreglo['version'] + 1;
+		$this->arreglo['version'] = $verion;
+		$ruta_dir = '/../control/_archivo/'.$this->arreglo['id_gestion'];
 		$this->arreglo['ruta_archivo']=$ruta_dir.'/docCor'.str_replace("/", "_",$this->arreglo['numero']).'v'.$verion.'.'.$this->arreglo['extension'];
 		//Define los parametros para la funcion	
 		$this->setParametro('id_correspondencia','id_correspondencia','integer');	
@@ -428,11 +428,14 @@ class MODCorrespondencia extends MODbase{
 		
 		
 		//verificar si existe la carpeta destino
-		
+		//var_dump(dirname(__FILE__));
+		////exit;
 		if(!file_exists($ruta_dir))
 		{
 			///si no existe creamos la carpeta destino	
-			if(!mkdir($ruta_dir,0777)){
+			if(!mkdir($ruta_dir,0744,true)){
+					
+				
 	           throw new Exception("Error al crear el directorio");		
 			}
 	

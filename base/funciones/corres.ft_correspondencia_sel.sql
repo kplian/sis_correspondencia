@@ -1,14 +1,17 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_sel (
   p_administrador integer,
   p_id_usuario integer,
   p_tabla varchar,
   p_transaccion varchar
 )
-RETURNS varchar AS'
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Correspondencia
  FUNCION: 		corres.ft_correspondencia_sel
- DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla ''corres.tcorrespondencia''
+ DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'corres.tcorrespondencia'
  AUTOR: 		 (rac)
  FECHA:	        13-12-2011 16:13:21
  COMENTARIOS:	
@@ -29,23 +32,23 @@ DECLARE
 			    
 BEGIN
 
-	v_nombre_funcion = ''corres.ft_correspondencia_sel'';
+	v_nombre_funcion = 'corres.ft_correspondencia_sel';
     v_parametros = pxp.f_get_record(p_tabla);
     
     
     /*********************************    
- 	#TRANSACCION:  ''CO_CORSIM_SEL''
+ 	#TRANSACCION:  'CO_CORSIM_SEL'
  	#DESCRIPCION:	Consulta de Correspodencia simplificada
  	#AUTOR:		rac	
  	#FECHA:		29-02-2012 16:13:21
 	***********************************/
 
-	if(p_transaccion=''CO_CORSIM_SEL'')then
+	if(p_transaccion='CO_CORSIM_SEL')then
      				
     	begin
           
           --Sentencia de la consulta
-			v_consulta:=''select
+			v_consulta:='select
 						cor.id_correspondencia,
 						cor.estado,
 						cor.nivel,
@@ -57,15 +60,15 @@ BEGIN
 						funcionario.desc_funcionario1 as desc_funcionario
                         from corres.tcorrespondencia cor
 						inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
-                        where cor.estado in (''''enviado'''') and nivel = 0 and '';
+                        where cor.estado in (''enviado'') and nivel = 0 and ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-			if (pxp.f_existe_parametro(p_tabla,''id_correspondencia_fk'')) then
-			   v_consulta:= v_consulta || '' and cor.id_correspondencia_fk=''|| v_parametros.id_correspondencia_fk;
+			if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
+			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
 			
-			v_consulta:=v_consulta||'' order by '' ||v_parametros.ordenacion|| '' '' || v_parametros.dir_ordenacion || '' limit '' || v_parametros.cantidad || '' offset '' || v_parametros.puntero;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -73,20 +76,20 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_CORSIM_CONT''
+ 	#TRANSACCION:  'CO_CORSIM_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_CORSIM_CONT'')then
+	elsif(p_transaccion='CO_CORSIM_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:=''select count(id_correspondencia)
+			v_consulta:='select count(id_correspondencia)
 					   from corres.tcorrespondencia cor
 						inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
-                       where cor.estado in (''''enviado'''') and  nivel = 0 and'';
+                       where cor.estado in (''enviado'') and  nivel = 0 and';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -98,19 +101,19 @@ BEGIN
     
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_COR_SEL''
+ 	#TRANSACCION:  'CO_COR_SEL'
  	#DESCRIPCION:	Consulta de datos
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	ELSEIF(p_transaccion=''CO_COR_SEL'')then
+	ELSEIF(p_transaccion='CO_COR_SEL')then
      				
     	begin
             
         
     		--Sentencia de la consulta
-			v_consulta:=''select
+			v_consulta:='select
 						cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
@@ -148,7 +151,7 @@ BEGIN
                         funcionario.desc_funcionario1 as desc_funcionario,
                         cor.ruta_archivo,
                         cor.version,
-                        uo.codigo ||''''-''''|| uo.nombre_unidad as desc_uo,
+                        uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
                         clasif.descripcion as desc_clasificador,
                         cor.id_clasificador
                         
@@ -161,17 +164,17 @@ BEGIN
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-				        where cor.estado in (''''borrador_envio'''',''''enviado'''',''''recibido'''') and '';
+				        where cor.estado in (''borrador_envio'',''enviado'',''recibido'') and ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-			if (pxp.f_existe_parametro(p_tabla,''id_correspondencia_fk'')) then
-			   v_consulta:= v_consulta || '' and cor.id_correspondencia_fk=''|| v_parametros.id_correspondencia_fk;
+			if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
+			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
 			
 		
 			
-			v_consulta:=v_consulta||'' order by '' ||v_parametros.ordenacion|| '' '' || v_parametros.dir_ordenacion || '' limit '' || v_parametros.cantidad || '' offset '' || v_parametros.puntero;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -179,17 +182,17 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_COR_CONT''
+ 	#TRANSACCION:  'CO_COR_CONT'
  	#DESCRIPCION:	Conteo de registros
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_COR_CONT'')then
+	elsif(p_transaccion='CO_COR_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:=''select count(id_correspondencia)
+			v_consulta:='select count(id_correspondencia)
 					    from corres.tcorrespondencia cor
 					    inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
 					    inner join param.tdocumento doc on doc.id_documento = cor.id_documento
@@ -197,7 +200,7 @@ BEGIN
 					    inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-					    where cor.estado in (''''borrador_envio'''',''''enviado'''') and '';
+					    where cor.estado in (''borrador_envio'',''enviado'') and ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -208,19 +211,19 @@ BEGIN
 		end;
         
      /*********************************    
- 	#TRANSACCION:  ''CO_CORDET_SEL''
+ 	#TRANSACCION:  'CO_CORDET_SEL'
  	#DESCRIPCION:	Consulta de resgistro de correspondecia detalle
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	elseif(p_transaccion=''CO_CORDET_SEL'')then
+	elseif(p_transaccion='CO_CORDET_SEL')then
      				
     	begin
             
         
     		--Sentencia de la consulta
-			v_consulta:=''select
+			v_consulta:='select
 						cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
@@ -265,12 +268,12 @@ BEGIN
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
                                       (
-                                       SELECT  textcat_all(acor.nombre||'''', '''')
+                                       SELECT  pxp.list(acor.nombre)   
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
                                 END )AS  acciones,
-                        text_concat(cor.id_acciones::text) as id_acciones
+                        pxp.list(cor.id_acciones::text) as id_acciones
 
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
@@ -280,15 +283,15 @@ BEGIN
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         left join param.tinstitucion institucion on institucion.id_institucion=cor.id_institucion
                         left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-				        where cor.estado in (''''borrador_detalle_recibido'''',''''pendiente_recibido'''',''''recibido'''',''''borrador_derivado'''') and '';
+				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'') and ';
 			
 			--Definicion de la respuesta
 			           v_consulta:=v_consulta||v_parametros.filtro;
 			
 			
 			
-			           v_consulta:= v_consulta || '' and cor.id_correspondencia_fk=''|| v_parametros.id_correspondencia_fk;
-		v_consulta:=v_consulta||''      GROUP BY cor.id_correspondencia,
+			           v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
+		v_consulta:=v_consulta||'      GROUP BY cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
 						cor.fecha_documento,
@@ -326,9 +329,9 @@ BEGIN
                         cor.ruta_archivo,
                         cor.version,
                         persona.nombre_completo1 ,
-                        institucion.nombre'';
+                        institucion.nombre';
 			
-			           v_consulta:=v_consulta||'' order by '' ||v_parametros.ordenacion|| '' '' || v_parametros.dir_ordenacion || '' limit '' || v_parametros.cantidad || '' offset '' || v_parametros.puntero;
+			           v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -336,17 +339,17 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_CORDET_CONT''
+ 	#TRANSACCION:  'CO_CORDET_CONT'
  	#DESCRIPCION:	Conteo de registros de correspondencia detalle
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_CORDET_CONT'')then
+	elsif(p_transaccion='CO_CORDET_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:=''select count(id_correspondencia)
+			v_consulta:='select count(id_correspondencia)
 					    from corres.tcorrespondencia cor
 					    inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
 					    inner join param.tdocumento doc on doc.id_documento = cor.id_documento
@@ -356,7 +359,7 @@ BEGIN
                         left join param.tinstitucion institucion on institucion.id_institucion=cor.id_institucion
 
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-					    where cor.estado in (''''borrador_envio'''',''''enviado'''') and '';
+					    where cor.estado in (''borrador_envio'',''enviado'') and ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -366,18 +369,18 @@ BEGIN
 
 		end;   
     /*********************************
- 	#TRANSACCION:  ''CO_CORREC_SEL''
+ 	#TRANSACCION:  'CO_CORREC_SEL'
  	#DESCRIPCION:	Listado de correspondencia recibida (tanto interna como entrante)
  	#AUTOR:		    Mercedes Zambrana
  	#FECHA:		    13-12-2011
 	***********************************/
-    elsif(p_transaccion=''CO_CORREC_SEL'')then
+    elsif(p_transaccion='CO_CORREC_SEL')then
      				
     	begin
 
 
     		--Sentencia de la consulta
-			v_consulta:=''select
+			v_consulta:='select
 						cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
@@ -416,14 +419,14 @@ BEGIN
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
                                       (
-                                       SELECT  textcat_all(acor.nombre||'''', '''')
+                                       SELECT   pxp.list(acor.nombre) 
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
                                 END )AS  acciones,
-                                depto.codigo||''''-''''||depto.nombre as desc_depto,
+                                depto.codigo||''-''||depto.nombre as desc_depto,
                                 --docume.codigo as desc_documento,
-                                uo.codigo||''''-''''||uo.nombre_unidad as desc_uo,
+                                uo.codigo||''-''||uo.nombre_unidad as desc_uo,
                                 ges.gestion as desc_gestion ,
                                 per.periodo as desc_periodo,
                                 persona_envia.nombre_completo1 as desc_persona,
@@ -442,11 +445,11 @@ BEGIN
 						inner join param.tperiodo per on per.id_periodo=cor.id_periodo
 						left join segu.vpersona persona_envia on persona_envia.id_persona=cor.id_persona
 						left join param.tinstitucion ins_envia on ins_envia.id_institucion=cor.id_institucion
-						where cor.estado in (''''pendiente_recibido'''',''''recibido'''') and '';
+						where cor.estado in (''pendiente_recibido'',''recibido'') and ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-			v_consulta:=v_consulta||'' order by '' ||v_parametros.ordenacion|| '' '' || v_parametros.dir_ordenacion || '' limit '' || v_parametros.cantidad || '' offset '' || v_parametros.puntero;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
@@ -454,17 +457,17 @@ BEGIN
 		end;
 
     /*********************************
- 	#TRANSACCION:  ''CO_CORREC_CONT''
+ 	#TRANSACCION:  'CO_CORREC_CONT'
  	#DESCRIPCION:	Conteo de registros de correspondencia detalle
  	#AUTOR:			
  	#FECHA:		    07-03-2012 16:13:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_CORREC_CONT'')then
+	elsif(p_transaccion='CO_CORREC_CONT')then
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-			v_consulta:=''select count(id_correspondencia)
+			v_consulta:='select count(id_correspondencia)
 					    from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
@@ -477,7 +480,7 @@ BEGIN
 						inner join param.tperiodo per on per.id_periodo=cor.id_periodo
 						left join segu.vpersona persona_envia on persona_envia.id_persona=cor.id_persona
 						left join param.tinstitucion ins_envia on ins_envia.id_institucion=cor.id_institucion
-					    where cor.estado in (''''pendiente_recibido'''',''''recibido'''') and '';
+					    where cor.estado in (''pendiente_recibido'',''recibido'') and ';
 			
 			--Definicion de la respuesta		
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -490,20 +493,21 @@ BEGIN
         					
 	else
 					     
-		raise exception ''Transaccion inexistente'';
+		raise exception 'Transaccion inexistente';
 					         
 	end if;
 					
 EXCEPTION
 					
 	WHEN OTHERS THEN
-			v_resp='''';
-			v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',SQLERRM);
-			v_resp = pxp.f_agrega_clave(v_resp,''codigo_error'',SQLSTATE);
-			v_resp = pxp.f_agrega_clave(v_resp,''procedimientos'',v_nombre_funcion);
-			raise exception ''%'',v_resp;
+			v_resp='';
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+			v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+			raise exception '%',v_resp;
 END;
-'LANGUAGE 'plpgsql'
+$body$
+LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
