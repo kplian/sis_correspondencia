@@ -200,7 +200,7 @@ BEGIN
 					    inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-					    where cor.estado in (''borrador_envio'',''enviado'') and ';
+					    where cor.estado in (''borrador_envio'',''enviado'',''recibido'') and ';
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -351,15 +351,15 @@ BEGIN
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_correspondencia)
 					    from corres.tcorrespondencia cor
-					    inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
-					    inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-
+						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
+                        inner join param.tdocumento doc on doc.id_documento = cor.id_documento
+                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         left join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         left join param.tinstitucion institucion on institucion.id_institucion=cor.id_institucion
-
-						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-					    where cor.estado in (''borrador_envio'',''enviado'') and ';
+                        left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
+				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'') and ';
+			
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

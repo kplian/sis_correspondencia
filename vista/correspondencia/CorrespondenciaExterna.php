@@ -9,13 +9,13 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.Correspondencia=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.CorrespondenciaExterna=Ext.extend(Phx.gridInterfaz,{
 	bsave:false,
 
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
-		Phx.vista.Correspondencia.superclass.constructor.call(this,config);
+		Phx.vista.CorrespondenciaExterna.superclass.constructor.call(this,config);
 		 
 		this.addButton('aSubirCorrespondencia',{text:'Subir Documento',iconCls:'bupload',disabled:true,handler:this.SubirCorrespondencia,tooltip: '<b>Subir archivo</b><br/>Permite actualizar el documento escaneado'});
 		this.addButton('mandar',{text:'Derivar',iconCls:'badelante',disabled:true,handler:this.onButtonMandar,tooltip: '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'});
@@ -771,7 +771,7 @@ Phx.vista.Correspondencia=Ext.extend(Phx.gridInterfaz,{
 
 	     loadValoresIniciales:function(){
 
-		Phx.vista.Correspondencia.superclass. loadValoresIniciales.call(this);
+		Phx.vista.CorrespondenciaExterna.superclass. loadValoresIniciales.call(this);
 
 		 var cmbDoc = this.getComponente('id_documento');
 		 var cmpFuncionarios = this.getComponente('id_funcionarios');
