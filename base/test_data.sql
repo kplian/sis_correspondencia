@@ -93,18 +93,18 @@ VALUES (1, 1, '2012-03-15 15:20:09', '2012-03-15 15:20:18', 'activo', 4, 1, 21, 
 /* Data for table corres.taccion  (LIMIT 0,5) */
 /*
 INSERT INTO corres.taccion (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_accion, nombre)
-VALUES (2, NULL, '2011-12-13 09:35:24', NULL, 'activo', 1, 'aprobar');
+VALUES (1, NULL, '2011-12-13 09:35:24', NULL, 'activo', 1, 'aprobar');
 
 INSERT INTO corres.taccion (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_accion, nombre)
-VALUES (2, NULL, '2011-12-13 09:35:36', NULL, 'activo', 3, 'revisar');
+VALUES (1, NULL, '2011-12-13 09:35:36', NULL, 'activo', 3, 'revisar');
 
 INSERT INTO corres.taccion (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_accion, nombre)
-VALUES (2, NULL, '2011-12-13 09:35:42', NULL, 'activo', 4, 'archivar');
+VALUES (1, NULL, '2011-12-13 09:35:42', NULL, 'activo', 4, 'archivar');
 
 INSERT INTO corres.taccion (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_accion, nombre)
-VALUES (2, 2, '2011-12-13 09:35:31', '2011-12-13 09:36:22', 'activo', 2, 'proceder');
+VALUES (1, 2, '2011-12-13 09:35:31', '2011-12-13 09:36:22', 'activo', 2, 'proceder');
 
 INSERT INTO corres.taccion (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_accion, nombre)
-VALUES (2, NULL, '2011-12-13 09:37:05', NULL, 'activo', 5, 'responder');
+VALUES (1, NULL, '2011-12-13 09:37:05', NULL, 'activo', 5, 'responder');
 */
 

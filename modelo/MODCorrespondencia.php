@@ -376,6 +376,95 @@ class MODCorrespondencia extends MODbase{
 
 
     function subirCorrespondencia(){
+		
+		    $cone = new conexion();
+			$link = $cone->conectarpdo();
+			$copiado = false;			
+			try {
+				
+				$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);		
+		  	    $link->beginTransaction();
+				
+				if ($this->arregloFiles['file_correspondencia']['name'] == "") {
+					throw new Exception("El archivo no puede estar vacio");
+				}
+				
+				$this->procedimiento='corres.ft_correspondencia_ime';
+		        $this->transaccion='CO_ARCHCOR_MOD';
+		        $this->tipo_procedimiento='IME';
+				
+				$version = $this->arreglo['version'] + 1;
+		        $this->arreglo['version'] = $version;
+				
+				
+				//validar que no sea un arhvio en blanco
+				$file_name = $this->getFileName2('file_correspondencia', 'id_correspondencia', '','_v'.$version);
+				
+			   
+			    //manda como parametro la url completa del archivo 
+	            $this->aParam->addParametro('ruta_archivo', $file_name[2]);
+	            $this->arreglo['ruta_archivo'] = $file_name[2];
+	            $this->setParametro('ruta_archivo','ruta_archivo','varchar'); 
+				
+				
+				//Define los parametros para la funcion	
+		        $this->setParametro('id_correspondencia','id_correspondencia','integer');	
+		        $this->setParametro('version','version','integer');
+				
+				      
+	            //Ejecuta la instruccion
+	            $this->armarConsulta();
+				$stmt = $link->prepare($this->consulta);		  
+			  	$stmt->execute();
+				$result = $stmt->fetch(PDO::FETCH_ASSOC);				
+				$resp_procedimiento = $this->divRespuesta($result['f_intermediario_ime']);
+				
+				
+				if ($resp_procedimiento['tipo_respuesta']=='ERROR') {
+					throw new Exception("Error al ejecutar en la bd", 3);
+				}
+				
+	            
+				  
+	            if($resp_procedimiento['tipo_respuesta'] == 'EXITO'){
+	              
+				   //revisamos si ya existe el archivo la verison anterior sera mayor a cero
+				   $respuesta = $resp_procedimiento['datos'];
+				   //var_dump($respuesta);
+				   
+				   
+				   //cipiamos el nuevo archivo 
+	               $this->setFile('file_correspondencia','id_correspondencia', false,100000 ,array('doc','pdf','docx','jpg','jpeg','bmp','gif','png','PDF','DOC','DOCX','xls','xlsx','XLS','XLSX','rar'), $folder = '','_v'.$version);
+	            }
+				
+				$link->commit();
+				$this->respuesta=new Mensaje();
+				$this->respuesta->setMensaje($resp_procedimiento['tipo_respuesta'],$this->nombre_archivo,$resp_procedimiento['mensaje'],$resp_procedimiento['mensaje_tec'],'base',$this->procedimiento,$this->transaccion,$this->tipo_procedimiento,$this->consulta);
+				$this->respuesta->setDatos($respuesta);
+				 
+				
+				
+			}
+			catch (Exception $e) {
+		    		
+								
+		    	$link->rollBack(); 
+				
+				
+		    	$this->respuesta=new Mensaje();
+				if ($e->getCode() == 3) {//es un error de un procedimiento almacenado de pxp
+					$this->respuesta->setMensaje($resp_procedimiento['tipo_respuesta'],$this->nombre_archivo,$resp_procedimiento['mensaje'],$resp_procedimiento['mensaje_tec'],'base',$this->procedimiento,$this->transaccion,$this->tipo_procedimiento,$this->consulta);
+				} else if ($e->getCode() == 2) {//es un error en bd de una consulta
+					$this->respuesta->setMensaje('ERROR',$this->nombre_archivo,$e->getMessage(),$e->getMessage(),'modelo','','','','');
+				} else {//es un error lanzado con throw exception
+					throw new Exception($e->getMessage(), 2);
+				}
+		}    
+	    
+	    return $this->respuesta;
+	}
+
+    function subirCorrespondencia_bk(){
 	
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='corres.ft_correspondencia_ime';
@@ -384,15 +473,15 @@ class MODCorrespondencia extends MODbase{
 		
 		//apartir del tipo  del archivo obtiene la extencion
 		$ext = pathinfo($this->arregloFiles['file_correspondencia']['name']);
- 		$this->arreglo['extension']= strtolower($ext['extension']);
+ 		$this->arreglo['extension'] = strtolower($ext['extension']);
 		
 		if($this->arreglo['extension']!='pdf'){
 			 throw new Exception("Solo se admiten archivos PDF");
 		}
 		
-		$verion = $this->arreglo['version'] +1;
-		$this->arreglo['version']=$verion;
-		$ruta_dir = './../../sis_correspondencia/control/_archivo/'.$this->arreglo['id_gestion'];
+		$verion = $this->arreglo['version'] + 1;
+		$this->arreglo['version'] = $verion;
+		$ruta_dir = '/../control/_archivo/'.$this->arreglo['id_gestion'];
 		$this->arreglo['ruta_archivo']=$ruta_dir.'/docCor'.str_replace("/", "_",$this->arreglo['numero']).'v'.$verion.'.'.$this->arreglo['extension'];
 		//Define los parametros para la funcion	
 		$this->setParametro('id_correspondencia','id_correspondencia','integer');	
@@ -428,11 +517,14 @@ class MODCorrespondencia extends MODbase{
 		
 		
 		//verificar si existe la carpeta destino
-		
+		//var_dump(dirname(__FILE__));
+		////exit;
 		if(!file_exists($ruta_dir))
 		{
 			///si no existe creamos la carpeta destino	
-			if(!mkdir($ruta_dir,0777)){
+			if(!mkdir($ruta_dir,0744,true)){
+					
+				
 	           throw new Exception("Error al crear el directorio");		
 			}
 	

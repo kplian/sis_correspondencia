@@ -354,7 +354,7 @@ Phx.vista.CorrespondenciaRecibida=Ext.extend(Phx.gridInterfaz,{
    				allowBlank:true,
    				emptyText:'Funcionarios...',
    				store: new Ext.data.JsonStore({  
-					url: '../../sis_recursos_humanos/control/Funcionario/listarFuncionarioCargo',
+					url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
 					id: 'id_funcionario',
 					root: 'datos',
 					sortInfo:{

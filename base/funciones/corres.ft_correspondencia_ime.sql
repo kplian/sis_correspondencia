@@ -1,14 +1,17 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
   p_administrador integer,
   p_id_usuario integer,
   p_tabla varchar,
   p_transaccion varchar
 )
-RETURNS varchar AS'
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Correspondencia
  FUNCION: 		corres.ft_correspondencia_ime
- DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla ''corres.tcorrespondencia''
+ DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'corres.tcorrespondencia'
  AUTOR: 		 (rac)
  FECHA:	        13-12-2011 16:13:21
  COMENTARIOS:	
@@ -42,17 +45,17 @@ DECLARE
 			    
 BEGIN
 
-    v_nombre_funcion = ''corres.ft_correspondencia_ime'';
+    v_nombre_funcion = 'corres.ft_correspondencia_ime';
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_COR_INS''
+ 	#TRANSACCION:  'CO_COR_INS'
  	#DESCRIPCION:	Insercion de corresppondecia externa e interna
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	if(p_transaccion=''CO_COR_INS'')then
+	if(p_transaccion='CO_COR_INS')then
 					
         begin
           --   obtener documento
@@ -72,23 +75,23 @@ BEGIN
                 par_formato varchar
         */
         
-        --  raise exception ''%                 %         %                  %                  %             %     %'',v_codigo_documento,NULL,v_parametros.id_uo,v_parametros.id_depto,p_id_usuario,''CORRES'',NULL;
-        v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_parametros.id_uo,v_parametros.id_depto,p_id_usuario,''CORRES'',NULL);
+        --  raise exception '%                 %         %                  %                  %             %     %',v_codigo_documento,NULL,v_parametros.id_uo,v_parametros.id_depto,p_id_usuario,'CORRES',NULL;
+        v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_parametros.id_uo,v_parametros.id_depto,p_id_usuario,'CORRES',NULL);
           
         --1)obtiene el identificador de la gestion 
         
          select g.id_gestion
          into v_id_gestion
          from param.tgestion g
-         where g.estado_reg=''activo'' and g.gestion=to_char(now()::date,''YYYY'')::integer;
+         where g.estado_reg='activo' and g.gestion=to_char(now()::date,'YYYY')::integer;
          
          --2 obtener el identificar del periodo
          
           select p.id_periodo
           into v_id_periodo
           from param.tperiodo p
-          inner join param.tgestion ges on ges.id_gestion = p.id_gestion and ges.estado_reg =''activo''
-          where p.estado_reg=''activo'' and  now()::date between fecha_ini and fecha_fin ;
+          inner join param.tgestion ges on ges.id_gestion = p.id_gestion and ges.estado_reg ='activo'
+          where p.estado_reg='activo' and  now()::date between fecha_ini and fecha_fin ;
          
           
          
@@ -125,14 +128,14 @@ BEGIN
 			id_usuario_mod,
             id_clasificador
           	) values(
-			''borrador_envio'',
-			''activo'',
+			'borrador_envio',
+			'activo',
 			v_parametros.fecha_documento,
 			--v_parametros.fecha_fin,
 			--v_parametros.id_acciones,
 			
 			--v_parametros.id_correspondencia_fk,
-			string_to_array(v_parametros.id_correspondencias_asociadas,'','')::integer[],
+			string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
 			v_parametros.id_depto,
 			v_parametros.id_documento,
 			v_parametros.id_funcionario,
@@ -160,7 +163,7 @@ BEGIN
             
             --determinamos el origen
             
-            if( v_parametros.tipo=''interna'' or v_parametros.tipo=''saliente'' ) then
+            if( v_parametros.tipo='interna' or v_parametros.tipo='saliente' ) then
                 --si es de tipo interna el origen siempre sera un empleado
                   SELECT f.desc_funcionario1
                   into v_nombre_funcionario
@@ -173,13 +176,13 @@ BEGIN
                  --y el orgine es una persona o una institucion
                  
                  /* POR EL MOMENTO ESTA FUNCIONA SOLO ES PARA INTERNAS Y SALIENTES*/
-            
+                 raise exception 'POR EL MOMENTO ESTA FUNCIONA SOLO ES PARA INTERNAS Y SALIENTES';
             
              end if;
            
         
            --si la correspondencia es del tipo internea analiza combo de empleado
-           if( v_parametros.tipo=''interna'') THEN
+           if( v_parametros.tipo='interna') THEN
            
                  --analiza el combo de funcionarios destinos para hacer la insercion de hijos
                  --analiza que no tenga otros derivaciones duplicadas
@@ -204,13 +207,13 @@ BEGIN
                                 v_parametros.fecha_documento
                                 ); 
               ELSE
-              --si es del tipo saliente detalle para persona o institucion
-              -- verifica que tenga o una persona o una institucion
+               --si es del tipo saliente detalle para persona o institucion
+               -- verifica que tenga o una persona o una institucion
                   IF(v_parametros.id_persona_destino is NULL and v_parametros.id_institucion_destino is NULL) THEN
-                     raise exception ''Debe especificar por los menosuna persona o un institución destino'';
+                     raise exception 'Debe especificar por los menos una persona o un institución destino';
                   END IF;
                  
-                  --raise exception ''%'',v_parametros.id_institucion_destino;
+                  --raise exception '%',v_parametros.id_institucion_destino;
                   
                   --inserta della hijo      
                   insert into corres.tcorrespondencia(
@@ -245,14 +248,14 @@ BEGIN
                   id_usuario_mod,
                   id_clasificador
                   ) values(
-                  ''borrador_detalle_recibido'',
-                  ''activo'',
+                  'borrador_detalle_recibido',
+                  'activo',
                   v_parametros.fecha_documento,
                   --v_parametros.fecha_fin,
-                  string_to_array(v_parametros.id_acciones,'','')::integer[], 
+                  string_to_array(v_parametros.id_acciones,',')::integer[], 
       			
                   v_id_correspondencia,
-                  string_to_array(v_parametros.id_correspondencias_asociadas,'','')::integer[],
+                  string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
                   v_parametros.id_depto,
                   v_parametros.id_documento,
                  
@@ -286,8 +289,8 @@ BEGIN
                            
 
 			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Correspondencia almacenado(a) con exito (id_correspondencia''||v_id_correspondencia||'')''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_correspondencia'',v_id_correspondencia::varchar);
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia almacenado(a) con exito (id_correspondencia'||v_id_correspondencia||')'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_id_correspondencia::varchar);
 
             --Devuelve la respuesta
             return v_resp;
@@ -295,13 +298,13 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_COR_MOD''
+ 	#TRANSACCION:  'CO_COR_MOD'
  	#DESCRIPCION:	Modificacion de correspondencia
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_COR_MOD'')then
+	elsif(p_transaccion='CO_COR_MOD')then
 
 		begin
            --obtenemos estado de correpondencia
@@ -309,9 +312,9 @@ BEGIN
            from corres.tcorrespondencia c 
            where c.id_correspondencia= v_parametros.id_correspondencia;
            
-           raise exception ''%'',v_parametros.id_clasificador;
+           raise exception '%',v_parametros.id_clasificador;
            --if si estado borrador_envio
-           if(v_estado = ''borrador_envio'') then
+           if(v_estado = 'borrador_envio') then
         
                   --Sentencia de la modificacion
                   update corres.tcorrespondencia set
@@ -321,7 +324,7 @@ BEGIN
                 --  id_acciones = v_parametros.id_acciones,
                
                 --  id_correspondencia_fk = v_parametros.id_correspondencia_fk,
-                  id_correspondencias_asociadas =  string_to_array(v_parametros.id_correspondencias_asociadas,'','')::integer[],
+                  id_correspondencias_asociadas =  string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
                  -- id_depto = v_parametros.id_depto,
                   --id_documento = v_parametros.id_documento,
                   --id_funcionario = v_parametros.id_funcionario,
@@ -344,45 +347,42 @@ BEGIN
                   id_clasificador=v_parametros.id_clasificador
                   where id_correspondencia=v_parametros.id_correspondencia;
                   
-            elseif(v_estado = ''enviado'') then
+            elseif(v_estado = 'enviado') then
             --  si ya fue enviado solo se puede modificar las correspodencia asociada      
              --Sentencia de la modificacion
                 update corres.tcorrespondencia set
-                id_correspondencias_asociadas =  string_to_array(v_parametros.id_correspondencias_asociadas,'','')::integer[],
-              --  mensaje = v_parametros.mensaje,
-                --nivel_prioridad = v_parametros.nivel_prioridad,
-                --referencia = v_parametros.referencia,
+                id_correspondencias_asociadas =  string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
                 fecha_mod = now(),
                 id_usuario_mod = p_id_usuario
                 where id_correspondencia=v_parametros.id_correspondencia;
              
             else
             
-            raise exception ''estado no reconodico'';
+            raise exception 'estado no reconodico';
             
             
             end if;
                
 			--Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Correspondencia modificado(a)''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_correspondencia'',v_parametros.id_correspondencia::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
                
             --Devuelve la respuesta
             return v_resp;
             
 		end;
      /*********************************    
- 	#TRANSACCION:  ''CO_ARCHCOR_MOD''
+ 	#TRANSACCION:  'CO_ARCHCOR_MOD'
  	#DESCRIPCION:	Actualiza archivo de correspodencia escaneado
  	#AUTOR:		rac	
  	#FECHA:		21-12-2011 17:25:24
 	***********************************/
 
-	elsif(p_transaccion=''CO_ARCHCOR_MOD'')then
+	elsif(p_transaccion='CO_ARCHCOR_MOD')then
 
 		begin
         
-        --raise exception ''VERSION %'',v_parametros.version;
+        --raise exception 'VERSION %',v_parametros.version;
           
            update corres.tcorrespondencia set
            ruta_archivo = v_parametros.ruta_archivo,
@@ -392,13 +392,13 @@ BEGIN
            where id_correspondencia=v_parametros.id_correspondencia;
            
            
-           --en cadena recursivamente modificar  ruta_archivo
+           --TODO en cadena recursivamente modificar  ruta_archivo
            /*pendiente */
            
             
             --Definicion de la respuesta
-           v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Archivo escaneado de correspondencia modificado(a)''); 
-           v_resp = pxp.f_agrega_clave(v_resp,''id_correspondencia'',v_parametros.id_correspondencia::varchar);
+           v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Archivo escaneado de correspondencia modificado(a)'); 
+           v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
                
             --Devuelve la respuesta
            return v_resp;
@@ -408,13 +408,13 @@ BEGIN
         
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_COR_ELI''
+ 	#TRANSACCION:  'CO_COR_ELI'
  	#DESCRIPCION:	Eliminacion de registros
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_COR_ELI'')then
+	elsif(p_transaccion='CO_COR_ELI')then
 
 		begin
 			--Sentencia de la eliminacion
@@ -422,8 +422,8 @@ BEGIN
             where id_correspondencia=v_parametros.id_correspondencia;
                
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Correspondencia eliminado(a)''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_correspondencia'',v_parametros.id_correspondencia::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia eliminado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
               
             --Devuelve la respuesta
             return v_resp;
@@ -431,13 +431,13 @@ BEGIN
 		end;
         
     /*********************************    
- 	#TRANSACCION:  ''CO_CORDER_UPD''
+ 	#TRANSACCION:  'CO_CORDER_UPD'
  	#DESCRIPCION:	Derivacion de correspondecia 
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_CORDER_UPD'')then
+	elsif(p_transaccion='CO_CORDER_UPD')then
 
 		begin
             /*
@@ -448,9 +448,9 @@ BEGIN
             
             IF(not exists (select 1 from corres.tcorrespondencia c 
                         where c.id_correspondencia_fk = v_parametros.id_correspondencia
-                        and c.estado = ''borrador_detalle_recibido'')) THEN
+                        and c.estado = 'borrador_detalle_recibido')) THEN
                    
-               raise exception ''No existen envios pendientes'';
+               raise exception 'No existen envios pendientes';
                   
             END IF;            
                          
@@ -458,20 +458,20 @@ BEGIN
         
 			--actualiza padre 
 			update corres.tcorrespondencia
-            set estado = ''enviado''
+            set estado = 'enviado'
             where id_correspondencia=v_parametros.id_correspondencia;
                
             -- actualiza hijos pendientes de envio
             update corres.tcorrespondencia
-            set estado = ''pendiente_recibido''
+              set estado = 'pendiente_recibido'
             where id_correspondencia_fk=v_parametros.id_correspondencia 
-            and estado = ''borrador_detalle_recibido'';
+              and estado = 'borrador_detalle_recibido';
             
             
             
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Correspondencia derivada(a)''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_correspondencia'',v_parametros.id_correspondencia::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia derivada(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
               
             --Devuelve la respuesta
             return v_resp;
@@ -479,13 +479,13 @@ BEGIN
 		end;
         
      /*********************************    
- 	#TRANSACCION:  ''CO_CORUNDO_UPD''
+ 	#TRANSACCION:  'CO_CORUNDO_UPD'
  	#DESCRIPCION:	Corregir correspondecia si no tiene hijos abiertos
  	#AUTOR:		rac	
  	#FECHA:  27-02-2012 21:00
 	***********************************/
 
-	elsif(p_transaccion=''CO_CORUNDO_UPD'')then
+	elsif(p_transaccion='CO_CORUNDO_UPD')then
 
 		begin
             /*
@@ -496,9 +496,9 @@ BEGIN
             
             IF(exists (select 1 from corres.tcorrespondencia c 
                         where c.id_correspondencia_fk = v_parametros.id_correspondencia
-                        and c.estado = ''recibido'' or c.estado = ''borrador_deribado'')) THEN
+                        and c.estado = 'recibido' or c.estado = 'borrador_deribado')) THEN
                    
-               raise exception ''Existen destinatarios que ya recibieron la correpondencia no se puede corregir'';
+               raise exception 'Existen destinatarios que ya recibieron la correpondencia no se puede corregir';
                   
             END IF;            
                          
@@ -506,18 +506,18 @@ BEGIN
         
 			--actualiza padre 
 			update corres.tcorrespondencia
-            set estado = ''borrador_envio''
+            set estado = 'borrador_envio'
             where id_correspondencia=v_parametros.id_correspondencia;
                
             -- actualiza hijos pendientes de envio
             update corres.tcorrespondencia
-            set estado = ''borrador_detalle_recibido''
+            set estado = 'borrador_detalle_recibido'
             where id_correspondencia_fk=v_parametros.id_correspondencia 
-            and estado = ''pendiente_recibido'';
+            and estado = 'pendiente_recibido';
             
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Correspondencia corregida''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_correspondencia'',v_parametros.id_correspondencia::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia corregida'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
               
             --Devuelve la respuesta
             return v_resp;
@@ -525,19 +525,19 @@ BEGIN
 		end;
 		
     /*********************************
- 	#TRANSACCION:  ''CO_CORDET_INS''
+ 	#TRANSACCION:  'CO_CORDET_INS'
  	#DESCRIPCION:	Insercion de registros como detalle de correspondencia
  	#AUTOR:		mzm
  	#FECHA:		    14-02-2012 20:43:21
 	***********************************/
 
-	elsif(p_transaccion=''CO_CORDET_INS'')then
+	elsif(p_transaccion='CO_CORDET_INS')then
 
 		begin
 			
 			select * into v_datos_maestro from corres.tcorrespondencia
 			where id_correspondencia=v_parametros.id_correspondencia_fk;
---			raise exception ''llega aqui%'',v_parametros.id_funcionario;
+--			raise exception 'llega aqui%',v_parametros.id_funcionario;
 			 v_resp_cm=corres.f_proc_mul_cmb_empleado(
                           v_parametros.id_funcionario,
                           v_parametros.id_correspondencia_fk,
@@ -560,11 +560,11 @@ BEGIN
                           );
                           
                          
-                         -- raise exception ''resp%'',v_resp_cm;
+                         -- raise exception 'resp%',v_resp_cm;
 
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Correspondencia eliminado(a)'');
-            v_resp = pxp.f_agrega_clave(v_resp,''id_correspondencia'',v_parametros.id_correspondencia_fk::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia eliminado(a)');
+            v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia_fk::varchar);
 
             --Devuelve la respuesta
             return v_resp;
@@ -573,21 +573,22 @@ BEGIN
          
 	else
      
-    	raise exception ''Transaccion inexistente: %'',p_transaccion;
+    	raise exception 'Transaccion inexistente: %',p_transaccion;
 
 	end if;
 
 EXCEPTION
 				
 	WHEN OTHERS THEN
-		v_resp='''';
-		v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',SQLERRM);
-		v_resp = pxp.f_agrega_clave(v_resp,''codigo_error'',SQLSTATE);
-		v_resp = pxp.f_agrega_clave(v_resp,''procedimientos'',v_nombre_funcion);
-		raise exception ''%'',v_resp;
+		v_resp='';
+		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_resp;
 				        
 END;
-'LANGUAGE 'plpgsql'
+$body$
+LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
