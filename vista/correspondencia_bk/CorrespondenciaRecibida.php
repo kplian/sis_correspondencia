@@ -1,7 +1,7 @@
 <?php
 /**
  *@package pXP
- *@file gen-CorrespondenciaDetalle.php
+ *@file gen-CorrespondenciaRecibida.php
  *@author  (rac)
  *@date 13-12-2011 16:13:21
  *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
@@ -9,25 +9,52 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.CorrespondenciaRecibida=Ext.extend(Phx.gridInterfaz,{
+	bsave:false,
+	fwidth:'90%',
+	fheight:'90%',
 
 	constructor:function(config){
-		alert('aaaaaaaaaaa')
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
-		Phx.vista.CorrespondenciaDetalle.superclass.constructor.call(this,config);
-
-		this.init();
-		this.bloquearMenus();
-		if(Phx.CP.getPagina(this.idContenedorPadre)){
-      	 var dataMaestro=Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
-	 	 if(dataMaestro){ 
-	 	 	this.onEnablePanel(this,dataMaestro)
-	 	 }
-	  }
+		Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
+		 
 		
+		this.addButton('corregir',{text:'Corregir',iconCls:'bundo',disabled:true,handler:this.onButtonCorregir,tooltip: '<b>Corregir</b><br/>Si todos los envios se detinadtarios se encuentras pendientes de lectura puede solicitar la correcion'});
+		this.addButton('mandar',{text:'Derivar',iconCls:'badelante',disabled:true,handler:this.onButtonMandar,tooltip: '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'});
+		this.addButton('verCorrespondenciaRecibida',{text:'Ver Documento',iconCls: 'bsee',disabled:true,handler:this.verCorrespondenciaRecibida,tooltip: '<b>Ver archivo</b><br/>Permite visualizar el documento escaneado'});
+		
+		this.init();
+		
+		
+		
+		this.load({params:{start:0, limit:50}})
+		this.iniciarEventos()
 	},
+	
+	bnew:false,
+	bedit:false,
+	bdel:false,
+	
+	 SubirCorrespondenciaRecibida:function()
+		{					
+			var rec=this.sm.getSelected();
 			
+						
+			Phx.CP.loadWindows('../../../sis_correspondencia/vista/correspondencia/subirCorrespondenciaRecibida.php',
+			'Subir CorrespondenciaRecibida',
+			{
+				modal:true,
+				width:500,
+				height:250
+		    },rec.data,this.idContenedor,'subirCorrespondenciaRecibida')
+	 },
+		
+	
+	  south:{
+	  url:'../../../sis_correspondencia/vista/correspondencia_detalle/CorrespondenciaDetalle.php',cls:'CorrespondenciaDetalle',
+	  title:'Detalle de CorrespondenciaRecibida', height:'50%'
+	   },	
 	Atributos:[
 		{
 			//configuracion del componente
@@ -39,15 +66,32 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
+		{
+			config:{
+				name: 'version',
+				fieldLabel: 'Digital',
+				gwidth: 60,
+			    renderer:function (value, p, record){
+					var icono='wrong';
+					if(record.data.version>0){
+						icono='good';
+					}
+					return "<div style='text-align:center'><img src = '../../../lib/imagenes/icono_dibu/dibu_"+icono+".png' align='center' width='32' height='32'/></div>"
+				 }
+			},
+			type:'Field',
+			egrid:true,
+			filters:{pfiltro:'cor.version',type:'numeric'},
+			id_grupo:0,
+			grid:true,
+			form:false
+		},
 		
-		/*{
+		{
 			config:{
 				name: 'numero',
 				fieldLabel: 'Numero',
-				allowBlank: false,
-				//anchor: '100',
-				gwidth: 100,
-				maxLength:20
+				gwidth: 120				
 			},
 			type:'TextField',
 			filters:{pfiltro:'cor.numero',type:'string'},
@@ -167,7 +211,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    				pageSize:10,
    				queryDelay:1000,
    				width:250,
-   				gwidth:400,
+   				gwidth:150,
    				minChars:2,
    				renderer:function (value, p, record){return String.format('{0}', record.data['desc_documento']);}
    			},
@@ -181,7 +225,45 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    			grid:true,
    			form:true
    	},
+   	 {
+			config:{
+				name: 'fecha_documento',
+				fieldLabel: 'Fecha Documento',
+				disabled:true,
+				allowBlank: false,
+				format:'d-m-Y',
+				width: 100,
+				gwidth: 100,
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y'):''}
+			},
+			type:'DateField',
+			valorInicial:new Date(),
+			filters:{pfiltro:'cor.fecha_documento',type:'date'},
+			id_grupo:2,
+			grid:true,
+			form:true
+		},
 
+       /* {
+   			config:{
+       		    name:'id_funcionario',
+   				origen:'FUNCIONARIOCAR',
+   				fieldLabel:'Funcionario Remitente',
+   				gdisplayField:'desc_funcionario',//mapea al store del grid
+   			    gwidth:200,
+	   			renderer:function (value, p, record){return String.format('{0}', record.data['desc_funcionario']);}
+       	     },
+   			type:'ComboRec',
+   			id_grupo:1,
+   			filters:{	
+		        pfiltro:'desc_funcionario1',
+				type:'string'
+			},
+   		   
+   			grid:true,
+   			form:true
+   	      },*/
+       
         {
    			config:{
        		    name:'id_funcionario',
@@ -208,7 +290,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    				origen:'UO',
    				fieldLabel:'UO Remitente',
    				gdisplayField:'desc_uo',//mapea al store del grid
-   			    gwidth:200
+   			    gwidth:200,
+   			     renderer:function (value, p, record){return String.format('{0}', record.data['desc_uo']);}
        	     },
    			type:'ComboRec',
    			id_grupo:1,
@@ -220,7 +303,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    			form:true
    	      }
    	      
-		,*/
+		,
 
 
     	{
@@ -240,15 +323,15 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				type:'string'
 			},
    		   
-   			grid:true,
+   			grid:false,
    			form:true
    	      },{
     	   		config:{
 				name:'id_institucion_destino',
+				allowBlank: true,
 				fieldLabel: 'Institucion',
 				anchor: '90%',
 				tinit:true,
-				allowBlank:false,
 				origen:'INSTITUCION',
 				gdisplayField:'nombre',
 			    gwidth:200,	
@@ -258,7 +341,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			type:'ComboRec',
 			id_grupo:3,
 			filters:{pfiltro:'nombre',type:'string'},
-			grid:true,
+			grid:false,
 			form:true
 	},
 
@@ -303,25 +386,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    			id_grupo:3,
    			grid:false,
    			form:true
-   	    },/*
-      	 {
-			config:{
-				name: 'fecha_documento',
-				fieldLabel: 'Fecha Documento',
-				disabled:true,
-				allowBlank: false,
-				format:'d-m-Y',
-				width: 100,
-				gwidth: 100,
-				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y h:i:s'):''}
-			},
-			type:'DateField',
-			valorInicial:new Date(),
-			filters:{pfiltro:'cor.fecha_documento',type:'date'},
-			id_grupo:2,
-			grid:true,
-			form:true
-		},
+   	    },
+      	
 		
 		{
 			config:{
@@ -356,7 +422,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:2,
 			grid:true,
 			form:true
-		},*/
+		},
 		{
    			config:{
    				name:'id_acciones',
@@ -397,37 +463,24 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    			},
    			type:'AwesomeCombo',
    			id_grupo:3,
-   			
+   			/*filters:{	
+   				        pfiltro:'acco.desc_acciones',
+   						type:'string'
+   					},*/
    		   
-   			grid:true,
+   			grid:false,
    			form:true
-   	}/*,
-   	{
-			config:{
-				name: 'cite',
-				fieldLabel: 'Cite',
-				allowBlank: true,
-				width: 300,
-				growMin:100,
-				grow : true,
-				gwidth: 100,
-				maxLength:500
-			},
-			type:'TextField',
-			filters:{pfiltro:'cor.cuce',type:'string'},
-			id_grupo:2,
-			grid:true,
-			form:true
-		},
+   	},
+ 
 
    	{
 		config:{
 			name:'id_correspondencias_asociadas',
 			fieldLabel:'Responde a',
 			allowBlank:true,
-			emptyText:'CorrespondenciaDetalles...',
+			emptyText:'CorrespondenciaRecibidas...',
 			store: new Ext.data.JsonStore({
-			            url: '../../sis_correspondencia/control/Accion/listarCorrespondenciaDetalle',
+			            url: '../../sis_correspondencia/control/Accion/listarCorrespondencia',
 						id: 'id_correspondencia',
 						root: 'datos',
 						sortInfo:{
@@ -460,9 +513,12 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		},
 		type:'AwesomeCombo',
 		id_grupo:2,
-	
+		/*filters:{	
+			        pfiltro:'acco.desc_asociadas',
+					type:'string'
+				},*/
 	   
-		grid:true,
+		grid:false,
 		form:true
 },
 	
@@ -515,7 +571,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    		   
    			grid:true,
    			form:true
-   	      }
+   	    }
 		,	
 		{
 			config:{
@@ -528,7 +584,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			type:'TextField',
 			filters:{pfiltro:'cor.respuestas',type:'string'},
 			id_grupo:1,
-			grid:true,
+			grid:false,
 			form:false
 		},
 		{
@@ -608,110 +664,51 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			id_grupo:12,
 			grid:true,
 			form:false
-		}*/
+		}
 	],
-	title:'CorrespondenciaDetalle',
+	title:'CorrespondenciaRecibida',
 	ActSave:'../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
 	ActDel:'../../sis_correspondencia/control/Correspondencia/eliminarCorrespondencia',
-	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaDetalle',
+	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibida',
 	id_store:'id_correspondencia',
 	fields: [
-		{name:'id_correspondencia', type: 'numeric'},
-		{name:'estado', type: 'numeric'},
-		{name:'estado_reg', type: 'string'},
-		{name:'fecha_documento', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		'id_correspondencia',
+		'estado', 
+		'estado_reg',
+		{name:'fecha_documento', type: 'date', dateFormat:'Y-m-d'},
 		{name:'fecha_fin', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name:'id_acciones', type: 'string'},
-		{name:'id_archivo', type: 'numeric'},
-		{name:'id_correspondencia_fk', type: 'numeric'},
-		{name:'id_correspondencias_asociadas', type: 'string'},
-		{name:'id_depto', type: 'numeric'},
-		{name:'id_documento', type: 'numeric'},
-		{name:'id_funcionario', type: 'numeric'},
-		{name:'id_gestion', type: 'numeric'},
-		{name:'id_institucion', type: 'numeric'},
-		{name:'id_periodo', type: 'numeric'},
-		{name:'id_persona', type: 'numeric'},
-		{name:'id_uo', type: 'numeric'},
-		{name:'mensaje', type: 'string'},
-		{name:'nivel', type: 'numeric'},
-		{name:'nivel_prioridad', type: 'string'},
-		{name:'numero', type: 'string'},
-		{name:'observaciones_estado', type: 'string'},
-		{name:'referencia', type: 'string'},
-		{name:'respuestas', type: 'string'},
-		{name:'sw_responsable', type: 'string'},
-		{name:'tipo', type: 'string'},
+		'id_acciones',
+		'id_archivo', 
+		'id_correspondencia_fk', 
+		'id_correspondencias_asociadas', 
+		'id_depto', 
+		'id_documento', 
+		'id_funcionario', 
+		'id_gestion',
+		'id_institucion', 
+		'id_periodo',
+		'id_persona',
+		'id_uo', 
+		'mensaje', 
+		'nivel', 
+		'nivel_prioridad', 
+		'numero',
+		'observaciones_estado',
+		'referencia', 
+		'respuestas',
+		'sw_responsable', 
+		'tipo',
 		{name:'fecha_reg', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name:'id_usuario_reg', type: 'numeric'},
+		'id_usuario_reg', 
 		{name:'fecha_mod', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name:'id_usuario_mod', type: 'numeric'},
-		{name:'usr_reg', type: 'string'},
-		{name:'usr_mod', type: 'string'},'cite',
-		{name:'desc_depto', type: 'string'},
-		{name:'desc_documento', type: 'string'},
-		{name:'desc_funcionario', type: 'string'}
+		'id_usuario_mod','usr_reg', 
+		'usr_mod','cite','desc_depto','desc_documento','desc_funcionario', 'ruta_archivo','version',
+		'desc_uo','id_clasificador','desc_clasificador', 
 	],
 	sortInfo:{
 		field: 'id_correspondencia',
 		direction: 'ASC'
 	},
-	bdel:true,
-	bsave:true,
-	/*Grupos: [
-	            {
-	                layout: 'column',
-	                border: false,
-	                defaults: {
-	                   border: false
-	                },            
-	                items: [{
-	                	 bodyStyle: 'padding-left:5px;padding-left:5px;',
-						        items: [{
-						            xtype: 'fieldset',
-						            title: 'Parametros',
-						           
-						            //autoHeight: true,
-						            items: [],
-							        id_grupo:0
-						        }]
-						    },{
-						    	 bodyStyle: 'padding-left:5px;padding-left:5px;',
-						        items: [{
-						            xtype: 'fieldset',
-						            title: 'Datos Remitente',
-						          
-						           // autoHeight: true,
-						            items: [],
-							        id_grupo:1
-						        }]
-						    },
-						    {
-						        bodyStyle: 'padding-left:5px;padding-left:5px;',
-						        items: [{
-						            xtype: 'fieldset',
-						          
-						            title: 'Datos Destinatario',
-						           // autoHeight: true,
-						            items: [],
-							        id_grupo:3
-						        }]
-						    }  ]
-	            },
-	            {
-			        bodyStyle: 'padding-left:5px;padding-left:5px;',
-			        border: false,
-			        width: 500,
-			        items: [{
-			            xtype: 'fieldset',
-			         
-			            title: 'Mensaje',
-			            //autoHeight: true,
-			            items: [],
-				        id_grupo:2
-			        }]
-			    }
-	        ],*/
 	Grupos: [
 	            {
 	                layout: 'column',
@@ -763,14 +760,13 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 								    } 
 					        ]
 					        },
-
 						    {
 						        bodyStyle: 'padding-left:5px;padding-left:5px;',
 						        border: false,
+						        hidden:false,
 						        width: 500,
 						        items: [{
 						            xtype: 'fieldset',
-						         
 						            title: 'Mensaje',
 						            //autoHeight: true,
 						            items: [],
@@ -781,25 +777,151 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	           
 	        ],
 
-/*	     /loadValoresIniciales:function(){
+	     loadValoresIniciales:function(){
 
-		Phx.vista.CorrespondenciaDetalle.superclass.loadValoresIniciales.call(this);
+		Phx.vista.CorrespondenciaRecibida.superclass.loadValoresIniciales.call(this);
 
-		 var cmbDoc = this.getComponente('id_documento');
+		 
+
+
+
+        }, 
+        
+    onButtonNew:function(){
+    	 var cmbDoc = this.getComponente('id_documento');
 		 var cmpFuncionarios = this.getComponente('id_funcionarios');
 	     var cmpInstitucion = this.getComponente('id_institucion');
 		 var cmpPersona = this.getComponente('id_persona');
+		 
+    	 Phx.vista.CorrespondenciaRecibida.superclass.onButtonNew.call(this);
+      	 this.adminGrupo({mostrar:[0,1,2,3]});
+      	 this.ocultarComponente(cmpInstitucion);
+	     this.ocultarComponente(cmpPersona);
+	     this.mostrarComponente(cmpFuncionarios);
+	     
+	     this.getComponente('id_uo').enable();
+	     this.getComponente('id_clasificador').enable();
+	     this.getComponente('mensaje').enable();
+	     this.getComponente('nivel_prioridad').enable();
+	     this.getComponente('referencia').enable();
+	    
+	     cmbDoc.store.baseParams.tipo='interna';//valor por dfecto es interna	
+	     cmbDoc.modificado = true;
+	     cmbDoc.reset();
+      	
+     },
+    
+    onButtonEdit:function(){
+    	Phx.vista.CorrespondenciaRecibida.superclass.onButtonEdit.call(this);
+      	this.adminGrupo({mostrar:[2],ocultar:[0,1,3]});
+      	this.getComponente('id_uo').disable();
+      	 var data=this.sm.getSelected().data;
+      	 console.log(data,data.estado)
+      	if(data.estado=='borrador_envio')
+      	{
+	      	this.getComponente('id_clasificador').enable();
+	      	this.getComponente('mensaje').enable();
+		    this.getComponente('nivel_prioridad').enable();
+		    this.getComponente('referencia').enable(); 
+	     }
+	     else if(data.estado=='enviado')
+	     {
+	     	this.getComponente('id_clasificador').disable();
+	      	this.getComponente('mensaje').disable();
+		    this.getComponente('nivel_prioridad').disable();
+		    this.getComponente('referencia').disable();
+	     	
+	     }
+     },
+        
+ 	verCorrespondenciaRecibida:function(){
+		var rec=this.sm.getSelected();
+		window.open('../'+rec.data.ruta_archivo);
+	},
+	
+	onButtonCorregir:function(){
+		var id_correspondencia=this.sm.getSelected().data.id_correspondencia;
+			Phx.CP.loadingShow();
+		    Ext.Ajax.request({
+				// form:this.form.getForm().getEl(),
+				url:'../../sis_correspondencia/control/Correspondencia/corregirCorrespondencia',
+				params:{id_correspondencia:id_correspondencia},
+				success:this.successDerivar,
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});	
+	},
+	
+	onButtonMandar:function(){
+	   
+	   var data=this.sm.getSelected().data.id_proceso_contrato;
+			var id_correspondencia=this.sm.getSelected().data.id_correspondencia;
+			Phx.CP.loadingShow();
+		    Ext.Ajax.request({
+				// form:this.form.getForm().getEl(),
+				url:'../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
+				params:{id_correspondencia:id_correspondencia},
+				success:this.successDerivar,
+				failure: this.conexionFailure,
+				timeout:this.timeout,
+				scope:this
+			});	
+	},
+	successDerivar:function(resp){
 			
-			 this.ocultarComponente(cmpInstitucion);
-	         this.ocultarComponente(cmpPersona);
-	         this.mostrarComponente(cmpFuncionarios)
-	         cmbDoc.store.baseParams.tipo='interna';//valor por dfecto es interna	
-	         cmbDoc.modificado = true;
-	         cmbDoc.reset();
-
-
-
-        },   */    
+			Phx.CP.loadingHide();
+			var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+			if(!reg.ROOT.error){
+				alert(reg.ROOT.detalle.mensaje)
+				
+			}else{
+				
+				alert('ocurrio un error durante el proceso')
+			}
+			this.reload();
+			
+		},
+        
+      preparaMenu:function(n){
+      	
+      	Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n);
+      	
+		  var data = this.getSelectedData();
+		  var tb =this.tbar;
+		  //si el archivo esta escaneado se permite visualizar
+		  if(data['version']>0){
+		  	   this.getBoton('verCorrespondenciaRecibida').enable();
+		       this.getBoton('mandar').enable()
+	  		}
+	  		else
+	  		{
+	  			this.getBoton('verCorrespondenciaRecibida').disable();
+	  			this.getBoton('mandar').disable()
+	  			
+	  		}
+	 
+		  
+		  //cuando el conrtato esta registrado el abogado no puede hacerle mas cambios
+		  if(data['estado']=='borrador_envio'){
+		  		
+			  	this.getBoton('aSubirCorrespondenciaRecibida').enable();
+			  		this.getBoton('corregir').disable();
+		  } 
+		  if(data['estado']=='enviado'){
+		  		if(tb){
+			  		
+			  		this.getBoton('aSubirCorrespondenciaRecibida').disable();
+			  		this.getBoton('corregir').enable();
+			  		
+			  	}
+			  	
+		  } 
+		  
+		  
+		  return tb
+		
+	},     
 	iniciarEventos:function(){ 
 	
 
@@ -837,39 +959,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		},this);
 
 	},
-	onReloadPage:function(m){
-
-       
-		this.maestro=m;
-		this.Atributos[1].valorInicial=this.maestro.id_correspondencia;
-
-		
-
-		//actualiza combos del departamento
-		// var cmbUo = this.getComponente('id_uo');
-		 /*if(this.maestro.codigo=='COR'){
-			 cmbUo.store.baseParams.correspondencia='si'; 
-		
-		 }else{
-			delete  cmbUo.store.baseParams.correspondencia;
-			 }
-		 cmbUo.modificado = true;*/
-
-
-		// this.Atributos.config['id_subsistema'].setValue(this.maestro.id_subsistema);
-
-      /* if(m.id != 'id'){
-    	 */
-         this.store.baseParams={id_correspondencia_padre:this.maestro.id_correspondencia};
-		 this.load({params:{start:0, limit:50}})
-       /*}
-       else{
-    	 this.grid.getTopToolbar().disable();
-   		 this.grid.getBottomToolbar().disable(); 
-   		 this.store.removeAll(); 
-    	   
-       }*/
-	},
+	 
 
 }
 )
