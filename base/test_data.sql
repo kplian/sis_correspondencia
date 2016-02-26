@@ -7,54 +7,52 @@
 -- Data for table param.tdepto (LIMIT 0,3)
 /*
 INSERT INTO param.tdepto (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_depto, id_subsistema, codigo, nombre, nombre_corto)
-VALUES (1, 1, '2011-06-04 00:00:00', '2011-06-04 21:26:26', 'activo', 1, 5, 'DC', 'Departamento de Cont', 'CBTE');
-
-INSERT INTO param.tdepto (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_depto, id_subsistema, codigo, nombre, nombre_corto)
-VALUES (1, 1, '2011-10-19 00:00:00', '2011-10-19 14:14:29', 'activo', 3, 5, 'DPE', 'Departamento de Personal', 'DEP-PER');
-
-INSERT INTO param.tdepto (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_depto, id_subsistema, codigo, nombre, nombre_corto)
 VALUES (1, 1, '2011-10-19 00:00:00', '2012-03-15 15:13:42', 'activo', 2, 5, 'COR', 'Departamento de Correspondencia.', 'DEP-COR');
 */
 
--- Data for table param.tdocumento  (LIMIT 0,12)
-/*
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, 1, '2011-12-13 00:00:00', '2011-12-13 10:13:29', 'activo', 1, 5, 'IN', 'Informe', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:18:18', 'activo', 9, 5, 'ME', 'Memoramdum', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:18:35', 'activo', 10, 5, 'CI', 'Comunicacion Interna', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:19:38', 'activo', 11, 5, 'IT', 'Informe Tecnico', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:19:52', 'activo', 12, 5, 'CO', 'Comunicado', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:23:58', 'activo', 13, 5, 'PLA', 'Planilla', 'gestion', '', 'depto_uo', NULL);
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, 1, '2011-12-13 00:00:00', '2011-12-13 10:13:29', 'activo',  4, 'IN', 'Informe', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2012-04-18 00:00:00', '2012-04-18 00:19:03', 'activo', 18, 5, 'asdasd', 'sadsadsad', 'periodo', '', 'depto', '');
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:18:18', 'activo',  4, 'ME', 'Memoramdum', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 07:22:25', 'activo', 15, 5, 'CAR', 'Carta recibida', 'periodo', 'entrante', 'depto', NULL);
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:18:35', 'activo',  4, 'CI', 'Comunicacion Interna', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, NULL, '2011-12-29 00:00:00', '2011-12-29 10:59:45', 'activo', 16, 5, 'RE', 'Recibo', 'periodo', 'entrante', 'uo', NULL);
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:19:38', 'activo',  4, 'IT', 'Informe Tecnico', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, 1, '2011-12-25 00:00:00', '2012-04-18 00:20:30', 'activo', 5, 5, 'CA', 'CARTA', 'periodo', 'saliente', 'depto_uo', NULL);
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:19:52', 'activo',  4, 'CO', 'Comunicado', 'periodo', 'interna', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, Null, '2012-04-18 00:00:00', '2012-04-18 00:19:33', 'activo', 19, 5, 'aaa', 'aaa', 'periodo', 'saliente', 'uo', NULL);
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 03:23:58', 'activo',  4, 'PLA', 'Planilla', 'gestion', '', 'depto_uo', NULL);
 
-INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_documento, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
-VALUES (1, 1, '2012-04-18 00:00:00', '2012-04-18 01:20:06', 'activo', 20, 5, 'aaaaa', 'aaaaa', 'gestion', 'saliente', 'uo', '');
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2012-04-18 00:00:00', '2012-04-18 00:19:03', 'activo', 4, 'asdasd', 'sadsadsad', 'periodo', '', 'depto', '');
 
-*/
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2011-12-25 00:00:00', '2011-12-25 07:22:25', 'activo',  4, 'CAR', 'Carta recibida', 'periodo', 'entrante', 'depto', NULL);
+
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, NULL, '2011-12-29 00:00:00', '2011-12-29 10:59:45', 'activo',  4, 'RE', 'Recibo', 'periodo', 'entrante', 'uo', NULL);
+
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, 1, '2011-12-25 00:00:00', '2012-04-18 00:20:30', 'activo', 4, 'CA', 'CARTA', 'periodo', 'saliente', 'depto_uo', NULL);
+
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,  id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, Null, '2012-04-18 00:00:00', '2012-04-18 00:19:33', 'activo', 4, 'aaa', 'aaa', 'periodo', 'saliente', 'uo', NULL);
+
+INSERT INTO param.tdocumento (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_subsistema, codigo, descripcion, periodo_gestion, tipo, tipo_numeracion, formato)
+VALUES (1, 1, '2012-04-18 00:00:00', '2012-04-18 01:20:06', 'activo',  4, 'aaaaa', 'aaaaa', 'gestion', 'saliente', 'uo', '');
+
+
+
 -- Data for table param.tdepto_uo (LIMIT 0,6)
 /*
 INSERT INTO param.tdepto_uo (id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_depto_uo, id_depto, id_uo)
