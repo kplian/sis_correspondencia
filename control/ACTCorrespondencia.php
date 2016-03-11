@@ -13,7 +13,10 @@ class ACTCorrespondencia extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_correspondencia');
 
 		$this->objParam->defecto('dir_ordenacion','desc');
-					
+
+
+
+		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
 		
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam, $this);
@@ -62,6 +65,8 @@ class ACTCorrespondencia extends ACTbase{
 	
 				
 	function insertarCorrespondencia(){ //echo "aaaa"; exit;
+
+
 		$this->objFunc=$this->create('MODCorrespondencia');	
 		if($this->objParam->insertar('id_correspondencia')){
 			$this->res=$this->objFunc->insertarCorrespondencia();			
@@ -123,11 +128,27 @@ class ACTCorrespondencia extends ACTbase{
 		$this->objParam->defecto('ordenacion','id_correspondencia');
 
 		$this->objParam->defecto('dir_ordenacion','asc');
+
+		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
 					
 		$this->objFunc=$this->create('MODCorrespondencia');	
 		$this->res=$this->objFunc->listarCorrespondenciaRecibida();
 		$this->res->imprimirRespuesta($this->res->generarJson());
-	}	
+	}
+
+	function finalizarRecepcion(){
+
+
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->finalizarRecepcion();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function verCorrespondencia(){
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->verCorrespondencia();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 }
 
 ?>

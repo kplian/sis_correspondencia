@@ -29,6 +29,8 @@ DECLARE
 	v_parametros  		record;
 	v_nombre_funcion   	text;
 	v_resp				varchar;
+
+  v_filtro            varchar;
 			    
 BEGIN
 
@@ -110,10 +112,23 @@ BEGIN
 	ELSEIF(p_transaccion='CO_COR_SEL')then
      				
     	begin
-            
-        
+
+
+
+        IF p_administrador = 1 THEN
+
+          v_filtro = '0=0';
+
+        ELSE
+
+          v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
+
+        END IF;
+
+
     		--Sentencia de la consulta
 			v_consulta:='select
+						cor.id_origen,
 						cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
@@ -164,8 +179,9 @@ BEGIN
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-				        where cor.estado in (''borrador_envio'',''enviado'',''recibido'') and ';
-			
+				        where cor.estado in (''borrador_envio'',''enviado'',''recibido'') and '||v_filtro||'  and ';
+
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
@@ -224,6 +240,7 @@ BEGIN
         
     		--Sentencia de la consulta
 			v_consulta:='select
+						cor.id_origen,
 						cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
@@ -379,8 +396,21 @@ BEGIN
     	begin
 
 
+
+        IF p_administrador = 1 THEN
+
+          v_filtro = '0=0';
+
+        ELSE
+
+          v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
+
+        END IF;
+
+
     		--Sentencia de la consulta
 			v_consulta:='select
+						cor.id_origen,
 						cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
@@ -445,7 +475,7 @@ BEGIN
 						inner join param.tperiodo per on per.id_periodo=cor.id_periodo
 						left join segu.vpersona persona_envia on persona_envia.id_persona=cor.id_persona
 						left join param.tinstitucion ins_envia on ins_envia.id_institucion=cor.id_institucion
-						where cor.estado in (''pendiente_recibido'',''recibido'') and ';
+						where cor.estado in (''pendiente_recibido'',''recibido'',''recibido_derivacion'') and '||v_filtro||' and ';
 			
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
@@ -489,8 +519,54 @@ BEGIN
 			return v_consulta;
 
 		end;
-    
-        					
+
+
+  /*********************************
+#TRANSACCION:  'CO_CORDOC_SEL'
+#DESCRIPCION:	Ver Archivo de correspondencia con id_origen
+#AUTOR:		    Favio Figueroa
+#FECHA:		    11-03-2016
+***********************************/
+  elsif(p_transaccion='CO_CORDOC_SEL')then
+
+    begin
+
+
+      --Sentencia de la consulta
+      v_consulta:='  select
+      							cor.ruta_archivo
+      							 from corres.tcorrespondencia cor
+     								 where cor.id_correspondencia = ';
+
+			v_consulta:=v_consulta||v_parametros.id_origen;
+
+      --Devuelve la respuesta
+      return v_consulta;
+
+    end;
+
+  /*********************************
+ #TRANSACCION:  'CO_CORREC_CONT'
+ #DESCRIPCION:	Conteo de registros de ver Documento
+ #AUTOR:
+ #FECHA:		    11-03-2016 16:13:21
+***********************************/
+
+  elsif(p_transaccion='CO_CORDOC_CONT')then
+
+    begin
+      --Sentencia de la consulta de conteo de registros
+      v_consulta:='select count(*) from corres.tcorrespondencia cor
+     								 where cor.id_correspondencia = ';
+
+      --Definicion de la respuesta
+      v_consulta:=v_consulta||v_parametros.id_origen;
+
+      --Devuelve la respuesta
+      return v_consulta;
+
+    end;
+
 	else
 					     
 		raise exception 'Transaccion inexistente';

@@ -25,7 +25,14 @@ Phx.vista.CorrespondenciaRecibida = {
 	
 	constructor: function(config) {
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
-	    
+
+		this.addButton('finalizarRecibido', {
+			text: 'Finalizar Recepcion',
+			iconCls: 'bgood',
+			disabled: true,
+			handler: this.finalizarRecepcion,
+			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
+		});
 	  
     
    },
@@ -33,21 +40,46 @@ Phx.vista.CorrespondenciaRecibida = {
       	
       	Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n);      	
 		  var data = this.getSelectedData();
+
+		console.log('data',data)
 		  var tb =this.tbar;
 		  //si el archivo esta escaneado se permite visualizar
 		  if(data['version']>0){
 		  	   this.getBoton('verCorrespondencia').enable();
 		       this.getBoton('mandar').enable()
+		       this.getBoton('finalizarRecibido').enable();
 	  		}
-	  		else
-	  		{
-	  			this.getBoton('verCorrespondencia').disable();
-	  			this.getBoton('mandar').disable()
+	  		else{
+	  			this.getBoton('verCorrespondencia').enable(); //aqui esta disable
+	  			this.getBoton('mandar').enable(); //aqui tambien
+				this.getBoton('finalizarRecibido').enable();
 	  			
 	  		}
 	 
 		 return tb
 		
+	},finalizarRecepcion:function(){
+		var rec = this.sm.getSelected();
+
+		Ext.Ajax.request({
+			url: '../../sis_correspondencia/control/Correspondencia/finalizarRecepcion',
+			params: {
+				id_correspondencia: rec.data.id_correspondencia
+			},
+			success: this.successFinalizar,
+			failure: this.conexionFailure,
+			timeout: this.timeout,
+			scope: this
+		});
+
+
+	},
+	successFinalizar:function(resp){
+
+		this.load({params: {start: 0, limit: 50}});
+
+
+		console.log(resp)
 	}
 	
 	

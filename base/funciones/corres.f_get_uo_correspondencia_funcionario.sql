@@ -16,6 +16,8 @@ DECLARE
   g_res			INTEGER[];
   v_consulta    varchar;
 BEGIN
+
+
   g_res=ARRAY[-1];
   --RAC  aumentamos la varialbe fl_filtro en vez de 
    

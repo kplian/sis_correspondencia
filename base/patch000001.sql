@@ -132,4 +132,18 @@ ALTER TABLE corres.tcorrespondencia
 
 
 
+/***********************************I-SCP-FFP-CORRES-0-08/03/2016*****************************************/
 
+
+ -- object recreation
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT tcorrespondencia__estado__chk RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  ADD CONSTRAINT tcorrespondencia__estado__chk CHECK (((((((estado)::text = 'borrador_detalle_recibido'::text) OR ((estado)::text = 'pendiente_recibido'::text)) OR ((estado)::text = 'recibido'::text)) OR ((estado)::text = 'recibido_derivacion'::text)) OR ((estado)::text = 'borrador_envio'::text)) OR ((estado)::text = 'enviado'::text));
+
+
+
+ALTER TABLE corres.tcorrespondencia ADD id_origen INTEGER NULL;
+
+/***********************************F-SCP-FFP-CORRES-0-08/03/2016*****************************************/
