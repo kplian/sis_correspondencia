@@ -34,6 +34,16 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
 
+            this.addButton('PlantillaCorrespondencia', {
+                text: 'Plantilla Correspondencia',
+                iconCls: 'bword',
+                disabled: true,
+                handler: this.PlantillaCorrespondencia,
+                tooltip: '<b>PlantillaCorrespondencia</b><br/>visualiza la plantilla correspondencia'
+            });
+
+
+
 
         },
         iniciarEventos: function () {
@@ -183,10 +193,13 @@ header("content-type: text/javascript; charset=UTF-8");
             if (data['estado'] == 'borrador_envio') {
 
                 this.getBoton('aSubirCorrespondencia').enable();
+                this.getBoton('PlantillaCorrespondencia').enable();
                 this.getBoton('corregir').disable();
             }
             if (data['estado'] == 'enviado') {
                 if (tb) {
+
+                    this.getBoton('PlantillaCorrespondencia').disable();
 
                     this.getBoton('aSubirCorrespondencia').disable();
                     this.getBoton('corregir').enable();
@@ -198,6 +211,33 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             return tb
+
+        },
+        PlantillaCorrespondencia:function(){
+
+            var rec = this.sm.getSelected();
+
+            Ext.Ajax.request({
+                url: '../../sis_correspondencia/control/Correspondencia/PlantillaCorrespondencia',
+                params: {
+                    id_correspondencia: rec.data.id_correspondencia,
+                    start:0,limit:1
+                },
+                success: this.successPlantillaCorrespondencia,
+                failure: this.conexionFailure,
+                timeout: this.timeout,
+                scope: this
+            });
+
+        },
+        successPlantillaCorrespondencia:function(resp){
+
+            var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+
+            var texto = objRes.datos.docx;
+            console.log(texto);
+            window.open('../../../lib/lib_control/Intermediario.php?r=' + texto + '&t=' + new Date().toLocaleTimeString())
+            
 
         }
 

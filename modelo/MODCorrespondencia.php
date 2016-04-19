@@ -100,7 +100,8 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_uo','text');
         $this->captura('desc_clasificador','text');
         $this->captura('id_clasificador','integer');
-		
+        $this->captura('desc_ruta_plantilla_documento','varchar');
+
 		
 		
 		

@@ -168,8 +168,10 @@ BEGIN
                         cor.version,
                         uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
                         clasif.descripcion as desc_clasificador,
-                        cor.id_clasificador
-                        
+                        cor.id_clasificador,
+                        doc.ruta_plantilla as desc_ruta_plantilla_documento
+
+
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento

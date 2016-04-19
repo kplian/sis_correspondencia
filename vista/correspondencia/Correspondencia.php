@@ -48,7 +48,7 @@ header("content-type: text/javascript; charset=UTF-8");
             },
 
 
-            south: {
+            east: {
                 url: '../../../sis_correspondencia/vista/correspondencia_detalle/CorrespondenciaDetalle.php',
                 cls: 'CorrespondenciaDetalle',
                 title: 'Detalle de Correspondencia',
@@ -65,17 +65,21 @@ header("content-type: text/javascript; charset=UTF-8");
                     type: 'Field',
                     form: true
                 },
+
+
                 {
                     config: {
                         name: 'version',
-                        fieldLabel: 'Digital',
+                        fieldLabel: 'Icono',
                         gwidth: 60,
                         renderer: function (value, p, record) {
-                            var icono = 'wrong';
+                            var icono = record.data.estado+'.png';
+                            console.log('estado',record.data.estado)
+                            console.log('icono',icono)
                             if (record.data.version > 0) {
                                 icono = 'good';
                             }
-                            return "<div style='text-align:center'><img src = '../../../lib/imagenes/icono_dibu/dibu_" + icono + ".png' align='center' width='32' height='32'/></div>"
+                            return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/" + record.data.estado + ".png' align='center' width='40' height='40'/></div>"
                         }
                     },
                     type: 'Field',
