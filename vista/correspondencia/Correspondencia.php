@@ -41,6 +41,23 @@ header("content-type: text/javascript; charset=UTF-8");
                     tooltip: '<b>Ver archivo</b><br/>Permite visualizar el documento escaneado'
                 });
 
+
+                this.addButton('Hoja de Ruta', {
+                    text: 'Hoja de Ruta',
+                    iconCls: 'bprint',
+                    disabled: false,
+                    handler: this.verHojaRuta,
+                    tooltip: '<b>Hoja de Ruta</b><br/>Hoja de Ruta'
+                });
+
+                this.addButton('Adjuntos', {
+                    text: 'Adjuntos',
+                    iconCls: 'bprint',
+                    disabled: false,
+                    handler: this.adjuntos,
+                    tooltip: '<b>Adjuntos</b><br/>Archivos adjuntos a la correspondencia'
+                });
+
                 this.init();
                 this.store.baseParams = {'interface': 'emitida'};
                 this.load({params: {start: 0, limit: 50}})
@@ -886,6 +903,45 @@ header("content-type: text/javascript; charset=UTF-8");
                     alert('ocurrio al obtener la gestion')
                 }
             },
+            verHojaRuta:function(){
+
+                var rec = this.sm.getSelected();
+
+                Ext.Ajax.request({
+                    url: '../../sis_correspondencia/control/Correspondencia/hojaRuta',
+                    params: {
+                        id_correspondencia: rec.data.id_correspondencia,
+                        start:0,limit:1
+                    },
+                    success: this.successHojaRuta,
+                    failure: this.conexionFailure,
+                    timeout: this.timeout,
+                    scope: this
+                });
+
+            },
+            successHojaRuta:function(resp){
+                var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+                var texto = objRes.datos.html;
+                ifrm = document.createElement("IFRAME");
+                ifrm.name = 'mifr';
+                ifrm.id = 'mifr';
+                document.body.appendChild(ifrm);
+                var doc = window.frames['mifr'].document;
+                doc.open();
+                doc.write(texto);
+                doc.close();
+            },
+            adjuntos:function(){
+                var rec = this.sm.getSelected();
+
+                Phx.CP.loadWindows('../../../sis_correspondencia/vista/adjunto/Adjunto.php',
+                    'Interfaces',
+                    {
+                        width: 900,
+                        height: 400
+                    }, rec.data, this.idContenedor, 'Adjunto')
+            }
 
 
         }

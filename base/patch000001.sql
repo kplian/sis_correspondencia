@@ -146,4 +146,17 @@ ALTER TABLE corres.tcorrespondencia
 
 ALTER TABLE corres.tcorrespondencia ADD id_origen INTEGER NULL;
 
+
+CREATE TABLE corres.tadjunto (
+  id_adjunto serial NOT NULL,
+  ruta_archivo VARCHAR(255),
+  nombre_archivo VARCHAR(255),
+  extension VARCHAR(255),
+  id_correspondencia_origen INTEGER,
+  CONSTRAINT pk_tcorrespondencia__id_adjunto PRIMARY KEY (id_adjunto)
+)
+  INHERITS (pxp.tbase) WITHOUT OIDS;
+
+
+
 /***********************************F-SCP-FFP-CORRES-0-08/03/2016*****************************************/

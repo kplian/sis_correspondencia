@@ -101,6 +101,7 @@ class MODCorrespondencia extends MODbase{
         $this->captura('desc_clasificador','text');
         $this->captura('id_clasificador','integer');
         $this->captura('desc_ruta_plantilla_documento','varchar');
+        $this->captura('desc_cargo','varchar');
 
 		
 		
@@ -120,7 +121,7 @@ class MODCorrespondencia extends MODbase{
 		$this->transaccion='CO_CORDET_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 		
-		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','integer');
+		//$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','integer');
 		
 		//Definicion de la lista del resultado del query
 		$this->captura('id_origen','int4');
@@ -170,7 +171,8 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_institucion','varchar');
 		$this->captura('acciones','text');
 		$this->captura('id_acciones','text');
-		
+		$this->captura('desc_cargo','varchar');
+
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -624,6 +626,42 @@ class MODCorrespondencia extends MODbase{
 
 		//Definicion de la lista del resultado del query
 		$this->captura('ruta_archivo','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+
+	}
+
+	function hojaRuta(){
+
+
+		$this->procedimiento='corres.ft_correspondencia_sel';
+		$this->transaccion='CO_CORHOJ_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
+		$this->setCount(false);
+
+		$this->setParametro('id_correspondencia','id_correspondencia','integer');
+
+		$this->captura('numero','varchar');
+		$this->captura('id_correspondencia_fk','int4');
+		$this->captura('desc_person_fk','text');
+		$this->captura('desc_cargo_fk','text');
+
+		$this->captura('id_correspondencia','int4');
+		$this->captura('desc_person','text');
+		$this->captura('desc_cargo','text');
+		$this->captura('mensaje','text');
+		$this->captura('referencia','varchar');
+		$this->captura('acciones','text');
+		$this->captura('cuenta','varchar');
+		$this->captura('desc_id_origen','int4');
+		$this->captura('desc_id_funcionario_origen','int4');
+
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

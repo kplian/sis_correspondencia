@@ -31,6 +31,8 @@ DECLARE
 	v_resp				varchar;
 
   v_filtro            varchar;
+  v_id_origen				INTEGER;
+	v_id_funcionario_origen integer;
 			    
 BEGIN
 
@@ -169,7 +171,8 @@ BEGIN
                         uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
                         clasif.descripcion as desc_clasificador,
                         cor.id_clasificador,
-                        doc.ruta_plantilla as desc_ruta_plantilla_documento
+                        doc.ruta_plantilla as desc_ruta_plantilla_documento,
+                        orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo
 
 
                         from corres.tcorrespondencia cor
@@ -292,7 +295,8 @@ BEGIN
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
                                 END )AS  acciones,
-                        pxp.list(cor.id_acciones::text) as id_acciones
+                        pxp.list(cor.id_acciones::text) as id_acciones,
+                        orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo
 
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
@@ -307,9 +311,13 @@ BEGIN
 			--Definicion de la respuesta
 			           v_consulta:=v_consulta||v_parametros.filtro;
 			
+
+
+
 			
-			
-			           v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
+			           --v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
+
+
 		v_consulta:=v_consulta||'      GROUP BY cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
@@ -548,7 +556,7 @@ BEGIN
     end;
 
   /*********************************
- #TRANSACCION:  'CO_CORREC_CONT'
+ #TRANSACCION:  'CO_CORDOC_CONT'
  #DESCRIPCION:	Conteo de registros de ver Documento
  #AUTOR:
  #FECHA:		    11-03-2016 16:13:21
@@ -568,6 +576,86 @@ BEGIN
       return v_consulta;
 
     end;
+
+
+  /*********************************
+#TRANSACCION:  'CO_CORHOJ_SEL'
+#DESCRIPCION:	Ver Archivo de correspondencia con id_origen
+#AUTOR:		    Favio Figueroa
+#FECHA:		    21-04-2016
+***********************************/
+  elsif(p_transaccion='CO_CORHOJ_SEL')then
+
+    begin
+
+
+      select id_origen
+      into v_id_origen
+      from corres.tcorrespondencia
+      where id_correspondencia = v_parametros.id_correspondencia;
+
+
+			select id_funcionario
+			into v_id_funcionario_origen
+				from corres.tcorrespondencia
+					where id_correspondencia = v_id_origen;
+
+
+
+			--obtenemos el id_origen de la correspondencia
+			v_consulta = '
+			WITH RECURSIVE correspondencia_detalle(id_correspondencia) AS (
+  select cor.id_correspondencia
+  from corres.tcorrespondencia cor
+  where id_origen = '||v_id_origen||'
+  UNION
+      SELECT cor2.id_correspondencia
+        from corres.tcorrespondencia cor2,correspondencia_detalle cordet
+    where cor2.id_correspondencia_fk = cordet.id_correspondencia
+
+)
+SELECT cor.numero,
+  cor.id_correspondencia_fk,
+  initcap(per_fk.nombre_completo2) as desc_person_fk,
+   upper(orga.f_get_cargo_x_funcionario(cor_fk.id_funcionario,cor_fk.fecha_documento,''oficial'')) as desc_cargo_fk,
+
+cor.id_correspondencia,
+  initcap(per.nombre_completo2) as desc_person,
+   upper(orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'')) as desc_cargo,
+
+  cor.mensaje,
+  cor.referencia,
+  (CASE WHEN (cor.id_acciones is not null) then
+
+    (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
+      (
+        SELECT  pxp.list(acor.nombre)
+        FROM corres.taccion acor
+        WHERE acor.id_accion = ANY ( cor.id_acciones))
+     END )
+   END )AS  acciones,
+  usu1.cuenta,
+  '||v_id_origen||' as desc_id_origen,
+  '||v_id_funcionario_origen||' as desc_id_funcionario_origen
+
+
+FROM correspondencia_detalle cordet
+INNER JOIN corres.tcorrespondencia cor on cor.id_correspondencia = cordet.id_correspondencia
+INNER JOIN orga.tfuncionario fun on fun.id_funcionario = cor.id_funcionario
+inner join segu.vpersona per on per.id_persona = fun.id_persona
+  inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
+
+  INNER JOIN corres.tcorrespondencia cor_fk on cor_fk.id_correspondencia = cor.id_correspondencia_fk
+INNER JOIN orga.tfuncionario fun_fk on fun_fk.id_funcionario = cor_fk.id_funcionario
+inner join segu.vpersona per_fk on per_fk.id_persona = fun_fk.id_persona
+ORDER BY  id_correspondencia ASC ';
+
+
+      --Devuelve la respuesta
+      return v_consulta;
+
+    end;
+
 
 	else
 					     
