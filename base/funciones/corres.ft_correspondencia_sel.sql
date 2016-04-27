@@ -700,6 +700,7 @@ ORDER BY  id_correspondencia ASC ';
 
 
 
+					
 					v_permiso = 'si';
 
           ELSE
