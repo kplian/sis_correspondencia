@@ -159,4 +159,7 @@ CREATE TABLE corres.tadjunto (
 
 
 
+ALTER TABLE corres.tcorrespondencia ADD sw_archivado VARCHAR(2) DEFAULT 'no' NULL;
+
+
 /***********************************F-SCP-FFP-CORRES-0-08/03/2016*****************************************/

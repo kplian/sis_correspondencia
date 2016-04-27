@@ -147,6 +147,10 @@ class ACTCorrespondencia extends ACTbase{
 
 		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
 
+		$this->objParam->addFiltro("cor.sw_archivado = ''no'' ");
+
+
+
 		$this->objFunc=$this->create('MODCorrespondencia');
 		$this->res=$this->objFunc->listarCorrespondenciaRecibida();
 		$this->res->imprimirRespuesta($this->res->generarJson());
@@ -440,6 +444,35 @@ window.onload=function(){self.print();}
 		$this->res->setDatos($temp);
 
 
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+
+	function archivarCorrespondencia(){
+
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->archivarCorrespondencia();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+
+	function listarCorrespondenciaRecibidaArchivada(){
+		$this->objParam->defecto('ordenacion','id_correspondencia');
+		$this->objParam->defecto('dir_ordenacion','asc');
+		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
+		$this->objParam->addFiltro("cor.sw_archivado = ''si'' ");
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->listarCorrespondenciaRecibida();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function listarCorrespondenciaFisicaEmitida(){
+
+		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
+
+
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->listarCorrespondenciaFisicaEmitida();
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 }

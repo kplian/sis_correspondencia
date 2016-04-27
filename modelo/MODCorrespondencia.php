@@ -102,6 +102,7 @@ class MODCorrespondencia extends MODbase{
         $this->captura('id_clasificador','integer');
         $this->captura('desc_ruta_plantilla_documento','varchar');
         $this->captura('desc_cargo','varchar');
+        $this->captura('sw_archivado','varchar');
 
 		
 		
@@ -355,7 +356,8 @@ class MODCorrespondencia extends MODbase{
         $this->captura('desc_institucion','varchar');
         $this->captura('version','int4');
         $this->captura('ruta_archivo','varchar');
-		
+        $this->captura('sw_archivado','varchar');
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -662,6 +664,48 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_id_origen','int4');
 		$this->captura('desc_id_funcionario_origen','int4');
 
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+
+	}
+
+	function archivarCorrespondencia(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_CORARCH_INS';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+		$this->setParametro('sw_archivado','sw_archivado','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+	function listarCorrespondenciaFisicaEmitida(){
+
+		//funcionon inserta correpondecia interna  y la esterna emitida
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='corres.ft_correspondencia_sel';
+		$this->transaccion='CO_CORFIEM_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
+		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
+
+		$this->captura('tiene','text');
+		$this->captura('id_correspondencia','int4');
+		$this->captura('numero','varchar');
+		$this->captura('fecha_documento','date');
+		$this->captura('ruta_archivo','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

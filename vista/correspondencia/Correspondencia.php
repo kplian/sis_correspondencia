@@ -728,7 +728,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version',
                 'desc_uo',
                 'id_clasificador', 'desc_clasificador',
-                'id_origen'
+                'id_origen',
+                'sw_archivado'
             ],
             sortInfo: {
                 field: 'id_correspondencia',

@@ -11,7 +11,7 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.CorrespondenciaRecibida = {
+Phx.vista.CorrespondenciaFisicaRecibido = {
     bsave:false,
     bnew:false,
 	bedit:false,
@@ -19,12 +19,12 @@ Phx.vista.CorrespondenciaRecibida = {
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
 	title: 'Correspondencia Recibida',
-	nombreVista: 'CorrespondenciaRecibida',
+	nombreVista: 'CorrespondenciaFisicaRecibido',
 	
-	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibida',
+	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaFisicaRecibido',
 	
 	constructor: function(config) {
-	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
+	    Phx.vista.CorrespondenciaFisicaRecibido.superclass.constructor.call(this,config);
 
 		this.addButton('finalizarRecibido', {
 			text: 'Finalizar Recepcion',
@@ -34,19 +34,12 @@ Phx.vista.CorrespondenciaRecibida = {
 			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
 		});
 
-		this.addButton('Archivar', {
-			text: 'Archivar',
-			iconCls: 'bsave',
-			disabled: false,
-			handler: this.archivar,
-			tooltip: '<b>Archivar</b><br/>'
-		});
 	  
     
    },
     preparaMenu:function(n){
       	
-      	Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n);      	
+      	Phx.vista.CorrespondenciaFisicaRecibido.superclass.preparaMenu.call(this,n);      	
 		  var data = this.getSelectedData();
 
 		console.log('data',data)

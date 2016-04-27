@@ -23,6 +23,7 @@ $body$
  FECHA:		
 ***************************************************************************/
 
+
 DECLARE
 
 	v_consulta    		varchar;
@@ -33,6 +34,8 @@ DECLARE
   v_filtro            varchar;
   v_id_origen				INTEGER;
 	v_id_funcionario_origen integer;
+	v_permiso VARCHAR;
+  v_deptos VARCHAR;
 			    
 BEGIN
 
@@ -172,7 +175,8 @@ BEGIN
                         clasif.descripcion as desc_clasificador,
                         cor.id_clasificador,
                         doc.ruta_plantilla as desc_ruta_plantilla_documento,
-                        orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo
+                        orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
+                        cor.sw_archivado
 
 
                         from corres.tcorrespondencia cor
@@ -472,7 +476,8 @@ BEGIN
                                 persona_envia.nombre_completo1 as desc_persona,
                                 ins_envia.nombre as desc_institucion,
                                 (select cor1.version from corres.tcorrespondencia cor1 where cor1.id_correspondencia=cor.id_correspondencia_fk) as version,
-                                (select cor1.ruta_archivo from corres.tcorrespondencia cor1 where cor1.id_correspondencia=cor.id_correspondencia_fk) as ruta_archivo
+                                (select cor1.ruta_archivo from corres.tcorrespondencia cor1 where cor1.id_correspondencia=cor.id_correspondencia_fk) as ruta_archivo,
+                                cor.sw_archivado
 						from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
@@ -656,6 +661,99 @@ ORDER BY  id_correspondencia ASC ';
 
     end;
 
+
+  /*********************************
+#TRANSACCION:  'CO_CORFIEM_SEL'
+#DESCRIPCION:	Ver correspondencia que ira  se enviara a otro departamento
+#AUTOR:		    Favio Figueroa
+#FECHA:		    11-03-2016
+***********************************/
+  elsif(p_transaccion='CO_CORFIEM_SEL')then
+
+    begin
+
+      v_permiso = 'no';
+
+      IF p_administrador = 1 THEN
+
+        v_permiso = 'si';
+				v_deptos = '';
+
+      ELSE
+
+        IF EXISTS (SELECT 0 FROM param.tdepto_usuario depus
+					inner join param.tdepto dep on dep.id_depto = depus.id_depto
+					inner join segu.tsubsistema sis on sis.id_subsistema = dep.id_subsistema
+										where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
+										and sis.codigo = 'CORRES')
+        THEN
+        --stuff here
+
+
+					select pxp.list(depus.id_depto::VARCHAR)
+					into v_deptos
+          from param.tdepto_usuario depus
+            inner join param.tdepto dep on dep.id_depto = depus.id_depto
+            inner join segu.tsubsistema sis on sis.id_subsistema = dep.id_subsistema
+          where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
+                and sis.codigo = 'CORRES';
+
+
+
+					v_permiso = 'si';
+
+          ELSE
+            RAISE EXCEPTION '%','no eres responsable ni axuliar de ningun departamento';
+        END IF;
+
+
+
+      END IF;
+
+
+			--si es administrador o es axuliar o responsable de un departamento corres
+
+
+      --Sentencia de la consulta
+      v_consulta:='
+       select tiene,
+      id_correspondencia,
+      numero,fecha_documento,
+      ruta_archivo
+      from corres.vcorrespondencia_fisica_emitida
+where tiene is not null ';
+
+			IF v_deptos != '' THEN
+				v_consulta = v_consulta || ' and id_depto  in ('||v_deptos||')';
+				end if;
+
+
+
+      --Devuelve la respuesta
+      return v_consulta;
+
+
+    end;
+
+  /*********************************
+ #TRANSACCION:  'CO_CORFIEM_CONT'
+ #DESCRIPCION:	Conteo de registros de ver fisicos emitidos
+ #AUTOR:
+ #FECHA:		    11-03-2016 16:13:21
+***********************************/
+
+  elsif(p_transaccion='CO_CORFIEM_CONT')then
+
+    begin
+      --Sentencia de la consulta de conteo de registros
+      v_consulta:='select count(*)
+       from corres.vcorrespondencia_fisica_emitida cor ';
+
+
+      --Devuelve la respuesta
+      return v_consulta;
+
+    end;
 
 	else
 					     

@@ -696,6 +696,33 @@ BEGIN
       return v_resp;
 
     end;
+  /*********************************
+#TRANSACCION:  'CO_CORARCH_INS'
+#DESCRIPCION:	archiva o desarchiva la correspondencia
+#AUTOR:		favio figueroa
+#FECHA:		    14-02-2016 20:43:21
+***********************************/
+
+  elsif(p_transaccion='CO_CORARCH_INS')then
+
+    begin
+
+
+
+      UPDATE corres.tcorrespondencia set sw_archivado = v_parametros.sw_archivado
+      WHERE id_correspondencia = v_parametros.id_correspondencia;
+
+
+      -- raise exception 'resp%',v_resp_cm;
+
+--Definicion de la respuesta
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia archivado(a)');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
+
+      --Devuelve la respuesta
+      return v_resp;
+
+    end;
 
 	else
 

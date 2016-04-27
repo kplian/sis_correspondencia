@@ -107,3 +107,27 @@ ALTER TABLE ONLY corres.tcorrespondencia
     FOREIGN KEY (id_clasificador) REFERENCES segu.tclasificador(id_clasificador);
 
 /***********************************F-DEP-FRH-CORRES-0-24/01/2013*****************************************/
+
+
+/***********************************I-DEP-FFP-CORRES-0-26/04/2016*****************************************/
+
+
+CREATE OR REPLACE VIEW corres.vcorrespondencia_fisica_emitida AS
+				select
+				(CASE WHEN (cor.id_correspondencia is not null) then
+					(
+						SELECT  pxp.list(corfk.id_origen::VARCHAR)
+						FROM corres.tcorrespondencia corfk
+						WHERE corfk.id_correspondencia_fk = cor.id_correspondencia
+									and corfk.id_depto != cor.id_depto)
+				 END ) as tiene,
+				cor.id_correspondencia,
+				cor.numero,
+				cor.fecha_documento,
+					cor.ruta_archivo,
+					    cor.id_depto
+
+			from corres.tcorrespondencia cor;
+
+
+/***********************************F-DEP-FFP-CORRES-0-26/04/2016*****************************************/

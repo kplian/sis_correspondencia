@@ -19,6 +19,16 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen}})
 		this.argumentExtraSubmit={'id_correspondencia_origen':this.id_origen};
+
+
+		this.addButton('VerArchivoAdjunto', {
+			text: 'Ver Archivo Adjunto',
+			iconCls: 'bsee',
+			disabled: true,
+			handler: this.verArchivoAdjunto,
+			tooltip: '<b>Ver Archivo Adjunto</b><br/>'
+		});
+
 	},
 			
 	Atributos:[
@@ -286,7 +296,41 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
+	bsave:true,
+		preparaMenu:function(n){
+
+			Phx.vista.Adjunto.superclass.preparaMenu.call(this,n);
+			var data = this.getSelectedData();
+
+			console.log('data',data)
+			var tb =this.tbar;
+			//si el archivo esta escaneado se permite visualizar
+			if(data != undefined){
+				this.getBoton('VerArchivoAdjunto').enable();
+
+			}
+			else{
+				this.getBoton('VerArchivoAdjunto').enable(); //aqui esta disable
+
+
+			}
+
+
+
+
+			return tb
+
+		},
+
+		verArchivoAdjunto:function(){
+
+
+			var data = this.getSelectedData();
+
+			var nombre_archivo = data.nombre_archivo+'.'+data.extension;
+			window.open(data.ruta_archivo);
+
+		}
 	}
 )
 </script>
