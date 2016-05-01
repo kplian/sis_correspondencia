@@ -475,6 +475,17 @@ window.onload=function(){self.print();}
 		$this->res=$this->objFunc->listarCorrespondenciaFisicaEmitida();
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+
+	function cambiarEstadoCorrespondenciaFisica(){
+
+		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
+
+
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->cambiarEstadoCorrespondenciaFisica();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+
+	}
 }
 
 ?>

@@ -236,7 +236,6 @@ BEGIN
                  --analiza el combo de funcionarios destinos para hacer la insercion de hijos
                  --analiza que no tenga otros derivaciones duplicadas
 
-
                  v_resp_cm=corres.f_proc_mul_cmb_empleado(
                                 v_parametros.id_funcionarios,
                                 v_id_correspondencia,
@@ -255,7 +254,8 @@ BEGIN
                                 v_parametros.nivel_prioridad,
                                 v_origen,
                                 v_parametros.fecha_documento,
-                                    v_id_origen
+                                    v_id_origen,
+                                v_id_depto
                                 );
               ELSE
                --si es del tipo saliente detalle para persona o institucion
@@ -717,6 +717,39 @@ BEGIN
 
 --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia archivado(a)');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
+
+      --Devuelve la respuesta
+      return v_resp;
+
+    end;
+  /*********************************
+ #TRANSACCION:  'CO_CORESTFIS_INS'
+ #DESCRIPCION:	cambia el estado de la correspondencia fisica
+ #AUTOR:		favio figueroa
+ #FECHA:		    27-04-2016 20:43:21
+ ***********************************/
+
+  elsif(p_transaccion='CO_CORESTFIS_INS')then
+
+    begin
+
+
+     /* if v_parametros.estado_fisico = 'pendiente' then
+        v_estado = 'despachado';
+        ELSIF v_parametros.estado_fisico = 'despachado' THEN
+        v_estado = ''
+      end IF ;*/
+
+
+      UPDATE corres.tcorrespondencia set estado_fisico = v_parametros.estado_fisico
+      WHERE id_correspondencia = v_parametros.id_correspondencia;
+
+
+      -- raise exception 'resp%',v_resp_cm;
+
+--Definicion de la respuesta
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia fisico(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
 
       --Devuelve la respuesta

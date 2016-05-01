@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado(fl_cadena varchar, fl_id_correspondencia int4, fl_mensaje varchar, fl_id_usuario_reg int4, fl_id_documento int4, fl_numero varchar, fl_tipo varchar, fl_referencia varchar, fl_id_acciones varchar, fl_id_periodo int4, fl_id_gestion int4, fl_nivel int4, fl_id_nivel_seguridad int4, fl_cite varchar, fl_nivel_prioridad varchar, fl_origen varchar, fl_fecha_documento date,f1_id_origen INTEGER)
+CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado(fl_cadena varchar, fl_id_correspondencia int4, fl_mensaje varchar, fl_id_usuario_reg int4, fl_id_documento int4, fl_numero varchar, fl_tipo varchar, fl_referencia varchar, fl_id_acciones varchar, fl_id_periodo int4, fl_id_gestion int4, fl_nivel int4, fl_id_nivel_seguridad int4, fl_cite varchar, fl_nivel_prioridad varchar, fl_origen varchar, fl_fecha_documento date,f1_id_origen INTEGER,f1_id_depto INTEGER)
   RETURNS bool
 AS
   $BODY$
@@ -39,6 +39,10 @@ DECLARE
   v_j integer;
   v_num_emp integer;
   v_nombre_funcionario varchar;
+
+  v_id_correspondencia INTEGER;
+
+  v_id_documento_fisico INTEGER;
 
 BEGIN
   /*
@@ -193,7 +197,41 @@ BEGIN
                       fl_origen,
                       fl_fecha_documento,
                           f1_id_origen
-                      );
+                      ) RETURNING id_correspondencia into v_id_correspondencia;
+
+
+                  if f1_id_depto != v_id_depto THEN
+
+                    insert into corres.tdocumento_fisico(
+                      id_correspondencia,
+                      id_correspondencia_padre,
+                      estado,
+                      estado_reg,
+                      fecha_reg,
+                      id_usuario_reg,
+                      fecha_mod,
+                      id_usuario_mod
+                    ) values(
+                      v_id_correspondencia,
+                      fl_id_correspondencia,
+                      'pendiente',
+                      'activo',
+                      now(),
+                      fl_id_usuario_reg,
+                      null,
+                      null
+
+
+
+                    )RETURNING id_documento_fisico into v_id_documento_fisico;
+
+
+                    end IF ;
+
+
+
+
+
 
    		ELSE
           raise exception 'ERROR NO ESPERADO: FUNCIONARIO NULO';

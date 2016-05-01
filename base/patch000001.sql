@@ -162,4 +162,15 @@ CREATE TABLE corres.tadjunto (
 ALTER TABLE corres.tcorrespondencia ADD sw_archivado VARCHAR(2) DEFAULT 'no' NULL;
 
 
+ALTER TABLE corres.tcorrespondencia ADD estado_fisico VARCHAR(255) DEFAULT 'pendiente' NOT NULL;
+
+
+CREATE TABLE corres.tdocumento_fisico (
+  id_documento_fisico serial NOT NULL,
+  id_correspondencia INTEGER,
+  id_correspondencia_padre INTEGER,
+  estado VARCHAR(255),
+  CONSTRAINT pk_tdocumentofisico__id_documento_fisico PRIMARY KEY (id_documento_fisico)
+)INHERITS (pxp.tbase) WITHOUT OIDS;
+
 /***********************************F-SCP-FFP-CORRES-0-08/03/2016*****************************************/

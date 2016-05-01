@@ -706,6 +706,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('numero','varchar');
 		$this->captura('fecha_documento','date');
 		$this->captura('ruta_archivo','varchar');
+		$this->captura('estado_fisico','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -714,6 +715,24 @@ class MODCorrespondencia extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 
+	}
+
+	function cambiarEstadoCorrespondenciaFisica(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_CORESTFIS_INS';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+		$this->setParametro('estado_fisico','estado_fisico','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
 	}
 	
 	

@@ -700,7 +700,7 @@ ORDER BY  id_correspondencia ASC ';
 
 
 
-					
+
 					v_permiso = 'si';
 
           ELSE
@@ -720,12 +720,13 @@ ORDER BY  id_correspondencia ASC ';
        select tiene,
       id_correspondencia,
       numero,fecha_documento,
-      ruta_archivo
+      ruta_archivo,
+      estado_fisico
       from corres.vcorrespondencia_fisica_emitida
 where tiene is not null ';
 
 			IF v_deptos != '' THEN
-				v_consulta = v_consulta || ' and id_depto  in ('||v_deptos||')';
+				v_consulta = v_consulta || ' and id_depto  in ('||v_deptos||') ';
 				end if;
 
 

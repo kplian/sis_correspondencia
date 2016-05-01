@@ -185,7 +185,8 @@ header("content-type: text/javascript; charset=UTF-8");
                         store: new Ext.data.ArrayStore({
                             fields: ['ID', 'valor'],
                             data: [['interna', 'Interna'],
-                                ['saliente', 'Saliente']]
+                                ['saliente', 'Saliente'],
+                                ['externa', 'Externa']],
 
                         }),
                         valueField: 'ID',
@@ -316,6 +317,55 @@ header("content-type: text/javascript; charset=UTF-8");
                     grid: true,
                     form: false
                 },
+
+
+                {
+                    config: {
+                        name: 'id_institucion_remitente',
+                        allowBlank: true,
+                        fieldLabel: 'Institucion',
+                        anchor: '90%',
+                        tinit: true,
+                        origen: 'INSTITUCION',
+                        gdisplayField: 'nombre',
+                        gwidth: 200,
+                        renderer: function (value, p, record) {
+                            return String.format('{0}', record.data['nombre']);
+                        }
+
+                    },
+                    type: 'ComboRec',
+                    id_grupo: 1,
+                    filters: {pfiltro: 'nombre', type: 'string'},
+                    grid: false,
+                    form: true
+                },
+
+
+                {
+                    config: {
+                        name: 'id_persona_remitente',
+                        origen: 'PERSONA',
+                        tinit: true,
+                        fieldLabel: 'Persona',
+                        gdisplayField: 'desc_person',//mapea al store del grid
+                        gwidth: 200,
+                        renderer: function (value, p, record) {
+                            return String.format('{0}', record.data['desc_person']);
+                        }
+                    },
+                    type: 'ComboRec',
+                    id_grupo: 1,
+                    filters: {
+                        pfiltro: 'PERSON.nombre_completo1',
+                        type: 'string'
+                    },
+
+                    grid: false,
+                    form: true
+                },
+
+
 
                 {
                     config: {
@@ -729,7 +779,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 'desc_uo',
                 'id_clasificador', 'desc_clasificador',
                 'id_origen',
-                'sw_archivado'
+                'sw_archivado',
+                'estado_fisico'
             ],
             sortInfo: {
                 field: 'id_correspondencia',

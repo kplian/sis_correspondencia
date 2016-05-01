@@ -125,9 +125,14 @@ CREATE OR REPLACE VIEW corres.vcorrespondencia_fisica_emitida AS
 				cor.numero,
 				cor.fecha_documento,
 					cor.ruta_archivo,
-					    cor.id_depto
+					    cor.id_depto,
+					    cor.estado_fisico
+
 
 			from corres.tcorrespondencia cor;
+
+
+
 
 
 /***********************************F-DEP-FFP-CORRES-0-26/04/2016*****************************************/

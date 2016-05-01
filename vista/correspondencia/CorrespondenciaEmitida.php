@@ -53,6 +53,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
 
+
             var cmpFuncionarios = this.getComponente('id_funcionarios');
             var cmpInstitucion = this.getComponente('id_institucion');
             var cmpPersona = this.getComponente('id_persona');
@@ -98,6 +99,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
             console.log('inicia_eventos');
 
+
+
+
             this.cmpFechaDoc = this.getComponente('fecha_documento');
 
             this.Cmp.id_funcionario.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
@@ -115,19 +119,36 @@ header("content-type: text/javascript; charset=UTF-8");
             });
 
 
+
+
+
+
+
             var cmbDoc = this.getComponente('id_documento');
             var cmpFuncionarios = this.getComponente('id_funcionarios');
-            var cmpInstitucion = this.getComponente('id_institucion');
-            var cmpPersona = this.getComponente('id_persona');
+            //var cmpInstitucion = this.getComponente('id_institucion');
+            //var cmpPersona = this.getComponente('id_persona');
+
+
 
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
             this.adminGrupo({mostrar: [0, 1, 2, 3]});
-            this.ocultarComponente(cmpInstitucion);
-            this.ocultarComponente(cmpPersona);
             this.mostrarComponente(cmpFuncionarios);
 
-            this.getComponente('id_uo').enable();
+            console.log('ver',this.Cmp);
+
+
+            this.ocultarComponente(this.Cmp.id_persona_destino);
+            this.ocultarComponente(this.Cmp.id_persona_remitente);
+            this.ocultarComponente(this.Cmp.id_institucion_remitente);
+            this.ocultarComponente(this.Cmp.id_institucion_destino);
+
+            //this.getComponente('id_uo').enable();
+
+
             this.getComponente('id_clasificador').enable();
+
+
             this.getComponente('mensaje').enable();
             this.getComponente('nivel_prioridad').enable();
             this.getComponente('referencia').enable();
@@ -174,6 +195,10 @@ header("content-type: text/javascript; charset=UTF-8");
         preparaMenu: function (n) {
 
             Phx.vista.Correspondencia.superclass.preparaMenu.call(this, n);
+
+
+
+
 
             var data = this.getSelectedData();
             var tb = this.tbar;
