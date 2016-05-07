@@ -26,6 +26,8 @@ class ACTCorrespondencia extends ACTbase{
 
 
 
+
+
 		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
 
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
@@ -485,6 +487,28 @@ window.onload=function(){self.print();}
 		$this->res=$this->objFunc->cambiarEstadoCorrespondenciaFisica();
 		$this->res->imprimirRespuesta($this->res->generarJson());
 
+	}
+
+
+
+
+	/*funcion para correspondencia externa */
+
+
+
+	function insertarCorrespondenciaExterna(){
+
+
+		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->insertarCorrespondenciaExterna();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
+
+	function finalizarRecepcionExterna(){
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->finalizarRecepcionExterna();
+		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 }
 

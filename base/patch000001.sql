@@ -135,12 +135,20 @@ ALTER TABLE corres.tcorrespondencia
 /***********************************I-SCP-FFP-CORRES-0-08/03/2016*****************************************/
 
 
- -- object recreation
+-- object recreation
 ALTER TABLE corres.tcorrespondencia
-  DROP CONSTRAINT tcorrespondencia__estado__chk RESTRICT;
+DROP CONSTRAINT tcorrespondencia__estado__chk RESTRICT;
+
 
 ALTER TABLE corres.tcorrespondencia
-  ADD CONSTRAINT tcorrespondencia__estado__chk CHECK (((((((estado)::text = 'borrador_detalle_recibido'::text) OR ((estado)::text = 'pendiente_recibido'::text)) OR ((estado)::text = 'recibido'::text)) OR ((estado)::text = 'recibido_derivacion'::text)) OR ((estado)::text = 'borrador_envio'::text)) OR ((estado)::text = 'enviado'::text));
+ADD CONSTRAINT tcorrespondencia__estado__chk CHECK (((((((((estado) :: TEXT = 'borrador_detalle_recibido' :: TEXT) OR
+                                                        ((estado) :: TEXT = 'pendiente_recibido' :: TEXT)) OR
+                                                       ((estado) :: TEXT = 'recibido' :: TEXT)) OR
+                                                      ((estado) :: TEXT = 'recibido_derivacion' :: TEXT)) OR
+                                                     ((estado) :: TEXT = 'borrador_envio' :: TEXT)) OR
+                                                    ((estado) :: TEXT = 'enviado' :: TEXT)) OR
+                                                    ((estado) :: TEXT = 'borrador_recepcion_externo' :: TEXT)) OR
+                                                    ((estado) :: TEXT = 'pendiente_recepcion_externo' :: TEXT));
 
 
 
@@ -172,5 +180,11 @@ CREATE TABLE corres.tdocumento_fisico (
   estado VARCHAR(255),
   CONSTRAINT pk_tdocumentofisico__id_documento_fisico PRIMARY KEY (id_documento_fisico)
 )INHERITS (pxp.tbase) WITHOUT OIDS;
+
+
+
+
+
+ALTER TABLE corres.tcorrespondencia ADD vista VARCHAR(255) NULL;
 
 /***********************************F-SCP-FFP-CORRES-0-08/03/2016*****************************************/

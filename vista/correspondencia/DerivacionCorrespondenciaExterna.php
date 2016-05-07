@@ -11,22 +11,22 @@
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.RecepcionCorrespondenciaExterna = {
+Phx.vista.DerivacionCorrespondenciaExterna = {
     bsave:false,
 
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
 	title: 'Correspondencia Recibida',
-	nombreVista: 'RecepcionCorrespondenciaExterna',
+	nombreVista: 'DerivacionCorrespondenciaExterna',
 	
-//	ActList:'../../sis_correspondencia/control/Correspondencia/listarRecepcionCorrespondenciaExterna',
+//	ActList:'../../sis_correspondencia/control/Correspondencia/listarDerivacionCorrespondenciaExterna',
 	ActSave: '../../sis_correspondencia/control/Correspondencia/insertarCorrespondenciaExterna',
 
 	constructor: function(config) {
-	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
+	    Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
-		this.store.baseParams = {'vista': 'externa'};
+		this.store.baseParams = {'vista': 'derivacion externa'};
 
 
 		this.load();
@@ -68,7 +68,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
    },
     preparaMenu:function(n){
       	
-      	Phx.vista.RecepcionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
+      	Phx.vista.DerivacionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
 		  var data = this.getSelectedData();
 
 		console.log('data',data)
@@ -110,7 +110,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 
 
-		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonNew.call(this);
+		Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonNew.call(this);
 
 
 		this.Cmp.id_institucion_destino.hide();

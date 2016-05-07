@@ -49,6 +49,7 @@ class MODCorrespondencia extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
+		$this->setParametro('vista','vista','varchar');
 
 		//$this->setParametro('interface','interface','integer');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
@@ -726,6 +727,59 @@ class MODCorrespondencia extends MODbase{
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		$this->setParametro('estado_fisico','estado_fisico','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+
+	function insertarCorrespondenciaExterna(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_COREXT_INS';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+
+		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
+
+
+		$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('id_documento','id_documento','int4');
+		$this->setParametro('fecha_documento','fecha_documento','date');
+		$this->setParametro('id_institucion_remitente','id_institucion_remitente','int4');
+		$this->setParametro('id_persona_remitente','id_persona_remitente','int4');
+		$this->setParametro('referencia','referencia','varchar');
+		$this->setParametro('mensaje','mensaje','text');
+		$this->setParametro('id_correspondencias_asociadas','id_correspondencias_asociadas','varchar');
+		$this->setParametro('nivel_prioridad','nivel_prioridad','varchar');
+		$this->setParametro('id_clasificador','id_clasificador','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+
+	function finalizarRecepcionExterna(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_COREXTEST_INS';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+
+
+
+		$this->setParametro('estado','estado','varchar');
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

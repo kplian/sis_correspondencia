@@ -23,6 +23,8 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
             Phx.vista.CorrespondenciaEmitida.superclass.constructor.call(this, config);
 
+          
+
 
             this.addButton('aSubirCorrespondencia', {
                 text: 'Subir Documento',
