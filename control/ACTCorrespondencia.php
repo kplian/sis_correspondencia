@@ -510,6 +510,14 @@ window.onload=function(){self.print();}
 		$this->res=$this->objFunc->finalizarRecepcionExterna();
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
+	
+	function listarCorrespondenciaExterna(){
+		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
+
+		$this->objFunc=$this->create('MODCorrespondencia');
+		$this->res=$this->objFunc->listarCorrespondenciaExterna();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+	}
 }
 
 ?>

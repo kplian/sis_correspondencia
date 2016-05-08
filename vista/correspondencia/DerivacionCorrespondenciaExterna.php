@@ -19,27 +19,27 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	title: 'Correspondencia Recibida',
 	nombreVista: 'DerivacionCorrespondenciaExterna',
 	
-//	ActList:'../../sis_correspondencia/control/Correspondencia/listarDerivacionCorrespondenciaExterna',
+	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaExterna',
 	ActSave: '../../sis_correspondencia/control/Correspondencia/insertarCorrespondenciaExterna',
 
 	constructor: function(config) {
 	    Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
-		this.store.baseParams = {'vista': 'derivacion externa'};
+		this.store.baseParams = {'vista': 'derivacion_correspondencia_externa'};
 
 
 		this.load();
 
 
 //		this.getBoton('verCorrespondencia').hide();
-		this.getBoton('mandar').hide();
+		//this.getBoton('mandar').hide();
 		this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
 
 
-		this.addButton('imprimirCodigoCorrespondencia', {
+		/*this.addButton('imprimirCodigoCorrespondencia', {
 			text: 'Imprimir Codigo',
 			iconCls: 'bprint',
 			disabled: true,
@@ -61,7 +61,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			disabled: true,
 			handler: this.finalizarRecepcionExterna,
 			tooltip: '<b>SFinalizar Recp Externa</b><br/>Permite actualizar el documento escaneado'
-		});
+		});*/
 
 
     
@@ -76,22 +76,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		  //si el archivo esta escaneado se permite visualizar
 
 
-		if (data['estado'] == 'borrador_recepcion_externo') {
-
-			this.getBoton('imprimirCodigoCorrespondencia').enable();
-			this.getBoton('aSubirCorrespondenciaExterna').enable();
-		}
+		this.getBoton('verCorrespondencia').enable();
+		this.getBoton('mandar').enable();
 
 
-		if (data['version'] > 0) {
-			this.getBoton('verCorrespondencia').enable();
-			this.getBoton('finalizarRecepcionExterna').enable();
-		}
-		else {
-			this.getBoton('verCorrespondencia').disable();
-			this.getBoton('finalizarRecepcionExterna').disable();
-
-		}
 
 
 

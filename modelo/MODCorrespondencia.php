@@ -737,6 +737,85 @@ class MODCorrespondencia extends MODbase{
 	}
 
 
+	function listarCorrespondenciaExterna(){
+
+
+
+		//funcionon inserta correpondecia interna  y la esterna emitida
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='corres.ft_correspondencia_sel';
+		$this->transaccion='CO_COREXTE_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+
+		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
+		$this->setParametro('vista','vista','varchar');
+
+		//$this->setParametro('interface','interface','integer');
+		//$parametros  = $this->aParam->getArregloParametros('interface');
+
+		//Definicion de la lista del resultado del query
+		$this->captura('id_origen','int4');
+		$this->captura('id_correspondencia','int4');
+		$this->captura('estado','varchar');
+		$this->captura('estado_reg','varchar');
+		$this->captura('fecha_documento','date');
+		$this->captura('fecha_fin','date');
+
+		//	$this->captura('id_acciones','int4');//array
+
+		$this->captura('id_archivo','integer[]');
+		$this->captura('id_correspondencia_fk','int4');
+		$this->captura('id_correspondencias_asociadas','integer[]');
+		$this->captura('id_depto','int4');
+		$this->captura('id_documento','int4');
+		$this->captura('id_funcionario','int4');
+		$this->captura('id_gestion','int4');
+		$this->captura('id_institucion','int4');
+		$this->captura('id_periodo','int4');
+		$this->captura('id_persona','int4');
+		$this->captura('id_uo','int4');
+		$this->captura('mensaje','text');
+		$this->captura('nivel','int4');
+		$this->captura('nivel_prioridad','varchar');
+		$this->captura('numero','varchar');
+		$this->captura('observaciones_estado','text');
+		$this->captura('referencia','varchar');
+		$this->captura('respuestas','varchar');
+		$this->captura('sw_responsable','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('fecha_reg','timestamp');
+		$this->captura('id_usuario_reg','int4');
+		$this->captura('fecha_mod','timestamp');
+		$this->captura('id_usuario_mod','int4');
+		$this->captura('usr_reg','varchar');
+		$this->captura('usr_mod','varchar');
+		$this->captura('desc_documento','varchar');
+
+
+		$this->captura('desc_depto','varchar');
+		$this->captura('desc_funcionario','text');
+		$this->captura('ruta_archivo','varchar');
+		$this->captura('version','int4');
+
+		$this->captura('desc_uo','text');
+		$this->captura('desc_clasificador','text');
+		$this->captura('id_clasificador','integer');
+		$this->captura('desc_ruta_plantilla_documento','varchar');
+		$this->captura('desc_cargo','varchar');
+		$this->captura('sw_archivado','varchar');
+
+
+
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+
+	}
+
 	function insertarCorrespondenciaExterna(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='corres.ft_correspondencia_ime';

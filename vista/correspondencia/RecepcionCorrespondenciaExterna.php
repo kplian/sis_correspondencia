@@ -19,21 +19,21 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	title: 'Correspondencia Recibida',
 	nombreVista: 'RecepcionCorrespondenciaExterna',
 	
-//	ActList:'../../sis_correspondencia/control/Correspondencia/listarRecepcionCorrespondenciaExterna',
+	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaExterna',
 	ActSave: '../../sis_correspondencia/control/Correspondencia/insertarCorrespondenciaExterna',
 
 	constructor: function(config) {
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
-		this.store.baseParams = {'vista': 'externa'};
+		this.store.baseParams = {'vista': 'recepcion_correspondencia_externa'};
 
 
 		this.load();
 
 
 //		this.getBoton('verCorrespondencia').hide();
-		this.getBoton('mandar').hide();
+		//this.getBoton('mandar').hide();
 		this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
