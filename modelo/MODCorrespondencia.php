@@ -749,6 +749,7 @@ class MODCorrespondencia extends MODbase{
 
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
 		$this->setParametro('vista','vista','varchar');
+		$this->setParametro('estado','estado','varchar');
 
 		//$this->setParametro('interface','interface','integer');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
@@ -810,6 +811,9 @@ class MODCorrespondencia extends MODbase{
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
+
+
+	
 
 		//Devuelve la respuesta
 		return $this->respuesta;

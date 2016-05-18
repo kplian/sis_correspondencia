@@ -34,6 +34,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     tooltip: '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
                 });
                 this.addButton('verCorrespondencia', {
+                    grupo:[0,1],
                     text: 'Ver Documento',
                     iconCls: 'bsee',
                     disabled: false,
@@ -117,7 +118,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     filters: {pfiltro: 'cor.numero', type: 'string'},
                     id_grupo: 0,
                     grid: true,
-                    form: false
+                    form: false,
+                    bottom_filter: true
                 },
 
                 {

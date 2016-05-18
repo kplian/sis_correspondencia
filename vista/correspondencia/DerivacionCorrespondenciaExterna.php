@@ -13,6 +13,29 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 Phx.vista.DerivacionCorrespondenciaExterna = {
     bsave:false,
+	bnew:false,
+	bedit:false,
+	bdel:false,
+	swEstado: 'pendiente_recepcion_externo',
+	gruposBarraTareas: [{
+		name: 'pendiente_recepcion_externo',
+		title: '<H1 align="center"><i class="fa fa-thumbs-o-down"></i> Pendientes</h1>',
+		grupo: 0,
+		height: 0
+	},
+		{
+			name: 'enviado',
+			title: '<H1 align="center"><i class="fa fa-eye"></i> Derivados</h1>',
+			grupo: 1,
+			height: 0
+		}
+
+	],
+
+	beditGroups: [0, 1],
+	bactGroups: [0, 1],
+	btestGroups: [0,1],
+	bexcelGroups: [0, 1],
 
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
@@ -26,7 +49,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	    Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
-		this.store.baseParams = {'vista': 'derivacion_correspondencia_externa'};
+		this.bloquearOrdenamientoGrid();
+
+
+		this.store.baseParams = {'vista': 'derivacion_correspondencia_externa','estado': this.swEstado};
 
 
 		this.load();
@@ -66,6 +92,26 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
     
    },
+	getParametrosFiltro: function () {
+		this.store.baseParams.estado = this.swEstado;
+	},
+
+	actualizarSegunTab: function (name, indice) {
+		console.log(name);
+
+		this.getBoton('Adjuntos').hide();
+		this.getBoton('corregir').hide();
+		this.getBoton('Hoja de Ruta').hide();
+		
+
+		this.swEstado = name;
+		this.getParametrosFiltro();
+		this.load();
+		//Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonAct.call(this);
+
+
+	},
+
     preparaMenu:function(n){
       	
       	Phx.vista.DerivacionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
@@ -84,8 +130,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 
 
-	 
-		 return tb
+
+
+
+		return tb
 		
 	},
 	onButtonNew: function () {
@@ -110,7 +158,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_institucion_destino);
 		this.ocultarComponente(this.Cmp.id_acciones);
 
-		
+
 
 		this.adminGrupo({ ocultar: [3]});
 

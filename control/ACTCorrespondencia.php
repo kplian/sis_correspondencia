@@ -514,6 +514,14 @@ window.onload=function(){self.print();}
 	function listarCorrespondenciaExterna(){
 		$this->objParam->addParametro('id_funcionario_usuario',$_SESSION["ss_id_funcionario"]);
 
+
+/*
+		if($this->objParam->getParametro('estado') != ''){
+			$this->objParam->addFiltro("cor.estado in ('' ".$this->objParam->getParametro('estado')." '' ) ");
+		}*/
+
+
+
 		$this->objFunc=$this->create('MODCorrespondencia');
 		$this->res=$this->objFunc->listarCorrespondenciaExterna();
 		$this->res->imprimirRespuesta($this->res->generarJson());

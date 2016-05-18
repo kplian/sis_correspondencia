@@ -810,9 +810,11 @@ where tiene is not null ';
 
 
 
+
 			IF p_administrador = 1 THEN
 
 				v_filtro = '0=0';
+				v_deptos = '';
 
 			ELSE
 
@@ -822,24 +824,58 @@ where tiene is not null ';
 
 
 
+				IF EXISTS (SELECT 0 FROM param.tdepto_usuario depus
+					inner join param.tdepto dep on dep.id_depto = depus.id_depto
+					inner join segu.tsubsistema sis on sis.id_subsistema = dep.id_subsistema
+				where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
+							and sis.codigo = 'CORRES')
+				THEN
+					--stuff here
 
 
+					select pxp.list(depus.id_depto::VARCHAR)
+					into v_deptos
+					from param.tdepto_usuario depus
+						inner join param.tdepto dep on dep.id_depto = depus.id_depto
+						inner join segu.tsubsistema sis on sis.id_subsistema = dep.id_subsistema
+					where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
+								and sis.codigo = 'CORRES';
+
+
+
+
+					v_filtro = v_filtro || ' and cor.id_depto  in ('||v_deptos||')  ';
+
+
+					v_permiso = 'si';
+
+				ELSE
+					RAISE EXCEPTION '%','no eres responsable ni axuliar de ningun departamento';
+				END IF;
 
 
 			END IF;
 
 
-			IF v_parametros.vista = 'recepcion_correspondencia_externa' THEN
 
 
-				v_filtro= v_filtro || ' and cor.estado in (''borrador_recepcion_externo'') and ';
+			IF  v_parametros.estado = 'borrador_recepcion_externo' THEN
 
-			ELSIF v_parametros.vista = 'derivacion_correspondencia_externa' THEN
+
+			v_filtro= v_filtro || ' and cor.estado in (''borrador_recepcion_externo'') and ';
+
+			ELSIF v_parametros.estado = 'pendiente_recepcion_externo' THEN
 
 
 				v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'') and ';
 
+			ELSIF v_parametros.estado = 'enviado' THEN
+
+
+				v_filtro= v_filtro || ' and cor.estado in (''enviado'') and ';
+
 			END IF;
+
 
 
 
@@ -902,15 +938,12 @@ where tiene is not null ';
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-				        where  '||v_filtro||'  ';
+				        where cor.tipo=''externa'' and  '||v_filtro||'     ';
+
 
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
-
-			if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
-				v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
-			end if;
 
 
 

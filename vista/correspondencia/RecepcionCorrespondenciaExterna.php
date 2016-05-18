@@ -13,6 +13,26 @@ header("content-type: text/javascript; charset=UTF-8");
 <script>
 Phx.vista.RecepcionCorrespondenciaExterna = {
     bsave:false,
+	swEstado: 'borrador_recepcion_externo',
+	gruposBarraTareas: [{
+		name: 'borrador_recepcion_externo',
+		title: '<H1 align="center"><i class="fa fa-thumbs-o-down"></i> Recepcionar</h1>',
+		grupo: 0,
+		height: 0
+	},
+		{
+			name: 'pendiente_recepcion_externo',
+			title: '<H1 align="center"><i class="fa fa-eye"></i> Finalizados</h1>',
+			grupo: 1,
+			height: 0
+		}
+
+	],
+	beditGroups: [0, 1],
+	bactGroups: [0, 1],
+	btestGroups: [0,1],
+	bexcelGroups: [0, 1],
+
 
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
@@ -26,14 +46,23 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
-		this.store.baseParams = {'vista': 'recepcion_correspondencia_externa'};
+
+		this.bloquearOrdenamientoGrid();
+
+
+		this.store.baseParams = {'vista': 'recepcion_correspondencia_externa','estado': this.swEstado};
 
 
 		this.load();
 
 
+
+
+
+
+
 //		this.getBoton('verCorrespondencia').hide();
-		//this.getBoton('mandar').hide();
+		this.getBoton('mandar').hide();
 		this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
@@ -66,6 +95,28 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
     
    },
+
+	getParametrosFiltro: function () {
+		this.store.baseParams.estado = this.swEstado;
+	},
+
+	actualizarSegunTab: function (name, indice) {
+		console.log(name);
+
+		this.getBoton('mandar').hide();
+		this.getBoton('Adjuntos').hide();
+		this.getBoton('corregir').hide();
+		this.getBoton('Hoja de Ruta').hide();
+
+
+		this.swEstado = name;
+		this.getParametrosFiltro();
+		this.load();
+		//Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonAct.call(this);
+
+
+	},
+
     preparaMenu:function(n){
       	
       	Phx.vista.RecepcionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
