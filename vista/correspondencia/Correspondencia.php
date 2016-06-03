@@ -122,6 +122,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     bottom_filter: true
                 },
 
+                
                 {
                     config: {
                         name: 'estado',

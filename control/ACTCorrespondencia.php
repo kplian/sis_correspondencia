@@ -521,6 +521,7 @@ window.onload=function(){self.print();}
 		}*/
 
 
+		
 
 		$this->objFunc=$this->create('MODCorrespondencia');
 		$this->res=$this->objFunc->listarCorrespondenciaExterna();

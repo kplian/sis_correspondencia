@@ -793,7 +793,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_documento','varchar');
 
 
-		
+
 		$this->captura('desc_depto','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('ruta_archivo','varchar');
@@ -808,6 +808,7 @@ class MODCorrespondencia extends MODbase{
 
 
 
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
