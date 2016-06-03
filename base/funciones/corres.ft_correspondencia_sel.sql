@@ -859,6 +859,8 @@ where tiene is not null ';
 
 
 
+			
+
 			IF  v_parametros.estado = 'borrador_recepcion_externo' THEN
 
 
