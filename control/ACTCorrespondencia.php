@@ -227,11 +227,14 @@ class ACTCorrespondencia extends ACTbase{
 
 		$im = imagecreatefromstring($png);
 		if ($im !== false) {
+
+
+
 			header('Content-Type: image/png');
-			imagepng($im, $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png");
+			imagepng($im, dirname(__FILE__)."/../../reportes_generados/" . $nombre_archivo . ".png");
 			imagedestroy($im);
 
-			$img_qr = $_SERVER['DOCUMENT_ROOT'] . "kerp/reportes_generados/" . $nombre_archivo . ".png";
+			$img_qr = dirname(__FILE__)."/../../reportes_generados/" . $nombre_archivo . ".png";
 
 			/*agrego a la plantilla word los datos */
 			$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($correspondencia[0]['desc_ruta_plantilla_documento']);
