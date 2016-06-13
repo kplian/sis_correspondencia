@@ -44,6 +44,7 @@ DECLARE
 
   v_id_documento_fisico INTEGER;
 
+
 BEGIN
   /*
   0) listamos todas las derivaciones de los
@@ -75,6 +76,7 @@ BEGIN
  --    diferentes niveles armando un vector
 
 
+  
 
    v_array_var= corres.f_arma_arbol_inicia(fl_id_correspondencia,'id_funcionario');
    v_array = string_to_array(v_array_var,',');

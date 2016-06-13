@@ -375,12 +375,18 @@ class MODCorrespondencia extends MODbase{
 			
 		
 		//Define los parametros para la funcion
-			
-		$this->setParametro('id_funcionario','id_funcionario','varchar');
-		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','int');
+
+		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4'); //el que envia
+
+
+
+		$this->setParametro('id_funcionario','id_funcionario','varchar'); //son a los que enviaremos
+		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','int4');
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_acciones','id_acciones','varchar');
-		
+
+
+
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

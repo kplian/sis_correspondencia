@@ -613,6 +613,8 @@ BEGIN
 
     begin
 
+
+      RAISE EXCEPTION '%',v_parametros.id_funcionario_usuario;
       select * into v_datos_maestro from corres.tcorrespondencia
       where id_correspondencia=v_parametros.id_correspondencia_fk;
 
@@ -634,10 +636,36 @@ BEGIN
       select id_origen into v_id_origen from corres.tcorrespondencia
         where id_correspondencia = v_parametros.id_correspondencia_fk;
 
-      --			raise exception 'llega aqui%',v_parametros.id_funcionario;
+      		--raise exception 'llega aqui%',v_parametros.id_funcionario;
+
+
+
+
+
+      --obtener el uo del funcionario que esta reenviando
+      v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_parametros.id_funcionario_usuario::INTEGER, array ['activo', 'suplente']);
+
+      --v_id_uo[2] es el id_uo
+
+
+      --obtener el departamento
+      SELECT dep.id_depto
+      INTO
+        v_id_depto
+      FROM param.tdepto_uo duo
+        INNER JOIN segu.tsubsistema sis
+          ON sis.codigo = 'CORRES'
+        INNER JOIN param.tdepto dep
+          ON dep.id_depto = duo.id_depto
+      WHERE duo.id_uo = ANY (v_id_uo);
+
+
+
+
+
       v_resp_cm=corres.f_proc_mul_cmb_empleado(
           v_parametros.id_funcionario,
-          v_parametros.id_correspondencia_fk,
+          v_parametros.id_correspondencia_fk::INTEGER,
           v_parametros.mensaje::varchar,
           p_id_usuario,
           v_datos_maestro.id_documento,
@@ -653,7 +681,8 @@ BEGIN
           v_datos_maestro.nivel_prioridad,
           v_datos_maestro.origen,
           v_datos_maestro.fecha_documento,
-              v_id_origen
+              v_id_origen,
+          v_id_depto
 
       );
 

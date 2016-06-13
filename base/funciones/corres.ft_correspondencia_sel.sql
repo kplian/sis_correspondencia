@@ -212,7 +212,7 @@ BEGIN
                         clasif.descripcion as desc_clasificador,
                         cor.id_clasificador,
                         doc.ruta_plantilla as desc_ruta_plantilla_documento,
-                        orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
+                        orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
                         cor.sw_archivado
 
 
@@ -338,7 +338,7 @@ BEGIN
                                     END )
                                 END )AS  acciones,
                         pxp.list(cor.id_acciones::text) as id_acciones,
-                        orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo
+                        orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo
 
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
@@ -660,11 +660,11 @@ BEGIN
 SELECT cor.numero,
   cor.id_correspondencia_fk,
   initcap(per_fk.nombre_completo2) as desc_person_fk,
-   upper(orga.f_get_cargo_x_funcionario(cor_fk.id_funcionario,cor_fk.fecha_documento,''oficial'')) as desc_cargo_fk,
+   upper(orga.f_get_cargo_x_funcionario_str(cor_fk.id_funcionario,cor_fk.fecha_documento,''oficial'')) as desc_cargo_fk,
 
 cor.id_correspondencia,
   initcap(per.nombre_completo2) as desc_person,
-   upper(orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'')) as desc_cargo,
+   upper(orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'')) as desc_cargo,
 
   cor.mensaje,
   cor.referencia,
@@ -927,7 +927,7 @@ where tiene is not null ';
                         clasif.descripcion as desc_clasificador,
                         cor.id_clasificador,
                         doc.ruta_plantilla as desc_ruta_plantilla_documento,
-                        orga.f_get_cargo_x_funcionario(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
+                        orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
                         cor.sw_archivado
 
 
