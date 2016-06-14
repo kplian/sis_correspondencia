@@ -318,7 +318,7 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor->setValue('referencia', htmlspecialchars($correspondencia[0]['referencia']));
                 $templateProcessor->setValue('fecha', htmlspecialchars($fecha_documento));
                 $templateProcessor->setValue('mensaje', htmlspecialchars($correspondencia[0]['mensaje']));
-                //$templateProcessor->setValue('numero', htmlspecialchars($correspondencia[0]['numero']));
+                $templateProcessor->setValue('numero', htmlspecialchars($correspondencia[0]['numero']));
                 //$templateProcessor->setValue('uo', htmlspecialchars($correspondencia[0]['desc_uo']));
 
 
