@@ -19,7 +19,7 @@ BEGIN
 
 
   g_res=ARRAY[-1];
-  
+
   --RAC  aumentamos la varialbe fl_filtro en vez de 
    
   for g_registros in (
