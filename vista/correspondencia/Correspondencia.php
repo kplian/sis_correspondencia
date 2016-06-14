@@ -97,7 +97,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             if (record.data.version > 0) {
                                 icono = 'good';
                             }
-                            return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/" + record.data.estado + "_.png' align='center' width='40' height='40'/></div>"
+                            return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/" + record.data.estado + ".png' align='center' width='40' height='40'/></div>"
                         }
                     },
                     type: 'Field',
