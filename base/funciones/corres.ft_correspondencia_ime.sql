@@ -614,7 +614,6 @@ BEGIN
     begin
 
 
-      RAISE EXCEPTION '%',v_parametros.id_funcionario_usuario;
       select * into v_datos_maestro from corres.tcorrespondencia
       where id_correspondencia=v_parametros.id_correspondencia_fk;
 
@@ -685,6 +684,7 @@ BEGIN
           v_id_depto
 
       );
+
 
 
       -- raise exception 'resp%',v_resp_cm;
