@@ -313,6 +313,8 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor->setImg('firma_digital', array('src' => $img_qr, 'swh' => '150'));
 
                 $templateProcessor->setImgFooter('qr', array('src' => $img_qr, 'swh' => '250'));
+                $templateProcessor->setImgHeader('qrh',array('src' => $img_qr, 'swh'=>'250'));
+
                 $templateProcessor->setValue('remitente', htmlspecialchars($correspondencia[0]['desc_funcionario']));
                 $templateProcessor->setValue('cargo_remitente', htmlspecialchars($correspondencia[0]['desc_cargo']));
                 $templateProcessor->setValue('referencia', htmlspecialchars($correspondencia[0]['referencia']));
