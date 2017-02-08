@@ -590,33 +590,7 @@ BEGIN
       select id_origen into v_id_origen from corres.tcorrespondencia
         where id_correspondencia = v_parametros.id_correspondencia_fk;
 
-      		--raise exception 'llega aqui%',v_parametros.id_funcionario;
-
-
-
-
-
-      --obtener el uo del funcionario que esta reenviando
-      v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_parametros.id_funcionario_usuario::INTEGER, array ['activo', 'suplente'],v_datos_maestro.fecha_documento);
-
-      --v_id_uo[2] es el id_uo
-
-
-      --obtener el departamento
-      SELECT dep.id_depto
-      INTO
-        v_id_depto
-      FROM param.tdepto_uo duo
-        INNER JOIN segu.tsubsistema sis
-          ON sis.codigo = 'CORRES'
-        INNER JOIN param.tdepto dep
-          ON dep.id_depto = duo.id_depto
-      WHERE duo.id_uo = ANY (v_id_uo);
-
-
-
-
-
+    
       v_resp_cm=corres.f_proc_mul_cmb_empleado(
           v_parametros.id_funcionario,
           v_parametros.id_correspondencia_fk::INTEGER,
@@ -635,16 +609,14 @@ BEGIN
           v_datos_maestro.nivel_prioridad,
           v_datos_maestro.origen,
           v_datos_maestro.fecha_documento,
-              v_id_origen,
-          v_id_depto
+          v_id_origen,
+          v_datos_maestro.id_depto
 
       );
 
+     
 
-
-      -- raise exception 'resp%',v_resp_cm;
-
---Definicion de la respuesta
+      --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia eliminado(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia_fk::varchar);
 
@@ -754,7 +726,7 @@ BEGIN
     begin
 
       
-     --TODO, el departamento lo debe definir el usuario en xorespondencia externa
+      --TODO, el departamento lo debe definir el usuario en correspondencia externa
 
       --   obtener documento
       SELECT d.codigo
@@ -762,28 +734,8 @@ BEGIN
       FROM param.tdocumento d
       WHERE d.id_documento = v_parametros.id_documento;
 
-      --obtener el uo del funcionario que esta reenviando
-      v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_parametros.id_funcionario_usuario, array ['activo', 'suplente']);
-
-      --v_id_uo[2] es el id_uo
-
-      --obtener el departamento
-      SELECT dep.id_depto
-      INTO
-        v_id_depto
-      FROM param.tdepto_uo duo
-        INNER JOIN segu.tsubsistema sis
-          ON sis.codigo = 'CORRES'
-        INNER JOIN param.tdepto dep
-          ON dep.id_depto = duo.id_depto
-      WHERE duo.id_uo = ANY (v_id_uo);
-
-
-
-      v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo[2],v_id_depto,p_id_usuario,'CORRES',NULL);
-
-
-
+    
+      v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,NULL,v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
 
 
       --1)obtiene el identificador de la gestion
@@ -802,18 +754,11 @@ BEGIN
         inner join param.tgestion ges on ges.id_gestion = p.id_gestion and ges.estado_reg ='activo'
       where p.estado_reg='activo' and  now()::date between p.fecha_ini and p.fecha_fin ;
 
-
-
-
       --3 Sentencia de la insercion
       insert into corres.tcorrespondencia(
         estado,
         estado_reg,
         fecha_documento,
-        --fecha_fin,
-        --id_acciones,
-
-        --id_correspondencia_fk,
         id_correspondencias_asociadas,
         id_depto,
         id_documento,
@@ -827,10 +772,7 @@ BEGIN
         nivel,
         nivel_prioridad,
         numero,
-        --observaciones_estado,
         referencia,
-        --respuestas,
-        --sw_responsable,
         tipo,
         fecha_reg,
         id_usuario_reg,
@@ -841,12 +783,8 @@ BEGIN
         'borrador_recepcion_externo',
         'activo',
         v_parametros.fecha_documento,
-        --v_parametros.fecha_fin,
-        --v_parametros.id_acciones,
-
-        --v_parametros.id_correspondencia_fk,
         string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
-        v_id_depto,
+        v_parametros.id_depto,
         v_parametros.id_documento,
         v_parametros.id_funcionario_usuario,
         v_id_gestion,
@@ -858,10 +796,7 @@ BEGIN
         0,--nivel de anidamiento del arbol
         v_parametros.nivel_prioridad,
         v_num_corre,
-        --v_parametros.observaciones_estado,
         v_parametros.referencia,
-        --v_parametros.respuestas,
-        --v_parametros.sw_responsable,
         'externa',
         now(),
         p_id_usuario,

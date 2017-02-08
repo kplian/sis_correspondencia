@@ -825,20 +825,12 @@ where tiene is not null ';
 		begin
 
 
-
-
 			IF p_administrador = 1 THEN
-
 				v_filtro = '0=0';
 				v_deptos = '';
-
 			ELSE
 
-
 				v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
-
-
-
 
 				IF EXISTS (SELECT 0 FROM param.tdepto_usuario depus
 					inner join param.tdepto dep on dep.id_depto = depus.id_depto
@@ -858,11 +850,7 @@ where tiene is not null ';
 								and sis.codigo = 'CORRES';
 
 
-
-
 					v_filtro = v_filtro || ' and cor.id_depto  in ('||v_deptos||')  ';
-
-
 					v_permiso = 'si';
 
 				ELSE
@@ -874,86 +862,67 @@ where tiene is not null ';
 
 
 
-
-
-
 			IF  v_parametros.estado = 'borrador_recepcion_externo' THEN
-
-
-			v_filtro= v_filtro || ' and cor.estado in (''borrador_recepcion_externo'') and ';
-
+			    v_filtro= v_filtro || ' and cor.estado in (''borrador_recepcion_externo'') and ';
 			ELSIF v_parametros.estado = 'pendiente_recepcion_externo' THEN
-
-
 				v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'') and ';
-
 			ELSIF v_parametros.estado = 'enviado' THEN
-
-
 				v_filtro= v_filtro || ' and cor.estado in (''enviado'') and ';
-
 			END IF;
-
-
 
 
 
 
 			--Sentencia de la consulta
 			v_consulta:='select
-						cor.id_origen,
-						cor.id_correspondencia,
-						cor.estado,
-						cor.estado_reg,
-						cor.fecha_documento,
-						cor.fecha_fin,
-						cor.id_acciones,
-						--cor.id_archivo,
-						cor.id_correspondencia_fk,
-						cor.id_correspondencias_asociadas,
-						cor.id_depto,
-						cor.id_documento,
-						cor.id_funcionario,
-						cor.id_gestion,
-						cor.id_institucion,
-						cor.id_periodo,
-						cor.id_persona,
-						cor.id_uo,
-						cor.mensaje,
-						cor.nivel,
-						cor.nivel_prioridad,
-						cor.numero,
-						cor.observaciones_estado,
-						cor.referencia,
-						cor.respuestas,
-						cor.sw_responsable,
-						cor.tipo,
-						cor.fecha_reg,
-						cor.id_usuario_reg,
-						cor.fecha_mod,
-						cor.id_usuario_mod,
-						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod,
-                        doc.descripcion as desc_documento	,
-                        depto.nombre as desc_depto,
-                        funcionario.desc_funcionario1 as desc_funcionario,
-                        cor.ruta_archivo,
-                        cor.version,
-                        uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
-                        clasif.descripcion as desc_clasificador,
-                        cor.id_clasificador,
-                        doc.ruta_plantilla as desc_ruta_plantilla_documento,
-                        orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
-                        cor.sw_archivado
-
+                            cor.id_origen,
+                            cor.id_correspondencia,
+                            cor.estado,
+                            cor.estado_reg,
+                            cor.fecha_documento,
+                            cor.fecha_fin,
+                            cor.id_acciones,
+                            --cor.id_archivo,
+                            cor.id_correspondencia_fk,
+                            cor.id_correspondencias_asociadas,
+                            cor.id_depto,
+                            cor.id_documento,
+                            cor.id_funcionario,
+                            cor.id_gestion,
+                            cor.id_institucion,
+                            cor.id_periodo,
+                            cor.id_persona,
+                            cor.id_uo,
+                            cor.mensaje,
+                            cor.nivel,
+                            cor.nivel_prioridad,
+                            cor.numero,
+                            cor.observaciones_estado,
+                            cor.referencia,
+                            cor.respuestas,
+                            cor.sw_responsable,
+                            cor.tipo,
+                            cor.fecha_reg,
+                            cor.id_usuario_reg,
+                            cor.fecha_mod,
+                            cor.id_usuario_mod,
+                            usu1.cuenta as usr_reg,
+                            usu2.cuenta as usr_mod,
+                            doc.descripcion as desc_documento	,
+                            depto.nombre as desc_depto,
+                           
+                            cor.ruta_archivo,
+                            cor.version,
+                           
+                            clasif.descripcion as desc_clasificador,
+                            cor.id_clasificador,
+                            doc.ruta_plantilla as desc_ruta_plantilla_documento,
+                            cor.sw_archivado
 
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
-                        inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
-
-                        inner join orga.tuo uo on uo.id_uo= cor.id_uo
+                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto                       
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 				        where cor.tipo=''externa'' and  '||v_filtro||'     ';
@@ -967,6 +936,8 @@ where tiene is not null ';
 
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
+
+			raise notice '%', v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -986,9 +957,7 @@ where tiene is not null ';
 			v_consulta:='select count(id_correspondencia)
 					    from corres.tcorrespondencia cor
 					    inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
-					    inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-					    inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
-					    inner join orga.tuo uo on uo.id_uo= cor.id_uo
+					    inner join param.tdocumento doc on doc.id_documento = cor.id_documento					   
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 					    where cor.estado in (''borrador_envio'',''enviado'',''recibido'') and ';
