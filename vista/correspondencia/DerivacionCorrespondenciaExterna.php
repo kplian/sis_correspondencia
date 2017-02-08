@@ -88,6 +88,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			handler: this.finalizarRecepcionExterna,
 			tooltip: '<b>SFinalizar Recp Externa</b><br/>Permite actualizar el documento escaneado'
 		});*/
+		
+		this.init();
+        this.store.baseParams = {'interface': 'derivacion_externa'};
+        this.load({params: {start: 0, limit: 50}})
 
 
     

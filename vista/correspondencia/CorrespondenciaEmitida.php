@@ -43,6 +43,10 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler: this.PlantillaCorrespondencia,
                 tooltip: '<b>PlantillaCorrespondencia</b><br/>visualiza la plantilla correspondencia'
             });
+            
+            this.init();
+            this.store.baseParams = {'interface': 'emitida'};
+            this.load({params: {start: 0, limit: 50}})
 
 
 

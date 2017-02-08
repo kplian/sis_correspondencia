@@ -1,7 +1,10 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.f_arma_arbol (
   fl_id_correspondencia integer
 )
-RETURNS varchar AS'
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA ENDESIS - SISTEMA DE FLUJO ()
 ***************************************************************************
@@ -29,6 +32,8 @@ DECLARE
 
   v_resp     boolean;
   g_registros record;
+  v_respuesta				varchar;
+  v_nombre_funcion		varchar;
   
   
 BEGIN
@@ -42,7 +47,7 @@ BEGIN
              co.nivel
       FROM   corres.tcorrespondencia co
       WHERE co.id_correspondencia_fk=fl_id_correspondencia
-      and co.estado != ''anulado'' ) LOOP
+      and co.estado != 'anulado' ) LOOP
       
          v_resp= corres.f_arma_arbol(g_registros.id_correspondencia);
          IF v_resp THEN
@@ -67,7 +72,7 @@ BEGIN
          
          
          ELSE
-           raise exception ''error en la busqueda recursiva'';
+           raise exception 'error en la busqueda recursiva';
          END IF; 
          
               
@@ -75,11 +80,21 @@ BEGIN
       END LOOP;
  
   RETURN TRUE;
+  
+EXCEPTION
+     				
+    WHEN OTHERS THEN
+		v_respuesta='';
+		v_respuesta = pxp.f_agrega_clave(v_respuesta,'mensaje',SQLERRM);
+		v_respuesta = pxp.f_agrega_clave(v_respuesta,'codigo_error',SQLSTATE);
+		v_respuesta = pxp.f_agrega_clave(v_respuesta,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_respuesta;
  
   
   
 END;
-'LANGUAGE 'plpgsql'
+$body$
+LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER

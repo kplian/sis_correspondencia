@@ -49,7 +49,7 @@ class MODCorrespondencia extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
-		$this->setParametro('vista','vista','varchar');
+		$this->setParametro('interface','interface','varchar');
 
 		//$this->setParametro('interface','interface','integer');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
@@ -754,12 +754,13 @@ class MODCorrespondencia extends MODbase{
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
-		$this->setParametro('vista','vista','varchar');
+		$this->setParametro('interface','interface','varchar');
 		$this->setParametro('estado','estado','varchar');
 
 		//$this->setParametro('interface','interface','integer');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
-
+		
+		
 		//Definicion de la lista del resultado del query
 		$this->captura('id_origen','int4');
 		$this->captura('id_correspondencia','int4');
@@ -767,10 +768,9 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('estado_reg','varchar');
 		$this->captura('fecha_documento','date');
 		$this->captura('fecha_fin','date');
-
-		//	$this->captura('id_acciones','int4');//array
-
-		$this->captura('id_archivo','integer[]');
+		
+        $this->captura('id_acciones','int4[]');//array
+        //$this->captura('id_archivo','integer');
 		$this->captura('id_correspondencia_fk','int4');
 		$this->captura('id_correspondencias_asociadas','integer[]');
 		$this->captura('id_depto','int4');
@@ -781,6 +781,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('id_periodo','int4');
 		$this->captura('id_persona','int4');
 		$this->captura('id_uo','int4');
+		
 		$this->captura('mensaje','text');
 		$this->captura('nivel','int4');
 		$this->captura('nivel_prioridad','varchar');
@@ -789,28 +790,27 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('referencia','varchar');
 		$this->captura('respuestas','varchar');
 		$this->captura('sw_responsable','varchar');
+		
 		$this->captura('tipo','varchar');
 		$this->captura('fecha_reg','timestamp');
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('id_usuario_mod','int4');
+		
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_documento','varchar');
-
-
-
 		$this->captura('desc_depto','varchar');
-		$this->captura('desc_funcionario','text');
 		$this->captura('ruta_archivo','varchar');
-		$this->captura('version','int4');
-
-		$this->captura('desc_uo','text');
+		
+		$this->captura('version','int4');		
 		$this->captura('desc_clasificador','text');
 		$this->captura('id_clasificador','integer');
 		$this->captura('desc_ruta_plantilla_documento','varchar');
-		$this->captura('desc_cargo','varchar');
 		$this->captura('sw_archivado','varchar');
+		
+		
+                          
 
 
 
@@ -848,7 +848,9 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_correspondencias_asociadas','id_correspondencias_asociadas','varchar');
 		$this->setParametro('nivel_prioridad','nivel_prioridad','varchar');
-		$this->setParametro('id_clasificador','id_clasificador','int4');
+		$this->setParametro('id_clasificador','id_clasificador','int4');		
+		$this->setParametro('id_depto','id_depto','int4');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

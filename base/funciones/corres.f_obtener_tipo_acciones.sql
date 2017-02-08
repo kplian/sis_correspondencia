@@ -1,7 +1,10 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.f_obtener_tipo_acciones (
   fl_acciones varchar
 )
-RETURNS varchar AS'
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA ENDESIS - SISTEMA DE FLUJO ()
 ***************************************************************************
@@ -26,29 +29,41 @@ DECLARE
   v_consulta varchar;
   g_registros record;
   retorno varchar;
+  v_resp varchar;
+  v_nombre_funcion varchar;
   
 BEGIN
 
-v_consulta := ''SELECT  
+v_consulta := 'SELECT  
                  ta.nombre 
               FROM corres.taccion ta 
-              WHERE ta.id_accion in (''||fl_acciones||'')''; 
+              WHERE ta.id_accion in ('||fl_acciones||')'; 
                                              
               
        
-retorno ='''';       
+retorno ='';       
  FOR g_registros in EXECUTE (v_consulta)
  LOOP
     
-       retorno = retorno || g_registros.nombre ||''; '';
+       retorno = retorno || g_registros.nombre ||'; ';
     
  END LOOP;           
  
   
 return retorno;
 
+  EXCEPTION
+				
+	WHEN OTHERS THEN
+		v_resp='';
+		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_resp;
+
 END;
-'LANGUAGE 'plpgsql'
+$body$
+LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER

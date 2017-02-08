@@ -41,6 +41,10 @@ Phx.vista.CorrespondenciaRecibida = {
 			handler: this.archivar,
 			tooltip: '<b>Archivar</b><br/>'
 		});
+		
+		this.init();
+        this.store.baseParams = {'interface': 'recibida'};
+        this.load({params: {start: 0, limit: 50}})
 	  
     
    },

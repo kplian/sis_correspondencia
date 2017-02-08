@@ -43,6 +43,9 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	ActSave: '../../sis_correspondencia/control/Correspondencia/insertarCorrespondenciaExterna',
 
 	constructor: function(config) {
+	    
+	    
+        this.Atributos[this.getIndAtributo('id_depto')].form=true; 
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
@@ -50,16 +53,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.bloquearOrdenamientoGrid();
 
 
-		this.store.baseParams = {'vista': 'recepcion_correspondencia_externa','estado': this.swEstado};
-
-
-		this.load();
-
-
-
-
-
-
+		
 
 //		this.getBoton('verCorrespondencia').hide();
 		this.getBoton('mandar').hide();
@@ -91,6 +85,13 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			handler: this.finalizarRecepcionExterna,
 			tooltip: '<b>SFinalizar Recp Externa</b><br/>Permite actualizar el documento escaneado'
 		});
+		
+		this.init();
+		//this.store.baseParams = {'vista': 'recepcion_correspondencia_externa','estado': this.swEstado};
+
+
+        this.store.baseParams = {'interface': 'externa','estado': this.swEstado};
+        this.load({params: {start: 0, limit: 50}})
 
 
     

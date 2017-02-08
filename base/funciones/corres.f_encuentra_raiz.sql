@@ -1,7 +1,10 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.f_encuentra_raiz (
   fl_id_correspondencia integer
 )
-RETURNS integer AS'
+RETURNS integer AS
+$body$
 /**************************************************************************
  SISTEMA ENDESIS - SISTEMA DE FLUJO ()
 ***************************************************************************
@@ -23,7 +26,9 @@ DECLARE
   v_nivel integer;
   v_id_corre integer;
   v_id_corre_fk integer;
-  v_raiz integer;    
+  v_raiz integer;
+  v_resp  varchar;
+  v_nombre_funcion	varchar;  
 BEGIN
 
   /*
@@ -48,8 +53,19 @@ BEGIN
     v_raiz=corres.f_encuentra_raiz(v_id_corre_fk);
     return  v_raiz;
   END IF;
+  
+EXCEPTION
+				
+	WHEN OTHERS THEN
+		v_resp='';
+		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_resp;  
+  
 END;
-'LANGUAGE 'plpgsql'
+$body$
+LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER

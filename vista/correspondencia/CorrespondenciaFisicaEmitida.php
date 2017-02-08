@@ -40,6 +40,10 @@ Phx.vista.CorrespondenciaFisicaEmitida = {
 		this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
+		
+		this.init();
+        this.store.baseParams = {'interface': 'fisica_emitida'};
+        this.load({params: {start: 0, limit: 50}})
 
 
    },

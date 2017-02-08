@@ -33,6 +33,10 @@ Phx.vista.CorrespondenciaFisicaRecibido = {
 			handler: this.finalizarRecepcion,
 			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
 		});
+		
+		this.init();
+        this.store.baseParams = {'interface': 'fisica_recibida'};
+        this.load({params: {start: 0, limit: 50}})
 
 	  
     

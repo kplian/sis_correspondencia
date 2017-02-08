@@ -188,3 +188,21 @@ CREATE TABLE corres.tdocumento_fisico (
 ALTER TABLE corres.tcorrespondencia ADD vista VARCHAR(255) NULL;
 
 /***********************************F-SCP-FFP-CORRES-0-08/03/2016*****************************************/
+
+
+/***********************************I-SCP-RAC-CORRES-0-07/02/2017*****************************************/
+
+
+ALTER TABLE corres.tcorrespondencia_estado
+  RENAME COLUMN boservaciones_estado TO observaciones_estado;
+  
+  --------------- SQL ---------------
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN fecha_ult_derivado TIMESTAMP WITHOUT TIME ZONE;
+  
+  
+  
+/***********************************F-SCP-RAC-CORRES-0-07/02/2017*****************************************/
+  
+

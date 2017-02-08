@@ -433,16 +433,15 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		this.maestro=m;
 		this.Atributos[1].valorInicial=this.maestro.id_correspondencia;
 
-		if(this.maestro.tipo=='interna'){
+		if(this.maestro.tipo=='interna' || this.maestro.tipo=='externa'){
 			
-			this.ocultarComponente(this.getComponente('id_persona'));
-			
+			this.ocultarComponente(this.getComponente('id_persona'));			
 			this.ocultarComponente(this.getComponente('id_institucion'));
-			
-			
-			
-			
 		}
+		else{
+			this.ocultarComponente(this.getComponente('id_funcionario'));	
+		}
+		
 
 		//actualiza combos del departamento
 		// var cmbUo = this.getComponente('id_uo');

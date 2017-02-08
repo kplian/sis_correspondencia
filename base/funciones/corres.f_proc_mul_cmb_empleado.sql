@@ -1,7 +1,28 @@
-CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado(fl_cadena varchar, fl_id_correspondencia int4, fl_mensaje varchar, fl_id_usuario_reg int4, fl_id_documento int4, fl_numero varchar, fl_tipo varchar, fl_referencia varchar, fl_id_acciones varchar, fl_id_periodo int4, fl_id_gestion int4, fl_nivel int4, fl_id_nivel_seguridad int4, fl_cite varchar, fl_nivel_prioridad varchar, fl_origen varchar, fl_fecha_documento date,f1_id_origen INTEGER,f1_id_depto INTEGER)
-  RETURNS bool
-AS
-  $BODY$
+--------------- SQL ---------------
+
+CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado (
+  fl_cadena varchar,
+  fl_id_correspondencia integer,
+  fl_mensaje varchar,
+  fl_id_usuario_reg integer,
+  fl_id_documento integer,
+  fl_numero varchar,
+  fl_tipo varchar,
+  fl_referencia varchar,
+  fl_id_acciones varchar,
+  fl_id_periodo integer,
+  fl_id_gestion integer,
+  fl_nivel integer,
+  fl_id_nivel_seguridad integer,
+  fl_cite varchar,
+  fl_nivel_prioridad varchar,
+  fl_origen varchar,
+  fl_fecha_documento date,
+  f1_id_origen integer,
+  f1_id_depto integer
+)
+RETURNS boolean AS
+$body$
   /**************************************************************************
  SISTEMA ENDESIS - SISTEMA DE FLUJO ()
 ***************************************************************************
@@ -43,6 +64,8 @@ DECLARE
   v_id_correspondencia INTEGER;
 
   v_id_documento_fisico INTEGER;
+  v_resp				varchar;
+  v_nombre_funcion		varchar;
 
 
 BEGIN
@@ -75,7 +98,7 @@ BEGIN
  -- 0) listamos todas las derivaciones de los
  --    diferentes niveles armando un vector
 
-
+   v_nombre_funcion = 'f_proc_mul_cmb_empleado';
   
 
    v_array_var= corres.f_arma_arbol_inicia(fl_id_correspondencia,'id_funcionario');
@@ -112,7 +135,7 @@ BEGIN
      	 IF v_id_funcionario is not null THEN
 
 
-                 v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_id_funcionario,array['activo','suplente']);
+                 v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_id_funcionario,array['activo','suplente'], fl_fecha_documento);
 
 
                   if(array_upper(v_id_uo,1)=1) then
@@ -248,6 +271,19 @@ BEGIN
 
 return true;
 
+EXCEPTION
+				
+	WHEN OTHERS THEN
+		v_resp='';
+		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_resp;
+
 END;
-$BODY$
-LANGUAGE plpgsql VOLATILE;
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
+COST 100;

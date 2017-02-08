@@ -1,8 +1,11 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.f_arma_arbol_inicia (
   fl_id_correspondencia integer,
   fl_columna varchar
 )
-RETURNS varchar AS'
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA ENDESIS - SISTEMA DE FLUJO ()
 ***************************************************************************
@@ -28,7 +31,9 @@ DECLARE
   v_sw boolean;
   v_resp boolean;
   v_consulta varchar;
-  g_registros record;
+  g_registros record;  
+  v_respuesta_func varchar;
+  v_nombre_funcion varchar;
 BEGIN
 
  
@@ -57,7 +62,7 @@ BEGIN
              co.nivel
       FROM   corres.tcorrespondencia co
       WHERE co.id_correspondencia=v_raiz
-       and co.estado != ''anulado'' ) LOOP
+       and co.estado != 'anulado' ) LOOP
  
              INSERT INTO correspondencia_her
                (id_correspondencia,                           
@@ -83,12 +88,12 @@ BEGIN
   if v_resp THEN
   -- 4) obtengo los resultados registrados en la tabla temporal
       
-      v_consulta = ''SELECT ''||fl_columna|| '' as  respuesta FROM  
-                    correspondencia_her'';
-      v_respuesta='''';          
+      v_consulta = 'SELECT '||fl_columna|| ' as  respuesta FROM  
+                    correspondencia_her';
+      v_respuesta='';          
       v_sw=false;
       
-     -- raise exception ''revision ...  '';
+     -- raise exception 'revision ...  ';
       FOR g_registros in EXECUTE(v_consulta) LOOP      
         -- 4.1 ) armo array con los resultados solicitados
 
@@ -97,19 +102,29 @@ BEGIN
                  v_respuesta=g_registros.respuesta;
                  v_sw=true;
                ELSE
-                 v_respuesta=v_respuesta||'',''||g_registros.respuesta;
+                 v_respuesta=v_respuesta||','||g_registros.respuesta;
                END IF;
            END IF;    
       END LOOP; 
      
   ELSE    
-      raise exception ''error en la busqueda resursiva'';
+      raise exception 'error en la busqueda resursiva';
   END IF; 
   
   RETURN  v_respuesta;
   
+ EXCEPTION
+				
+     WHEN OTHERS THEN
+		v_respuesta_func='';
+		v_respuesta_func = pxp.f_agrega_clave(v_respuesta_func,'mensaje',SQLERRM);
+		v_respuesta_func = pxp.f_agrega_clave(v_respuesta_func,'codigo_error',SQLSTATE);
+		v_respuesta_func = pxp.f_agrega_clave(v_respuesta_func,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_respuesta_func;
+    
 END;
-'LANGUAGE 'plpgsql'
+$body$
+LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER

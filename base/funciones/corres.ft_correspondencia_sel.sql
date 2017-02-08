@@ -120,103 +120,82 @@ BEGIN
 
 
 
-        IF p_administrador = 1 THEN
-
-          v_filtro = '0=0';
-
-        ELSE
-
-
-          v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
-
-
-
-
-        END IF;
+                IF p_administrador = 1 THEN
+                  v_filtro = '0=0';
+                ELSE
+                  v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
+                END IF;
 
 
 
 
 
-				/*if pxp.f_existe_parametro(p_tabla,'vista') THEN
+				if pxp.f_existe_parametro(p_tabla,'interface') THEN
 
+                        IF v_parametros.interface = 'externa' THEN
+                            v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
+                        ELSIF  v_parametros.interface = 'derivacion_externa' THEN
+                            v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
+                        ELSE
+                            v_filtro= v_filtro || ' and cor.estado in (''borrador_envio'',''enviado'',''recibido'')';
+                        END IF;
+                        
+                         IF v_parametros.interface = 'emitida' THEN
+                            v_filtro= v_filtro || ' and cor.id_correspondencia_fk is null ';
+                         END IF;
 
-					IF v_parametros.vista = 'externa' THEN
-
-
-
-
-						v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
-
-					ELSIF  v_parametros.vista = 'derivacion externa' THEN
-
-						v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
-
-
-					ELSE
-
-						v_filtro= v_filtro || ' and cor.estado in (''borrador_envio'',''enviado'',''recibido'')';
-
-					END IF;
-
-					ELSE
-
-
-
-				END IF;*/
+				END IF;
 
 
 
 
     		--Sentencia de la consulta
 			v_consulta:='select
-						cor.id_origen,
-						cor.id_correspondencia,
-						cor.estado,
-						cor.estado_reg,
-						cor.fecha_documento,
-						cor.fecha_fin,
-						cor.id_acciones,
-						--cor.id_archivo,
-						cor.id_correspondencia_fk,
-						cor.id_correspondencias_asociadas,
-						cor.id_depto,
-						cor.id_documento,
-						cor.id_funcionario,
-						cor.id_gestion,
-						cor.id_institucion,
-						cor.id_periodo,
-						cor.id_persona,
-						cor.id_uo,
-						cor.mensaje,
-						cor.nivel,
-						cor.nivel_prioridad,
-						cor.numero,
-						cor.observaciones_estado,
-						cor.referencia,
-						cor.respuestas,
-						cor.sw_responsable,
-						cor.tipo,
-						cor.fecha_reg,
-						cor.id_usuario_reg,
-						cor.fecha_mod,
-						cor.id_usuario_mod,
-						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod,
-                        doc.descripcion as desc_documento	,
-                        depto.nombre as desc_depto,
-                        funcionario.desc_funcionario1 as desc_funcionario,
-                        cor.ruta_archivo,
-                        cor.version,
-                        uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
-                        clasif.descripcion as desc_clasificador,
-                        cor.id_clasificador,
-                        doc.ruta_plantilla as desc_ruta_plantilla_documento,
-                        orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
-                        cor.sw_archivado
-
-
-                        from corres.tcorrespondencia cor
+                            cor.id_origen,
+                            cor.id_correspondencia,
+                            cor.estado,
+                            cor.estado_reg,
+                            cor.fecha_documento,
+                            cor.fecha_fin,
+                            cor.id_acciones,
+                            --cor.id_archivo,
+                            cor.id_correspondencia_fk,
+                            cor.id_correspondencias_asociadas,
+                            cor.id_depto,
+                            cor.id_documento,
+                            cor.id_funcionario,
+                            cor.id_gestion,
+                            cor.id_institucion,
+                            cor.id_periodo,
+                            cor.id_persona,
+                            cor.id_uo,
+                            cor.mensaje,
+                            cor.nivel,
+                            cor.nivel_prioridad,
+                            cor.numero,
+                            cor.observaciones_estado,
+                            cor.referencia,
+                            cor.respuestas,
+                            cor.sw_responsable,
+                            cor.tipo,
+                            cor.fecha_reg,
+                            cor.id_usuario_reg,
+                            cor.fecha_mod,
+                            cor.id_usuario_mod,
+                            usu1.cuenta as usr_reg,
+                            usu2.cuenta as usr_mod,
+                            doc.descripcion as desc_documento	,
+                            depto.nombre as desc_depto,
+                            funcionario.desc_funcionario1 as desc_funcionario,
+                            cor.ruta_archivo,
+                            cor.version,
+                            uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
+                            clasif.descripcion as desc_clasificador,
+                            cor.id_clasificador,
+                            doc.ruta_plantilla as desc_ruta_plantilla_documento,
+                            orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
+                            cor.sw_archivado
+						from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
                         inner join  param.tdepto depto on depto.id_depto=cor.id_depto
@@ -225,7 +204,7 @@ BEGIN
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-				        where  '||v_filtro||'  and  cor.estado in (''borrador_envio'',''enviado'',''recibido'') and ';
+				        where  '||v_filtro||' and ';
 
 
 			--Definicion de la respuesta
@@ -254,16 +233,53 @@ BEGIN
 	elsif(p_transaccion='CO_COR_CONT')then
 
 		begin
+        
+        	 IF p_administrador = 1 THEN
+                  v_filtro = '0=0';
+             ELSE
+                 v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
+             END IF;
+             
+             
+
+
+
+
+
+			IF pxp.f_existe_parametro(p_tabla,'interface') THEN
+
+                        IF v_parametros.interface = 'externa' THEN
+                            v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
+                        ELSIF  v_parametros.interface = 'derivacion_externa' THEN
+                            v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
+                        ELSE
+                            v_filtro= v_filtro || ' and cor.estado in (''borrador_envio'',''enviado'',''recibido'')';
+                        END IF;
+                        
+                         IF v_parametros.interface = 'emitida' THEN
+                            v_filtro= v_filtro || ' and cor.id_correspondencia_fk is null ';
+                         END IF;
+
+			END IF;
+                
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_correspondencia)
-					    from corres.tcorrespondencia cor
-					    inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
-					    inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-					    inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
-					    inner join orga.tuo uo on uo.id_uo= cor.id_uo
+					     from corres.tcorrespondencia cor
+						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
+                        inner join param.tdocumento doc on doc.id_documento = cor.id_documento
+                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
+                        inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
+                        
+                        inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-					    where cor.estado in (''borrador_envio'',''enviado'',''recibido'') and ';
+				        where  '||v_filtro||' and ';
+                        
+                        
+            if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
+			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
+			end if;
+			           
 			
 			--Definicion de la respuesta		    
 			v_consulta:=v_consulta||v_parametros.filtro;

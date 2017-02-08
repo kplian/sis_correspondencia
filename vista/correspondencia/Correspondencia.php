@@ -58,10 +58,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     handler: this.adjuntos,
                     tooltip: '<b>Adjuntos</b><br/>Archivos adjuntos a la correspondencia'
                 });
-
-                this.init();
-                this.store.baseParams = {'interface': 'emitida'};
-                this.load({params: {start: 0, limit: 50}})
+                
                 this.iniciarEventos()
             },
 
@@ -138,6 +135,36 @@ header("content-type: text/javascript; charset=UTF-8");
                     grid: true,
                     form: false
                 },
+                
+                {
+					config : {
+						name : 'id_depto',
+						hiddenName : 'id_depto',
+						url : '../../sis_parametros/control/Depto/listarDeptoFiltradoXUsuario',
+						origen : 'DEPTO',
+						allowBlank : false,
+						fieldLabel : 'Depto',
+						gdisplayField : 'desc_depto', //dibuja el campo extra de la consulta al hacer un inner join con orra tabla
+						width : 250,
+						gwidth : 180,
+						baseParams : {
+							estado : 'activo',
+							codigo_subsistema : 'CORRES'
+						}, //parametros adicionales que se le pasan al store
+						renderer : function(value, p, record) {
+							return String.format('{0}', record.data['desc_depto']);
+						}
+					},
+					//type:'TrigguerCombo',
+					type : 'ComboRec',
+					id_grupo : 0,
+					filters : {
+						pfiltro : 'incbte.desc_depto',
+						type : 'string'
+					},
+					grid : false,
+					form : false
+				},
 
                 {
                     config: {

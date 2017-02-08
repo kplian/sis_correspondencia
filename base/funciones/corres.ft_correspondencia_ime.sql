@@ -69,10 +69,8 @@ BEGIN
         begin
 
 
-
-
           --obtener el uo del funcionario que esta reenviando
-          v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_parametros.id_funcionario, array ['activo', 'suplente']);
+          v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_parametros.id_funcionario, array ['activo', 'suplente'], v_parametros.fecha_documento);
 
           --v_id_uo[2] es el id_uo
 
@@ -86,10 +84,6 @@ BEGIN
           INNER JOIN param.tdepto dep
           ON dep.id_depto = duo.id_depto
           WHERE duo.id_uo = ANY (v_id_uo);
-
-
-
-
 
 
 
@@ -138,67 +132,67 @@ BEGIN
 
         --3 Sentencia de la insercion
         	insert into corres.tcorrespondencia(
-			estado,
-			estado_reg,
-			fecha_documento,
-			--fecha_fin,
-			--id_acciones,
+                estado,
+                estado_reg,
+                fecha_documento,
+                --fecha_fin,
+                --id_acciones,
 
-			--id_correspondencia_fk,
-			id_correspondencias_asociadas,
-			id_depto,
-			id_documento,
-			id_funcionario,
-			id_gestion,
-			--id_institucion,
-			id_periodo,
-			--id_persona,
-			id_uo,
-			mensaje,
-			nivel,
-			nivel_prioridad,
-			numero,
-			--observaciones_estado,
-			referencia,
-			--respuestas,
-			--sw_responsable,
-			tipo,
-			fecha_reg,
-			id_usuario_reg,
-			fecha_mod,
-			id_usuario_mod,
-            id_clasificador
+                --id_correspondencia_fk,
+                id_correspondencias_asociadas,
+                id_depto,
+                id_documento,
+                id_funcionario,
+                id_gestion,
+                --id_institucion,
+                id_periodo,
+                --id_persona,
+                id_uo,
+                mensaje,
+                nivel,
+                nivel_prioridad,
+                numero,
+                --observaciones_estado,
+                referencia,
+                --respuestas,
+                --sw_responsable,
+                tipo,
+                fecha_reg,
+                id_usuario_reg,
+                fecha_mod,
+                id_usuario_mod,
+                id_clasificador
           	) values(
-			'borrador_envio',
-			'activo',
-			v_parametros.fecha_documento,
-			--v_parametros.fecha_fin,
-			--v_parametros.id_acciones,
+                'borrador_envio',
+                'activo',
+                v_parametros.fecha_documento,
+                --v_parametros.fecha_fin,
+                --v_parametros.id_acciones,
 
-			--v_parametros.id_correspondencia_fk,
-			string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
-      v_id_depto,
-			v_parametros.id_documento,
-			v_parametros.id_funcionario,
-			v_id_gestion,
-			--v_parametros.id_institucion,
-			v_id_periodo,
-		--	v_parametros.id_persona,
-      v_id_uo[2],
-			v_parametros.mensaje,
-			0,--nivel de anidamiento del arbol
-			v_parametros.nivel_prioridad,
-			v_num_corre,
-			--v_parametros.observaciones_estado,
-			v_parametros.referencia,
-			--v_parametros.respuestas,
-			--v_parametros.sw_responsable,
-			v_parametros.tipo,
-			now(),
-			p_id_usuario,
-			null,
-			null,
-            v_parametros.id_clasificador
+                --v_parametros.id_correspondencia_fk,
+                string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
+         		 v_id_depto,
+                v_parametros.id_documento,
+                v_parametros.id_funcionario,
+                v_id_gestion,
+                --v_parametros.id_institucion,
+                v_id_periodo,
+            --	v_parametros.id_persona,
+          		v_id_uo[2],
+                v_parametros.mensaje,
+                0,--nivel de anidamiento del arbol
+                v_parametros.nivel_prioridad,
+                v_num_corre,
+                --v_parametros.observaciones_estado,
+                v_parametros.referencia,
+                --v_parametros.respuestas,
+                --v_parametros.sw_responsable,
+                v_parametros.tipo,
+                now(),
+                p_id_usuario,
+                null,
+                null,
+                v_parametros.id_clasificador
 			)RETURNING id_correspondencia into v_id_correspondencia;
 
 
@@ -254,7 +248,7 @@ BEGIN
                                 v_parametros.nivel_prioridad,
                                 v_origen,
                                 v_parametros.fecha_documento,
-                                    v_id_origen,
+                                v_id_origen,
                                 v_id_depto
                                 );
               ELSE
@@ -268,73 +262,54 @@ BEGIN
 
                   --inserta della hijo
                   insert into corres.tcorrespondencia(
-                  estado,
-                  estado_reg,
-                  fecha_documento,
-                  --fecha_fin,
-                  id_acciones,
-
-                  id_correspondencia_fk,
-                  id_correspondencias_asociadas,
-                  id_depto,
-                  id_documento,
-
-                  id_gestion,
-                  id_institucion,
-                  id_periodo,
-                  id_persona,
-
-                  mensaje,
-                  nivel,
-                  nivel_prioridad,
-                  numero,
-                  --observaciones_estado,
-                  referencia,
-                  --respuestas,
-                  --sw_responsable,
-                  tipo,
-                  fecha_reg,
-                  id_usuario_reg,
-                  fecha_mod,
-                  id_usuario_mod,
-                  id_clasificador
+                      estado,
+                      estado_reg,
+                      fecha_documento,
+                      id_acciones,
+                      id_correspondencia_fk,
+                      id_correspondencias_asociadas,
+                      id_depto,
+                      id_documento,
+                      id_gestion,
+                      id_institucion,
+                      id_periodo,
+                      id_persona,
+                      mensaje,
+                      nivel,
+                      nivel_prioridad,
+                      numero,
+                      referencia,
+                      tipo,
+                      fecha_reg,
+                      id_usuario_reg,
+                      fecha_mod,
+                      id_usuario_mod,
+                      id_clasificador
                   ) values(
-                  'borrador_detalle_recibido',
-                  'activo',
-                  v_parametros.fecha_documento,
-                  --v_parametros.fecha_fin,
-                  string_to_array(v_parametros.id_acciones,',')::integer[],
-
-                  v_id_correspondencia,
-                  string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
-                  v_parametros.id_depto,
-                  v_parametros.id_documento,
-
-                  v_id_gestion,
-                  v_parametros.id_institucion_destino,
-                  v_id_periodo,
-                  v_parametros.id_persona_destino,
-
-                  v_parametros.mensaje,
-                  1,--nivel de anidamiento del arbol
-                  v_parametros.nivel_prioridad,
-                  v_num_corre,
-                  --v_parametros.observaciones_estado,
-                  v_parametros.referencia,
-                  --v_parametros.respuestas,
-                  --v_parametros.sw_responsable,
-                  v_parametros.tipo,
-                  now(),
-                  p_id_usuario,
-                  null,
-                  null,
-                  v_parametros.id_clasificador
+                    'borrador_detalle_recibido',
+                    'activo',
+                    v_parametros.fecha_documento,
+                    string_to_array(v_parametros.id_acciones,',')::integer[],
+                    v_id_correspondencia,
+                    string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
+                    v_parametros.id_depto,
+                    v_parametros.id_documento,
+                    v_id_gestion,
+                    v_parametros.id_institucion_destino,
+                    v_id_periodo,
+                    v_parametros.id_persona_destino,
+                    v_parametros.mensaje,
+                    1,--nivel de anidamiento del arbol
+                    v_parametros.nivel_prioridad,
+                    v_num_corre,
+                    v_parametros.referencia,
+                    v_parametros.tipo,
+                    now(),
+                    p_id_usuario,
+                    null,
+                    null,
+                    v_parametros.id_clasificador
                   );
-
-
-
-
-
 
               END IF;
 
@@ -369,33 +344,13 @@ BEGIN
 
                   --Sentencia de la modificacion
                   update corres.tcorrespondencia set
-                 -- estado = v_parametros.estado,
-                 -- fecha_documento = v_parametros.fecha_documento,
-                  --fecha_fin = v_parametros.fecha_fin,
-                --  id_acciones = v_parametros.id_acciones,
-
-                --  id_correspondencia_fk = v_parametros.id_correspondencia_fk,
-                  id_correspondencias_asociadas =  string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
-                 -- id_depto = v_parametros.id_depto,
-                  --id_documento = v_parametros.id_documento,
-                  --id_funcionario = v_parametros.id_funcionario,
-                  --id_gestion = v_parametros.id_gestion,
-                  --id_institucion = v_parametros.id_institucion,
-                  --id_periodo = v_parametros.id_periodo,
-                  --id_persona = v_parametros.id_persona,
-                  --id_uo = v_parametros.id_uo,
-                  mensaje = v_parametros.mensaje,
-                  --nivel = v_parametros.nivel,
-                  nivel_prioridad = v_parametros.nivel_prioridad,
-                  --numero = v_parametros.numero,
-                  --observaciones_estado = v_parametros.observaciones_estado,
-                  referencia = v_parametros.referencia,
-                  --respuestas = v_parametros.respuestas,
-                  --sw_responsable = v_parametros.sw_responsable,
-                  --tipo = v_parametros.tipo,
-                  fecha_mod = now(),
-                  id_usuario_mod = p_id_usuario,
-                  id_clasificador=v_parametros.id_clasificador
+                   	  id_correspondencias_asociadas =  string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
+                      mensaje = v_parametros.mensaje,
+                      nivel_prioridad = v_parametros.nivel_prioridad,
+                      referencia = v_parametros.referencia,
+                      fecha_mod = now(),
+                      id_usuario_mod = p_id_usuario,
+                      id_clasificador=v_parametros.id_clasificador
                   where id_correspondencia=v_parametros.id_correspondencia;
 
             elseif(v_estado = 'enviado') then
@@ -433,13 +388,13 @@ BEGIN
 
 		begin
 
-        --raise exception 'VERSION %',v_parametros.version;
+            --raise exception 'VERSION %',v_parametros.version;
 
            update corres.tcorrespondencia set
-           ruta_archivo = v_parametros.ruta_archivo,
-           version = v_parametros.version,
-           id_usuario_mod = p_id_usuario,
-           fecha_mod = now()
+               ruta_archivo = v_parametros.ruta_archivo,
+               version = v_parametros.version,
+               id_usuario_mod = p_id_usuario,
+               fecha_mod = now()
            where id_correspondencia=v_parametros.id_correspondencia;
 
 
@@ -642,7 +597,7 @@ BEGIN
 
 
       --obtener el uo del funcionario que esta reenviando
-      v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_parametros.id_funcionario_usuario::INTEGER, array ['activo', 'suplente']);
+      v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_parametros.id_funcionario_usuario::INTEGER, array ['activo', 'suplente'],v_datos_maestro.fecha_documento);
 
       --v_id_uo[2] es el id_uo
 
@@ -798,8 +753,8 @@ BEGIN
 
     begin
 
-
-
+      
+     --TODO, el departamento lo debe definir el usuario en xorespondencia externa
 
       --   obtener documento
       SELECT d.codigo

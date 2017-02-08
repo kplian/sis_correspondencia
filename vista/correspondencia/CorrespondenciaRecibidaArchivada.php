@@ -35,6 +35,10 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 			handler: this.DesArchivar,
 			tooltip: '<b>DesArchivar</b><br/>'
 		});
+		
+		this.init();
+        this.store.baseParams = {'interface': 'recibida_archivada'};
+        this.load({params: {start: 0, limit: 50}})
 	  
     
    },
