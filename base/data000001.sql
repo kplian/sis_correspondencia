@@ -30,54 +30,48 @@ insert into segu.tsubsistema(codigo,nombre,prefijo,nombre_carpeta) values
 -----------------------------------
 
 select pxp.f_insert_tgui ('SISTEMA DE DOCUMENTOS', '', 'CORRES', 'si', 1, '', 1, '', '', 'CORRES');
-select pxp.f_insert_tgui ('Procesos', 'Procesos', 'CORRES.1', 'si', 1, '', 2, '', '', 'CORRES');
-select pxp.f_insert_tgui ('Grupos de Correspondencia', 'Grupos de Correspondencia', 'CORRES.2', 'si', 1, 'sis_correspondencia/vista/grupo/Grupo.php', 2, '', 'Grupo', 'CORRES');
-
-select pxp.f_insert_tgui ('Acciones', 'Acciones', 'CORRES.1.1', 'si', 1, 'sis_correspondencia/vista/accion/Accion.php', 3, '', 'Accion', 'CORRES');
-select pxp.f_insert_tgui ('Correspondencia Emitida', 'Correspondencia Emitida', 'CORRES.1.2', 'si', 1, 'sis_correspondencia/vista/correspondencia/Correspondencia.php?interface=emitida', 3, '', 'Correspondencia', 'CORRES');
-select pxp.f_insert_tgui ('Detalle de Correspondencia', 'Detalle de Correspondencia', 'CORRES.1.3', 'no', 1, 'sis_correspondencia/vista/correspondencia/CorrespondenciaDetalle.php', 3, '', 'CorrespondenciaDetalle', 'CORRES');
-select pxp.f_insert_tgui ('Correspondencia Entrante', 'Correspondencia Entrante', 'CORRES.1.4', 'si', 1, 'sis_correspondencia/vista/correspondencia/Correspondencia.php?interface=externa', 3, '', 'Correspondencia', 'CORRES');
-select pxp.f_insert_tgui ('Correspondencia Recibida', 'Correspondencia Recibida', 'CORRES.1.5', 'si', 1, 'sis_correspondencia/vista/correspondencia/CorrespondenciaRecibida.php', 3, '', 'CorrespondenciaRecibida', 'CORRES');
-
-
 
 select pxp.f_insert_testructura_gui ('CORRES', 'SISTEMA');
-select pxp.f_insert_testructura_gui ('CORRES.1', 'CORRES');
-select pxp.f_insert_testructura_gui ('CORRES.2', 'CORRES');
 
-select pxp.f_insert_testructura_gui ('CORRES.1.1', 'CORRES.1');
-select pxp.f_insert_testructura_gui ('CORRES.1.2', 'CORRES.1');
-select pxp.f_insert_testructura_gui ('CORRES.1.3', 'CORRES.1');
-select pxp.f_insert_testructura_gui ('CORRES.1.4', 'CORRES.1');
-select pxp.f_insert_testructura_gui ('CORRES.1.5', 'CORRES.1');
-select pxp.f_insert_testructura_gui ('CORRES.1.2', 'CORRES.2');
-
-
-----------------------------------------------
---  DEF DE FUNCIONES
---------------------------------------------------
-select pxp.f_insert_tfuncion ('CORRES.f_arma_arbol', 'Funcion      ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.f_arma_arbol_inicia', 'Funcion      ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.f_encuentra_raiz', 'Funcion      ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.f_get_uo_correspondencia', 'Funcion      ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.f_get_uo_correspondencia_funcionario', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.f_obtener_tipo_acciones', 'Funcion      ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.f_proc_mul_cmb_empleado', 'Funcion      ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_accion_ime', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_accion_sel', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_correspondencia_ime', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_correspondencia_sel', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_grupo_funcionario_ime', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_grupo_funcionario_sel', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_grupo_ime', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.ft_grupo_sel', 'Funcion para tabla     ', 'CORRES');
-select pxp.f_insert_tfuncion ('CORRES.trigfl_correspondencia', 'Funcion para tabla     ', 'CORRES');
-
-
-
+----------------------------------
+--COPY LINES TO data.sql FILE  
 ---------------------------------
---DEF DE PROCEDIMIETOS
+
+select pxp.f_insert_tgui ('SISTEMA DE DOCUMENTOS', '', 'CORRES', 'si', 1, '', 1, '', '', 'CORRES');
+select pxp.f_insert_tgui ('Configuración', 'Configuración', 'CORCONF', 'si', 1, '', 2, '', '', 'CORRES');
+select pxp.f_insert_tgui ('Bandejas', 'Bandejas', 'BANCOR', 'si', 2, '', 2, '', '', 'CORRES');
+select pxp.f_insert_tgui ('Externa', 'Correspondencia Externa', 'COREXTE', 'si', 3, '', 2, '', '', 'CORRES');
+select pxp.f_insert_tgui ('Documentos Fisicos', 'Documentos Fisicos', 'DOCFISCA', 'si', 4, '', 2, '', '', 'CORRES');
+select pxp.f_insert_tgui ('Acciones', 'Acciones', 'ACCCOR', 'si', 1, 'sis_correspondencia/vista/accion/Accion.php', 3, '', 'Accion', 'CORRES');
+select pxp.f_insert_tgui ('Grupos de Correspondencia', 'Grupos de Correspondencia', 'GRUPCOR', 'si', 2, 'sis_correspondencia/vista/grupo/Grupo.php', 3, '', 'Grupo', 'CORRES');
+select pxp.f_insert_tgui ('Emitida', 'Correspondencia Emitida', 'CEMITIDA', 'si', 2, 'sis_correspondencia/vista/correspondencia/CorrespondenciaEmitida.php', 3, '', 'CorrespondenciaEmitida', 'CORRES');
+select pxp.f_insert_tgui ('Recibida', 'Recibida', 'CRECI', 'si', 1, 'sis_correspondencia/vista/correspondencia/CorrespondenciaRecibida.php', 3, '', 'CorrespondenciaRecibida', 'CORRES');
+select pxp.f_insert_tgui ('Recibida Archivada', 'Recibida Archivada', 'COREAR', 'si', 3, 'sis_correspondencia/vista/correspondencia/CorrespondenciaRecibidaArchivada.php', 3, '', 'CorrespondenciaRecibidaArchivada', 'CORRES');
+select pxp.f_insert_tgui ('Recepcionar Externos', 'Recepcionar Externos', 'RECEPEXTE', 'si', 1, 'sis_correspondencia/vista/correspondencia/RecepcionCorrespondenciaExterna.php', 3, '', 'RecepcionCorrespondenciaExterna', 'CORRES');
+select pxp.f_insert_tgui ('Derivar Correspondencia Externa', 'Derivar Correspondencia Externa', 'DEVCOREX', 'si', 2, 'sis_correspondencia/vista/correspondencia/DerivacionCorrespondenciaExterna.php', 3, '', 'DerivacionCorrespondenciaExterna', 'CORRES');
+select pxp.f_insert_tgui ('Despachar', 'Despachar', 'DESPCH', 'si', 1, 'sis_correspondencia/vista/documento_fisico/DocumentoFisicoDespachar.php', 3, '', 'DocumentoFisicoDespachar', 'CORRES');
+select pxp.f_insert_tgui ('Recepcionar', 'Recepcionar', 'DOCFISREC', 'si', 2, 'sis_correspondencia/vista/documento_fisico/DocumentoFisicoRecepcionar.php', 3, '', 'DocumentoFisicoRecepcionar', 'CORRES');
+select pxp.f_insert_tgui ('Correspondencia Fisica Emitida', 'Correspondencia Fisica Emitida', 'CORFISEM', 'si', 3, 'sis_correspondencia/vista/correspondencia/CorrespondenciaFisicaEmitida.php', 3, '', 'CorrespondenciaFisicaEmitida', 'CORRES');
+----------------------------------
+--COPY LINES TO dependencies.sql FILE  
 ---------------------------------
+
+select pxp.f_insert_testructura_gui ('CORRES', 'SISTEMA');
+select pxp.f_insert_testructura_gui ('CORCONF', 'CORRES');
+select pxp.f_insert_testructura_gui ('BANCOR', 'CORRES');
+select pxp.f_insert_testructura_gui ('COREXTE', 'CORRES');
+select pxp.f_insert_testructura_gui ('DOCFISCA', 'CORRES');
+select pxp.f_insert_testructura_gui ('ACCCOR', 'CORCONF');
+select pxp.f_insert_testructura_gui ('GRUPCOR', 'CORCONF');
+select pxp.f_insert_testructura_gui ('CEMITIDA', 'BANCOR');
+select pxp.f_insert_testructura_gui ('CRECI', 'BANCOR');
+select pxp.f_insert_testructura_gui ('COREAR', 'BANCOR');
+select pxp.f_insert_testructura_gui ('RECEPEXTE', 'COREXTE');
+select pxp.f_insert_testructura_gui ('DEVCOREX', 'COREXTE');
+select pxp.f_insert_testructura_gui ('DESPCH', 'DOCFISCA');
+select pxp.f_insert_testructura_gui ('DOCFISREC', 'DOCFISCA');
+select pxp.f_insert_testructura_gui ('CORFISEM', 'DOCFISCA');
+
 
 
 
