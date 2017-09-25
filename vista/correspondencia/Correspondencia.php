@@ -81,8 +81,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     form: true
                 },
 
-
-                {
+{
                     config: {
                         name: 'version',
                         fieldLabel: 'Icono',
@@ -376,6 +375,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     config: {
                         name: 'id_persona_remitente',
                         origen: 'PERSONA',
+                        allowBlank: true,
                         tinit: true,
                         fieldLabel: 'Persona',
                         gdisplayField: 'desc_person',//mapea al store del grid
@@ -950,9 +950,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 if (!reg.ROOT.error) {
                     alert(reg.ROOT.detalle.mensaje)
 
-                } else {
-
-                    alert('ocurrio un error durante el proceso')
                 }
                 this.reload();
 

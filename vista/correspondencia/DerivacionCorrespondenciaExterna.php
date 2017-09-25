@@ -2,8 +2,8 @@
 /**
 *@package pXP
 *@file gen-SistemaDist.php
-*@author  (fprudencio)
-*@date 20-09-2011 10:22:05
+*@author  (ffigueroa alias el conejo)
+*@date 20-09-2016 10:22:05
 *@description Archivo con la interfaz de usuario que permite 
 *dar el visto a solicitudes de compra
 *
@@ -52,9 +52,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.bloquearOrdenamientoGrid();
 
 
-		this.store.baseParams = {'vista': 'derivacion_correspondencia_externa','estado': this.swEstado};
-
-
+		
 		this.load();
 
 
@@ -90,7 +88,11 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		});*/
 		
 		this.init();
-        this.store.baseParams = {'interface': 'derivacion_externa'};
+        //this.store.baseParams = {'interface': 'derivacion_externa'};
+        this.store.baseParams = {'vista': 'derivacion_correspondencia_externa','estado': this.swEstado};
+        
+       
+
         this.load({params: {start: 0, limit: 50}})
 
 

@@ -67,7 +67,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			iconCls: 'bprint',
 			disabled: true,
 			handler: this.imprimirCodigoCorrespondencia,
-			tooltip: '<b>Imprimir Codigo</b><br/>imprimi codigo correspondencia'
+			tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
 		});
 
 		this.addButton('aSubirCorrespondenciaExterna', {
@@ -83,7 +83,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			iconCls: 'badelante',
 			disabled: true,
 			handler: this.finalizarRecepcionExterna,
-			tooltip: '<b>SFinalizar Recp Externa</b><br/>Permite actualizar el documento escaneado'
+			tooltip: '<b>Finalizar Recepción</b><br/>Finalizar Recepción de documento entrante (Externa Recibida), pasa a estado de análisis'
 		});
 		
 		this.init();
@@ -158,8 +158,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
-		var cmpId_funcionario = this.getComponente('id_funcionario');
-
+	
 
 
 		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonNew.call(this);
@@ -187,7 +186,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		cmbDoc.reset();
 
 
-		this.ocultarComponente(cmpId_funcionario);
+		this.ocultarComponente(this.Cmp.id_funcionario);
 
 		/*var cmbDoc = this.getComponente('id_documento');
 		var cmpFuncionarios = this.getComponente('id_funcionarios');
@@ -228,15 +227,15 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 	},
 	finalizarRecepcionExterna:function () {
-
 		var rec = this.sm.getSelected();
+		Phx.CP.loadingShow();
 		Ext.Ajax.request({
 			url: '../../sis_correspondencia/control/Correspondencia/finalizarRecepcionExterna',
 			params: {
 				id_correspondencia: rec.data.id_correspondencia,
 				estado: 'pendiente_recepcion_externo'
 			},
-			success: this.successDespachar,
+			success: this.successDerivar,
 			failure: this.conexionFailure,
 			timeout: this.timeout,
 			scope: this
@@ -244,8 +243,6 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 	}
 	
-	
-   
 	
 	
 };

@@ -85,7 +85,11 @@ BEGIN
           ON dep.id_depto = duo.id_depto
           WHERE duo.id_uo = ANY (v_id_uo);
 
-
+			IF v_id_depto is NULL THEN
+            
+            raise exception 'Verifique que la UO %, este confiurada en el Departamento de Correspondencia',v_id_uo;
+            
+            END IF;
 
 
           --   obtener documento
@@ -106,8 +110,7 @@ BEGIN
                 par_codigo_subsistema varchar,
                 par_formato varchar
         */
-
-        --  raise exception '%                 %         %                  %                  %             %     %',v_codigo_documento,NULL,v_parametros.id_uo,v_parametros.id_depto,p_id_usuario,'CORRES',NULL;
+          
         v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo[2],v_id_depto,p_id_usuario,'CORRES',NULL);
 
 
@@ -714,9 +717,9 @@ BEGIN
     end;
 
 
-    /*********************************
+ /*********************************
  #TRANSACCION:  'CO_COREXT_INS'
- #DESCRIPCION:	inserta el mensajero la correpondencia externa
+ #DESCRIPCION:	inserta el mensajero la correpondencia externa recibida(ENTRANTE)
  #AUTOR:		favio figueroa
  #FECHA:		    27-04-2016 20:43:21
  ***********************************/
@@ -753,6 +756,12 @@ BEGIN
       from param.tperiodo p
         inner join param.tgestion ges on ges.id_gestion = p.id_gestion and ges.estado_reg ='activo'
       where p.estado_reg='activo' and  now()::date between p.fecha_ini and p.fecha_fin ;
+      
+      --validar que tenga o persona o intitucion
+      
+      IF v_parametros.id_institucion_remitente is null and  v_parametros.id_persona_remitente is null THEN
+         raise exception 'Por lo menos debe definir una intitución o persona remitente';      
+      END IF;      
 
       --3 Sentencia de la insercion
       insert into corres.tcorrespondencia(
@@ -762,7 +771,7 @@ BEGIN
         id_correspondencias_asociadas,
         id_depto,
         id_documento,
-        id_funcionario,
+        id_funcionario, -- funcionario peude ser nullo
         id_gestion,
         id_institucion,
         id_periodo,
@@ -786,7 +795,7 @@ BEGIN
         string_to_array(v_parametros.id_correspondencias_asociadas,',')::integer[],
         v_parametros.id_depto,
         v_parametros.id_documento,
-        v_parametros.id_funcionario_usuario,
+        NULL, -- en correpondencia externa el funcionario es NULO , v_parametros.id_funcionario_usuario,
         v_id_gestion,
         v_parametros.id_institucion_remitente,
         v_id_periodo,
