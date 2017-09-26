@@ -13,6 +13,7 @@ header("content-type: text/javascript; charset=UTF-8");
             bsave: false,
             fwidth: '90%',
             fheight: '90%',
+            urlDepto:'../../sis_parametros/control/Depto/listarDeptoFiltradoXUsuario',
 
             constructor: function (config) {
                 this.maestro = config.maestro;
@@ -139,7 +140,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					config : {
 						name : 'id_depto',
 						hiddenName : 'id_depto',
-						url : '../../sis_parametros/control/Depto/listarDeptoFiltradoXUsuario',
+						url :  this.urlDepto,
 						origen : 'DEPTO',
 						allowBlank : false,
 						fieldLabel : 'Depto',

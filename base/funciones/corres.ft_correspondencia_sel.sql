@@ -42,6 +42,7 @@ BEGIN
 	v_nombre_funcion = 'corres.ft_correspondencia_sel';
     v_parametros = pxp.f_get_record(p_tabla);
     
+    --raise exception '%',p_transaccion;
     
     /*********************************    
  	#TRANSACCION:  'CO_CORSIM_SEL'
@@ -830,7 +831,8 @@ where tiene is not null ';
 				v_deptos = '';
 			ELSE
 
-				v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
+				--v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
+                v_filtro = '0=0';
 
 				IF EXISTS (SELECT 0 FROM param.tdepto_usuario depus
 					inner join param.tdepto dep on dep.id_depto = depus.id_depto

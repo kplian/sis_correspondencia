@@ -14,6 +14,7 @@ header("content-type: text/javascript; charset=UTF-8");
 Phx.vista.RecepcionCorrespondenciaExterna = {
     bsave:false,
 	swEstado: 'borrador_recepcion_externo',
+	urlDepto:'../../sis_parametros/control/Depto/listarDeptoFiltradoDeptoUsuario',
 	gruposBarraTareas: [{
 		name: 'borrador_recepcion_externo',
 		title: '<H1 align="center"><i class="fa fa-thumbs-o-down"></i> Recepcionar</h1>',
@@ -48,9 +49,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('id_depto')].form=true; 
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
-
-
-		this.bloquearOrdenamientoGrid();
+        this.bloquearOrdenamientoGrid();
 
 
 		
