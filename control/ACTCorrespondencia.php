@@ -542,7 +542,7 @@ window.onload=function(){self.print();}
         $this->res = $this->objFunc->listarCorrespondenciaExterna();
         $this->res->imprimirRespuesta($this->res->generarJson());
     }	
-	//
+	//manu,06/10/2017 agregando a control
 	function recuperarCodigoQR(){
 		$this->objFunc = $this->create('MODCorrespondencia');
 		$cbteHeader = $this->objFunc->recuperarCodigoQR($this->objParam);
@@ -554,7 +554,7 @@ window.onload=function(){self.print();}
 			exit;
 		}	
 	}
-
+	//
 	function impCodigoCorrespondecia(){
 		
 		$nombreArchivo = 'CodigoCO'.uniqid(md5(session_id())).'.pdf'; 				

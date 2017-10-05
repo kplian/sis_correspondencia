@@ -91,5 +91,6 @@ VALUES (E'corres_clase_reporte_codigo', E'RCodigoQRCORR', E'nombre de la clase u
 
 INSERT INTO pxp.variable_global ("variable", "valor", "descripcion")
 VALUES (E'corres_clase_reporte_codigo_v1', E'RCodigoQRCORR_v1', E'nombre de la clase utilizada para imprimir el codigo de correspondencia, el codigo de la clase debe acomodarce dentro del archivo');
+
 /***********************************F-DAT-MANU-CORRES-0-06/10/2017*****************************************/  
 

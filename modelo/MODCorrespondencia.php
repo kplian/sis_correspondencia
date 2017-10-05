@@ -882,7 +882,7 @@ class MODCorrespondencia extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-	
+	//manu,06/10/2017  agregando qr modelo, segun id_correspondencia
 	function recuperarCodigoQR(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='corres.ft_correspondencia_ime';

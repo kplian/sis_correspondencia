@@ -111,7 +111,7 @@ Phx.vista.CorrespondenciaRecibida = {
 			scope: this
 		});
 	},
-	//ingresar boton qr
+	//manu,06/10/2017 ingresar boton qr
 	impCodigo: function(){
 		var rec = this.sm.getSelected();
 		Phx.CP.loadingShow();		

@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
   p_administrador integer,
   p_id_usuario integer,
@@ -757,7 +755,7 @@ BEGIN
 
     /*********************************    
      #TRANSACCION:  'SCO_GETQR_MOD'
-     #DESCRIPCION:  Recupera codigo QR segun configuracion de variable global
+     #DESCRIPCION:  Recupera codigo QR segun configuracion de variable global, corres_clase_reporte_codigo
      #AUTOR:        MANU
      #FECHA:        10/09/2017
     ***********************************/
