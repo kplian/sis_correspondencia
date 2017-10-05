@@ -14,6 +14,8 @@ require_once(dirname(__FILE__) . '/../../lib/PHPWord-master/src/PhpWord/Autoload
 \PhpOffice\PhpWord\Autoloader::register();
 
 
+require_once(dirname(__FILE__).'/../reporte/RCodigoQRCORR.php');
+
 class ACTCorrespondencia extends ACTbase
 {
 
@@ -539,7 +541,44 @@ window.onload=function(){self.print();}
         $this->objFunc = $this->create('MODCorrespondencia');
         $this->res = $this->objFunc->listarCorrespondenciaExterna();
         $this->res->imprimirRespuesta($this->res->generarJson());
-    }
+    }	
+	//
+	function recuperarCodigoQR(){
+		$this->objFunc = $this->create('MODCorrespondencia');
+		$cbteHeader = $this->objFunc->recuperarCodigoQR($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){				
+			return $cbteHeader;
+		}
+		else{
+			$cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}	
+	}
+
+	function impCodigoCorrespondecia(){
+		
+		$nombreArchivo = 'CodigoCO'.uniqid(md5(session_id())).'.pdf'; 				
+		$dataSource = $this->recuperarCodigoQR();
+		$orientacion = 'L';
+		$titulo = 'Códigos Correspondencia';				
+		$width = 160;  
+		$height = 80;
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',array($width, $height));		
+		$this->objParam->addParametro('titulo_archivo',$titulo);        
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		
+		$clsRep = $dataSource->getDatos();
+		//var_dump($clsRep);
+		eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
+		$reporte->datosHeader('unico', $dataSource->getDatos());
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');  		
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+	}
 }
 
 ?>

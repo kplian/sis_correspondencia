@@ -83,3 +83,13 @@ select pxp.f_insert_testructura_gui ('CORFISEM', 'DOCFISCA');
 COMMENT ON COLUMN corres.tcorrespondencia.origen IS 'este campo recibe la descripcion de la persona, la institucion o funcionario  que origina la correspondencia';
 
 /***********************************F-DAT-FRH-CORRES-0-24/01/2013*****************************************/
+
+
+/***********************************I-DAT-MANU-CORRES-0-06/10/2017*****************************************/ 
+INSERT INTO pxp.variable_global ("variable", "valor", "descripcion")
+VALUES (E'corres_clase_reporte_codigo', E'RCodigoQRCORR', E'nombre de la clase utilizada para imprimir el codigo de correspondencia, el codigo de la clase debe acomodarce dentro del archivo');
+
+INSERT INTO pxp.variable_global ("variable", "valor", "descripcion")
+VALUES (E'corres_clase_reporte_codigo_v1', E'RCodigoQRCORR_v1', E'nombre de la clase utilizada para imprimir el codigo de correspondencia, el codigo de la clase debe acomodarce dentro del archivo');
+/***********************************F-DAT-MANU-CORRES-0-06/10/2017*****************************************/  
+

@@ -7,6 +7,7 @@
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
 */
 
+
 class MODCorrespondencia extends MODbase{
 	
 	function __construct(CTParametro $pParam){
@@ -882,7 +883,23 @@ class MODCorrespondencia extends MODbase{
 		return $this->respuesta;
 	}
 	
-	
+	function recuperarCodigoQR(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='SCO_GETQR_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+		
 	
 			
 }
