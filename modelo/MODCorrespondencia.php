@@ -899,8 +899,23 @@ class MODCorrespondencia extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-		
-	
+	//	
+	function recuperarCodigoQR2(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='SCO_GETQR_L_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 			
 }
 ?>

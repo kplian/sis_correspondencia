@@ -32,15 +32,7 @@ Phx.vista.CorrespondenciaRecibida = {
 			disabled: true,
 			handler: this.finalizarRecepcion,
 			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
-		});
-
-		this.addButton('btnImpCodigo', {
-			text: 'Imp Codigo',
-			iconCls: 'bprintcheck',
-			disabled: true,
-			handler: this.impCodigo,
-			tooltip: '<b>Imprimir</b><br/>'
-		});
+		});		
 		
 		this.addButton('archivar', {
 			text: 'Archivar',
@@ -49,6 +41,22 @@ Phx.vista.CorrespondenciaRecibida = {
 			handler: this.archivar,
 			tooltip: '<b>Archivar</b><br/>'
 		});
+		//
+		/*this.addButton('btnImpCodigo', {
+			text: 'Imp Sticker',
+			iconCls: 'bprintcheck',
+			disabled: true,
+			handler: this.impCodigo,
+			tooltip: '<b>Imprimir</b><br/>'
+		});
+		
+		this.addButton('btnImpCodigo2', {
+			text: 'Imp Codigo',
+			iconCls: 'bprintcheck',
+			disabled: true,
+			handler: this.impCodigo2,
+			tooltip: '<b>Imprimir</b><br/>'
+		});*/
 		
 		this.init();
         this.store.baseParams = {'interface': 'recibida'};
@@ -59,7 +67,6 @@ Phx.vista.CorrespondenciaRecibida = {
 	preparaMenu:function(n){
 		Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n);      	
 		var data = this.getSelectedData();
-		this.getBoton('btnImpCodigo').enable();
 		console.log('data',data)
 		var tb =this.tbar;
 		//si el archivo esta escaneado se permite visualizar
@@ -112,7 +119,7 @@ Phx.vista.CorrespondenciaRecibida = {
 		});
 	},
 	//manu,06/10/2017 ingresar boton qr
-	impCodigo: function(){
+	/*impCodigo: function(){
 		var rec = this.sm.getSelected();
 		Phx.CP.loadingShow();		
 		Ext.Ajax.request({
@@ -123,7 +130,19 @@ Phx.vista.CorrespondenciaRecibida = {
 			timeout: this.timeout,
 			scope: this
 		});
-	}
-	
+	},	
+	//
+	impCodigo2: function(){
+		var rec = this.sm.getSelected();
+		Phx.CP.loadingShow();		
+		Ext.Ajax.request({
+			url: '../../sis_correspondencia/control/Correspondencia/impCodigoCorrespondecia2',
+			params: { 'id_correspondencia': rec.data.id_correspondencia },
+			success : this.successExport,
+			failure: this.conexionFailure,
+			timeout: this.timeout,
+			scope: this
+		});
+	}*/
 };
 </script>
