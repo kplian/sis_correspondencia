@@ -46,7 +46,9 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	constructor: function(config) {
 	    
 	    
-        this.Atributos[this.getIndAtributo('id_depto')].form=true; 
+        this.Atributos[this.getIndAtributo('id_depto')].form=true;
+        this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
+        this.Atributos[this.getIndAtributo('id_uo')].grid=false; 
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
         this.bloquearOrdenamientoGrid();
