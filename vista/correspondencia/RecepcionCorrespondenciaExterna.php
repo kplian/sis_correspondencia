@@ -70,7 +70,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		});
 		
 		this.addButton('btnImpCodigo2', {
-			text: 'Imprimir Dcomuento',
+			text: 'Imprimir Documento',
 			iconCls: 'bprintcheck',
 			disabled: true,
 			handler: this.impCodigo2,
@@ -240,7 +240,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 				height: 250
 			}, rec.data, this.idContenedor, 'subirCorrespondencia')
 	},
-
+	//
 	imprimirCodigoCorrespondencia : function () {
 		var rec = this.sm.getSelected();
 		Phx.CP.loadingShow();		
@@ -252,7 +252,6 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			timeout: this.timeout,
 			scope: this
 		});
-
 	},
 	//
 	impCodigo2: function(){
