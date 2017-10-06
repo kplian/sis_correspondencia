@@ -801,7 +801,7 @@ BEGIN
           FROM corres.tcorrespondencia cor
           INNER JOIN param.tdocumento docume ON docume.id_documento = cor.id_documento
           WHERE cor.id_correspondencia = v_parametros.id_correspondencia;
-                  
+
           select t.nombre 
           INTO v_rec_co_1
           from param.tempresa t

@@ -189,7 +189,7 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 		$this->SetFont('','B',15);		
 		$this->ln(5);
 		$this->SetFont('','',7);	
-		$this->Text(115, 3, 'RECIBIDO mp', false, false, true, 0,5,'',false,'',1);
+		$this->Text(115, 3, 'RECIBIDO', false, false, true, 0,5,'',false,'',1);
 		$this->Text(115, 6, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',1);
 		$this->Text(115, 9, trim($this->cod['num']), false, false, true, 0,5,'',false,'',1);				
 		$this->Text(115, 12, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',1);
