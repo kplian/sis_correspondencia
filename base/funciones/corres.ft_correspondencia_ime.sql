@@ -830,7 +830,6 @@ BEGIN
 
       --Devuelve la respuesta
       return v_resp;
-
     end;
 
     else

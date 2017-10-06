@@ -12,7 +12,7 @@
  	referencia,
 	fecha_reg,
  	numero
- *  
+ *   
  * */
 class RCodigoQRCORR extends ReportePDF {
 	var $datos_titulo;

@@ -898,7 +898,7 @@ class MODCorrespondencia extends MODbase{
 
 		//Devuelve la respuesta
 		return $this->respuesta;
-	}
+	} 
 	//	
 	function recuperarCodigoQR2(){
 		//Definicion de variables para ejecucion del procedimiento

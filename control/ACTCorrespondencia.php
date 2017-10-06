@@ -606,7 +606,7 @@ window.onload=function(){self.print();}
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		
 		$clsRep = $dataSource->getDatos();
-		//var_dump($clsRep);
+
 		eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
 		$reporte->datosHeader('unico', $dataSource->getDatos());
 		$reporte->generarReporte();
