@@ -129,7 +129,6 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 		if (data['estado'] == 'borrador_recepcion_externo') {
 
-			this.getBoton('imprimirCodigoCorrespondencia').enable();
 			this.getBoton('aSubirCorrespondenciaExterna').enable();
 		}
 
@@ -145,12 +144,24 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		}
 
 
-
+		this.getBoton('imprimirCodigoCorrespondencia').enable();
 
 	 
 		 return tb
 		
 	},
+	liberaMenu:function(){
+        var tb = Phx.vista.RecepcionCorrespondenciaExterna.superclass.liberaMenu.call(this);
+        if(tb){
+           
+            this.getBoton('verCorrespondencia').disable();
+			this.getBoton('finalizarRecepcionExterna').disable();
+			this.getBoton('imprimirCodigoCorrespondencia').disable();
+			this.getBoton('aSubirCorrespondenciaExterna').disable();
+                    
+        }
+       return tb
+    },
 	onButtonNew: function () {
 		console.log('llega');
 
@@ -223,6 +234,15 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 	imprimirCodigoCorrespondencia : function () {
 		var rec = this.sm.getSelected();
+		Phx.CP.loadingShow();		
+		Ext.Ajax.request({
+			url: '../../sis_correspondencia/control/Correspondencia/impCodigoCorrespondecia',
+			params: { 'id_correspondencia': rec.data.id_correspondencia },
+			success : this.successExport,
+			failure: this.conexionFailure,
+			timeout: this.timeout,
+			scope: this
+		});
 
 	},
 	finalizarRecepcionExterna:function () {
