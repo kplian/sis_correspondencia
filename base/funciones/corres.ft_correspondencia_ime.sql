@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
   p_administrador integer,
   p_id_usuario integer,
@@ -46,6 +48,7 @@ DECLARE
   v_estado_aux VARCHAR;
   v_clase_reporte	varchar;
   v_rec_co         	record;
+  v_rec_co_1        record;
   v_id_origen INTEGER;
 
 BEGIN
@@ -766,6 +769,11 @@ BEGIN
           FROM corres.tcorrespondencia cor
           INNER JOIN param.tdocumento docume ON docume.id_documento = cor.id_documento
           WHERE cor.id_correspondencia = v_parametros.id_correspondencia;        
+          
+          select t.nombre 
+          INTO v_rec_co_1
+          from param.tempresa t
+          limit 1;    
           --Definicion de la respuesta        
           v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Código recuperado');
           v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
@@ -773,6 +781,7 @@ BEGIN
           v_resp = pxp.f_agrega_clave(v_resp,'fecha_reg',v_rec_co.fecha_reg::varchar);
           v_resp = pxp.f_agrega_clave(v_resp,'numero',v_rec_co.numero::varchar);         
           v_resp = pxp.f_agrega_clave(v_resp,'tipo',v_rec_co.tipo::varchar);
+          v_resp = pxp.f_agrega_clave(v_resp,'nombre',v_rec_co_1.nombre::varchar);
           --Recuperar configuracion del reporte de codigo de barrar por defecto de variable global                 
           v_clase_reporte = pxp.f_get_variable_global('corres_clase_reporte_codigo');
           v_resp = pxp.f_agrega_clave(v_resp,'v_clase_reporte',COALESCE(v_clase_reporte,'RCodigoQRCORR')::varchar); 
@@ -791,7 +800,12 @@ BEGIN
           INTO v_rec_co
           FROM corres.tcorrespondencia cor
           INNER JOIN param.tdocumento docume ON docume.id_documento = cor.id_documento
-          WHERE cor.id_correspondencia = v_parametros.id_correspondencia;        
+          WHERE cor.id_correspondencia = v_parametros.id_correspondencia;
+                  
+          select t.nombre 
+          INTO v_rec_co_1
+          from param.tempresa t
+          limit 1; 
           --Definicion de la respuesta        
           v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Código recuperado');
           v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
@@ -799,6 +813,7 @@ BEGIN
           v_resp = pxp.f_agrega_clave(v_resp,'fecha_reg',v_rec_co.fecha_reg::varchar);
           v_resp = pxp.f_agrega_clave(v_resp,'numero',v_rec_co.numero::varchar);         
           v_resp = pxp.f_agrega_clave(v_resp,'tipo',v_rec_co.tipo::varchar);
+          v_resp = pxp.f_agrega_clave(v_resp,'nombre',v_rec_co_1.nombre::varchar);
           --Recuperar configuracion del reporte de codigo de barrar por defecto de variable global                 
           v_clase_reporte = pxp.f_get_variable_global('corres_clase_reporte_codigo_v1');
           v_resp = pxp.f_agrega_clave(v_resp,'v_clase_reporte',COALESCE(v_clase_reporte,'RCodigoQRCORR_v1')::varchar); 
@@ -830,6 +845,7 @@ BEGIN
 
       --Devuelve la respuesta
       return v_resp;
+
     end;
 
     else

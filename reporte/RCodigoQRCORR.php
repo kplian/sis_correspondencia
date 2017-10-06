@@ -48,7 +48,8 @@ class RCodigoQRCORR extends ReportePDF {
 			$this->cod = array('id'  => $detalle['id_correspondencia'],
 								'ref' => $detalle['referencia'],
 								'fec' => $detalle['fecha_reg'],
-								'num' => $detalle['numero']);
+								'num' => $detalle['numero'],
+								'nom' => $detalle['nombre']);
 			//formatea el codigo con el conteido requrido
 			$this->codigo_qr = json_encode($this->cod);	
 		}
@@ -82,7 +83,8 @@ class RCodigoQRCORR extends ReportePDF {
 				$this->cod = array('id'  => $val['id_activo_fijo'],
 								'ref' => $val['referencia'],
 								'fec' => $val['fecha_reg'],
-								'num' => $val['numero']);
+								'num' => $val['numero'],
+								'nom' => $detalle['nombre']);
 				//formatea el codigo con el conteido requrido
 				$this->codigo_qr = json_encode($this->cod);
 				$this->imprimirCodigo($style);	
@@ -97,7 +99,7 @@ class RCodigoQRCORR extends ReportePDF {
 		$this->ln(5);
 		$this->SetFont('','',22);	
 		$this->Text(80, 10, 'RECIBIDO', false, false, true, 0,5,'',false,'',2);
-		$this->Text(80, 25, 'ENDE TRANSMISION S.A.', false, false, true, 0,5,'',false,'',2);
+		$this->Text(80, 25, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',2);
 		$this->Text(80, 35, trim($this->cod['num']), false, false, true, 0,5,'',false,'',2);				
 		$this->Text(80, 45, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',2);
 			
@@ -137,7 +139,8 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 			$this->cod = array('id'  => $detalle['id_correspondencia'],
 								'ref' => $detalle['referencia'],
 								'fec' => $detalle['fecha_reg'],
-								'num' => $detalle['numero']);
+								'num' => $detalle['numero'],
+								'nom' => $detalle['nombre']);
 			//formatea el codigo con el conteido requrido
 			$this->codigo_qr = json_encode($this->cod);	
 		}
@@ -171,7 +174,8 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 				$this->cod = array('id'  => $val['id_activo_fijo'],
 								'ref' => $val['referencia'],
 								'fec' => $val['fecha_reg'],
-								'num' => $val['numero']);
+								'num' => $val['numero'],
+								'nom' => $val['nombre']);
 				//formatea el codigo con el conteido requrido
 				$this->codigo_qr = json_encode($this->cod);
 				$this->imprimirCodigo($style);	
@@ -186,7 +190,7 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 		$this->ln(5);
 		$this->SetFont('','',7);	
 		$this->Text(115, 3, 'RECIBIDO mp', false, false, true, 0,5,'',false,'',1);
-		$this->Text(115, 6, 'ENDE TRANSMISION S.A.', false, false, true, 0,5,'',false,'',1);
+		$this->Text(115, 6, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',1);
 		$this->Text(115, 9, trim($this->cod['num']), false, false, true, 0,5,'',false,'',1);				
 		$this->Text(115, 12, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',1);
 	}
