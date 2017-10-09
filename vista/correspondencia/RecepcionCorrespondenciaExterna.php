@@ -64,10 +64,18 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 
 		this.addButton('imprimirCodigoCorrespondencia', {
-			text: 'Imprimir Codigo',
+			text: 'Imprimir Sticker',
 			iconCls: 'bprint',
 			disabled: true,
 			handler: this.imprimirCodigoCorrespondencia,
+			tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
+		});
+		
+		this.addButton('btnImpCodigo2', {
+			text: 'Imprimir Documento',
+			iconCls: 'bprintcheck',
+			disabled: true,
+			handler: this.impCodigo2,
 			tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
 		});
 
@@ -147,6 +155,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 
 		this.getBoton('imprimirCodigoCorrespondencia').enable();
+		this.getBoton('btnImpCodigo2').enable();
 
 	 
 		 return tb
@@ -233,7 +242,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 				height: 250
 			}, rec.data, this.idContenedor, 'subirCorrespondencia')
 	},
-
+	//
 	imprimirCodigoCorrespondencia : function () {
 		var rec = this.sm.getSelected();
 		Phx.CP.loadingShow();		
@@ -245,8 +254,21 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			timeout: this.timeout,
 			scope: this
 		});
-
 	},
+	//
+	impCodigo2: function(){
+		var rec = this.sm.getSelected();
+		Phx.CP.loadingShow();		
+		Ext.Ajax.request({
+			url: '../../sis_correspondencia/control/Correspondencia/impCodigoCorrespondecia2',
+			params: { 'id_correspondencia': rec.data.id_correspondencia },
+			success : this.successExport,
+			failure: this.conexionFailure,
+			timeout: this.timeout,
+			scope: this
+		});
+	},
+	//
 	finalizarRecepcionExterna:function () {
 		var rec = this.sm.getSelected();
 		Phx.CP.loadingShow();

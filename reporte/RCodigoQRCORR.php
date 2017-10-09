@@ -12,7 +12,7 @@
  	referencia,
 	fecha_reg,
  	numero
- *  
+ *   
  * */
 class RCodigoQRCORR extends ReportePDF {
 	var $datos_titulo;
@@ -97,9 +97,10 @@ class RCodigoQRCORR extends ReportePDF {
 		$this->ln(5);
 		$this->SetFont('','',22);	
 		$this->Text(80, 10, 'RECIBIDO', false, false, true, 0,5,'',false,'',2);
-		$this->Text(80, 25, trim($this->cod['num']), false, false, true, 0,5,'',false,'',2);				
-		$this->Text(80, 35, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',2);
-		$this->Text(80, 45, trim($this->cod['ref']), false, false, true, 0,5,'',false,'',2);	
+		$this->Text(80, 25, 'ENDE TRANSMISION S.A.', false, false, true, 0,5,'',false,'',2);
+		$this->Text(80, 35, trim($this->cod['num']), false, false, true, 0,5,'',false,'',2);				
+		$this->Text(80, 45, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',2);
+			
 	}
 }
 // 
@@ -180,14 +181,14 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 
 	function imprimirCodigo($style){
 		$this->AddPage();
-		$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 1, 1,80,0, $style,'T',true);
-		$this->SetFont('','B',30);		
+		$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 100, 1, 15,0, $style,'T',true);
+		$this->SetFont('','B',15);		
 		$this->ln(5);
-		$this->SetFont('','',22);	
-		$this->Text(80, 10, 'manuuuuuuu', false, false, true, 0,5,'',false,'',2);
-		$this->Text(80, 25, trim($this->cod['num']), false, false, true, 0,5,'',false,'',2);				
-		$this->Text(80, 35, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',2);
-		$this->Text(80, 45, trim($this->cod['ref']), false, false, true, 0,5,'',false,'',2);	
+		$this->SetFont('','',7);	
+		$this->Text(115, 3, 'RECIBIDO mp', false, false, true, 0,5,'',false,'',1);
+		$this->Text(115, 6, 'ENDE TRANSMISION S.A.', false, false, true, 0,5,'',false,'',1);
+		$this->Text(115, 9, trim($this->cod['num']), false, false, true, 0,5,'',false,'',1);				
+		$this->Text(115, 12, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',1);
 	}
 }
 ?>

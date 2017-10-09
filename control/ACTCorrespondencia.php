@@ -555,10 +555,22 @@ window.onload=function(){self.print();}
 		}	
 	}
 	//
+	function recuperarCodigoQR2(){
+		$this->objFunc = $this->create('MODCorrespondencia');
+		$cbteHeader = $this->objFunc->recuperarCodigoQR2($this->objParam);
+		if($cbteHeader->getTipo() == 'EXITO'){				
+			return $cbteHeader;
+		}
+		else{
+			$cbteHeader->imprimirRespuesta($cbteHeader->generarJson());
+			exit;
+		}	
+	}
+	//
 	function impCodigoCorrespondecia(){
 		
 		$nombreArchivo = 'CodigoCO'.uniqid(md5(session_id())).'.pdf'; 				
-		$dataSource = $this->recuperarCodigoQR();
+		$dataSource = $this->recuperarCodigoQR();		
 		$orientacion = 'L';
 		$titulo = 'Códigos Correspondencia';				
 		$width = 160;  
@@ -579,6 +591,30 @@ window.onload=function(){self.print();}
 		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 	}
-}
+	//
+	function impCodigoCorrespondecia2(){
+		
+		$nombreArchivo = 'CodigoCO'.uniqid(md5(session_id())).'.pdf'; 				
+		$dataSource = $this->recuperarCodigoQR2();		
+		$orientacion = 'L';
+		$titulo = 'Código de correspondencia';	
+		$tamano = 'LETTER';			
 
+		$this->objParam->addParametro('orientacion',$orientacion);
+		$this->objParam->addParametro('tamano',array($width, $height));		
+		$this->objParam->addParametro('titulo_archivo',$titulo);        
+		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
+		
+		$clsRep = $dataSource->getDatos();
+
+		eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
+		$reporte->datosHeader('unico', $dataSource->getDatos());
+		$reporte->generarReporte();
+		$reporte->output($reporte->url_archivo,'F');  		
+		$this->mensajeExito=new Mensaje();
+		$this->mensajeExito->setMensaje('EXITO','Reporte.php','Reporte generado','Se generó con éxito el reporte: '.$nombreArchivo,'control');
+		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
+		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
+	}
+}
 ?>

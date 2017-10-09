@@ -755,13 +755,13 @@ BEGIN
 
     /*********************************    
      #TRANSACCION:  'SCO_GETQR_MOD'
-     #DESCRIPCION:  Recupera codigo QR segun configuracion de variable global, corres_clase_reporte_codigo
+     #DESCRIPCION:  Recupera codigo QR segun configuracion de variable global
      #AUTOR:        MANU
      #FECHA:        10/09/2017
     ***********************************/
 	elsif(p_transaccion='SCO_GETQR_MOD')THEN
     	begin
-          SELECT docume.descripcion,cor.referencia,cor.fecha_reg,cor.numero,cor.tipo  
+          SELECT docume.descripcion,cor.referencia,to_char(cor.fecha_reg,'dd-mm-yyyy HH24:MI:SS') as fecha_reg,cor.numero,cor.tipo  
           INTO v_rec_co
           FROM corres.tcorrespondencia cor
           INNER JOIN param.tdocumento docume ON docume.id_documento = cor.id_documento
@@ -774,16 +774,37 @@ BEGIN
           v_resp = pxp.f_agrega_clave(v_resp,'numero',v_rec_co.numero::varchar);         
           v_resp = pxp.f_agrega_clave(v_resp,'tipo',v_rec_co.tipo::varchar);
           --Recuperar configuracion del reporte de codigo de barrar por defecto de variable global                 
-          IF (v_rec_co.tipo = 'interna' or v_rec_co.tipo = 'externa') then
-              v_clase_reporte = pxp.f_get_variable_global('corres_clase_reporte_codigo');
-              v_resp = pxp.f_agrega_clave(v_resp,'v_clase_reporte',COALESCE(v_clase_reporte,'RCodigoQRCORR')::varchar);        
-          ELSE
-              v_clase_reporte = pxp.f_get_variable_global('corres_clase_reporte_codigo_v1');
-              v_resp = pxp.f_agrega_clave(v_resp,'v_clase_reporte',COALESCE(v_clase_reporte,'RCodigoQRCORR_v1')::varchar);    
-          END IF;
+          v_clase_reporte = pxp.f_get_variable_global('corres_clase_reporte_codigo');
+          v_resp = pxp.f_agrega_clave(v_resp,'v_clase_reporte',COALESCE(v_clase_reporte,'RCodigoQRCORR')::varchar); 
           --
         return v_resp;
 	end; 
+    /*********************************    
+     #TRANSACCION:  'SCO_GETQR_L_MOD'
+     #DESCRIPCION:  Recupera codigo QR segun configuracion de variable global
+     #AUTOR:        MANU
+     #FECHA:        10/09/2017
+    ***********************************/
+	elsif(p_transaccion='SCO_GETQR_L_MOD')THEN
+    	begin
+          SELECT docume.descripcion,cor.referencia,to_char(cor.fecha_reg,'dd-mm-yyyy HH24:MI:SS') as fecha_reg,cor.numero,cor.tipo
+          INTO v_rec_co
+          FROM corres.tcorrespondencia cor
+          INNER JOIN param.tdocumento docume ON docume.id_documento = cor.id_documento
+          WHERE cor.id_correspondencia = v_parametros.id_correspondencia;        
+          --Definicion de la respuesta        
+          v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Código recuperado');
+          v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
+          v_resp = pxp.f_agrega_clave(v_resp,'referencia',v_rec_co.referencia::varchar);
+          v_resp = pxp.f_agrega_clave(v_resp,'fecha_reg',v_rec_co.fecha_reg::varchar);
+          v_resp = pxp.f_agrega_clave(v_resp,'numero',v_rec_co.numero::varchar);         
+          v_resp = pxp.f_agrega_clave(v_resp,'tipo',v_rec_co.tipo::varchar);
+          --Recuperar configuracion del reporte de codigo de barrar por defecto de variable global                 
+          v_clase_reporte = pxp.f_get_variable_global('corres_clase_reporte_codigo_v1');
+          v_resp = pxp.f_agrega_clave(v_resp,'v_clase_reporte',COALESCE(v_clase_reporte,'RCodigoQRCORR_v1')::varchar); 
+          --
+        return v_resp;
+	end;
     /*********************************
 #TRANSACCION:  'CO_COREXTEST_INS'
 #DESCRIPCION:    camba el estado al finalizar la recepcion de la correspondencia externa
@@ -809,7 +830,6 @@ BEGIN
 
       --Devuelve la respuesta
       return v_resp;
-
     end;
 
     else
