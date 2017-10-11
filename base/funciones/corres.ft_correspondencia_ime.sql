@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
   p_administrador integer,
   p_id_usuario integer,
@@ -375,11 +373,27 @@ BEGIN
     elsif(p_transaccion='CO_COR_ELI')then
 
     begin
-      --Sentencia de la eliminacion
-
-      delete
-      from corres.tcorrespondencia
-      where id_correspondencia = v_parametros.id_correspondencia;
+      -- Obtenemos el estado de la correspondencia
+      select estado
+      into v_estado
+      from corres.tcorrespondencia c
+      where c.id_correspondencia = v_parametros.id_correspondencia;
+      --Si estado es Borrador_envio se puede eliminar
+      IF (v_estado = 'borrador_envio') THEN
+      	--Sentencia de la eliminacion de la correspondencia detalle
+      	DELETE
+      	FROM corres.tcorrespondencia
+      	WHERE id_correspondencia_fk = v_parametros.id_correspondencia;
+        -- Sentencia de eliminacion de la correspondencia
+      	DELETE
+      	FROM corres.tcorrespondencia
+      	WHERE id_correspondencia = v_parametros.id_correspondencia;
+      ELSE
+      	RAISE EXCEPTION 'NO SE PUEDE ELIMINAR, EL ESTADO NO ES BORRADOR';
+      
+      END IF;
+      --RAISE EXCEPTION '%',v_estado; 
+      
 
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
