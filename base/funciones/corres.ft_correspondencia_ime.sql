@@ -384,6 +384,10 @@ BEGIN
       	DELETE
       	FROM corres.tcorrespondencia
       	WHERE id_correspondencia_fk = v_parametros.id_correspondencia;
+        --Sentencia de eliminacion de los adjuntos
+        DELETE
+        FROM corres.tadjunto
+        WHERE id_correspondencia_origen = v_parametros.id_correspondencia;
         -- Sentencia de eliminacion de la correspondencia
       	DELETE
       	FROM corres.tcorrespondencia

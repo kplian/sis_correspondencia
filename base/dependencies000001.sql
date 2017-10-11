@@ -136,3 +136,13 @@ CREATE OR REPLACE VIEW corres.vcorrespondencia_fisica_emitida AS
 
 
 /***********************************F-DEP-FFP-CORRES-0-26/04/2016*****************************************/
+
+/***********************************I-DEP-FPC-CORRES-0-11/10/2017*****************************************/
+ALTER TABLE corres.tadjunto
+  ADD CONSTRAINT tadjunto_fk FOREIGN KEY (id_correspondencia_origen)
+    REFERENCES corres.tcorrespondencia(id_correspondencia)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+    NOT DEFERRABLE;
+    
+ /***********************************F-DEP-FPC-CORRES-0-11/10/2017*****************************************/
