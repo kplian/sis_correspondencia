@@ -683,9 +683,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank : true,
 				anchor : '80%',
 				gwidth : 100,
-				renderer : function(value, p, record) {
-					return value ? value.dateFormat('d/m/Y h:i:s') : ''
-				}
+				renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+				
 			},
 			type : 'DateField',
 			gwidth : 100,
@@ -780,11 +779,11 @@ header("content-type: text/javascript; charset=UTF-8");
 			name : 'fecha_fin',
 			type : 'date',
 			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_acciones', 'id_archivo', 'id_correspondencia_fk', 'id_correspondencias_asociadas', 'id_depto', 'id_documento', 'id_funcionario', 'id_gestion', 'id_institucion', 'id_periodo', 'id_persona', 'id_uo', 'mensaje', 'nivel', 'nivel_prioridad', 'numero', 'observaciones_estado', 'referencia', 'respuestas', 'sw_responsable', 'tipo', {
-			name : 'fecha_reg',
-			type : 'date',
-			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_usuario_reg', {
+		}, 'id_acciones', 'id_archivo', 'id_correspondencia_fk', 'id_correspondencias_asociadas', 'id_depto', 'id_documento', 'id_funcionario', 'id_gestion',
+		 'id_institucion', 'id_periodo', 'id_persona', 'id_uo', 'mensaje', 'nivel', 'nivel_prioridad', 'numero', 'observaciones_estado', 'referencia', 
+		 'respuestas', 'sw_responsable', 'tipo', 
+		 {name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+		 'id_usuario_reg', {
 			name : 'fecha_mod',
 			type : 'date',
 			dateFormat : 'Y-m-d H:i:s'
