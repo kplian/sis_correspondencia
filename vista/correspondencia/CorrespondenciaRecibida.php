@@ -18,7 +18,7 @@ Phx.vista.CorrespondenciaRecibida = {
 	bdel:false,
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
-	title: 'Correspondencia Recibida',
+	title: 'Recibida',
 	nombreVista: 'CorrespondenciaRecibida',
 	
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibida',

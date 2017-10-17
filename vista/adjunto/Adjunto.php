@@ -126,7 +126,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 			type: 'ComboBox',
 			id_grupo: 0,
 			filters: {pfiltro: 'movtip.nombre',type: 'string'},
-			grid: true,
+			grid: false,
 			form: false
 		},
 		{

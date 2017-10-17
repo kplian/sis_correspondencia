@@ -285,7 +285,7 @@ BEGIN
       from corres.tcorrespondencia c
       where c.id_correspondencia = v_parametros.id_correspondencia;
 
-      raise exception '%',v_parametros.id_clasificador;
+     -- raise exception '%',v_parametros.id_clasificador;
       --if si estado borrador_envio
       if(v_estado = 'borrador_envio') then
 
@@ -302,7 +302,7 @@ BEGIN
             id_clasificador = v_parametros.id_clasificador
         where id_correspondencia = v_parametros.id_correspondencia;
 
-        elseif(v_estado = 'enviado') then
+        /*elseif(v_estado = 'enviado') then
         --  si ya fue enviado solo se puede modificar las correspodencia asociada
         --Sentencia de la modificacion
 
@@ -311,11 +311,11 @@ BEGIN
           v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
             fecha_mod = now(),
             id_usuario_mod = p_id_usuario
-        where id_correspondencia = v_parametros.id_correspondencia;
+        where id_correspondencia = v_parametros.id_correspondencia;*/
 
         else
 
-        raise exception 'estado no reconodico';
+        raise exception 'No se puede editar, el estado no es Borrador';
 
       end if;
 

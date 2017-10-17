@@ -160,10 +160,15 @@ class ACTCorrespondencia extends ACTbase
 
         $this->objParam->addFiltro("cor.sw_archivado = ''no'' ");
 
-
-        $this->objFunc = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunc->listarCorrespondenciaRecibida();
-        $this->res->imprimirRespuesta($this->res->generarJson());
+		
+		if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+            $this->objReporte = new Reporte($this->objParam, $this);
+            $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaRecibida');
+        } else {
+            $this->objFunc = $this->create('MODCorrespondencia');
+            $this->res = $this->objFunc->listarCorrespondenciaRecibida();
+        }
+		$this->res->imprimirRespuesta($this->res->generarJson());
     }
 
     function finalizarRecepcion()

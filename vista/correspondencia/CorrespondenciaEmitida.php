@@ -16,7 +16,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
         requireclase: 'Phx.vista.Correspondencia',
-        title: 'Correspondencia Emitida',
+        title: 'Emitidas',
         nombreVista: 'CorrespondenciaEmitida',
 
 
