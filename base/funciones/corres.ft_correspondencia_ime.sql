@@ -379,7 +379,7 @@ BEGIN
       from corres.tcorrespondencia c
       where c.id_correspondencia = v_parametros.id_correspondencia;
       --Si estado es Borrador_envio se puede eliminar
-      IF (v_estado = 'borrador_envio') THEN
+      IF (v_estado = 'borrador_envio' OR v_estado = 'borrador_recepcion_externo' OR v_estado = 'borrador_detalle_recibido') THEN
       	--Sentencia de la eliminacion de la correspondencia detalle
       	DELETE
       	FROM corres.tcorrespondencia
