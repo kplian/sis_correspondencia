@@ -101,7 +101,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 0,
 			grid : true,
 			form : false
-		}, {
+		},{
 			config : {
 				name : 'numero',
 				fieldLabel : 'Numero',
@@ -273,7 +273,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			type : 'ComboBox',
 			id_grupo : 0,
 			filters : {
-				pfiltro : 'doc.descripcion',
+				pfiltro : 'param.tdocumento',
 				type : 'string'
 			},
 
@@ -283,7 +283,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			config : {
 				name : 'fecha_documento',
 				fieldLabel : 'Fecha Documento',
-				disabled : true,
+				disabled : false,
 				allowBlank : false,
 				format : 'd-m-Y',
 				width : 100,
@@ -352,20 +352,21 @@ header("content-type: text/javascript; charset=UTF-8");
 			config : {
 				name : 'id_institucion_remitente',
 				allowBlank : true,
-				fieldLabel : 'Institucion',
+				fieldLabel : 'Institucion Remitente',
+				valueField : 'id_institucion',
 				anchor : '90%',
 				tinit : true,
 				origen : 'INSTITUCION',
-				gdisplayField : 'nombre',
+				gdisplayField : 'desc_insti',
 				gwidth : 200,
 				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['nombre']);
+					return String.format('{0}', record.data['desc_insti']);
 				}
 			},
 			type : 'ComboRec',
 			id_grupo : 1,
 			filters : {
-				pfiltro : 'nombre',
+				pfiltro : 'insti.nombre',
 				type : 'string'
 			},
 			grid : false,
@@ -376,17 +377,18 @@ header("content-type: text/javascript; charset=UTF-8");
 				origen : 'PERSONA',
 				allowBlank : true,
 				tinit : true,
-				fieldLabel : 'Persona',
-				gdisplayField : 'desc_person', //mapea al store del grid
+				fieldLabel : 'Persona Remitente',
+				gdisplayField : 'nombre_completo1', //mapea al store del grid
+				valueField : 'id_persona',
 				gwidth : 200,
 				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_person']);
+					return String.format('{0}', record.data['nombre_completo1']);
 				}
 			},
 			type : 'ComboRec',
 			id_grupo : 1,
 			filters : {
-				pfiltro : 'PERSON.nombre_completo1',
+				pfiltro : 'persona.nombre_completo1',
 				type : 'string'
 			},
 
@@ -421,6 +423,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				tinit : true,
 				fieldLabel : 'Persona',
 				gdisplayField : 'desc_person', //mapea al store del grid
+				valueField : 'id_persona_destino',
 				gwidth : 200,
 				renderer : function(value, p, record) {
 					return String.format('{0}', record.data['desc_person']);
@@ -480,7 +483,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		}, {
 			config : {
 				name : 'referencia',
-				fieldLabel : 'referencia',
+				fieldLabel : 'Referencia',
 				allowBlank : true,
 				width : 300,
 				growMin : 100,
@@ -499,7 +502,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		}, {
 			config : {
 				name : 'mensaje',
-				fieldLabel : 'mensaje',
+				fieldLabel : 'Mensaje',
 				allowBlank : true,
 				width : 300,
 				growMin : 100,
@@ -765,6 +768,39 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 12,
 			grid : true,
 			form : false
+		},
+		{
+			config : {
+				name : 'nro_paginas',
+				fieldLabel : 'Numero Paginas',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.nro_paginas',
+				type : 'numeric'
+			},
+			id_grupo : 2,
+			grid : false,
+			form : false
+		},
+		{
+			config : {
+				name : 'otros_adjuntos',
+				fieldLabel : 'Otros Adjuntos',
+				width : 300,
+				growMin : 100,
+				grow : true,
+				gwidth : 100
+			},
+			type : 'TextArea',
+			filters : {
+				pfiltro : 'cor.otros_adjuntos',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : false,
+			form : false
 		}],
 		title : 'Correspondencia',
 		ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
@@ -787,7 +823,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			name : 'fecha_mod',
 			type : 'date',
 			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico'],
+		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','nro_paginas','id_persona_remitente','nombre_completo1','otros_adjuntos'],
 		sortInfo : {
 			field : 'id_correspondencia',
 			direction : 'desc'

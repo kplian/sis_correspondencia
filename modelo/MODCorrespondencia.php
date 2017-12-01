@@ -809,11 +809,13 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('id_clasificador','integer');
 		$this->captura('desc_ruta_plantilla_documento','varchar');
 		$this->captura('sw_archivado','varchar');
-		
-		
-                          
-
-
+		$this->captura('desc_insti','varchar');
+		$this->captura('id_institucion_remitente','integer');
+        $this->captura('nro_paginas','integer');                  
+        $this->captura('id_persona_remitente','integer');
+        $this->captura('nombre_completo1','text');
+		$this->captura('otros_adjuntos','varchar');
+        //$this->captura('sw_fisico','varchar');
 
 		
 
@@ -851,7 +853,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('nivel_prioridad','nivel_prioridad','varchar');
 		$this->setParametro('id_clasificador','id_clasificador','int4');		
 		$this->setParametro('id_depto','id_depto','int4');
-		
+		$this->setParametro('nro_paginas','nro_paginas','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -860,7 +862,36 @@ class MODCorrespondencia extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+    function modificarCorrespondenciaExterna(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_COREXT_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+		$this->setParametro('tipo','tipo','varchar');
+		$this->setParametro('id_documento','id_documento','int4');
+		$this->setParametro('fecha_documento','fecha_documento','date');
+		$this->setParametro('id_institucion_remitente','id_institucion_remitente','int4');
+		$this->setParametro('id_persona_remitente','id_persona_remitente','int4');
+		$this->setParametro('referencia','referencia','varchar');
+		$this->setParametro('mensaje','mensaje','text');
+		$this->setParametro('id_correspondencias_asociadas','id_correspondencias_asociadas','varchar');
+		$this->setParametro('nivel_prioridad','nivel_prioridad','varchar');
+		$this->setParametro('id_clasificador','id_clasificador','int4');		
+		$this->setParametro('id_depto','id_depto','int4');
+		$this->setParametro('nro_paginas','nro_paginas','int4');
+		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
+	
 
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 	function finalizarRecepcionExterna(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='corres.ft_correspondencia_ime';

@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -856,7 +854,7 @@ where tiene is not null ';
 					v_permiso = 'si';
 
 				ELSE
-					RAISE EXCEPTION '%','no eres responsable ni axuliar de ningun departamento';
+					RAISE EXCEPTION '%','no eres responsable ni auxiliar de ningun departamento';
 				END IF;
 
 
@@ -919,12 +917,19 @@ where tiene is not null ';
                             clasif.descripcion as desc_clasificador,
                             cor.id_clasificador,
                             doc.ruta_plantilla as desc_ruta_plantilla_documento,
-                            cor.sw_archivado
-
+                            cor.sw_archivado,
+							insti.nombre as desc_insti,
+                            insti.id_institucion as id_isntitucion_remitente,
+                            cor.nro_paginas,
+                            cor.id_persona as id_persona_remitente,
+                            persona.nombre_completo1,
+                            cor.otros_adjuntos
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto                       
+                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
+                        left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
+                        left join segu.vpersona persona on persona.id_persona=cor.id_persona                     
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 				        where cor.tipo=''externa'' and  '||v_filtro||'     ';
@@ -955,14 +960,62 @@ where tiene is not null ';
 	elsif(p_transaccion='CO_COREXTE_CONT')then
 
 		begin
+            IF p_administrador = 1 THEN
+				v_filtro = '0=0';
+				v_deptos = '';
+			ELSE
+
+				--v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
+                v_filtro = '0=0';
+
+				IF EXISTS (SELECT 0 FROM param.tdepto_usuario depus
+					inner join param.tdepto dep on dep.id_depto = depus.id_depto
+					inner join segu.tsubsistema sis on sis.id_subsistema = dep.id_subsistema
+				where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
+							and sis.codigo = 'CORRES')
+				THEN
+					--stuff here
+
+
+					select pxp.list(depus.id_depto::VARCHAR)
+					into v_deptos
+					from param.tdepto_usuario depus
+						inner join param.tdepto dep on dep.id_depto = depus.id_depto
+						inner join segu.tsubsistema sis on sis.id_subsistema = dep.id_subsistema
+					where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
+								and sis.codigo = 'CORRES';
+
+
+					v_filtro = v_filtro || ' and cor.id_depto  in ('||v_deptos||')  ';
+					v_permiso = 'si';
+
+				ELSE
+					RAISE EXCEPTION '%','no eres responsable ni auxiliar de ningun departamento';
+				END IF;
+
+
+			END IF;
+
+
+
+			IF  v_parametros.estado = 'borrador_recepcion_externo' THEN
+			    v_filtro= v_filtro || ' and cor.estado in (''borrador_recepcion_externo'') and ';
+			ELSIF v_parametros.estado = 'pendiente_recepcion_externo' THEN
+				v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'') and ';
+			ELSIF v_parametros.estado = 'enviado' THEN
+				v_filtro= v_filtro || ' and cor.estado in (''enviado'') and ';
+			END IF;
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_correspondencia)
-					    from corres.tcorrespondencia cor
-					    inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
-					    inner join param.tdocumento doc on doc.id_documento = cor.id_documento					   
+					     from corres.tcorrespondencia cor
+						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
+                        inner join param.tdocumento doc on doc.id_documento = cor.id_documento
+                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
+                        left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
+                        left join segu.vpersona persona on persona.id_persona=cor.id_persona                     
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-					    where cor.estado in (''borrador_envio'',''enviado'',''recibido'') and ';
+				        where cor.tipo=''externa'' and  '||v_filtro||' ';
 
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;

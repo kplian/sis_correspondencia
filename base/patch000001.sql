@@ -205,4 +205,24 @@ ALTER TABLE corres.tcorrespondencia
   
 /***********************************F-SCP-RAC-CORRES-0-07/02/2017*****************************************/
   
+/***********************************I-DEP-FPC-CORRES-0-21/11/2017*****************************************/
+  ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN nro_paginas INTEGER;
 
+  COMMENT ON COLUMN corres.tcorrespondencia.nro_paginas
+  IS 'Este campo sirve para indicar el numero de paginas de un documento recibido';
+    
+ /***********************************F-DEP-FPC-CORRES-0-21/11/2017*****************************************/
+ /***********************************I-DEP-FPC-CORRES-0-27/11/2017*****************************************/
+  ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN otros_adjuntos VARCHAR(200);
+
+  COMMENT ON COLUMN corres.tcorrespondencia.otros_adjuntos
+  IS 'Descripcion de adjuntos que no pueden escanear';
+ 
+  ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN sw_fisico VARCHAR(2) DEFAULT 'si'::character varying NOT NULL;
+
+  COMMENT ON COLUMN corres.tcorrespondencia.sw_fisico
+  IS 'Indica quien tiene el fisico';
+/***********************************F-DEP-FPC-CORRES-0-27/11/2017*****************************************/

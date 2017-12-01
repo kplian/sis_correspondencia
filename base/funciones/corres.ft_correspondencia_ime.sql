@@ -48,7 +48,8 @@ DECLARE
   v_rec_co         	record;
   v_rec_co_1        record;
   v_id_origen INTEGER;
-
+  v_id_correspondencias_asociadas_aux varchar;
+  v_id_correspondencias_asociadas	INTEGER [];
 BEGIN
 
   v_nombre_funcion = 'corres.ft_correspondencia_ime';
@@ -735,17 +736,20 @@ BEGIN
       END IF;
 
       --3 Sentencia de la insercion
-
+      IF v_parametros.id_correspondencias_asociadas = '' THEN
+      v_id_correspondencias_asociadas=NULL;
+      else
+      v_id_correspondencias_asociadas=string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ];
+      END IF;
       insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
         id_correspondencias_asociadas, id_depto, id_documento, id_funcionario,
   -- funcionario peude ser nullo
                   id_gestion, id_institucion, id_periodo, id_persona, id_uo,
                     mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
                     fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador)
+                    id_clasificador,nro_paginas,otros_adjuntos)
       values ('borrador_recepcion_externo', 'activo',
-        v_parametros.fecha_documento, string_to_array(
-        v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+        v_parametros.fecha_documento, v_id_correspondencias_asociadas, 
         v_parametros.id_depto, v_parametros.id_documento, NULL,
   -- en correpondencia externa el funcionario es NULO , v_parametros.id_funcionario_usuario,
              v_id_gestion, v_parametros.id_institucion_remitente, v_id_periodo,
@@ -753,7 +757,7 @@ BEGIN
                v_parametros.mensaje, 0, --nivel de anidamiento del arbol
              v_parametros.nivel_prioridad, v_num_corre, v_parametros.referencia,
                'externa', now(), p_id_usuario, null, null,
-               v_parametros.id_clasificador) RETURNING id_correspondencia
+               v_parametros.id_clasificador, v_parametros.nro_paginas, v_parametros.otros_adjuntos) RETURNING id_correspondencia
       into v_id_correspondencia;
 
       v_id_origen = v_id_correspondencia;
@@ -773,7 +777,80 @@ BEGIN
       return v_resp;
 
     end;
+  /*********************************
+ #TRANSACCION:  'CO_COREXT_MOD'
+ #DESCRIPCION:    modifica el mensajero la correpondencia externa recibida(ENTRANTE)
+ #AUTOR:        fprudencio
+ #FECHA:            25-11-2017 20:43:21
+ ***********************************/    
+elsif(p_transaccion='CO_COREXT_MOD')then
 
+    begin
+      --obtenemos estado de correpondencia
+
+      select estado
+      into v_estado
+      from corres.tcorrespondencia c
+      where c.id_correspondencia = v_parametros.id_correspondencia;
+
+     -- raise exception '%',v_parametros.id_clasificador;
+      --if si estado borrador_recepcion_externo
+      if(v_estado = 'borrador_recepcion_externo') then
+	       	
+      IF(v_parametros.id_correspondencias_asociadas='')THEN
+           v_id_correspondencias_asociadas=NULL;
+      ELSE
+           v_id_correspondencias_asociadas_aux:=ltrim(rtrim(v_parametros.id_correspondencias_asociadas,'}'),'{');
+           v_id_correspondencias_asociadas=string_to_array(v_id_correspondencias_asociadas_aux, ',')::integer [ ];
+           
+      END IF;
+        --Sentencia de la modificacion
+
+        update corres.tcorrespondencia
+        set tipo = v_parametros.tipo,
+            id_documento = v_parametros.id_documento,
+            fecha_documento = v_parametros.fecha_documento,
+            id_institucion = v_parametros.id_institucion_remitente,
+            id_persona = v_parametros.id_persona_remitente,
+            referencia = v_parametros.referencia,
+            mensaje = v_parametros.mensaje,
+            id_correspondencias_asociadas = v_id_correspondencias_asociadas,
+            nivel_prioridad = v_parametros.nivel_prioridad,
+            id_clasificador = v_parametros.id_clasificador,
+            id_depto = v_parametros.id_depto,
+            nro_paginas = v_parametros.nro_paginas,
+            otros_adjuntos = v_parametros.otros_adjuntos,
+            fecha_mod = now(),
+            id_usuario_mod = p_id_usuario
+        where id_correspondencia = v_parametros.id_correspondencia;
+
+        /*elseif(v_estado = 'enviado') then
+        --  si ya fue enviado solo se puede modificar las correspodencia asociada
+        --Sentencia de la modificacion
+
+        update corres.tcorrespondencia
+        set id_correspondencias_asociadas = string_to_array(
+          v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+            fecha_mod = now(),
+            id_usuario_mod = p_id_usuario
+        where id_correspondencia = v_parametros.id_correspondencia;*/
+
+        else
+
+        raise exception 'No se puede editar, el estado no es Borrador';
+
+      end if;
+
+      --Definicion de la respuesta
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
+        'Correspondencia modificado(a)');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
+        v_parametros.id_correspondencia::varchar);
+
+      --Devuelve la respuesta
+      return v_resp;
+
+    end;
     /*********************************    
      #TRANSACCION:  'SCO_GETQR_MOD'
      #DESCRIPCION:  Recupera codigo QR segun configuracion de variable global

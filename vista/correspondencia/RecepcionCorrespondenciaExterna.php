@@ -51,6 +51,10 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('id_uo')].grid=false;
         this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=true;
         this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=true;  
+        this.Atributos[this.getIndAtributo('nro_paginas')].grid=true;
+        this.Atributos[this.getIndAtributo('nro_paginas')].form=true;
+        this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=true;
+        this.Atributos[this.getIndAtributo('otros_adjuntos')].form=true;
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
         this.bloquearOrdenamientoGrid();
@@ -207,6 +211,55 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es interna
 		cmbDoc.modificado = true;
 		cmbDoc.reset();
+
+
+		this.ocultarComponente(this.Cmp.id_funcionario);
+
+		/*var cmbDoc = this.getComponente('id_documento');
+		var cmpFuncionarios = this.getComponente('id_funcionarios');
+		var cmpInstitucion = this.getComponente('id_institucion');
+		var cmpPersona = this.getComponente('id_persona');
+
+		this.adminGrupo({mostrar: [0, 1, 2, 3]});
+		this.ocultarComponente(cmpInstitucion);
+		this.ocultarComponente(cmpPersona);
+		this.mostrarComponente(cmpFuncionarios);
+
+		this.getComponente('id_uo').enable();
+		this.getComponente('id_clasificador').enable();
+		this.getComponente('mensaje').enable();
+		this.getComponente('nivel_prioridad').enable();
+		this.getComponente('referencia').enable();
+
+		cmbDoc.store.baseParams.tipo = 'interna';//valor por dfecto es interna
+		cmbDoc.modificado = true;
+		cmbDoc.reset();*/
+
+	},
+	onButtonEdit: function () {
+		
+		this.tipo = this.getComponente('tipo');
+		var cmbDoc = this.getComponente('id_documento');
+	
+		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonEdit.call(this);
+
+		this.Cmp.id_institucion_destino.hide();
+		this.Cmp.id_persona_destino.hide();
+		this.Cmp.id_acciones.hide();
+		this.Cmp.id_acciones.hide();
+
+		this.ocultarComponente(this.Cmp.id_persona_destino);
+		this.ocultarComponente(this.Cmp.id_institucion_destino);
+		this.ocultarComponente(this.Cmp.id_acciones);
+
+		this.adminGrupo({ ocultar: [3]});
+
+		this.tipo.setValue('externa');
+		this.tipo.disable(true);
+
+		/*cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es interna
+		cmbDoc.modificado = true;
+		cmbDoc.reset();*/
 
 
 		this.ocultarComponente(this.Cmp.id_funcionario);

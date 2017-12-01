@@ -521,7 +521,11 @@ window.onload=function(){self.print();}
 
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
         $this->objFunc = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunc->insertarCorrespondenciaExterna();
+		if ($this->objParam->insertar('id_correspondencia')) {
+            $this->res = $this->objFunc->insertarCorrespondenciaExterna();
+        } else {
+            $this->res = $this->objFunc->modificarCorrespondenciaExterna();
+        }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
