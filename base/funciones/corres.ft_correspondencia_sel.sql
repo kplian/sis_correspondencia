@@ -497,7 +497,7 @@ BEGIN
 						cor.id_institucion,
 						cor.id_periodo,
 						cor.id_persona,
-						cor.id_uo ,
+						cor.id_uo,
 						cor.mensaje,
 						cor.nivel,
 						cor.nivel_prioridad,
@@ -514,7 +514,8 @@ BEGIN
 						usu1.cuenta as usr_reg ,
 						usu2.cuenta as usr_mod,
                         doc.descripcion as desc_documento	,
-                        cor.origen as desc_funcionario ,
+                        cor.origen,
+                        emp_recepciona1.desc_funcionario1 as desc_funcionario,
                         (CASE WHEN (cor.id_acciones is not null) then
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
@@ -526,7 +527,7 @@ BEGIN
                                 END )AS  acciones,
                                 depto.codigo||''-''||depto.nombre as desc_depto,
                                 --docume.codigo as desc_documento,
-                                uo.codigo||''-''||uo.nombre_unidad as desc_uo,
+                                uop.codigo||''-''||uop.nombre_unidad as desc_uo,
                                 ges.gestion as desc_gestion ,
                                 per.periodo as desc_periodo,
                                 persona_envia.nombre_completo1 as desc_persona,
@@ -546,6 +547,9 @@ BEGIN
 						inner join param.tperiodo per on per.id_periodo=cor.id_periodo
 						left join segu.vpersona persona_envia on persona_envia.id_persona=cor.id_persona
 						left join param.tinstitucion ins_envia on ins_envia.id_institucion=cor.id_institucion
+                        inner join corres.tcorrespondencia corp on corp.id_correspondencia=cor.id_correspondencia_fk 
+						left join orga.vfuncionario emp_recepciona1 on emp_recepciona1.id_funcionario=corp.id_funcionario
+                        left join orga.tuo uop on uop.id_uo=corp.id_uo
 						where cor.estado in (''pendiente_recibido'',''recibido'',''recibido_derivacion'') and '||v_filtro||' and ';
 			
 			--Definicion de la respuesta

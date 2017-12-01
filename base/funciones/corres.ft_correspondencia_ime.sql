@@ -50,6 +50,7 @@ DECLARE
   v_id_origen INTEGER;
   v_id_correspondencias_asociadas_aux varchar;
   v_id_correspondencias_asociadas	INTEGER [];
+  v_anular	integer;
 BEGIN
 
   v_nombre_funcion = 'corres.ft_correspondencia_ime';
@@ -779,13 +780,28 @@ BEGIN
       else
       v_id_correspondencias_asociadas=string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ];
       END IF;
+      -- Obtenemos el origen (institucion o persona)
+      IF (v_parametros.id_institucion_remitente is null) THEN
+      	SELECT per.nombre_completo1
+        into v_origen
+        FROM segu.vpersona2 per
+        WHERE per.id_persona = v_parametros.id_persona_remitente;
+    
+      ELSE
+      	SELECT insti.nombre
+        into v_origen
+        FROM param.tinstitucion insti
+        WHERE insti.id_institucion = v_parametros.id_institucion_remitente;
+      
+      END IF;
+      
       insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
         id_correspondencias_asociadas, id_depto, id_documento, id_funcionario,
   -- funcionario peude ser nullo
                   id_gestion, id_institucion, id_periodo, id_persona, id_uo,
                     mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
                     fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador,nro_paginas,otros_adjuntos,cite)
+                    id_clasificador,nro_paginas,otros_adjuntos,cite,origen)
       values ('borrador_recepcion_externo', 'activo',
         v_parametros.fecha_documento, v_id_correspondencias_asociadas, 
         v_parametros.id_depto, v_parametros.id_documento, NULL,
@@ -795,7 +811,7 @@ BEGIN
                v_parametros.mensaje, 0, --nivel de anidamiento del arbol
              v_parametros.nivel_prioridad, v_num_corre, v_parametros.referencia,
                'externa', now(), p_id_usuario, null, null,
-               v_parametros.id_clasificador, v_parametros.nro_paginas, v_parametros.otros_adjuntos, v_parametros.cite) RETURNING id_correspondencia
+               v_parametros.id_clasificador, v_parametros.nro_paginas, v_parametros.otros_adjuntos, v_parametros.cite,v_origen) RETURNING id_correspondencia
       into v_id_correspondencia;
 
       v_id_origen = v_id_correspondencia;
@@ -998,12 +1014,18 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       if (v_estado != 'enviado') THEN
        raise exception 'No se puede anular el estado no es enviado';
       end IF ;
-      UPDATE corres.tcorrespondencia
-      set estado_fisico = v_parametros.estado_fisico
-      WHERE id_correspondencia = v_parametros.id_correspondencia;
-
+      
+	  v_anular:=corres.f_anular_correspondencia(v_parametros.id_correspondencia,1);
       -- raise exception 'resp%',v_resp_cm;
-
+	  IF (v_anular = 1)THEN
+      	UPDATE corres.tcorrespondencia
+        set estado = 'anulado',
+        fecha_mod = now(),
+        id_usuario_mod = p_id_usuario
+        WHERE id_correspondencia = v_parametros.id_correspondencia;
+      ELSE
+      	RAISE EXCEPTION 'ERROR NO SE PUDO ANULAR';
+      END IF;
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia fisico(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',

@@ -338,7 +338,23 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : true,
 			form : true,
 			bottom_filter : true
-		}, {
+		}, 
+		{
+			config : {
+				name : 'origen',
+				fieldLabel : 'Origen Correspondencia',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.origen',
+				type : 'string'
+			},
+			id_grupo : 1,
+			grid : false,
+			form : false
+		},
+		{
 			config : {
 				name : 'id_funcionario',
 				origen : 'FUNCIONARIOCAR',
@@ -363,7 +379,9 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			grid : true,
 			form : true
-		}, {
+		}, 
+		
+		{
 			config : {
 				name : 'id_uo',
 				baseParams : {
@@ -863,7 +881,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			name : 'fecha_mod',
 			type : 'date',
 			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','nro_paginas','id_persona_remitente','nombre_completo1','otros_adjuntos','adjunto'],
+		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','nro_paginas','id_persona_remitente','nombre_completo1','otros_adjuntos','adjunto','origen'],
 		sortInfo : {
 			field : 'id_correspondencia',
 			direction : 'desc'

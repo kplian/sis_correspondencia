@@ -24,6 +24,8 @@ Phx.vista.CorrespondenciaRecibida = {
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibida',
 	
 	constructor: function(config) {
+		this.Atributos[this.getIndAtributo('origen')].grid=true;
+        this.Atributos[this.getIndAtributo('origen')].form=false;
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
 
 		this.addButton('finalizarRecibido', {

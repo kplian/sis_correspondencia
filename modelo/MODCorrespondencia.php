@@ -347,7 +347,8 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_documento','varchar');
-		$this->captura('desc_funcionario','varchar');
+		$this->captura('origen','varchar');
+		$this->captura('desc_funcionario','text');
 		$this->captura('acciones','text');
         $this->captura('desc_depto','text');
     
