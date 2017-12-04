@@ -53,7 +53,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			this.addButton('Adjuntos', {
 				text : 'Adjuntos',
-				iconCls : 'bprint',
+				iconCls : 'badjunto',
 				disabled : false,
 				handler : this.adjuntos,
 				tooltip : '<b>Adjuntos</b><br/>Archivos adjuntos a la correspondencia'
@@ -98,6 +98,25 @@ header("content-type: text/javascript; charset=UTF-8");
 				pfiltro : 'cor.version',
 				type : 'numeric'
 			},
+			id_grupo : 0,
+			grid : true,
+			form : false
+		}, {
+			config : {
+				name : 'adjunto',
+				fieldLabel : 'Adjunto',
+				gwidth : 60,
+				renderer : function(value, p, record) {
+					var icono = record.data.estado + '.png';
+					if (record.data.adjunto > 0) {
+						return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/adjunto.png' align='center' width='40' height='40'/></div>";
+					}
+					
+					
+				}
+			},
+			type : 'Field',
+			egrid : true,
 			id_grupo : 0,
 			grid : true,
 			form : false
@@ -502,7 +521,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		}, {
 			config : {
 				name : 'mensaje',
-				fieldLabel : 'Mensaje',
+				fieldLabel : 'Observaciones',
 				allowBlank : true,
 				width : 300,
 				growMin : 100,
@@ -823,7 +842,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			name : 'fecha_mod',
 			type : 'date',
 			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','nro_paginas','id_persona_remitente','nombre_completo1','otros_adjuntos'],
+		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','nro_paginas','id_persona_remitente','nombre_completo1','otros_adjuntos','adjunto'],
 		sortInfo : {
 			field : 'id_correspondencia',
 			direction : 'desc'
@@ -987,13 +1006,12 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.cmpIdGestion.setValue(reg.ROOT.datos.id_gestion);
 
 			} else {
-				alert('ocurrio al obtener la gestion')
+				alert('ocurrio al obtener la gestion');
 			}
 		},
 		verHojaRuta : function() {
 
 			var rec = this.sm.getSelected();
-
 			Ext.Ajax.request({
 				url : '../../sis_correspondencia/control/Correspondencia/hojaRuta',
 				params : {

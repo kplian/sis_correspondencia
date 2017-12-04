@@ -815,7 +815,8 @@ class MODCorrespondencia extends MODbase{
         $this->captura('id_persona_remitente','integer');
         $this->captura('nombre_completo1','text');
 		$this->captura('otros_adjuntos','varchar');
-        //$this->captura('sw_fisico','varchar');
+		$this->captura('adjunto','bigint');
+        $this->captura('sw_fisico','varchar');
 
 		
 

@@ -541,15 +541,18 @@ window.onload=function(){self.print();}
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
 
 
-        /*
-                if($this->objParam->getParametro('estado') != ''){
-                    $this->objParam->addFiltro("cor.estado in ('' ".$this->objParam->getParametro('estado')." '' ) ");
-                }*/
+        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+            $this->objReporte = new Reporte($this->objParam, $this);
+            $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaExterna');
+        } else {
+            $this->objFunc = $this->create('MODCorrespondencia');
+            $this->res = $this->objFunc->listarCorrespondenciaExterna();
+        }
+		$this->res->imprimirRespuesta($this->res->generarJson());
 
-
-        $this->objFunc = $this->create('MODCorrespondencia');
+        /*$this->objFunc = $this->create('MODCorrespondencia');
         $this->res = $this->objFunc->listarCorrespondenciaExterna();
-        $this->res->imprimirRespuesta($this->res->generarJson());
+        $this->res->imprimirRespuesta($this->res->generarJson());*/
     }	
 	//manu,06/10/2017 agregando a control
 	function recuperarCodigoQR(){

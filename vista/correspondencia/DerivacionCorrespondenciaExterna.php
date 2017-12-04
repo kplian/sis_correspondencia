@@ -103,11 +103,16 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	},
 
 	actualizarSegunTab: function (name, indice) {
-		console.log(name);
+		console.log('derivar',name);
 
 		this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
-		this.getBoton('Hoja de Ruta').hide();
+		if(name=='enviado'){
+			this.getBoton('Hoja de Ruta').show();
+		}else{
+			this.getBoton('Hoja de Ruta').hide();
+		}
+		
 		
 
 		this.swEstado = name;

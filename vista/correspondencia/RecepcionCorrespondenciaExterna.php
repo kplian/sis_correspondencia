@@ -64,7 +64,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 //		this.getBoton('verCorrespondencia').hide();
 		this.getBoton('mandar').hide();
-		this.getBoton('Adjuntos').hide();
+		//this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
 
@@ -108,10 +108,17 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.store.baseParams = {'interface': 'externa','estado': this.swEstado};
         this.load({params: {start: 0, limit: 50}})
 
-
+		this.iniciarEventos();
     
    },
-
+   iniciarEventos(){
+	   	this.Cmp.id_institucion_remitente.on('select',function(combo,record,index){
+	   		this.Cmp.id_persona_remitente.store.baseParams.id_institucion=combo.getValue();
+	   		this.Cmp.id_persona_remitente.reset();
+	   		this.Cmp.id_persona_remitente.modificado=true;
+	   		
+	   	},this)
+   },
 	getParametrosFiltro: function () {
 		this.store.baseParams.estado = this.swEstado;
 	},
@@ -120,7 +127,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		console.log(name);
 
 		this.getBoton('mandar').hide();
-		this.getBoton('Adjuntos').hide();
+		//this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
 
