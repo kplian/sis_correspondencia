@@ -919,11 +919,13 @@ where tiene is not null ';
                             doc.ruta_plantilla as desc_ruta_plantilla_documento,
                             cor.sw_archivado,
 							insti.nombre as desc_insti,
-                            insti.id_institucion as id_isntitucion_remitente,
+                            insti.id_institucion as id_institucion_remitente,
                             cor.nro_paginas,
                             cor.id_persona as id_persona_remitente,
                             persona.nombre_completo1,
-                            cor.otros_adjuntos
+                            cor.otros_adjuntos,
+                            (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_correspondencia) as adjunto,
+                            cor.sw_fisico
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
