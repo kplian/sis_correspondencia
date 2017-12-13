@@ -113,7 +113,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
    },
    iniciarEventos(){
 	   	this.Cmp.id_institucion_remitente.on('select',function(combo,record,index){
-	   		this.Cmp.id_persona_remitente.store.baseParams.id_institucion=combo.getValue();
+	    	this.Cmp.id_persona_remitente.store.baseParams.id_institucion=combo.getValue();
 	   		this.Cmp.id_persona_remitente.reset();
 	   		this.Cmp.id_persona_remitente.modificado=true;
 	   		

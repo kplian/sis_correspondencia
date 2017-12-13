@@ -1010,12 +1010,13 @@ header("content-type: text/javascript; charset=UTF-8");
 			}
 		},
 		verHojaRuta : function() {
-
+			
 			var rec = this.sm.getSelected();
 			Ext.Ajax.request({
 				url : '../../sis_correspondencia/control/Correspondencia/hojaRuta',
 				params : {
 					id_correspondencia : rec.data.id_correspondencia,
+					tipo_corres:rec.data.tipo,
 					start : 0,
 					limit : 1
 				},

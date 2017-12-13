@@ -369,14 +369,18 @@ class ACTCorrespondencia extends ACTbase
 
         $id_origen = $hoja_ruta[0]['desc_id_origen'];
         $id_funcionario_origen = $hoja_ruta[0]['desc_id_funcionario_origen'];
-
         //obtenemos la correspondencia original el origen
         $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
         $this->objParam->defecto('dir_ordenacion', 'desc');
         $this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
         $this->objFunc = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunc->listarCorrespondencia();
+		if($this->objParam->getParametro('tipo_corres')!='externa'){
+			$this->res = $this->objFunc->listarCorrespondencia();	
+		}else{
+			$this->res = $this->objFunc->listarCorrespondenciaExterna();
+		}
+        
 
 
         if ($this->res->getTipo() == 'ERROR') {

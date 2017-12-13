@@ -34,6 +34,9 @@ DECLARE
 	v_id_funcionario_origen integer;
 	v_permiso VARCHAR;
   v_deptos VARCHAR;
+  v_tipo_correspondencia varchar;
+  v_id_usuario_reg INTEGER;
+  v_id_persona INTEGER;
 			    
 BEGIN
 
@@ -352,7 +355,7 @@ BEGIN
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
                                 END )AS  acciones,
-                        pxp.list(cor.id_acciones::text) as id_acciones,
+                        array_to_string(cor.id_acciones,'','') as id_acciones,
                         orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo
 
                         from corres.tcorrespondencia cor
@@ -647,16 +650,25 @@ BEGIN
     begin
 
 
-      select id_origen
-      into v_id_origen
+      select id_origen, tipo, id_usuario_reg
+      into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
+      
+	  SELECT id_persona INTO v_id_persona
+      FROM segu.tusuario
+      WHERE id_usuario=v_id_usuario_reg;
 
-
+		IF (v_tipo_correspondencia='interna')THEN
 			select id_funcionario
 			into v_id_funcionario_origen
 				from corres.tcorrespondencia
 					where id_correspondencia = v_id_origen;
+        ELSE
+        	SELECT fun.id_funcionario INTO v_id_funcionario_origen
+            FROM orga.tfuncionario fun
+            WHERE fun.id_persona=v_id_persona;
+        END IF;            
 
 
 
@@ -710,6 +722,7 @@ ORDER BY  id_correspondencia ASC ';
 
 
       --Devuelve la respuesta
+     
       return v_consulta;
 
     end;
