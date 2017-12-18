@@ -395,7 +395,26 @@ class MODCorrespondencia extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
+	function modificarCorrespondenciaDetalle(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_CORDET_MOD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','int4');
+		$this->setParametro('mensaje','mensaje','text');
+		$this->setParametro('id_acciones','id_acciones','varchar');
+	
 
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 
     function subirCorrespondencia(){
 		
@@ -948,6 +967,25 @@ class MODCorrespondencia extends MODbase{
 
 		//Devuelve la respuesta
 		return $this->respuesta;
+	}
+	function anularCorrespondencia()
+	{
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_COR_ANU';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+		
+		
 	}
 			
 }

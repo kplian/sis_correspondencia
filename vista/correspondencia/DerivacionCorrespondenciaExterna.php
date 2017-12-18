@@ -46,6 +46,15 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	ActSave: '../../sis_correspondencia/control/Correspondencia/insertarCorrespondenciaExterna',
 
 	constructor: function(config) {
+		
+		this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
+        this.Atributos[this.getIndAtributo('id_uo')].grid=false;
+        this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=true;
+        this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=true;  
+        this.Atributos[this.getIndAtributo('nro_paginas')].grid=true;
+        this.Atributos[this.getIndAtributo('nro_paginas')].form=true;
+        this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=true;
+        this.Atributos[this.getIndAtributo('otros_adjuntos')].form=true;
 	    Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
@@ -63,15 +72,15 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.getBoton('Hoja de Ruta').hide();
 
 
-		/*this.addButton('imprimirCodigoCorrespondencia', {
-			text: 'Imprimir Codigo',
-			iconCls: 'bprint',
-			disabled: true,
-			handler: this.imprimirCodigoCorrespondencia,
+		this.addButton('anularCorrespondencia', {
+			text: 'Anular',
+			iconCls: 'banular',
+			disabled: false,
+			handler: this.anularCorrespondencia,
 			tooltip: '<b>Imprimir Codigo</b><br/>imprimi codigo correspondencia'
 		});
 
-		this.addButton('aSubirCorrespondenciaExterna', {
+		/*this.addButton('aSubirCorrespondenciaExterna', {
 			text: 'Subir Documento',
 			iconCls: 'bupload',
 			disabled: true,
@@ -109,8 +118,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.getBoton('corregir').hide();
 		if(name=='enviado'){
 			this.getBoton('Hoja de Ruta').show();
+			this.getBoton('anularCorrespondencia').show();
 		}else{
 			this.getBoton('Hoja de Ruta').hide();
+			this.getBoton('anularCorrespondencia').hide();
 		}
 		
 		
@@ -148,17 +159,12 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		
 	},
 	onButtonNew: function () {
-		console.log('llega');
-
-
+		
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
 		var cmpId_funcionario = this.getComponente('id_funcionario');
 
-
-
 		Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonNew.call(this);
-
 
 		this.Cmp.id_institucion_destino.hide();
 		this.Cmp.id_persona_destino.hide();
@@ -168,8 +174,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_persona_destino);
 		this.ocultarComponente(this.Cmp.id_institucion_destino);
 		this.ocultarComponente(this.Cmp.id_acciones);
-
-
 
 		this.adminGrupo({ ocultar: [3]});
 
@@ -237,7 +241,35 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			scope: this
 		});
 
-	}
+	},
+	anularCorrespondencia : function() {
+
+			var data = this.sm.getSelected().data.id_proceso_contrato;
+			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
+			Phx.CP.loadingShow();
+			Ext.Ajax.request({
+				// form:this.form.getForm().getEl(),
+				url : '../../sis_correspondencia/control/Correspondencia/anularCorrespondencia',
+				params : {
+					id_correspondencia : id_correspondencia
+				},
+				success : this.successAnular,
+				failure : this.conexionFailure,
+				timeout : this.timeout,
+				scope : this
+			});
+		},
+		successAnular : function(resp) {
+
+			Phx.CP.loadingHide();
+			var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+			if (!reg.ROOT.error) {
+				alert(reg.ROOT.detalle.mensaje)
+
+			}
+			this.reload();
+
+		},
 	
 	
    

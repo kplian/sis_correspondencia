@@ -632,5 +632,12 @@ window.onload=function(){self.print();}
 		$this->mensajeExito->setArchivoGenerado($nombreArchivo);
 		$this->mensajeExito->imprimirRespuesta($this->mensajeExito->generarJson());
 	}
+function anularCorrespondencia()
+    {
+
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->anularCorrespondencia();
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 ?>

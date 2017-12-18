@@ -157,7 +157,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				type:'string'
 			},
    		   
-   			grid:true,
+   			grid:false,
    			form:true
    	      },{
     	   		config:{
@@ -175,7 +175,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			type:'ComboRec',
 			id_grupo:3,
 			filters:{pfiltro:'nombre',type:'string'},
-			grid:true,
+			grid:false,
 			form:true
 	},
 
@@ -477,17 +477,24 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		  var data = this.getSelectedData();
 		  var tb =this.tbar;
 		     
-		  
+		  console.log(this.maestro);
 		  //cuando el conrtato esta registrado el abogado no puede hacerle mas cambios
-		  if(data['estado']=='pendiente_recibido'){
+		  if(this.maestro.estado=='enviado'){
 		  		if(tb){
 		  			
 			  		this.getBoton('edit').disable();
 			  		this.getBoton('del').disable();
+			  		this.getBoton('new').disable();
+			  		this.getBoton('save').disable();
 			  	}
 		  } 
 		  return tb
 		
+	},
+	onButtonEdit: function () {
+		
+		this.Cmp.id_funcionario.disable();	
+		Phx.vista.CorrespondenciaDetalle.superclass.onButtonEdit.call(this);
 	}, 
 
 }
