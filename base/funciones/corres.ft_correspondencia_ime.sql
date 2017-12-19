@@ -600,6 +600,44 @@ BEGIN
       return v_resp;
 
     end;
+  /*********************************
+     #TRANSACCION:  'CO_CORDET_MOD'
+     #DESCRIPCION:    Modificación de registros como detalle de correspondencia
+     #AUTOR:          fpc
+     #FECHA:          14-12-2017 20:43:21
+    ***********************************/
+
+    elsif(p_transaccion='CO_CORDET_MOD')then
+
+    begin
+      select *
+      into v_datos_maestro
+      from corres.tcorrespondencia
+      where id_correspondencia = v_parametros.id_correspondencia_fk;
+
+      --RAISE EXCEPTION '%',v_datos_maestro.estado;
+
+      IF v_datos_maestro.estado = 'enviado'
+        THEN
+        RAISE EXCEPTION '%',
+          'No puede editar el registro porque ya se derivo la correspondencia';
+      END IF ;
+
+       update corres.tcorrespondencia
+        set mensaje = v_parametros.mensaje,
+            id_acciones = string_to_array(v_parametros.id_acciones,',')::integer[],
+            fecha_mod = now(),
+            id_usuario_mod = p_id_usuario
+        where id_correspondencia = v_parametros.id_correspondencia;
+        v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
+        'Correspondencia modificado(a)');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
+        v_parametros.id_correspondencia::varchar);
+
+      --Devuelve la respuesta
+      return v_resp;
+
+    end;   
 
     /*********************************
 #TRANSACCION:  'CO_CORFIN_INS'
@@ -935,6 +973,38 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia recepcionada finalizado(a)');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
+        v_parametros.id_correspondencia::varchar);
+
+      --Devuelve la respuesta
+      return v_resp;
+
+    end;
+      /*********************************
+ #TRANSACCION:  'CO_COR_ANU'
+ #DESCRIPCION:    cambia el estado de la correspondencia fisica
+ #AUTOR:        favio figueroa
+ #FECHA:            27-04-2016 20:43:21
+ ***********************************/
+
+    elsif(p_transaccion='CO_COR_ANU')then
+
+    begin
+	  SELECT estado INTO v_estado
+      FROM corres.tcorrespondencia
+      WHERE id_correspondencia=v_parametros.id_correspondencia;
+      
+      if (v_estado != 'enviado') THEN
+       raise exception 'No se puede anular el estado no es enviado';
+      end IF ;
+      UPDATE corres.tcorrespondencia
+      set estado_fisico = v_parametros.estado_fisico
+      WHERE id_correspondencia = v_parametros.id_correspondencia;
+
+      -- raise exception 'resp%',v_resp_cm;
+
+      --Definicion de la respuesta
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia fisico(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
         v_parametros.id_correspondencia::varchar);
 

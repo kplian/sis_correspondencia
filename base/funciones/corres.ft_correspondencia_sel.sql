@@ -366,7 +366,7 @@ BEGIN
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         left join param.tinstitucion institucion on institucion.id_institucion=cor.id_institucion
                         left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'') and ';
+				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'',''recibido_derivacion'') and ';
 			
 			--Definicion de la respuesta
 			           v_consulta:=v_consulta||v_parametros.filtro;
@@ -445,7 +445,7 @@ BEGIN
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         left join param.tinstitucion institucion on institucion.id_institucion=cor.id_institucion
                         left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'') and ';
+				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'',''recibido_derivacion'') and ';
 			
 			
 			--Definicion de la respuesta		    
