@@ -790,7 +790,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('fecha_fin','date');
 		
         $this->captura('id_acciones','int4[]');//array
-        //$this->captura('id_archivo','integer');
+        $this->captura('cite','varchar');
 		$this->captura('id_correspondencia_fk','int4');
 		$this->captura('id_correspondencias_asociadas','integer[]');
 		$this->captura('id_depto','int4');

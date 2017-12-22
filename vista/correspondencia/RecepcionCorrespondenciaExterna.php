@@ -55,6 +55,9 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('nro_paginas')].form=true;
         this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=true;
         this.Atributos[this.getIndAtributo('otros_adjuntos')].form=true;
+        this.Atributos[this.getIndAtributo('cite')].grid=true;
+        this.Atributos[this.getIndAtributo('cite')].form=true;
+        this.Atributos[this.getIndAtributo('estado_reg')].grid=false;
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
         this.bloquearOrdenamientoGrid();

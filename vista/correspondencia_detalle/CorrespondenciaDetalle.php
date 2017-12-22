@@ -182,7 +182,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
       	{
 			config:{
 				name: 'mensaje',
-				fieldLabel: 'mensaje',
+				fieldLabel: 'Mensaje',
 				allowBlank: true,
 				width: 300,
 				growMin:100,
@@ -246,7 +246,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    		{
 			config:{
 				name: 'estado',
-				fieldLabel: 'estado',
+				fieldLabel: 'Estado',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,

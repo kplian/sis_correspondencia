@@ -895,7 +895,7 @@ where tiene is not null ';
                             cor.fecha_documento,
                             cor.fecha_fin,
                             cor.id_acciones,
-                            --cor.id_archivo,
+                            cor.cite,
                             cor.id_correspondencia_fk,
                             cor.id_correspondencias_asociadas,
                             cor.id_depto,

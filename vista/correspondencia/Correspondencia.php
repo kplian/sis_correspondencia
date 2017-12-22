@@ -138,7 +138,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		}, {
 			config : {
 				name : 'estado',
-				fieldLabel : 'estado',
+				fieldLabel : 'Estado',
 				allowBlank : true,
 				anchor : '80%',
 				gwidth : 100,
@@ -152,7 +152,23 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 0,
 			grid : true,
 			form : false
-		}, {
+		}, 
+		{
+			config : {
+				name : 'cite',
+				fieldLabel : 'Cite',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.cite',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : false,
+			form : false,
+			bottom_filter : true
+		},{
 			config : {
 				name : 'id_depto',
 				hiddenName : 'id_depto',
@@ -319,7 +335,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			id_grupo : 2,
 			grid : true,
-			form : true
+			form : true,
+			bottom_filter : true
 		}, {
 			config : {
 				name : 'id_funcionario',
@@ -389,7 +406,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			grid : false,
-			form : true
+			form : true,
+			bottom_filter : true
 		}, {
 			config : {
 				name : 'id_persona_remitente',
@@ -412,7 +430,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 
 			grid : false,
-			form : true
+			form : true,
+			bottom_filter : true
 		}, {
 			config : {
 				name : 'id_institucion_destino',
@@ -517,7 +536,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			id_grupo : 2,
 			grid : true,
-			form : true
+			form : true,
+			bottom_filter : true
 		}, {
 			config : {
 				name : 'mensaje',
