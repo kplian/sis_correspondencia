@@ -875,6 +875,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_depto','id_depto','int4');
 		$this->setParametro('nro_paginas','nro_paginas','int4');
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
+		$this->setParametro('cite','cite','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -904,7 +905,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_depto','id_depto','int4');
 		$this->setParametro('nro_paginas','nro_paginas','int4');
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
-	
+	    $this->setParametro('cite','cite','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

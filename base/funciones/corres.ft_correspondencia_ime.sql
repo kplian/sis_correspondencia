@@ -785,7 +785,7 @@ BEGIN
                   id_gestion, id_institucion, id_periodo, id_persona, id_uo,
                     mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
                     fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador,nro_paginas,otros_adjuntos)
+                    id_clasificador,nro_paginas,otros_adjuntos,cite)
       values ('borrador_recepcion_externo', 'activo',
         v_parametros.fecha_documento, v_id_correspondencias_asociadas, 
         v_parametros.id_depto, v_parametros.id_documento, NULL,
@@ -795,7 +795,7 @@ BEGIN
                v_parametros.mensaje, 0, --nivel de anidamiento del arbol
              v_parametros.nivel_prioridad, v_num_corre, v_parametros.referencia,
                'externa', now(), p_id_usuario, null, null,
-               v_parametros.id_clasificador, v_parametros.nro_paginas, v_parametros.otros_adjuntos) RETURNING id_correspondencia
+               v_parametros.id_clasificador, v_parametros.nro_paginas, v_parametros.otros_adjuntos, v_parametros.cite) RETURNING id_correspondencia
       into v_id_correspondencia;
 
       v_id_origen = v_id_correspondencia;
@@ -832,8 +832,8 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       where c.id_correspondencia = v_parametros.id_correspondencia;
 
      -- raise exception '%',v_parametros.id_clasificador;
-      --if si estado borrador_recepcion_externo
-      if(v_estado = 'borrador_recepcion_externo') then
+      --if si estado borrador_recepcion_externo o pendiente_recepcion_externo
+      if(v_estado = 'borrador_recepcion_externo' OR v_estado = 'pendiente_recepcion_externo') then
 	       	
       IF(v_parametros.id_correspondencias_asociadas='')THEN
            v_id_correspondencias_asociadas=NULL;
@@ -858,6 +858,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
             id_depto = v_parametros.id_depto,
             nro_paginas = v_parametros.nro_paginas,
             otros_adjuntos = v_parametros.otros_adjuntos,
+            cite = v_parametros.cite,
             fecha_mod = now(),
             id_usuario_mod = p_id_usuario
         where id_correspondencia = v_parametros.id_correspondencia;
