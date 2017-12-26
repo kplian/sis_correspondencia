@@ -157,7 +157,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			config : {
 				name : 'cite',
 				fieldLabel : 'Cite',
-				gwidth : 120
+				gwidth : 200,
+				width : 300
 			},
 			type : 'TextField',
 			filters : {
