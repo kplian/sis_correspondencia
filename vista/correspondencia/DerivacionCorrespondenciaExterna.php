@@ -47,6 +47,8 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 	constructor: function(config) {
 		
+		this.Atributos[this.getIndAtributo('id_depto')].form=true;
+		this.Atributos[this.getIndAtributo('id_depto')].grid=false;
 		this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
         this.Atributos[this.getIndAtributo('id_uo')].grid=false;
         this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=true;
@@ -55,7 +57,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('nro_paginas')].form=true;
         this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=true;
         this.Atributos[this.getIndAtributo('otros_adjuntos')].form=true;
-	    Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
+        this.Atributos[this.getIndAtributo('cite')].grid=true;
+        this.Atributos[this.getIndAtributo('cite')].form=true;
+        this.Atributos[this.getIndAtributo('estado_reg')].grid=false;
+        Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
 		this.bloquearOrdenamientoGrid();
@@ -214,7 +219,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
 	
-		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonEdit.call(this);
+		Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonEdit.call(this);
 
 		this.Cmp.id_institucion_destino.hide();
 		this.Cmp.id_persona_destino.hide();

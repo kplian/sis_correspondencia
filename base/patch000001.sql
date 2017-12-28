@@ -226,3 +226,15 @@ ALTER TABLE corres.tcorrespondencia
   COMMENT ON COLUMN corres.tcorrespondencia.sw_fisico
   IS 'Indica quien tiene el fisico';
 /***********************************F-DEP-FPC-CORRES-0-27/11/2017*****************************************/
+
+/***********************************I-SCP-FPC-CORRES-0-27/12/2017*****************************************/
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN otros_adjuntos TYPE VARCHAR(2000) COLLATE pg_catalog."default";
+
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT tcorrespondencia__estado__chk RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  ADD CONSTRAINT tcorrespondencia__estado__chk CHECK (((estado)::text = 'borrador_detalle_recibido'::text) OR ((estado)::text = 'pendiente_recibido'::text) OR ((estado)::text = 'recibido'::text) OR ((estado)::text = 'recibido_derivacion'::text) OR ((estado)::text = 'borrador_envio'::text) OR ((estado)::text = 'enviado'::text) OR ((estado)::text = 'borrador_recepcion_externo'::text) OR ((estado)::text = 'pendiente_recepcion_externo'::text)OR ((estado)::text = 'anulado'::text));
+  /***********************************F-SCP-FPC-CORRES-0-27/12/2017*****************************************/
