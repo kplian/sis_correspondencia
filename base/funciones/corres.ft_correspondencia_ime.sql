@@ -1000,8 +1000,8 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       /*********************************
  #TRANSACCION:  'CO_COR_ANU'
  #DESCRIPCION:    cambia el estado de la correspondencia fisica
- #AUTOR:        favio figueroa
- #FECHA:            27-04-2016 20:43:21
+ #AUTOR:          fpc
+ #FECHA:          07-01-2018 20:43:21
  ***********************************/
 
     elsif(p_transaccion='CO_COR_ANU')then
@@ -1014,18 +1014,44 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       if (v_estado != 'enviado') THEN
        raise exception 'No se puede anular el estado no es enviado';
       end IF ;
+      -- Consulta recursiva que obitiene todos los nodos descendientes de la raiz.
       
-	  v_anular:=corres.f_anular_correspondencia(v_parametros.id_correspondencia,1);
-      -- raise exception 'resp%',v_resp_cm;
-	  IF (v_anular = 1)THEN
+      WITH RECURSIVE corres_asoc(
+    				id_corres_asoc,
+    				estado,
+    				id_corres_padre) AS(
+  						SELECT c1.id_correspondencia,
+         				       c1.estado,
+         					   c1.id_correspondencia_fk
+  						FROM corres.tcorrespondencia c1
+  						WHERE c1.id_correspondencia_fk = v_parametros.id_correspondencia AND
+        					  c1.estado_reg::text = 'activo'::text
+  						UNION
+  						SELECT c2.id_correspondencia,
+         					   c2.estado,
+         					   c2.id_correspondencia_fk
+  						FROM corres.tcorrespondencia c2,
+       						 corres_asoc ca
+  						WHERE c2.id_correspondencia_fk = ca.id_corres_asoc AND
+        				c2.estado_reg::text = 'activo'::text)
+-- Consulta para cambia el estado a inactivo de los descendientes
+			  UPDATE corres.tcorrespondencia
+              SET estado_reg='inactivo',
+              estado='anulado',
+              observaciones_estado='anulado por el usuario',
+              fecha_mod = now(),
+        	  id_usuario_mod = p_id_usuario
+              WHERE id_correspondencia IN (SELECT cc.id_corres_asoc FROM corres_asoc cc);
+
+      -- Cambiamos el estado de la raiz a anulado
+
       	UPDATE corres.tcorrespondencia
         set estado = 'anulado',
+        estado_reg = 'inactivo',
+        observaciones_estado='anulado por el usuario',
         fecha_mod = now(),
         id_usuario_mod = p_id_usuario
         WHERE id_correspondencia = v_parametros.id_correspondencia;
-      ELSE
-      	RAISE EXCEPTION 'ERROR NO SE PUDO ANULAR';
-      END IF;
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia fisico(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',

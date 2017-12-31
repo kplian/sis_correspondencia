@@ -298,20 +298,23 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	},
 	anularCorrespondencia : function() {
 
-			var data = this.sm.getSelected().data.id_proceso_contrato;
-			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
-			Phx.CP.loadingShow();
-			Ext.Ajax.request({
-				// form:this.form.getForm().getEl(),
-				url : '../../sis_correspondencia/control/Correspondencia/anularCorrespondencia',
-				params : {
-					id_correspondencia : id_correspondencia
-				},
-				success : this.successAnular,
-				failure : this.conexionFailure,
-				timeout : this.timeout,
-				scope : this
-			});
+			if(confirm('Esta seguro de anular la correspondencia seleccionada? \nSe eliminaran todas las derivaciones asociadas.')==true){
+				var data = this.sm.getSelected().data.id_proceso_contrato;
+				var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
+				Phx.CP.loadingShow();
+				Ext.Ajax.request({
+					// form:this.form.getForm().getEl(),
+					url : '../../sis_correspondencia/control/Correspondencia/anularCorrespondencia',
+					params : {
+						id_correspondencia : id_correspondencia
+					},
+					success : this.successAnular,
+					failure : this.conexionFailure,
+					timeout : this.timeout,
+					scope : this
+				});
+			}
+			
 		},
 		successAnular : function(resp) {
 
