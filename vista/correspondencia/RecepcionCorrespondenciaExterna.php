@@ -25,7 +25,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			name: 'pendiente_recepcion_externo',
 			title: '<H1 align="center"><i class="fa fa-eye"></i> Finalizados</h1>',
 			grupo: 1,
-			height: 0
+			height:   0
 		}
 
 	],
@@ -60,7 +60,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('estado_reg')].grid=false;
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
-        this.bloquearOrdenamientoGrid();
+      //  this.bloquearOrdenamientoGrid();
 
 
 		
@@ -70,8 +70,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		//this.getBoton('Adjuntos').hide();
 		this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
-
-
+        
+   
 		this.addButton('imprimirCodigoCorrespondencia', {
 			text: 'Imprimir Sticker',
 			iconCls: 'bprint',
@@ -103,8 +103,9 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			handler: this.finalizarRecepcionExterna,
 			tooltip: '<b>Finalizar Recepción</b><br/>Finalizar Recepción de documento entrante (Externa Recibida), pasa a estado de análisis'
 		});
+		this.getBoton('Historico').hide();
 		
-		this.init();
+		this.init();  
 		//this.store.baseParams = {'vista': 'recepcion_correspondencia_externa','estado': this.swEstado};
 
 
@@ -125,13 +126,36 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	getParametrosFiltro: function () {
 		this.store.baseParams.estado = this.swEstado;
 	},
+actualizarSegunTab: function (name, indice) {
+		console.log(name);
 
+		this.getBoton('mandar').hide();
+		this.getBoton('Hoja de Ruta').hide();
+		this.getBoton('Historico').hide();
+		if(name=='borrador_recepcion_externo'){
+			
+			this.getBoton('corregir').hide();
+		}else{
+			
+			this.getBoton('corregir').show();
+		}
+		
+		
+
+		this.swEstado = name;
+		this.getParametrosFiltro();
+		this.load();
+		//Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonAct.call(this);
+
+
+	},
+/*
 	actualizarSegunTab: function (name, indice) {
 		console.log(name);
 
 		this.getBoton('mandar').hide();
 		//this.getBoton('Adjuntos').hide();
-		this.getBoton('corregir').hide();
+		//this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
 
 
@@ -142,7 +166,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 
 	},
-
+*/
     preparaMenu:function(n){
       	
       	Phx.vista.RecepcionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
@@ -162,10 +186,12 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		if (data['version'] > 0) {
 			this.getBoton('verCorrespondencia').enable();
 			this.getBoton('finalizarRecepcionExterna').enable();
+			this.getBoton('corregir').enable();
 		}
 		else {
 			this.getBoton('verCorrespondencia').disable();
 			this.getBoton('finalizarRecepcionExterna').disable();
+			this.getBoton('corregir').disable();
 
 		}
 
@@ -266,13 +292,15 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
-
+		this.ocultarComponente(this.Cmp.id_funcionario);
+		/*this.tipo.setValue('externa');
+		this.tipo.disable(true);*/
 		/*cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es interna
 		cmbDoc.modificado = true;
 		cmbDoc.reset();*/
 
 
-		this.ocultarComponente(this.Cmp.id_funcionario);
+		//a  this.ocultarComponente(this.Cmp.id_funcionario);
 
 		/*var cmbDoc = this.getComponente('id_documento');
 		var cmpFuncionarios = this.getComponente('id_funcionarios');

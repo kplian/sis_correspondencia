@@ -23,6 +23,7 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
         	
         	this.Atributos[this.getIndAtributo('fecha_reg')].grid=true;
+       
             Phx.vista.CorrespondenciaEmitida.superclass.constructor.call(this, config);   
 
             this.addButton('aSubirCorrespondencia', {
@@ -52,43 +53,52 @@ header("content-type: text/javascript; charset=UTF-8");
 
         },
         iniciarEventos: function () {
-
-
-
-
-
-
-
             var cmpFuncionarios = this.getComponente('id_funcionarios');
             var cmpInstitucion = this.getComponente('id_institucion');
             var cmpPersona = this.getComponente('id_persona');
             var cmbDoc = this.getComponente('id_documento');
-
-
-            //para habilitar el tipo de correspondecia para el sistema corres
-
+            var cmpInstitucionDestino = this.getComponente('id_institucion_destino');
+            var cmpPersonaDestino = this.getComponente('id_persona_destino');
+          
             this.getComponente('tipo').on('select', function (combo, record, index) {
                 //actualiza combos de documento segun el tipo
                 cmbDoc.store.baseParams.tipo = record.data.ID;
                 cmbDoc.modificado = true;
                 cmbDoc.reset();
-
-                if (record.data.ID == 'interna') {
-                    this.ocultarComponente(cmpInstitucion);
-                    this.ocultarComponente(cmpPersona);
-                    this.mostrarComponente(cmpFuncionarios);
-                    cmpPersona.reset();
-                    cmpInstitucion.reset();
-
-                }
-                else {
-                    this.mostrarComponente(cmpInstitucion);
-                    this.mostrarComponente(cmpPersona);
-                    this.ocultarComponente(cmpFuncionarios);
-                    cmpFuncionarios.reset();
-
-                }
-
+                 
+                 switch (record.data.ID)
+                 {
+                 	case 'interna':
+                 	    this.ocultarComponente(this.Cmp.id_persona_destino);
+                    	this.ocultarComponente(this.Cmp.id_institucion_destino);
+	                    this.ocultarComponente(cmpInstitucion);
+    	                this.ocultarComponente(cmpPersona);
+        	            this.mostrarComponente(cmpFuncionarios);
+            	        cmpPersona.reset();
+                	    cmpInstitucion.reset(); 
+                	    break;
+                	case 'saliente':
+                	    this.Cmp.id_institucion_destino.reset();
+                	    
+                	    this.Cmp.id_persona_destino.reset();
+                	    this.mostrarComponente(this.Cmp.id_persona_destino);
+                    	this.mostrarComponente(this.Cmp.id_institucion_destino);
+	                    this.ocultarComponente(cmpFuncionarios);
+    	                cmpFuncionarios.reset();
+        	            
+              		    this.Cmp.id_institucion_destino.on('select',function(combo,record,index){
+	    					this.Cmp.id_persona_destino.store.baseParams.id_institucion=combo.getValue();
+	   						this.Cmp.id_persona_destino.reset();
+	   						this.Cmp.id_persona_destino.modificado=true;
+	   		    	   	},this)
+              		    break;
+              		case 'externa':
+              		    alert ("Solo se admiten Documentos Internos o Salientes.");
+              		    break;
+                	
+                 }
+      
+              
 
             }, this);
 
@@ -103,16 +113,8 @@ header("content-type: text/javascript; charset=UTF-8");
             console.log('llega');
 
             console.log('inicia_eventos');
-
-
-
-
             this.cmpFechaDoc = this.getComponente('fecha_documento');
-
             this.Cmp.id_funcionario.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
-
-
-
             this.Cmp.id_funcionario.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
                     if (r.length == 1 ) {
@@ -122,12 +124,6 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 }, scope : this
             });
-
-
-
-
-
-
 
             var cmbDoc = this.getComponente('id_documento');
             var cmpFuncionarios = this.getComponente('id_funcionarios');
@@ -149,11 +145,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.id_institucion_destino);
 
             //this.getComponente('id_uo').enable();
-
-
             this.getComponente('id_clasificador').enable();
-
-
+            this.getComponente('fecha_documento').disable();
             this.getComponente('mensaje').enable();
             this.getComponente('nivel_prioridad').enable();
             this.getComponente('referencia').enable();
@@ -200,12 +193,6 @@ header("content-type: text/javascript; charset=UTF-8");
         preparaMenu: function (n) {
 
             Phx.vista.Correspondencia.superclass.preparaMenu.call(this, n);
-
-
-            
-
-
-
             var data = this.getSelectedData();
             var tb = this.tbar;
             //si el archivo esta escaneado se permite visualizar

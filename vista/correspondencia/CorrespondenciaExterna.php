@@ -84,10 +84,12 @@ Phx.vista.CorrespondenciaExterna=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 120				
 			},
 			type:'TextField',
-			filters:{pfiltro:'cor.numero',type:'string'},
+			filters:{pfiltro:'cor.fecha_reg',type:'date'},
+			bottom_filter : true,
 			id_grupo:0,
 			grid:true,
-			form:false
+			form:false,
+			egrid:true
 		},
 		
 		{

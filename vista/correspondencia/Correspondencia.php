@@ -21,18 +21,12 @@ header("content-type: text/javascript; charset=UTF-8");
 			Phx.vista.Correspondencia.superclass.constructor.call(this, config);
 
 			this.addButton('corregir', {
+				grupo : [0,1],
 				text : 'Corregir',
 				iconCls : 'bundo',
 				disabled : true,
-				handler : this.onButtonCorregir,
+				handler : this.onButton,
 				tooltip : '<b>Corregir</b><br/>Si todos los envios se detinadtarios se encuentras pendientes de lectura puede solicitar la correcion'
-			});
-			this.addButton('mandar', {
-				text : 'Derivar',
-				iconCls : 'badelante',
-				disabled : true,
-				handler : this.onButtonMandar,
-				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
 			});
 			this.addButton('verCorrespondencia', {
 				grupo : [0, 1],
@@ -42,7 +36,13 @@ header("content-type: text/javascript; charset=UTF-8");
 				handler : this.verCorrespondencia,
 				tooltip : '<b>Ver archivo</b><br/>Permite visualizar el documento escaneado'
 			});
-
+            this.addButton('Adjuntos', {
+				text : 'Adjuntos',
+				iconCls : 'badjunto',
+				disabled : false,
+				handler : this.adjuntos,
+				tooltip : '<b>Adjuntos</b><br/>Archivos adjuntos a la correspondencia'
+			});
 			this.addButton('Hoja de Ruta', {
 				text : 'Hoja de Ruta',
 				iconCls : 'bprint',
@@ -51,12 +51,21 @@ header("content-type: text/javascript; charset=UTF-8");
 				tooltip : '<b>Hoja de Ruta</b><br/>Hoja de Ruta'
 			});
 
-			this.addButton('Adjuntos', {
-				text : 'Adjuntos',
-				iconCls : 'badjunto',
+			
+			this.addButton('mandar', {
+				text : 'Derivar',
+				iconCls : 'badelante',
+				disabled : true,
+				handler : this.onButtonMandar,
+				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
+			});
+			
+            this.addButton('Historico', {
+				text : 'Histórico',
+				iconCls : 'bmenuitems',
 				disabled : false,
-				handler : this.adjuntos,
-				tooltip : '<b>Adjuntos</b><br/>Archivos adjuntos a la correspondencia'
+				handler : this.historico,
+				tooltip : '<b>Histórico</b><br/>De Derivaciones realizadas'
 			});
 
 			this.iniciarEventos()
@@ -147,28 +156,11 @@ header("content-type: text/javascript; charset=UTF-8");
 			type : 'TextField',
 			filters : {
 				pfiltro : 'cor.estado',
-				type : 'numeric'
+				type : 'string'
 			},
 			id_grupo : 0,
 			grid : true,
 			form : false
-		}, 
-		{
-			config : {
-				name : 'cite',
-				fieldLabel : 'Cite',
-				gwidth : 200,
-				width : 300
-			},
-			type : 'TextField',
-			filters : {
-				pfiltro : 'cor.cite',
-				type : 'string'
-			},
-			id_grupo : 2,
-			grid : false,
-			form : false,
-			bottom_filter : true
 		},{
 			config : {
 				name : 'id_depto',
@@ -315,6 +307,23 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			grid : true,
 			form : true
+		}, 
+		{
+			config : {
+				name : 'cite',
+				fieldLabel : 'Cite',
+				gwidth : 200,
+				width : 300
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.cite',
+				type : 'string'
+			},
+			id_grupo : 0,
+			grid : false,
+			form : false,
+			bottom_filter : true
 		}, {
 			config : {
 				name : 'fecha_documento',
@@ -334,7 +343,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				pfiltro : 'cor.fecha_documento',
 				type : 'date'
 			},
-			id_grupo : 2,
+			id_grupo : 0,
 			grid : true,
 			form : true,
 			bottom_filter : true
@@ -461,6 +470,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				origen : 'INSTITUCION',
 				gdisplayField : 'nombre',
 				gwidth : 200,
+				
 				renderer : function(value, p, record) {
 					return String.format('{0}', record.data['nombre']);
 				}
@@ -559,6 +569,75 @@ header("content-type: text/javascript; charset=UTF-8");
 			bottom_filter : true
 		}, {
 			config : {
+				name : 'id_correspondencias_asociadas',
+				fieldLabel : 'Responde a',
+				allowBlank : true,
+				emptyText : 'Correspondencias...',
+				store : new Ext.data.JsonStore({
+					url : '../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaSimplificada',
+					id : 'id_correspondencia',
+					root : 'datos',
+					sortInfo : {
+						field : 'id_correspondencia',
+						direction : 'desc'
+					},
+					totalProperty : 'total',
+					fields : ['id_correspondencia', 'numero', 'referencia', 'desc_funcionario1'],
+					// turn on remote sorting
+					remoteSort : true,
+					baseParams : {
+						par_filtro : 'cor.numero#cor.referencia#funcionario.desc_funcionario1'
+					}
+				}),
+				valueField : 'id_correspondencia',
+				displayField : 'numero',
+				gdisplayField : 'desc_asociadas', //mapea al store del grid
+
+				hiddenName : 'id_correspondencias_asociadas',
+				forceSelection : true,
+				typeAhead : true,
+				triggerAction : 'all',
+				enableMultiSelect : true,
+				lazyRender : true,
+				mode : 'remote',
+				pageSize : 10,
+				queryDelay : 1000,
+				width : 250,
+				gwidth : 200,
+				minChars : 2,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['desc_asociadas']);
+				}
+			},
+			type : 'AwesomeCombo',
+			id_grupo : 2,
+			/*filters:{
+			 pfiltro:'acco.desc_asociadas',
+			 type:'string'
+			 },*/
+
+			grid : false,
+			form : true
+		},
+		{
+			config : {
+				name : 'otros_adjuntos',
+				fieldLabel : 'Otros Adjuntos',
+				width : 300,
+				growMin : 100,
+				grow : true,
+				gwidth : 100
+			},
+			type : 'TextArea',
+			filters : {
+				pfiltro : 'cor.otros_adjuntos',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : false,
+			form : false
+		}, {
+			config : {
 				name : 'mensaje',
 				fieldLabel : 'Observaciones',
 				allowBlank : true,
@@ -619,57 +698,6 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type : 'AwesomeCombo',
 			id_grupo : 3,
-			grid : false,
-			form : true
-		}, {
-			config : {
-				name : 'id_correspondencias_asociadas',
-				fieldLabel : 'Responde a',
-				allowBlank : true,
-				emptyText : 'Correspondencias...',
-				store : new Ext.data.JsonStore({
-					url : '../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaSimplificada',
-					id : 'id_correspondencia',
-					root : 'datos',
-					sortInfo : {
-						field : 'id_correspondencia',
-						direction : 'desc'
-					},
-					totalProperty : 'total',
-					fields : ['id_correspondencia', 'numero', 'referencia', 'desc_funcionario1'],
-					// turn on remote sorting
-					remoteSort : true,
-					baseParams : {
-						par_filtro : 'cor.numero#cor.referencia#funcionario.desc_funcionario1'
-					}
-				}),
-				valueField : 'id_correspondencia',
-				displayField : 'numero',
-				gdisplayField : 'desc_asociadas', //mapea al store del grid
-
-				hiddenName : 'id_correspondencias_asociadas',
-				forceSelection : true,
-				typeAhead : true,
-				triggerAction : 'all',
-				enableMultiSelect : true,
-				lazyRender : true,
-				mode : 'remote',
-				pageSize : 10,
-				queryDelay : 1000,
-				width : 250,
-				gwidth : 200,
-				minChars : 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_asociadas']);
-				}
-			},
-			type : 'AwesomeCombo',
-			id_grupo : 2,
-			/*filters:{
-			 pfiltro:'acco.desc_asociadas',
-			 type:'string'
-			 },*/
-
 			grid : false,
 			form : true
 		}, {
@@ -841,24 +869,6 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 2,
 			grid : false,
 			form : false
-		},
-		{
-			config : {
-				name : 'otros_adjuntos',
-				fieldLabel : 'Otros Adjuntos',
-				width : 300,
-				growMin : 100,
-				grow : true,
-				gwidth : 100
-			},
-			type : 'TextArea',
-			filters : {
-				pfiltro : 'cor.otros_adjuntos',
-				type : 'string'
-			},
-			id_grupo : 2,
-			grid : false,
-			form : false
 		}],
 		title : 'Correspondencia',
 		ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
@@ -976,19 +986,23 @@ header("content-type: text/javascript; charset=UTF-8");
 			window.open(reg.datos[0].ruta_archivo);
 		},
 		onButtonCorregir : function() {
+			
+			var rec = this.sm.getSelected();
 			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
 			Phx.CP.loadingShow();
-			Ext.Ajax.request({
-				// form:this.form.getForm().getEl(),
+			
+				Ext.Ajax.request({
 				url : '../../sis_correspondencia/control/Correspondencia/corregirCorrespondencia',
 				params : {
-					id_correspondencia : id_correspondencia
+					id_correspondencia : id_correspondencia,
+					tipo:rec.data.tipo
 				},
 				success : this.successDerivar,
 				failure : this.conexionFailure,
 				timeout : this.timeout,
 				scope : this
-			});
+			    });
+			
 		},
 
 		onButtonMandar : function() {
@@ -997,7 +1011,6 @@ header("content-type: text/javascript; charset=UTF-8");
 			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
 			Phx.CP.loadingShow();
 			Ext.Ajax.request({
-				// form:this.form.getForm().getEl(),
 				url : '../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
 				params : {
 					id_correspondencia : id_correspondencia
@@ -1081,11 +1094,31 @@ header("content-type: text/javascript; charset=UTF-8");
 		adjuntos : function() {
 			var rec = this.sm.getSelected();
 
-			Phx.CP.loadWindows('../../../sis_correspondencia/vista/adjunto/Adjunto.php', 'Interfaces', {
+			Phx.CP.loadWindows('../../../sis_correspondencia/vista/adjunto/Adjunto.php', 'Adjuntos', {
 				width : 900,
 				height : 400
 			}, rec.data, this.idContenedor, 'Adjunto')
+		},
+		
+	/* histórico.
+	 * hoja pop up para la hoja de ruta
+	 */
+	historico : function() {
+			var rec = this.sm.getSelected();
+			var remitente;
+            if (rec.data.desc_insti==null){
+               remitente=rec.data.nombre_completo1;            	
+            }else{
+               remitente=rec.data.desc_insti;            	
+            }
+            
+			Phx.CP.loadWindows('../../../sis_correspondencia/vista/correspondencia/Historico.php',remitente+' -- '+rec.data.numero, {
+				width : 900,
+				height : 400
+			}, rec.data, this.idContenedor, 'Historico')
 		}
+	  
+	
 	})
 </script>
 

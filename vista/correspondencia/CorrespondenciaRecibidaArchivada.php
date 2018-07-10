@@ -20,6 +20,25 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 	requireclase: 'Phx.vista.Correspondencia',
 	title: 'Correspondencia Recibida Archivada',
 	nombreVista: 'CorrespondenciaRecibidaArchivada',
+	swTipo: 'externa',
+	gruposBarraTareas: [{
+		name: 'externa',
+		title: '<H1 align="center"><i class="fa fa-thumbs-o-down"></i> Externa</h1>',
+		grupo: 0,
+		height: 0
+	},
+		{
+			name: 'interna',
+			title: '<H1 align="center"><i class="fa fa-eye"></i> Interna</h1>',
+			grupo: 1,
+			height: 0
+		}
+
+	],    
+	beditGroups: [0, 1],
+	bactGroups: [0, 1],
+	btestGroups: [0,1],
+	bexcelGroups: [0, 1],
 	
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibidaArchivada',
 	
@@ -37,11 +56,26 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 		});
 		
 		this.init();
-        this.store.baseParams = {'interface': 'recibida_archivada'};
+        this.store.baseParams = {'interface': 'recibida_archivada','tipo': this.swTipo};
         this.load({params: {start: 0, limit: 50}})
 	  
     
    },
+  getParametrosFiltro: function () {
+		this.store.baseParams.tipo = this.swTipo;
+	},
+   actualizarSegunTab: function (name, indice) {
+		console.log('externa',name);
+
+		this.getBoton('Adjuntos').show();
+		this.getBoton('Hoja de Ruta').show();
+		this.getBoton('mandar').show();
+		this.getBoton('Historico').show();
+		this.swTipo = name;
+		this.getParametrosFiltro();
+		this.load();
+	
+	},
     preparaMenu:function(n){
       	
       	Phx.vista.CorrespondenciaRecibidaArchivada.superclass.preparaMenu.call(this,n);
