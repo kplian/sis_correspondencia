@@ -105,7 +105,6 @@ class MODCorrespondencia extends MODbase{
         $this->captura('desc_ruta_plantilla_documento','varchar');
         $this->captura('desc_cargo','varchar');
         $this->captura('sw_archivado','varchar');
-		$this->captura('iniciales','text');
 
 		
 		
@@ -176,8 +175,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('acciones','text');
 		$this->captura('id_acciones','text');
 		$this->captura('desc_cargo','varchar');
-        $this->captura('fecha_documento_literal','text');
-		//$this->captura('iniciales','text');
+
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -402,15 +400,13 @@ class MODCorrespondencia extends MODbase{
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='corres.ft_correspondencia_ime';
 		$this->transaccion='CO_CORDET_MOD';
-		$this->tipo_procedimiento='IME'; 
+		$this->tipo_procedimiento='IME';
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','int4');
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_acciones','id_acciones','varchar');
-		$this->setParametro('id_funcionario','id_funcionario','integer'); //son a los que enviaremos
-		
 	
 
 		//Ejecuta la instruccion
@@ -441,17 +437,12 @@ class MODCorrespondencia extends MODbase{
 				
 				$version = $this->arreglo['version'] + 1;
 		        $this->arreglo['version'] = $version;
-				$this->arreglo['numero']= str_replace('/','_',$this->arreglo['numero']);
-				$this->arreglo['numero']= str_replace(' ','_',$this->arreglo['numero']);
-				//$this->arreglo['numero'] = "sdasdf/asdf";
 				
-				/*echo "sale algo!!!!modificado".print_r($this->arreglo);
-				exit;*/
+				
 				//validar que no sea un arhvio en blanco
 				$file_name = $this->getFileName2('file_correspondencia', 'id_correspondencia', '','_v'.$version);
 				
-			  /* print_r ($file_name);
-			   exit;*/
+			   
 			    //manda como parametro la url completa del archivo 
 	            $this->aParam->addParametro('ruta_archivo', $file_name[2]);
 	            $this->arreglo['ruta_archivo'] = $file_name[2];
@@ -488,7 +479,6 @@ class MODCorrespondencia extends MODbase{
 	               $this->setFile('file_correspondencia','id_correspondencia', false,100000 ,array('doc','pdf','docx','jpg','jpeg','bmp','gif','png','PDF','DOC','DOCX','xls','xlsx','XLS','XLSX','rar'), $folder = '','_v'.$version);
 	            }
 				
-				
 				$link->commit();
 				$this->respuesta=new Mensaje();
 				$this->respuesta->setMensaje($resp_procedimiento['tipo_respuesta'],$this->nombre_archivo,$resp_procedimiento['mensaje'],$resp_procedimiento['mensaje_tec'],'base',$this->procedimiento,$this->transaccion,$this->tipo_procedimiento,$this->consulta);
@@ -497,9 +487,6 @@ class MODCorrespondencia extends MODbase{
 				
 				
 			}
-             /*  echo "salen".$e->getCode();
-				exit;*/
-				
 			catch (Exception $e) {
 		    		
 								
@@ -507,7 +494,7 @@ class MODCorrespondencia extends MODbase{
 				
 				
 		    	$this->respuesta=new Mensaje();
-              if ($e->getCode() == 3) {//es un error de un procedimiento almacenado de pxp
+				if ($e->getCode() == 3) {//es un error de un procedimiento almacenado de pxp
 					$this->respuesta->setMensaje($resp_procedimiento['tipo_respuesta'],$this->nombre_archivo,$resp_procedimiento['mensaje'],$resp_procedimiento['mensaje_tec'],'base',$this->procedimiento,$this->transaccion,$this->tipo_procedimiento,$this->consulta);
 				} else if ($e->getCode() == 2) {//es un error en bd de una consulta
 					$this->respuesta->setMensaje('ERROR',$this->nombre_archivo,$e->getMessage(),$e->getMessage(),'modelo','','','','');
@@ -515,8 +502,7 @@ class MODCorrespondencia extends MODbase{
 					throw new Exception($e->getMessage(), 2);
 				}
 		}    
-	   
-				
+	    
 	    return $this->respuesta;
 	}
 
@@ -640,25 +626,6 @@ class MODCorrespondencia extends MODbase{
 		
 		
 	}
-function corregirCorrespondenciaExt()
-	{
-		//Definicion de variables para ejecucion del procedimiento
-		$this->procedimiento='corres.ft_correspondencia_ime';
-		$this->transaccion='CO_CORUNDOEXT_UPD';
-		$this->tipo_procedimiento='IME';
-				
-		//Define los parametros para la funcion
-		$this->setParametro('id_correspondencia','id_correspondencia','int4');
-
-		//Ejecuta la instruccion
-		$this->armarConsulta();
-		$this->ejecutarConsulta();
-
-		//Devuelve la respuesta
-		return $this->respuesta;
-		
-		  
-	}
 
 	function finalizarRecepcion(){
 		//Definicion de variables para ejecucion del procedimiento
@@ -724,7 +691,7 @@ function corregirCorrespondenciaExt()
 		$this->captura('cuenta','varchar');
 		$this->captura('desc_id_origen','int4');
 		$this->captura('desc_id_funcionario_origen','int4');
-        $this->captura('estado','varchar');
+
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

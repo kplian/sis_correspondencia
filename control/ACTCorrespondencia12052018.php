@@ -24,6 +24,8 @@ class ACTCorrespondencia extends ACTbase
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion', 'desc');
+
+
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
 
         if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
@@ -139,30 +141,15 @@ class ACTCorrespondencia extends ACTbase
 
     function corregirCorrespondencia()
     {
-    	  $this->objFunSeguridad = $this->create('MODCorrespondencia');
-		if($this->objParam->getParametro('tipo')!='externa'){
-    	   $this->res = $this->objFunSeguridad->corregirCorrespondencia($this->objParam);
-		}else{
-			$this->res = $this->objFunSeguridad->corregirCorrespondenciaExt($this->objParam);
-		}
-        
-        //crea el objetoFunSeguridad que contiene todos los metodos del sistema de seguridad
-        /*$this->objFunSeguridad = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunSeguridad->corregirCorrespondencia($this->objParam);*/
-        //imprime respuesta en formato JSON
-        $this->res->imprimirRespuesta($this->res->generarJson());
-  
-    }
-    /*function corregirCorrespondenciaExt()
-    {
         //crea el objetoFunSeguridad que contiene todos los metodos del sistema de seguridad
         $this->objFunSeguridad = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunSeguridad->corregirCorrespondenciaExt($this->objParam);
+        $this->res = $this->objFunSeguridad->corregirCorrespondencia($this->objParam);
         //imprime respuesta en formato JSON
         $this->res->imprimirRespuesta($this->res->generarJson());
- 
+
     }
-*/
+
+
     function listarCorrespondenciaRecibida()
     {
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
@@ -249,7 +236,7 @@ class ACTCorrespondencia extends ACTbase
             //todo cambiar ese nombre por algo randon
             $nombre_archivo = md5($_SESSION["ss_id_usuario_ai"] . $_SESSION["_SEMILLA"]);
 
-            $png = $barcodeobj->getBarcodePngData($w = 5, $h = 5, $color = array(0, 0, 0));
+            $png = $barcodeobj->getBarcodePngData($w = 8, $h = 8, $color = array(0, 0, 0));
 
 
             $im = imagecreatefromstring($png);
@@ -275,7 +262,7 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($correspondencia[0]['desc_ruta_plantilla_documento']);
 
 
-//print_r ($correspondenciaDetalle);
+
                 $templateProcessor->cloneRow('destinatario', count($correspondenciaDetalle));
 
                 for ($i = 0; $i < count($correspondenciaDetalle); $i++) {
@@ -332,19 +319,15 @@ class ACTCorrespondencia extends ACTbase
 
                 $templateProcessor->setImg('firma_digital', array('src' => $img_qr, 'swh' => '150'));
 
-                $templateProcessor->setImgFooter('qr', array('src' => $img_qr, 'swh' => '150'));
+                $templateProcessor->setImgFooter('qr', array('src' => $img_qr, 'swh' => '250'));
                 //$templateProcessor->setImgHeader('qrh',array('src' => $img_qr, 'swh'=>'250'));
-                
-                //print_r($correspondenciaDetalle);
+
                 $templateProcessor->setValue('remitente', htmlspecialchars($correspondencia[0]['desc_funcionario']));
                 $templateProcessor->setValue('cargo_remitente', htmlspecialchars($correspondencia[0]['desc_cargo']));
                 $templateProcessor->setValue('referencia', htmlspecialchars($correspondencia[0]['referencia']));
                 $templateProcessor->setValue('fecha', htmlspecialchars($fecha_documento));
                 $templateProcessor->setValue('mensaje', htmlspecialchars($correspondencia[0]['mensaje']));
                 $templateProcessor->setValue('numero', htmlspecialchars($correspondencia[0]['numero']));
-				$templateProcessor->setValue('fecha_documento_literal', htmlspecialchars($correspondenciaDetalle[0]['fecha_documento_literal']));
-                $templateProcessor->setValue('iniciales', htmlspecialchars($correspondencia[0]['iniciales']));
-               
                 //$templateProcessor->setValue('uo', htmlspecialchars($correspondencia[0]['desc_uo']));
 
 
@@ -386,20 +369,15 @@ class ACTCorrespondencia extends ACTbase
 
         $id_origen = $hoja_ruta[0]['desc_id_origen'];
         $id_funcionario_origen = $hoja_ruta[0]['desc_id_funcionario_origen'];
-		$estado = $hoja_ruta[0]['estado'];
         //obtenemos la correspondencia original el origen
-       
         $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
-		$this->objParam->addParametro('estado', $estado);
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
         $this->objParam->defecto('dir_ordenacion', 'desc');
         $this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
         $this->objFunc = $this->create('MODCorrespondencia');
 		if($this->objParam->getParametro('tipo_corres')!='externa'){
-			
 			$this->res = $this->objFunc->listarCorrespondencia();	
 		}else{
-			
 			$this->res = $this->objFunc->listarCorrespondenciaExterna();
 		}
         
@@ -410,14 +388,7 @@ class ACTCorrespondencia extends ACTbase
             exit;
         }
         $correspondencia = $this->res->getDatos();
-		if ($correspondencia[0]["tipo"]=='externa'){
-			
-			$remitente=$correspondencia[0]["desc_insti"].'-'.$correspondencia[0]["nombre_completo1"];
-			
-		}else{
-			$remitente=$correspondencia[0]["desc_funcionario"];
-		}
-        //print_r($correspondencia);
+
 
         $html = '
 			<!DOCTYPE html>
@@ -456,7 +427,7 @@ class ACTCorrespondencia extends ACTbase
 								<td class="tg-9hbo" colspan="2">observaciones</td>
 							  </tr>
 							  <tr>
-								<td class="tg-yw4l" colspan="2">' . $remitente . '<br /><b style="font-size:8pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["desc_funcionario"] . '<br /><b style="font-size:8pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
 								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["referencia"] . '</td>
 								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["estado"] . '</td>
 								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["observaciones_estado"] . '</td>

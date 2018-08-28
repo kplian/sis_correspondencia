@@ -36,6 +36,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	bactGroups: [0, 1],
 	btestGroups: [0,1],
 	bexcelGroups: [0, 1],
+	
 
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
@@ -63,7 +64,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
         Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
 
 
-		this.bloquearOrdenamientoGrid();
+	//	this.bloquearOrdenamientoGrid();
 
 
 		
@@ -73,16 +74,16 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 //		this.getBoton('verCorrespondencia').hide();
 		//this.getBoton('mandar').hide();
 		this.getBoton('Adjuntos').hide();
-		this.getBoton('corregir').hide();
+		//this.getBoton('corregir').hide();
 		this.getBoton('Hoja de Ruta').hide();
 
 
 		this.addButton('anularCorrespondencia', {
 			text: 'Anular',
-			iconCls: 'banular',
+			iconCls: 'anular',
 			disabled: false,
 			handler: this.anularCorrespondencia,
-			tooltip: '<b>Imprimir Codigo</b><br/>imprimi codigo correspondencia'
+			tooltip: '<b>Anular Correspondencia</b><br/>Anula la correspondencia y todas las derivaciones.'
 		});
 
 		/*this.addButton('aSubirCorrespondenciaExterna', {
@@ -120,13 +121,16 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		console.log('derivar',name);
 
 		this.getBoton('Adjuntos').hide();
-		this.getBoton('corregir').hide();
+		
 		if(name=='enviado'){
 			this.getBoton('Hoja de Ruta').show();
 			this.getBoton('anularCorrespondencia').show();
+			this.getBoton('corregir').hide();
 		}else{
+			
 			this.getBoton('Hoja de Ruta').hide();
 			this.getBoton('anularCorrespondencia').hide();
+			this.getBoton('corregir').enable();
 		}
 		
 		
@@ -151,13 +155,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 		this.getBoton('verCorrespondencia').enable();
 		this.getBoton('mandar').enable();
-
-
-
-
-
-
-
 
 
 		return tb
@@ -240,7 +237,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		cmbDoc.reset();*/
 
 
-		this.ocultarComponente(this.Cmp.id_funcionario);
+		 this.ocultarComponente(this.Cmp.id_funcionario);
 
 		/*var cmbDoc = this.getComponente('id_documento');
 		var cmpFuncionarios = this.getComponente('id_funcionarios');

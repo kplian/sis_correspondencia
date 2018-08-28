@@ -95,9 +95,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				tpl:'<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{codigo}-{desc_funcionario1}</div><p style="padding-left: 20px;">{nombre_cargo}</p><p style="padding-left: 20px;">{email_empresa}</p> </div></tpl>',
 			    valueField: 'id_funcionario',
    				displayField: 'desc_funcionario1',
-   				/*renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_funcionario']);
-				}*/
+   				
    				hiddenName: 'id_funcionarios',
    				typeAhead: true,
        			triggerAction: 'all',
@@ -107,8 +105,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    				queryDelay:1000,
    				width:250,
    				minChars:2,
-       			enableMultiSelect:false
-       			  
+       			enableMultiSelect:true
+       			
    			},
    			type:'AwesomeCombo',
    			id_grupo:3,
@@ -495,8 +493,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	},
 	onButtonEdit: function () {
 		
-		//a this.Cmp.id_funcionario.disable();
-		//this.Cmp.id_funcionario.enableMultiSelect(true);	
+		this.Cmp.id_funcionario.disable();	
 		Phx.vista.CorrespondenciaDetalle.superclass.onButtonEdit.call(this);
 	}, 
 
