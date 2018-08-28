@@ -1,5 +1,4 @@
 --------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.f_get_uo_correspondencia_funcionario (
   fl_id_empleado integer,
   fl_filtro varchar [],
@@ -29,6 +28,7 @@ BEGIN
 
   g_res=ARRAY[-1];
 
+
   --RAC  aumentamos la varialbe fl_filtro en vez de 
   
       select funuo.id_uo into v_id_uo
@@ -36,13 +36,15 @@ BEGIN
       where funuo.estado_reg = 'activo' 
            and funuo.id_funcionario = fl_id_empleado and
           funuo.fecha_asignacion <= p_fecha and (funuo.fecha_finalizacion is null or funuo.fecha_finalizacion >= p_fecha);
-     
-      if (v_id_uo is null)then
-          return -1;
-      end if;
-   
+      
 
-    
+      --raise exception '%', v_id_uo;
+      if (v_id_uo is null)then
+          return ARRAY[-2];
+      end if;
+  
+
+     
     	
       g_res=array_append(g_res,corres.f_get_uo_correspondencia(v_id_uo));
    

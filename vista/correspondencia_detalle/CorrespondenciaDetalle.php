@@ -18,6 +18,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 
 		this.init();
 		this.bloquearMenus();
+		/*this.getBoton('new').disable();
+	    this.getBoton('save').disable();*/
 		if(Phx.CP.getPagina(this.idContenedorPadre)){
       	 var dataMaestro=Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
 	 	 if(dataMaestro){ 
@@ -25,7 +27,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	 	 	this.onEnablePanel(this,dataMaestro)
 	 	 }
 	  }
-		
+	
+	
 	},
 			
 	Atributos:[
@@ -50,12 +53,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			form:true 
 		},
 	
-
-		
-	
-		
-    	
-   	    
+	    
    	{
 			config:{
 				name: 'acciones',
@@ -301,6 +299,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	},
 	bdel:true,
 	bsave:true,
+	bnew:true,
 	
 	/*Grupos: [
 	            {
@@ -391,7 +390,14 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 
         },   */    
 	iniciarEventos:function(){ 
-	
+	 /*  if(this.maestro.estado=='enviado'){
+		  		*/
+			  		/*this.getBoton('edit').disable();
+			  		this.getBoton('del').disable();*/
+			  		this.getBoton('new').disable();
+			  		this.getBoton('save').disable();
+			  
+		 // } 
 
 	/*	var cmpFuncionarios = this.getComponente('id_funcionarios');
 		var cmpInstitucion = this.getComponente('id_institucion');
@@ -478,7 +484,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
       	
 		  var data = this.getSelectedData();
 		  var tb =this.tbar;
-		     
+		   console.log  
 		  console.log(this.maestro);
 		  //cuando el conrtato esta registrado el abogado no puede hacerle mas cambios
 		  if(this.maestro.estado=='enviado'){
@@ -489,7 +495,17 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
 			  	}
+		  } else {
+		 		if(tb){
+		  			
+			  		this.getBoton('edit').enable();
+			  		this.getBoton('del').enable();
+			  		this.getBoton('new').enable();
+			  		this.getBoton('save').enable();
+			  	}
+		  	
 		  } 
+		  
 		  return tb
 		
 	},
@@ -499,6 +515,12 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		//this.Cmp.id_funcionario.enableMultiSelect(true);	
 		Phx.vista.CorrespondenciaDetalle.superclass.onButtonEdit.call(this);
 	}, 
+	onButtonNew: function () {
+		
+		//a this.Cmp.id_funcionario.disable();
+		//this.Cmp.id_funcionario.enableMultiSelect(true);	
+		Phx.vista.CorrespondenciaDetalle.superclass.onButtonNew.call(this);
+	}
 
 }
 )

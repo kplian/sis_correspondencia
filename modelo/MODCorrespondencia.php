@@ -106,9 +106,12 @@ class MODCorrespondencia extends MODbase{
         $this->captura('desc_cargo','varchar');
         $this->captura('sw_archivado','varchar');
 		$this->captura('iniciales','text');
-
-		
-		
+        $this->captura('desc_insti','varchar');
+		$this->captura('nombre_completo1','text');
+		$this->captura('id_institucion_destino','integer');
+		$this->captura('id_persona_destino','integer');
+		$this->captura('otros_adjuntos','varchar');
+		$this->captura('direccion_institucion','text');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -229,6 +232,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_persona_destino','id_persona_destino','int4');
 		$this->setParametro('id_funcionarios','id_funcionarios','varchar');
 		$this->setParametro('id_acciones','id_acciones','varchar');
+		$this->setParametro('fecha_creacion_documento','fecha_creacion_documento','date');
 		
 		
 		$this->setParametro('cite','cite','varchar');
@@ -276,7 +280,9 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('tipo','tipo','varchar');
 		//$this->setParametro('id_funcionarios','id_funcionarios','varchar');
 		$this->setParametro('id_clasificador','id_clasificador','int4');
-	
+		$this->setParametro('id_institucion_destino','id_institucion_destino','int4');
+		$this->setParametro('id_persona_destino','id_persona_destino','int4');
+	    $this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -313,7 +319,7 @@ class MODCorrespondencia extends MODbase{
 
 
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
-       //$this->setParametro('interface','interface','varchar');
+       $this->setParametro('interface','interface','varchar');
 		$this->setParametro('tipo','tipo','varchar');
 		//Definicion de la lista del resultado del query
 		$this->captura('id_origen','int4');
@@ -631,7 +637,8 @@ class MODCorrespondencia extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
-
+        $this->setParametro('observaciones','observaciones','varchar');
+		$this->setParametro('interfaz','interfaz','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -650,7 +657,10 @@ function corregirCorrespondenciaExt()
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
-
+        $this->setParametro('tipo','tipo','varchar');
+        $this->setParametro('interfaz','interfaz','varchar');
+		$this->setParametro('observaciones','observaciones','varchar');
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -747,6 +757,23 @@ function corregirCorrespondenciaExt()
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		$this->setParametro('sw_archivado','sw_archivado','varchar');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
+	function habilitarCorrespondencia(){
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_CORHAB_INS';
+		$this->tipo_procedimiento='IME';
+
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+		//$this->setParametro('sw_archivado','sw_archivado','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -853,13 +880,11 @@ function corregirCorrespondenciaExt()
 		$this->captura('id_usuario_reg','int4');
 		$this->captura('fecha_mod','timestamp');
 		$this->captura('id_usuario_mod','int4');
-		
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_documento','varchar');
 		$this->captura('desc_depto','varchar');
 		$this->captura('ruta_archivo','varchar');
-		
 		$this->captura('version','int4');		
 		$this->captura('desc_clasificador','text');
 		$this->captura('id_clasificador','integer');
@@ -913,7 +938,7 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('nro_paginas','nro_paginas','int4');
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 		$this->setParametro('cite','cite','varchar');
-
+        $this->setParametro('fecha_creacion_documento','fecha_creacion_documento','date');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

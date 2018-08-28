@@ -11,16 +11,18 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
-
+   
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
 		Phx.vista.Adjunto.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen}})
+		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen,estado:this.estado}})
 		this.argumentExtraSubmit={'id_correspondencia_origen':this.id_origen};
-
-
+/*
+        bnew={
+        	disable:true;
+        }*/
 		this.addButton('VerArchivoAdjunto', {
 			text: 'Ver Archivo Adjunto',
 			iconCls: 'bsee',
@@ -28,6 +30,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 			handler: this.verArchivoAdjunto,
 			tooltip: '<b>Ver Archivo Adjunto</b><br/>'
 		});
+		
 
 	},
 			
@@ -295,33 +298,67 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_adjunto',
 		direction: 'ASC'
 	},
-	bdel:true,
+	/*bdel:true,
 	bsave:true,
+	bnew:{
+		if (estado='recibido'){
+			 //console.log(this.estado);
+			  
+			  
+			   bdel:false;
+	           bsave:false;
+	           disabled:true;
+			}else
+			{
+			   bdel:true;
+	           bsave:true;
+	           disabled:false;
+			}
+	},
+	*/
+
 		preparaMenu:function(n){
 
 			Phx.vista.Adjunto.superclass.preparaMenu.call(this,n);
 			var data = this.getSelectedData();
-
-			console.log('data',data)
+             
+			console.log('data',data.estado)
+			
 			var tb =this.tbar;
 			//si el archivo esta escaneado se permite visualizar
+			
 			if(data != undefined){
 				this.getBoton('VerArchivoAdjunto').enable();
-
-			}
+             }
 			else{
 				this.getBoton('VerArchivoAdjunto').enable(); //aqui esta disable
-
-
-			}
-
-
-
+         	}
 
 			return tb
 
 		},
-
+       onButtonNew: function () {
+             if (this.estado=='recibido'|| this.estado=='enviado'){
+             	alert ('No se puede añadir nuevos archivos ');
+             }else{
+             	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+             }
+             
+        },
+        onButtonEdit: function () {
+             if (this.estado=='recibido'){
+             	alert ('No se puede modificar los archivos ya recepcionados');
+             }else{
+             	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
+             }
+        },
+        onButtonDel: function () {
+             if (this.estado=='recibido'){
+             	alert ('No se puede eliminar los archivos ya recepcionados');
+             }else{
+             	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
+             }
+        },
 		verArchivoAdjunto:function(){
 
 

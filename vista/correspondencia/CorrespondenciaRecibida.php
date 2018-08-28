@@ -21,7 +21,7 @@ Phx.vista.CorrespondenciaRecibida = {
 	title: 'Recibida',
 	nombreVista: 'CorrespondenciaRecibida',
 	swTipo: 'externa',
-	gruposBarraTareas: [{
+	/*gruposBarraTareas: [{
 		name: 'externa',
 		title: '<H1 align="center"><i class="fa fa-space-shuttle"></i> Externa</h1>',
 		grupo: 0,
@@ -34,7 +34,7 @@ Phx.vista.CorrespondenciaRecibida = {
 			height: 0
 		}
 
-	],
+	],*/
 	beditGroups: [0, 1],
 	bactGroups: [0, 1],
 	btestGroups: [0,1],
@@ -47,43 +47,97 @@ Phx.vista.CorrespondenciaRecibida = {
 		this.Atributos[this.getIndAtributo('origen')].grid=true;
         this.Atributos[this.getIndAtributo('origen')].form=false;
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
-
-		this.addButton('finalizarRecibido', {
+	     console.log('AAAAAAAAAAAAAAAAAAAAAAAA');
+         console.log(this.tipo);
+         //this.bloquearOrdenamientoGrid();
+           this.getBoton('Plantilla').hide();
+           // this.getBoton('FinalizarExterna').hide();
+            this.getBoton('SubirDocumento').hide();
+            //this.getBoton('Adjuntos').show();
+            this.getBoton('Corregir').hide();
+            //this.getBoton('VerDocumento').show();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+            //this.getBoton('Derivar').hide();
+            //this.getBoton('HojaRuta').hide();
+            //this.getBoton('Historico').hide();
+            this.getBoton('Finalizar').hide(); 
+             this.getBoton('Habilitar').hide();
+		/*this.addButton('finalizarRecibido', {
 			grupo : [0,1],
 			text: 'Finalizar Recepcion',
 			iconCls: 'bgood',
 			disabled:true,
 			handler: this.finalizarRecepcion,
 			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
-		});		
+		});	*/	
 		
-		this.addButton('archivar', {
+		/*this.addButton('Archivar', {
 			grupo : [0,1],
 			text: 'Archivar',
 			iconCls: 'bsave',
 			disabled: false,
 			handler: this.archivar,
 			tooltip: '<b>Archivar</b><br/>'
-		});
+		});*/
 		
 		
 		this.init();
-        this.store.baseParams = {'interface': 'recibida','tipo': this.swTipo};
+        this.store.baseParams = {'interface': 'recibida','tipo': this.tipo};
         this.load({params: {start: 0, limit: 50}})
 	  
     
    },
    getParametrosFiltro: function () {
-		this.store.baseParams.tipo = this.swTipo;
+		this.store.baseParams.tipo = this.tipo;
 	},
    actualizarSegunTab: function (name, indice) {
 		console.log('externa',name);
 
-		this.getBoton('Adjuntos').show();
-		this.getBoton('Hoja de Ruta').show();
-		this.getBoton('Historico').show();
-		this.getBoton('mandar').show();
-		this.swTipo = name;
+		     //this.bloquearOrdenamientoGrid();
+      
+             this.getBoton('Plantilla').hide();
+           // this.getBoton('FinalizarExterna').hide();
+            this.getBoton('SubirDocumento').hide();
+            //this.getBoton('Adjuntos').show();
+            this.getBoton('Corregir').hide();
+            //this.getBoton('VerDocumento').show();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+            //this.getBoton('Derivar').hide();
+            //this.getBoton('HojaRuta').hide();
+            //this.getBoton('Historico').hide();
+            this.getBoton('Finalizar').hide(); 
+             this.getBoton('Habilitar').hide();
+            
+            this.getBoton('FinalizarExterna').enable();
+            this.getBoton('Adjuntos').enable();
+            this.getBoton('VerDocumento').enable();
+            this.getBoton('Derivar').enable();
+            this.getBoton('HojaRuta').enable();
+            this.getBoton('Historico').enable();
+            this.getBoton('Archivar').enable(); 
+         /* if(name=='externa'){
+				 this.getBoton('FinalizarExterna').show();
+              this.getBoton('Adjuntos').show();
+              this.getBoton('VerDocumento').show();
+              this.getBoton('Derivar').show();
+              this.getBoton('HojaRuta').show();
+              this.getBoton('Historico').show();
+              this.getBoton('Archivar').show(); 
+            
+		}else{
+				*/	 this.getBoton('FinalizarExterna').show();
+              this.getBoton('Adjuntos').show();
+              this.getBoton('VerDocumento').show();
+              this.getBoton('Derivar').show();
+              this.getBoton('HojaRuta').show();
+              this.getBoton('Historico').show();
+              this.getBoton('Archivar').show(); 
+            
+		//}
+			           
+		this.swTipo = this.tipo;
 		this.getParametrosFiltro();
 		this.load();
 	
@@ -95,13 +149,29 @@ Phx.vista.CorrespondenciaRecibida = {
 		console.log('data',data)
 		var tb =this.tbar;
 		//si el archivo esta escaneado se permite visualizar
-		if(data['estado']=='pendiente_recibido'){
+		
+		
+		
+		
+		if(data['estado']=='recibido'){
 			
-			this.getBoton('finalizarRecibido').enable();
+			this.getBoton('FinalizarExterna').disable();
+            this.getBoton('Adjuntos').enable();
+            this.getBoton('VerDocumento').enable();
+            this.getBoton('Derivar').enable();
+            this.getBoton('HojaRuta').enable();
+            this.getBoton('Historico').enable();
+            this.getBoton('Archivar').enable();
 		}
 		else{
-			
-			this.getBoton('finalizarRecibido').disabled();
+		    this.getBoton('FinalizarExterna').enable();
+            this.getBoton('Adjuntos').disable();
+            this.getBoton('VerDocumento').disable();
+            this.getBoton('Derivar').disable();
+            this.getBoton('HojaRuta').disable();
+            this.getBoton('Historico').disable();
+            this.getBoton('Archivar').disable();
+	
 		}
 		
 		Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n); 
@@ -121,28 +191,7 @@ Phx.vista.CorrespondenciaRecibida = {
 			scope: this
 		});
 	},
-	successFinalizar:function(resp){
 
-		this.load({params: {start: 0, limit: 50}});
-
-
-		console.log(resp)
-	},
-	archivar:function(){
-		var rec = this.sm.getSelected();
-
-		Ext.Ajax.request({
-			url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',
-			params: {
-				id_correspondencia: rec.data.id_correspondencia,
-				sw_archivado :'si'
-			},
-			success: this.successFinalizar,
-			failure: this.conexionFailure,
-			timeout: this.timeout,
-			scope: this
-		});
-	},
 
 };
 </script>

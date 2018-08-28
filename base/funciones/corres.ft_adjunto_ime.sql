@@ -1,8 +1,11 @@
-CREATE OR REPLACE FUNCTION "corres"."ft_adjunto_ime" (	
-				p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
-RETURNS character varying AS
-$BODY$
-
+CREATE OR REPLACE FUNCTION corres.ft_adjunto_ime (
+  p_administrador integer,
+  p_id_usuario integer,
+  p_tabla varchar,
+  p_transaccion varchar
+)
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Sistema de documentos
  FUNCION: 		corres.ft_adjunto_ime
@@ -103,20 +106,23 @@ BEGIN
 
 		begin
 			--Sentencia de la modificacion
-			update corres.tadjunto set
-			extension = v_parametros.extension,
-			id_correspondencia_origen = v_parametros.id_correspondencia_origen,
-			nombre_archivo = v_parametros.nombre_archivo,
-			ruta_archivo = v_parametros.ruta_archivo,
-			id_usuario_mod = p_id_usuario,
-			fecha_mod = now(),
-			id_usuario_ai = v_parametros._id_usuario_ai,
-			usuario_ai = v_parametros._nombre_usuario_ai
-			where id_adjunto=v_parametros.id_adjunto;
-               
+           -- raise exception '%','asdfasdfasdf';
+          FOR v_registros_json
+          IN (SELECT *
+              FROM json_populate_recordset(NULL :: corres.json_adjuntos_mod, v_parametros.arra_json :: JSON))
+          LOOP
+              update corres.tadjunto set
+              extension = v_registros_json.extension,
+              id_correspondencia_origen = v_registros_json.id_correspondencia_origen,
+              nombre_archivo = v_registros_json.nombre_archivo,
+              ruta_archivo = v_registros_json.ruta_archivo,
+              id_usuario_mod = p_id_usuario,
+              fecha_mod = now()
+              where id_adjunto=v_registros_json.id_adjunto;
+           END LOOP;    
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Adjunto modificado(a)'); 
-            v_resp = pxp.f_agrega_clave(v_resp,'id_adjunto',v_parametros.id_adjunto::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'id_adjunto',v_registros_json.id_adjunto::varchar);
                
             --Devuelve la respuesta
             return v_resp;
@@ -162,7 +168,9 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
-$BODY$
-LANGUAGE 'plpgsql' VOLATILE
+$body$
+LANGUAGE 'plpgsql'
+VOLATILE
+CALLED ON NULL INPUT
+SECURITY INVOKER
 COST 100;
-ALTER FUNCTION "corres"."ft_adjunto_ime"(integer, integer, character varying, character varying) OWNER TO postgres;

@@ -66,17 +66,9 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 	//	this.bloquearOrdenamientoGrid();
 
-
+		 
 		
 		this.load();
-
-
-//		this.getBoton('verCorrespondencia').hide();
-		//this.getBoton('mandar').hide();
-		this.getBoton('Adjuntos').hide();
-		//this.getBoton('corregir').hide();
-		this.getBoton('Hoja de Ruta').hide();
-
 
 		this.addButton('anularCorrespondencia', {
 			text: 'Anular',
@@ -85,19 +77,26 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			handler: this.anularCorrespondencia,
 			tooltip: '<b>Anular Correspondencia</b><br/>Anula la correspondencia y todas las derivaciones.'
 		});
-      /* this.addButton('Historico', {
-				text : 'Histórico',
-				iconCls : 'bmenuitems',//aqui hay que modificar para que sea de la hoja de ruta     ANNNNNNNNNNNNNNNNNNNN
-				disabled : false,
-				handler : this.historico,
-				tooltip : '<b>Histórico</b><br/>De Derivaciones realizadas'
-			});*/
-
+      
    
-		
+		this.getBoton('Plantilla').hide();
+            this.getBoton('FinalizarExterna').hide();
+            this.getBoton('SubirDocumento').hide();
+            //this.getBoton('Adjuntos').show();
+            //this.getBoton('Corregir').hide();
+            //this.getBoton('VerDocumento').show();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+            //this.getBoton('Derivar').hide();
+            this.getBoton('HojaRuta').hide();
+            this.getBoton('Historico').hide();
+            this.getBoton('Finalizar').hide();
+            this.getBoton('anularCorrespondencia').hide();
+            this.getBoton('Archivar').hide();
+            this.getBoton('Habilitar').hide();
 		this.init();
         //this.store.baseParams = {'interface': 'derivacion_externa'};
-        this.store.baseParams = {'vista': 'derivacion_correspondencia_externa','estado': this.swEstado};
+        this.store.baseParams = {'vista': 'derivacion_correspondencia_externa','estado': this.swEstado,'interface': 'externa'};
         
        
 
@@ -112,19 +111,47 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 	actualizarSegunTab: function (name, indice) {
 		console.log('derivar',name);
-
-		this.getBoton('Adjuntos').hide();
-		
+         this.getBoton('Plantilla').hide();
+            this.getBoton('FinalizarExterna').hide();
+            this.getBoton('SubirDocumento').hide();
+            //this.getBoton('Adjuntos').show();
+            //this.getBoton('Corregir').hide();
+            //this.getBoton('VerDocumento').show();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+            //this.getBoton('Derivar').hide();
+            this.getBoton('HojaRuta').hide();
+            this.getBoton('Historico').hide();
+            this.getBoton('Finalizar').hide();
+            this.getBoton('anularCorrespondencia').hide();
+            this.getBoton('Archivar').hide();
+            this.getBoton('Habilitar').hide();
+	
 		if(name=='enviado'){
-			this.getBoton('Hoja de Ruta').show();
+			this.getBoton('HojaRuta').show();
 			this.getBoton('Historico').show();
 			this.getBoton('anularCorrespondencia').show();
-			this.getBoton('corregir').hide();
+			this.getBoton('Corregir').hide();
+			this.getBoton('HojaRuta').enable();
+			this.getBoton('Historico').enable();
+			this.getBoton('Archivar').enable();
 		}else{
 			
-			this.getBoton('Hoja de Ruta').hide();
-			this.getBoton('anularCorrespondencia').hide();
-			this.getBoton('corregir').enable();
+			//this.bloquearOrdenamientoGrid();
+            this.getBoton('Plantilla').hide();
+            this.getBoton('FinalizarExterna').hide();
+            this.getBoton('SubirDocumento').hide();
+            //this.getBoton('Adjuntos').show();
+            //this.getBoton('Corregir').hide();
+            //this.getBoton('VerDocumento').show();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+            //this.getBoton('Derivar').hide();
+            this.getBoton('HojaRuta').hide();
+            this.getBoton('Historico').hide();
+            this.getBoton('Finalizar').hide();
+            this.getBoton('anularCorrespondencia').hide();
+            this.getBoton('Archivar').hide();
 		}
 		
 		
@@ -142,18 +169,22 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
       	Phx.vista.DerivacionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
 		  var data = this.getSelectedData();
 
-		console.log('data',data)
+		  console.log('data',data)
 		  var tb =this.tbar;
 		  //si el archivo esta escaneado se permite visualizar
-
-
-		this.getBoton('verCorrespondencia').enable();
-		this.getBoton('mandar').enable();
-
-
-		return tb
+		    this.getBoton('Adjuntos').enable();
+			this.getBoton('Corregir').enable();
+			this.getBoton('VerDocumento').enable();
+			this.getBoton('Derivar').enable();
+			if (data['estado'] =='enviado'){
+			
+				this.getBoton('edit').disable();
+				//this.getBoton('del').disable();
+			}
+			
+   	     return tb
 		
-	},
+	}/*,
 	onButtonNew: function () {
 		
 		this.tipo = this.getComponente('tipo');
@@ -185,7 +216,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.ocultarComponente(cmpId_funcionario);
 
 
-	},
+	}*/,
 	onButtonEdit: function () {
 		
 		this.tipo = this.getComponente('tipo');

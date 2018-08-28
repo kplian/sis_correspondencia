@@ -1,10 +1,4 @@
 --------------- SQL ---------------
-
-CREATE OR REPLACE FUNCTION corres.f_encuentra_raiz (
-  fl_id_correspondencia integer
-)
-RETURNS integer AS
-$body$
 /**************************************************************************
  SISTEMA ENDESIS - SISTEMA DE FLUJO ()
 ***************************************************************************
@@ -64,9 +58,3 @@ EXCEPTION
 		raise exception '%',v_resp;  
   
 END;
-$body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER
-COST 100;

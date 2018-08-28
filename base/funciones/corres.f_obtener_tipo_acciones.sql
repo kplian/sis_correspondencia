@@ -1,5 +1,4 @@
 --------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.f_obtener_tipo_acciones (
   fl_acciones varchar
 )

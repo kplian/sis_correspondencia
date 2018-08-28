@@ -33,6 +33,13 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 			grupo: 1,
 			height: 0
 		}
+		,
+		{
+			name: 'saliente',
+			title: '<H1 align="center"><i class="fa fa-eye"></i> Emitida Externa</h1>',
+			grupo: 1,
+			height: 0
+		}
 
 	],    
 	beditGroups: [0, 1],
@@ -44,8 +51,19 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 	
 	constructor: function(config) {
 	    Phx.vista.CorrespondenciaRecibidaArchivada.superclass.constructor.call(this,config);
-
-
+        this.getBoton('Plantilla').hide();
+           // this.getBoton('FinalizarExterna').hide();
+            this.getBoton('SubirDocumento').hide();
+            //this.getBoton('Adjuntos').show();
+            this.getBoton('Corregir').hide();
+            //this.getBoton('VerDocumento').show();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+            //this.getBoton('Derivar').hide();
+            //this.getBoton('HojaRuta').hide();
+            //this.getBoton('Historico').hide();
+            this.getBoton('Finalizar').hide(); 
+            this.getBoton('Archivar').hide(); 
 
 		this.addButton('DesArchivar', {
 			text: 'DesArchivar',
@@ -65,12 +83,49 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 		this.store.baseParams.tipo = this.swTipo;
 	},
    actualizarSegunTab: function (name, indice) {
-		console.log('externa',name);
-
-		this.getBoton('Adjuntos').show();
-		this.getBoton('Hoja de Ruta').show();
-		this.getBoton('mandar').show();
-		this.getBoton('Historico').show();
+		console.log('externa',this.swTipo);
+                this.getBoton('Plantilla').hide();
+            this.getBoton('FinalizarExterna').hide();
+            this.getBoton('SubirDocumento').hide();
+            //this.getBoton('Adjuntos').show();
+            this.getBoton('Corregir').hide();
+            //this.getBoton('VerDocumento').show();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+            this.getBoton('Derivar').hide();
+            //this.getBoton('HojaRuta').hide();
+            //this.getBoton('Historico').hide();
+            this.getBoton('Finalizar').hide(); 
+            this.getBoton('Archivar').hide(); 
+        
+		//this.getBoton('FinalizarExterna').enable();
+           this.getBoton('Adjuntos').enable();
+            this.getBoton('VerDocumento').enable();
+            this.getBoton('Derivar').enable();
+            this.getBoton('HojaRuta').enable();
+            this.getBoton('Historico').enable();
+            this.getBoton('Archivar').enable(); 
+		
+		 if(name=='externa'){
+				// this.getBoton('FinalizarExterna').show();
+              this.getBoton('Adjuntos').show();
+              this.getBoton('VerDocumento').show();
+            //  this.getBoton('Derivar').show();
+              this.getBoton('HojaRuta').show();
+              this.getBoton('Historico').show();
+              this.getBoton('DesArchivar').show(); 
+            
+		}else{
+			 // tis.getBoton('FinalizarExterna').show();
+              this.getBoton('Adjuntos').show();
+              this.getBoton('VerDocumento').show();
+              //this.getBoton('Derivar').show();
+              this.getBoton('HojaRuta').show();
+              this.getBoton('Historico').show();
+              this.getBoton('DesArchivar').show();
+            
+		}
+		
 		this.swTipo = name;
 		this.getParametrosFiltro();
 		this.load();

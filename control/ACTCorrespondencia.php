@@ -25,8 +25,9 @@ class ACTCorrespondencia extends ACTbase
 
         $this->objParam->defecto('dir_ordenacion', 'desc');
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
-
-        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+		$this->objParam->addFiltro("cor.sw_archivado = ''no'' ");
+		
+       if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
             $this->objReporte = new Reporte($this->objParam, $this);
             $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondencia');
         } else {
@@ -43,6 +44,10 @@ class ACTCorrespondencia extends ACTbase
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion', 'desc');
+		
+		if ($this->objParam->getParametro('tipo') != '') {
+            $this->objParam->addFiltro("cor.tipo = ''" . $this->objParam->getParametro('tipo')."''");
+        }
 
         if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
             $this->objReporte = new Reporte($this->objParam, $this);
@@ -356,7 +361,11 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor->setValue('numero', htmlspecialchars($correspondencia[0]['numero']));
 				$templateProcessor->setValue('fecha_documento_literal', htmlspecialchars($correspondenciaDetalle[0]['fecha_documento_literal']));
                 $templateProcessor->setValue('iniciales', htmlspecialchars($correspondencia[0]['iniciales']));
+                $templateProcessor->setValue('direccion_institucion', htmlspecialchars($correspondencia[0]['direccion_institucion']));
+                $templateProcessor->setValue('desc_insti', htmlspecialchars($correspondencia[0]['desc_insti']));
+				$templateProcessor->setValue('nombre_completo', htmlspecialchars($correspondencia[0]['nombre_completo1']));
                
+                
                 //$templateProcessor->setValue('uo', htmlspecialchars($correspondencia[0]['desc_uo']));
 
 
@@ -449,7 +458,7 @@ class ACTCorrespondencia extends ACTbase
 							.tg .tg-yw4l{vertical-align:top}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
 							</style>
-							<CENTER><div><B>REGISTRO DE CORRESPONDENCIA DERIVADA</B></div></CENTER>
+							<CENTER><div><B>HOJA DE RECEPCION DE CORRESPONDENCIA</B></div></CENTER>
 							<hr />
 							<table class="tg" border="0">
 							  <tr>
@@ -522,6 +531,13 @@ window.onload=function(){self.print();}
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
+    function habilitarCorrespondencia()
+    {
+
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->habilitarCorrespondencia();
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
     function listarCorrespondenciaRecibidaArchivada()
     {
@@ -568,7 +584,16 @@ window.onload=function(){self.print();}
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
         $this->objFunc = $this->create('MODCorrespondencia');
 		if ($this->objParam->insertar('id_correspondencia')) {
-            $this->res = $this->objFunc->insertarCorrespondenciaExterna();
+			
+			if ($this->objParam->getParametro('tipo')=='entrante'){
+				echo 'Ingresa aqui?';
+				exit;
+				$this->res = $this->objFunc->insertarCorrespondenciaExterna();
+			}else{
+				
+				$this->res = $this->objFunc->insertarCorrespondencia();
+			}
+            
         } else {
             $this->res = $this->objFunc->modificarCorrespondenciaExterna();
         }
