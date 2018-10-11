@@ -18,7 +18,8 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		Phx.vista.Adjunto.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen,estado:this.estado}})
-		this.argumentExtraSubmit={'id_correspondencia_origen':this.id_origen};
+		this.argumentExtraSubmit={'id_correspondencia_origen':this.id_origen,'id_correspondencia':this.id_correspondencia,'numero':this.numero};
+		  
 /*
         bnew={
         	disable:true;
@@ -45,7 +46,22 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
-
+{
+			config : {
+				name : 'numero',
+				fieldLabel : 'Numero',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.numero',
+				type : 'string'
+			},
+			id_grupo : 0,
+			grid : true,
+			form : false,
+			bottom_filter : true
+	},
 
 		{
 			config: {
@@ -159,7 +175,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'adj.estado_reg',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -174,7 +190,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'adj.ruta_archivo',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -292,7 +308,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		
+		{name:'numero', type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_adjunto',
@@ -338,7 +354,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 
 		},
        onButtonNew: function () {
-             if (this.estado=='recibido'|| this.estado=='enviado'){
+             if ( this.estado=='enviado'){
              	alert ('No se puede añadir nuevos archivos ');
              }else{
              	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
@@ -346,15 +362,15 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
              
         },
         onButtonEdit: function () {
-             if (this.estado=='recibido'){
-             	alert ('No se puede modificar los archivos ya recepcionados');
+             if (this.estado=='enviado'){
+             	alert ('No se puede modificar los archivos ya enviados');
              }else{
              	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
              }
         },
         onButtonDel: function () {
-             if (this.estado=='recibido'){
-             	alert ('No se puede eliminar los archivos ya recepcionados');
+             if (this.estado=='enviado'){
+             	alert ('No se puede eliminar los archivos ya enviados');
              }else{
              	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
              }

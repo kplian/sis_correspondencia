@@ -59,6 +59,13 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('cite')].grid=true;
         this.Atributos[this.getIndAtributo('cite')].form=true;
         this.Atributos[this.getIndAtributo('estado_reg')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionario_saliente')].form=false;
+        this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+        this.Atributos[this.getIndAtributo('id_uo')].form=false;
+        this.Atributos[this.getIndAtributo('id_uo')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionario')].form=false;
+        this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
+		
         //this.Atributos[this.getIndAtributo('fecha_creacion_documento')].form=true;
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 	    
@@ -92,7 +99,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.store.baseParams = {'interface': 'externa','estado': this.swEstado};
         this.load({params: {start: 0, limit: 50}})
 
-		this.iniciarEventos();
+		//this.iniciarEventos();
     
    },
    iniciarEventos(){
@@ -167,7 +174,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
             this.getBoton('FinalizarExterna').hide();
             //this.getBoton('SubirDocumento').show();
             //this.getBoton('Adjuntos').show();
-            this.getBoton('Corregir').hide();
+           this.getBoton('Corregir').hide();
             //this.getBoton('VerDocumento').show();
             //this.getBoton('ImpCodigo').hide();
             //this.getBoton('ImpCodigoDoc').hide();
@@ -220,7 +227,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		}
 		
 		if (data['estado'] == 'pendiente_recepcion_externo') {
-			this.getBoton('SubirDocumento').disable();
+			//this.getBoton('SubirDocumento').disable();
 			this.getBoton('Adjuntos').disable();
 			this.getBoton('VerDocumento').enable();
 			this.getBoton('Corregir').enable();
@@ -229,6 +236,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		    this.getBoton('ImpCodigoDoc').disable();
 		    this.getBoton('edit').disable();
 			this.getBoton('del').disable();
+			 this.getBoton('HojaRuta').enable();
 		}
 		
 	
@@ -256,6 +264,9 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 
 		this.tipo = this.getComponente('tipo');
+		this.id_depto = this.getComponente('id_depto');
+		this.id_clasificador = this.getComponente('id_clasificador');
+		this.desc_clasificador = this.getComponente('desc_clasificador');
 		var cmbDoc = this.getComponente('id_documento');
 		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonNew.call(this);
     	this.Cmp.id_institucion_destino.hide();
@@ -273,7 +284,12 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		console.log(this.Cmp);
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
-
+		/*this.id_depto.setValue('ENDE CORANI');
+		this.id_clasificador.setValue('PUBLICO');
+        this.desc_clasificador.setValue('PUBLICO');*/
+        /*this.id_clasificador.setValue(4);*/
+		//this.tipo.disable(true);
+		
 		cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es interna
 		cmbDoc.modificado = true;
 		cmbDoc.reset();

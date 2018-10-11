@@ -22,7 +22,7 @@ header("content-type: text/javascript; charset=UTF-8");
         constructor: function (config) {
         	
         	//Habilitar atributos para la interfaz Correspondencia Saliente
-        	this.Atributos[this.getIndAtributo('fecha_reg')].grid=true;
+        	//this.Atributos[this.getIndAtributo('fecha_reg')].grid=true;
             this.Atributos[this.getIndAtributo('id_institucion_destino')].grid=true;
             this.Atributos[this.getIndAtributo('id_persona_destino')].grid=true;
              this.Atributos[this.getIndAtributo('id_institucion_destino')].form=true;
@@ -32,13 +32,18 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos[this.getIndAtributo('otros_adjuntos')].form=true;
             this.Atributos[this.getIndAtributo('tipo')].form=true;
             this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].form=true;
+             this.Atributos[this.getIndAtributo('fecha_creacion_documento')].form=false;
+             this.Atributos[this.getIndAtributo('id_funcionario')].form=false;
+             // this.Atributos[this.getIndAtributo('id_acciones')].form=false;
+             //this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
+             
             Phx.vista.CorrespondenciaSaliente.superclass.constructor.call(this, config);   
             
            // this.getBoton('Plantilla').show();
             this.getBoton('FinalizarExterna').hide();
            // this.getBoton('SubirDocumento').show();
             //this.getBoton('Adjuntos').show();
-            this.getBoton('Corregir').hide();
+            //this.getBoton('Corregir').hide();
             //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
@@ -47,6 +52,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('Historico').hide();
             //this.getBoton('Finalizar').show();
             //this.getBoton('Archivar').(); 
+             this.getBoton('Habilitar').hide();
        
        
        
@@ -114,11 +120,11 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonNew: function () {
             
             this.cmpFechaDoc = this.getComponente('fecha_documento');
-            this.Cmp.id_funcionario.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
-            this.Cmp.id_funcionario.store.load({params:{start:0,limit:this.tam_pag},
+            this.Cmp.id_funcionario_saliente.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
+            this.Cmp.id_funcionario_saliente.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
                     if (r.length == 1 ) {
-                        this.Cmp.id_funcionario.setValue(r[0].data.id_funcionario);
+                        this.Cmp.id_funcionario_saliente.setValue(r[0].data.id_funcionario);
                       
                     }
 
@@ -131,7 +137,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
-            this.adminGrupo({mostrar: [0, 1, 3]});
+            this.adminGrupo({mostrar: [0,1, 2,3]});
             this.ocultarComponente(cmpFuncionarios);
 
             console.log('ver',this.Cmp);
@@ -153,7 +159,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         onButtonEdit: function () {
             Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
-            this.adminGrupo({mostrar: [1,3], ocultar: [0]});
+            this.adminGrupo({mostrar: [3], ocultar: [0,1]});
             this.ocultarComponente(this.Cmp.id_funcionarios);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
@@ -187,6 +193,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('Plantilla').enable();
                 this.getBoton('Adjuntos').enable();
                 this.getBoton('Archivar').disable(); 
+                this.getBoton('Corregir').disable();
                 
             }
             if (data['estado'] == 'enviado') {
@@ -197,6 +204,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     this.getBoton('Adjuntos').disable();
                     this.getBoton('VerDocumento').disable();
                     this.getBoton('SubirDocumento').disable();
+                    this.getBoton('Corregir').enable();
                     this.getBoton('edit').disable();
 			  		this.getBoton('del').disable();
 			  		this.getBoton('Archivar').enable(); 

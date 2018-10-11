@@ -63,6 +63,11 @@ Phx.vista.CorrespondenciaAdministracion = {
         this.Atributos[this.getIndAtributo('cite')].grid=true;
         this.Atributos[this.getIndAtributo('cite')].form=true;
         this.Atributos[this.getIndAtributo('estado_reg')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionario_saliente')].form=false;
+        this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+        this.Atributos[this.getIndAtributo('id_uo')].form=false;
+        this.Atributos[this.getIndAtributo('id_uo')].grid=false; 
+        
 	    Phx.vista.CorrespondenciaAdministracion.superclass.constructor.call(this,config);
 	    
 	  

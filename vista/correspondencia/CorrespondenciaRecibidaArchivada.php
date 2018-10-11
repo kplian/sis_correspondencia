@@ -64,6 +64,7 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
             //this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide(); 
             this.getBoton('Archivar').hide(); 
+            this.getBoton('Habilitar').hide(); 
 
 		this.addButton('DesArchivar', {
 			text: 'DesArchivar',
@@ -97,6 +98,7 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
             //this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide(); 
             this.getBoton('Archivar').hide(); 
+            this.getBoton('Habilitar').hide(); 
         
 		//this.getBoton('FinalizarExterna').enable();
            this.getBoton('Adjuntos').enable();

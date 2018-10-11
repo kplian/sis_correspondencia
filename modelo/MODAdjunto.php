@@ -37,6 +37,8 @@ class MODAdjunto extends MODbase
         $this->captura('fecha_mod', 'timestamp');
         $this->captura('usr_reg', 'varchar');
         $this->captura('usr_mod', 'varchar');
+		$this->captura('numero', 'varchar');
+		
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -52,9 +54,13 @@ class MODAdjunto extends MODbase
           
         $arra = array();
         $id_correspondencia_origen = $this->aParam->getParametro('id_correspondencia_origen');
-
+        $id_correspondencia = $this->aParam->getParametro('id_correspondencia');
+		$numero = $this->aParam->getParametro('numero');
+		$numero= str_replace('/','_',$numero);
+		$numero= str_replace(' ','_',$numero);
+			
         $ruta_destino = "./../../../uploaded_files/sis_correspondencia/Adjunto/";
-
+        
         if (!file_exists($ruta_destino)) {
             //echo $upload_folder;
             //exit;
@@ -80,7 +86,7 @@ class MODAdjunto extends MODbase
 
         for ($i = 0; $i < $aux; $i++) {
             $img = pathinfo($this->arregloFiles['archivo']['name'][$i]);
-            $tmp_name = $this->arregloFiles['archivo']['tmp_name'][$i];
+            $tmp_name = $numero.$this->arregloFiles['archivo']['tmp_name'][$i];
             $tamano = ($this->arregloFiles['archivo']['size'][$i] / 1000) . "Kb"; //Obtenemos el tama?o en KB
 
             $nombre_archivo = $img['filename']; //nombre de archivo
@@ -91,8 +97,8 @@ class MODAdjunto extends MODbase
            // $file_name = md5($unico_id . $_SESSION["_SEMILLA"]);
            
             //$file_server_name = $file_name . ".$extension";
-            $file_name = $nombre_archivo;
-			$file_server_name = $nombre_archivo. ".$extension";
+            $file_name = $numero.$nombre_archivo.$id_correspondencia;
+			$file_server_name = $numero.$nombre_archivo.$id_correspondencia.".$extension";
             move_uploaded_file($tmp_name, $ruta_destino . $file_server_name);
 
             $ruta_archivo = $ruta_destino . $file_server_name;
@@ -101,21 +107,20 @@ class MODAdjunto extends MODbase
             $this->aParam->addParametro('ruta_archivo', $ruta_archivo);
             $this->arreglo['ruta_archivo'] = $ruta_archivo; // esta ruta contiene con el archivo mas
 
-
-            $arra[] = array(
+           $arra[] = array(
                 "nombre_archivo" => $file_name,
                 "extension" => $extension,
                 "ruta_archivo" => $ruta_archivo,
-                "id_correspondencia_origen" => $id_correspondencia_origen
-
+                "id_correspondencia_origen" => $id_correspondencia_origen,
+			    "id_correspondencia" => $id_correspondencia
             );
 
         }
-
+        
 
         $arra_json = json_encode($arra);
 
-
+       
         $this->aParam->addParametro('arra_json', $arra_json);
         $this->arreglo['arra_json'] = $arra_json;
 
@@ -128,7 +133,7 @@ class MODAdjunto extends MODbase
         //Define los parametros para la funcion
         $this->setParametro('arra_json', 'arra_json', 'text');
         $this->setParametro('id_correspondencia_origen', 'id_correspondencia_origen', 'int4');
-
+        $this->setParametro('id_correspondencia', 'id_correspondencia', 'int4');
 
         //Ejecuta la instruccion
         $this->armarConsulta();
@@ -146,8 +151,12 @@ class MODAdjunto extends MODbase
 		     
         $arra = array();
         $id_correspondencia_origen = $this->aParam->getParametro('id_correspondencia_origen');
+		$id_correspondencia = $this->aParam->getParametro('id_correspondencia');
         $id_adjunto = $this->aParam->getParametro('id_adjunto');
-
+        $numero = $this->aParam->getParametro('numero');
+		$numero= str_replace('/','_',$numero);
+		$numero= str_replace(' ','_',$numero);
+	
         $ruta_destino = "./../../../uploaded_files/sis_correspondencia/Adjunto/";
 
         if (!file_exists($ruta_destino)) {
@@ -178,6 +187,7 @@ class MODAdjunto extends MODbase
             $tmp_name = $this->arregloFiles['archivo']['tmp_name'][$i];
             $tamano = ($this->arregloFiles['archivo']['size'][$i] / 1000) . "Kb"; //Obtenemos el tama?o en KB
 
+            
             $nombre_archivo = $img['filename']; //nombre de archivo
             $extension = $img['extension']; //extension
             $basename = $img['basename']; //nombre de archivo con extension
@@ -186,9 +196,10 @@ class MODAdjunto extends MODbase
            // $file_name = md5($unico_id . $_SESSION["_SEMILLA"]);
            
             //$file_server_name = $file_name . ".$extension";
-            $file_name = $nombre_archivo;
-			$file_server_name = $nombre_archivo. ".$extension";
-            move_uploaded_file($tmp_name, $ruta_destino . $file_server_name);
+            $file_name = $numero.$nombre_archivo.$id_correspondencia;
+			$file_server_name = $numero.$nombre_archivo.$id_correspondencia.".$extension";
+        
+		    move_uploaded_file($tmp_name, $ruta_destino . $file_server_name);
 
             $ruta_archivo = $ruta_destino . $file_server_name;
 
@@ -202,8 +213,8 @@ class MODAdjunto extends MODbase
 		        "nombre_archivo" => $file_name,
                 "extension" => $extension,
                 "ruta_archivo" => $ruta_archivo,
-                "id_correspondencia_origen" => $id_correspondencia_origen
-                
+                "id_correspondencia_origen" => $id_correspondencia_origen,
+                "id_correspondencia" => $id_correspondencia
             );
 
         }
@@ -217,8 +228,7 @@ class MODAdjunto extends MODbase
 		//$this->aParam->addParametro('id_adjunto', $id_adjunto);
         $this->arreglo['arra_json'] = $arra_json;
 
-      /*   print_r($this->aParam);
-		 exit;*/
+       
         //Definicion de variables para ejecucion del procedimiento
         $this->procedimiento = 'corres.ft_adjunto_ime';
         $this->transaccion = 'CORRES_ADJ_MOD';
@@ -229,6 +239,7 @@ class MODAdjunto extends MODbase
 		exit;*/
         $this->setParametro('arra_json', 'arra_json', 'text');
         $this->setParametro('id_correspondencia_origen', 'id_correspondencia_origen', 'int4');
+		
         //Define los parametros para la funcion
         /*print_r($this->setParametro);
 		exit;*/
@@ -254,10 +265,11 @@ class MODAdjunto extends MODbase
         $this->procedimiento = 'corres.ft_adjunto_ime';
         $this->transaccion = 'CORRES_ADJ_ELI';
         $this->tipo_procedimiento = 'IME';
-
+         
+		
         //Define los parametros para la funcion
-        $this->setParametro('id_adjunto', 'id_adjunto', 'int4');
-
+       $this->setParametro('id_adjunto', 'id_adjunto', 'int4');
+		
         //Ejecuta la instruccion
         $this->armarConsulta();
         $this->ejecutarConsulta();

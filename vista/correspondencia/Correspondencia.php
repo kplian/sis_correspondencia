@@ -63,7 +63,6 @@ header("content-type: text/javascript; charset=UTF-8");
 				text : 'Corregir',
 				iconCls : 'bundo',
 				disabled : true,
-<<<<<<< HEAD
 				handler : this.BCorregir,
 				tooltip : '<b>Corregir</b><br/>Si todos los envios de destinatarios se encuentran pendientes de lectura puede solicitar la corrección'
 			});   
@@ -130,7 +129,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			grupo : [0,1],
 			text: 'Archivar',
 			iconCls: 'bsave',
-			disabled: false,
+			disabled: true,
 			handler: this.BArchivar,
 			tooltip: '<b>Archivar</b><br/>'
 		});
@@ -168,6 +167,37 @@ header("content-type: text/javascript; charset=UTF-8");
 			type : 'Field',
 			form : true
 		}, {
+			config : {
+				name : 'nivel_prioridad',
+				fieldLabel : 'Prioridad',
+				gwidth : 30,
+				renderer : function(value, p, record) {
+					var icono = record.data.nivel_prioridad + '.png';
+					console.log('nivel_prioridad', record.data.nivel_prioridad)
+					console.log('icono', icono)
+					if (record.data.version > 0) {
+						icono = 'good';
+					}
+					return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/" + record.data.nivel_prioridad + ".png' align='center' width='10' height='25'/></div>"
+				}
+			},
+			type : 'Field',
+			filters : {
+				pfiltro : 'cor.nivel_prioridad',
+				type : 'string'
+			},
+			
+			egrid : true,
+			filters : {
+				pfiltro : 'cor.version',
+				type : 'numeric'
+			},
+			id_grupo : 0,
+			grid : true,
+			form : false
+		}, 
+		
+          {
 			config : {
 				name : 'version',
 				fieldLabel : 'Icono',
@@ -225,7 +255,249 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : true,
 			form : false,
 			bottom_filter : true
+		}, 
+		{
+			config : {
+				name : 'cite',
+				fieldLabel : 'Cite',
+				gwidth : 200,
+				width : 300
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.cite',
+				type : 'string'
+			},
+
+			id_grupo : 1,
+
+			grid : false,
+			form : false,
+			bottom_filter : true
+		}, 
+		{
+			config : {
+				name : 'fecha_documento',
+				fieldLabel : 'Fecha Documento',
+				disabled : false,
+				allowBlank : false,
+				format : 'd-m-Y',
+				width : 100,
+				gwidth : 100,
+				renderer : function(value, p, record) {
+					return value ? value.dateFormat('d/m/Y') : ''
+				}
+			},
+			type : 'DateField',
+			valorInicial : new Date(),
+			filters : {
+				pfiltro : 'cor.fecha_documento',
+				type : 'date'
+			},
+			id_grupo : 1,
+
+			grid : true,
+			form : true,
+			bottom_filter : true
+		}, 
+		{
+			config : {
+				name : 'id_institucion_remitente',
+				allowBlank : true,
+				fieldLabel : 'Institucion Remitente',
+				valueField : 'id_institucion',
+				anchor : '90%',
+				tinit : true,
+				origen : 'INSTITUCION',
+				gdisplayField : 'desc_insti',
+				gwidth : 200,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['desc_insti']);
+				}
+			},
+			type : 'ComboRec',
+			id_grupo : 1,
+			filters : {
+				pfiltro : 'insti.nombre',
+				type : 'string'
+			},
+			grid : false,
+			form : true,
+			bottom_filter : true
 		}, {
+			config : {
+				name : 'id_persona_remitente',
+				origen : 'PERSONA',
+				allowBlank : true,
+				tinit : true,
+				fieldLabel : 'Persona Remitente',
+				gdisplayField : 'nombre_completo1', //mapea al store del grid
+				valueField : 'id_persona',
+				gwidth : 200,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['nombre_completo1']);
+				}
+			},
+			type : 'ComboRec',
+			id_grupo : 1,
+			filters : {
+				pfiltro : 'persona.nombre_completo1',
+				type : 'string'
+			},
+
+			grid : false,
+			form : true,
+			bottom_filter : true
+		},
+		
+		 {
+			config : {
+				name : 'referencia',
+				fieldLabel : 'Referencia',
+				allowBlank : true,
+				width : 300,
+				growMin : 100,
+				grow : true,
+				gwidth : 100,
+				maxLength : 500
+			},
+			type : 'TextArea',
+			filters : {
+				pfiltro : 'cor.referencia',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : true,
+			form : true,
+			bottom_filter : true
+		}, 
+		{
+			config : {
+				name : 'otros_adjuntos',
+				fieldLabel : 'Descripción de Adjuntos',
+				width : 300,
+				growMin : 100,
+				grow : true,
+				gwidth : 100
+			},
+			type : 'TextArea',
+			filters : {
+				pfiltro : 'cor.otros_adjuntos',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : false,
+			form : false
+		}, 
+		{
+			config : {
+				name : 'nro_paginas',
+				fieldLabel : 'Numero Paginas',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.nro_paginas',
+				type : 'numeric'
+			},
+			id_grupo : 2,
+			grid : false,
+			form : false
+		},
+		{
+			config : {
+				name : 'mensaje',
+				fieldLabel : 'Observaciones',
+				allowBlank : true,
+				width : 300,
+				growMin : 100,
+				grow : true,
+				gwidth : 100
+			},
+			type : 'TextArea',
+			filters : {
+				pfiltro : 'cor.mensaje',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : true,
+			form : true
+		},
+		{
+			config : {
+				name : 'nivel_prioridad',
+				fieldLabel : 'Nivel de Prioridad',
+				typeAhead : true,
+				allowBlank : false,
+				triggerAction : 'all',
+				emptyText : 'Seleccione Opcion...',
+				selectOnFocus : true,
+				mode : 'local',
+				//valorInicial:{ID:'interna',valor:'Interna'},
+				store : new Ext.data.ArrayStore({
+					fields : ['ID', 'valor'],
+					data : [['alta', 'Alta'], ['media', 'Media'], ['baja', 'Baja']]
+				}),
+				valueField : 'ID',
+				displayField : 'valor',
+				width : 150
+
+			},
+			type : 'ComboBox',
+			valorInicial : 'media',
+			filters : {
+				pfiltro : 'cor.nivel_prioridad',
+				type : 'string'
+			},
+			id_grupo : 2,
+			default:'Media',
+			grid : true,
+			form : true
+		},
+		
+		{
+			config : {
+				name : 'id_clasificador',
+				origen : 'CLASIFICADOR',
+				fieldLabel : 'Clasificación',
+				gdisplayField : 'desc_clasificador', //mapea al store del grid
+				gwidth : 200,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['desc_clasificador']);
+				}
+			},
+			type : 'ComboRec',
+			id_grupo : 2,
+			default:'PUBLICO',
+			filters : {
+				pfiltro : 'codigo#descripcion',
+				type : 'string'
+			},
+
+			grid : true,
+			form : true
+		},/*
+		{
+			config : {
+				name : 'fecha_reg',
+				fieldLabel : 'Fecha creación',
+				allowBlank : true,
+				anchor : '80%',
+				gwidth : 100,
+						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
+				
+			},
+			type : 'DateField',
+			gwidth : 100,
+			filters : {
+				pfiltro : 'cor.fecha_creacion_documento',
+				type : 'date'
+			},
+			id_grupo : 2,
+			grid : false,
+			form : false
+		}, */ 
+		{
 			config : {
 				name : 'estado',
 				fieldLabel : 'Estado',
@@ -389,69 +661,29 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : true,
 			form : true
 		}, 
-		{
-			config : {
-				name : 'cite',
-				fieldLabel : 'Cite',
-				gwidth : 200,
-				width : 300
-			},
-			type : 'TextField',
-			filters : {
-				pfiltro : 'cor.cite',
-				type : 'string'
-			},
-
-			id_grupo : 1,
-
-			grid : false,
-			form : false,
-			bottom_filter : true
-		}, {
-			config : {
-				name : 'fecha_documento',
-				fieldLabel : 'Fecha Documento',
-				disabled : false,
-				allowBlank : false,
-				format : 'd-m-Y',
-				width : 100,
-				gwidth : 100,
-				renderer : function(value, p, record) {
-					return value ? value.dateFormat('d/m/Y') : ''
-				}
-			},
-			type : 'DateField',
-			valorInicial : new Date(),
-			filters : {
-				pfiltro : 'cor.fecha_documento',
-				type : 'date'
-			},
-			id_grupo : 0,
-
-			grid : true,
-			form : true,
-			bottom_filter : true
-		}, 
+		
+		
+		
 		 {
 			config : {
 				name : 'fecha_creacion_documento',
 				fieldLabel : 'Fecha Creación del Documento',
-				disabled : false,
 				allowBlank : true,
-				format : 'd-m-Y',
-				width : 100,
+				anchor:'80%',
+				//format : 'd-m-Y',
 				gwidth : 100,
 				renderer : function(value, p, record) {
-					return value ? value.dateFormat('d/m/Y') : ''
+					return value ? value.dateFormat('d/m/Y H:i:s'):''
 				}
 			},
 			type : 'DateField',
-			valorInicial : new Date(),
+			gwidth : 100,
+			//valorInicial : new Date(),
 			filters : {
 				pfiltro : 'cor.fecha_creacion_documento',
 				type : 'date'
 			},
-			id_grupo : 0,
+			id_grupo : 2,
 			grid : true,
 			form : true,
 			bottom_filter : true
@@ -496,7 +728,10 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			grid : true,
 			form : true
-		}, 
+		},
+			
+			
+	
 		
 		{
 			config : {
@@ -519,55 +754,33 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			grid : true,
-			form : false
-		}, {
+			form : true
+		},
+		{
 			config : {
-				name : 'id_institucion_remitente',
-				allowBlank : true,
-				fieldLabel : 'Institucion Remitente',
-				valueField : 'id_institucion',
-				anchor : '90%',
-				tinit : true,
-				origen : 'INSTITUCION',
-				gdisplayField : 'desc_insti',
+				name : 'id_funcionario_saliente',
+				origen : 'FUNCIONARIOCAR',
+				fieldLabel : 'Funcionario Remitente Saliente',
+				gdisplayField : 'desc_funcionario', //mapea al store del grid
+				valueField : 'id_funcionario',
+
 				gwidth : 200,
+				baseParams : {
+					es_combo_solicitud : 'si'
+				},
 				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_insti']);
+					return String.format('{0}', record.data['desc_funcionario']);
 				}
 			},
 			type : 'ComboRec',
 			id_grupo : 1,
 			filters : {
-				pfiltro : 'insti.nombre',
-				type : 'string'
-			},
-			grid : false,
-			form : true,
-			bottom_filter : true
-		}, {
-			config : {
-				name : 'id_persona_remitente',
-				origen : 'PERSONA',
-				allowBlank : true,
-				tinit : true,
-				fieldLabel : 'Persona Remitente',
-				gdisplayField : 'nombre_completo1', //mapea al store del grid
-				valueField : 'id_persona',
-				gwidth : 200,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['nombre_completo1']);
-				}
-			},
-			type : 'ComboRec',
-			id_grupo : 1,
-			filters : {
-				pfiltro : 'persona.nombre_completo1',
+				pfiltro : 'desc_funcionario1',
 				type : 'string'
 			},
 
-			grid : false,
-			form : true,
-			bottom_filter : true
+			grid : true,
+			form : true
 		}, {
 			config : {
 				name : 'id_institucion_destino',
@@ -661,27 +874,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 3,
 			grid : false,
 			form : true
-		}, {
-			config : {
-				name : 'referencia',
-				fieldLabel : 'Referencia',
-				allowBlank : true,
-				width : 300,
-				growMin : 100,
-				grow : true,
-				gwidth : 100,
-				maxLength : 500
-			},
-			type : 'TextArea',
-			filters : {
-				pfiltro : 'cor.referencia',
-				type : 'string'
-			},
-			id_grupo : 2,
-			grid : true,
-			form : true,
-			bottom_filter : true
 		}, 
+		
 		{
                 config: {
                     name: 'asociar',
@@ -707,22 +901,22 @@ header("content-type: text/javascript; charset=UTF-8");
 				emptyText : 'Correspondencias...',
 				store : new Ext.data.JsonStore({
 					url : '../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaSimplificada',
-					id : 'id_correspondencia',
+					id : 'id_origen',
 					root : 'datos',
 					sortInfo : {
 						field : 'id_correspondencia',
 						direction : 'desc'
 					},
 			  		totalProperty : 'total',
-					fields : ['id_correspondencia', 'numero', 'referencia', 'desc_funcionario'],
+					fields : ['id_correspondencia', 'numero', 'referencia', 'desc_funcionario','id_origen'],
 					// turn on remote sorting
 					remoteSort : true,
 					baseParams : {
-						par_filtro : 'cor.numero#cor.referencia#funcionario.desc_funcionario1#ins.nombre'
+						par_filtro : 'cor.numero#cor.referencia#funcionario.desc_funcionario1#insti.nombre'
 					}
 				}),
 				tpl : '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{numero}</div><p style="padding-left: 20px;">{referencia}</p><p style="padding-left: 20px;">{desc_funcionario}</p> </div></tpl>',
-				valueField : 'id_correspondencia',
+				valueField : 'id_origen',
 				displayField : 'numero',
 				gdisplayField : 'desc_asociadas', //mapea al store del grid
 
@@ -753,111 +947,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : false,
 			form : true
 		},
-		{
-			config : {
-				name : 'otros_adjuntos',
-				fieldLabel : 'Descripción de Adjuntos',
-				width : 300,
-				growMin : 100,
-				grow : true,
-				gwidth : 100
-			},
-			type : 'TextArea',
-			filters : {
-				pfiltro : 'cor.otros_adjuntos',
-				type : 'string'
-			},
-			id_grupo : 2,
-			grid : false,
-			form : false
-		}, {
-			config : {
-				name : 'id_correspondencias_asociadas',
-				fieldLabel : 'Responde a',
-				allowBlank : true,
-				emptyText : 'Correspondencias...',
-				store : new Ext.data.JsonStore({
-					url : '../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaSimplificada',
-					id : 'id_correspondencia',
-					root : 'datos',
-					sortInfo : {
-						field : 'id_correspondencia',
-						direction : 'desc'
-					},
-					totalProperty : 'total',
-					fields : ['id_correspondencia', 'numero', 'referencia', 'desc_funcionario1'],
-					// turn on remote sorting
-					remoteSort : true,
-					baseParams : {
-						par_filtro : 'cor.numero#cor.referencia#funcionario.desc_funcionario1'
-					}
-				}),
-				valueField : 'id_correspondencia',
-				displayField : 'numero',
-				gdisplayField : 'desc_asociadas', //mapea al store del grid
-
-				hiddenName : 'id_correspondencias_asociadas',
-				forceSelection : true,
-				typeAhead : true,
-				triggerAction : 'all',
-				enableMultiSelect : true,
-				lazyRender : true,
-				mode : 'remote',
-				pageSize : 10,
-				queryDelay : 1000,
-				width : 250,
-				gwidth : 200,
-				minChars : 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_asociadas']);
-				}
-			},
-			type : 'AwesomeCombo',
-			id_grupo : 2,
-			/*filters:{
-			 pfiltro:'acco.desc_asociadas',
-			 type:'string'
-			 },*/
-
-			grid : false,
-			form : true
-		},
-		{
-			config : {
-				name : 'otros_adjuntos',
-				fieldLabel : 'Otros Adjuntos',
-				width : 300,
-				growMin : 100,
-				grow : true,
-				gwidth : 100
-			},
-			type : 'TextArea',
-			filters : {
-				pfiltro : 'cor.otros_adjuntos',
-				type : 'string'
-			},
-			id_grupo : 2,
-			grid : false,
-			form : false
-		}, {
-			config : {
-				name : 'mensaje',
-				fieldLabel : 'Observaciones',
-				allowBlank : true,
-				width : 300,
-				growMin : 100,
-				grow : true,
-				gwidth : 100
-			},
-			type : 'TextArea',
-			filters : {
-				pfiltro : 'cor.mensaje',
-				type : 'string'
-			},
-			id_grupo : 2,
-			grid : true,
-			form : true
-		}, {
+		
+		 {
 			config : {
 				name : 'id_acciones',
 				fieldLabel : 'Acciones',
@@ -903,56 +994,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 3,
 			grid : false,
 			form : true
-		}, {
-			config : {
-				name : 'nivel_prioridad',
-				fieldLabel : 'Nivel de Prioridad',
-				typeAhead : true,
-				allowBlank : false,
-				triggerAction : 'all',
-				emptyText : 'Seleccione Opcion...',
-				selectOnFocus : true,
-				mode : 'local',
-				//valorInicial:{ID:'interna',valor:'Interna'},
-				store : new Ext.data.ArrayStore({
-					fields : ['ID', 'valor'],
-					data : [['alta', 'Alta'], ['media', 'Media'], ['baja', 'Baja']]
-				}),
-				valueField : 'ID',
-				displayField : 'valor',
-				width : 150
-
-			},
-			type : 'ComboBox',
-			valorInicial : 'media',
-			filters : {
-				pfiltro : 'cor.nivel_prioridad',
-				type : 'string'
-			},
-			id_grupo : 2,
-			grid : true,
-			form : true
-		}, {
-			config : {
-				name : 'id_clasificador',
-				origen : 'CLASIFICADOR',
-				fieldLabel : 'Clasificación',
-				gdisplayField : 'desc_clasificador', //mapea al store del grid
-				gwidth : 200,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_clasificador']);
-				}
-			},
-			type : 'ComboRec',
-			id_grupo : 2,
-			filters : {
-				pfiltro : 'codigo#descripcion',
-				type : 'string'
-			},
-
-			grid : true,
-			form : true
-		}, {
+		}, 
+		{
 			config : {
 				name : 'respuestas',
 				fieldLabel : 'respuestas',
@@ -968,26 +1011,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 1,
 			grid : false,
 			form : false
-		}, {
-			config : {
-				name : 'fecha_reg',
-				fieldLabel : 'Fecha creación',
-				allowBlank : true,
-				anchor : '80%',
-				gwidth : 100,
-						renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
-				
-			},
-			type : 'DateField',
-			gwidth : 100,
-			filters : {
-				pfiltro : 'cor.fecha_reg',
-				type : 'date'
-			},
-			id_grupo : 2,
-			grid : true,
-			form : false
-		}, {
+		},  {
 			config : {
 				name : 'usr_reg',
 				fieldLabel : 'Creado por',
@@ -1058,21 +1082,49 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : true,
 			form : false
 		},
-		{
-			config : {
-				name : 'nro_paginas',
-				fieldLabel : 'Numero Paginas',
-				gwidth : 120
+	
+	    
+   	{
+			config:{
+				name: 'acciones',
+				fieldLabel: 'Acciones',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
 			},
-			type : 'TextField',
+			type:'TextField',
+			filters:{pfiltro:'acciones',type:'numeric'},
+			id_grupo:0,
+			grid:true,
+			form:false
+		},
+		{ config : {
+				name : 'id_funcionario',
+				origen : 'FUNCIONARIOCAR',
+				fieldLabel : 'Funcionario Destino',
+				gdisplayField : 'desc_funcionario_origen', //mapea al store del grid
+				valueField : 'id_funcionario',
+
+				gwidth : 200,
+				baseParams : {
+					es_combo_solicitud : 'si'
+				},
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['desc_funcionario_origen']);
+				}
+			},
+			type : 'ComboRec',
+			id_grupo : 1,
 			filters : {
-				pfiltro : 'cor.nro_paginas',
-				type : 'numeric'
+				pfiltro : 'desc_funcionario1',
+				type : 'string'
 			},
-			id_grupo : 2,
-			grid : false,
+
+			grid : true,
 			form : false
-		}],
+		}
+		],
 		title : 'Correspondencia',
 		ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
 		ActDel : '../../sis_correspondencia/control/Correspondencia/eliminarCorrespondencia',
@@ -1094,7 +1146,10 @@ header("content-type: text/javascript; charset=UTF-8");
 			name : 'fecha_mod',
 			type : 'date',
 			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','id_institucion_destino','nro_paginas','id_persona_remitente','id_persona_destino','nombre_completo1','otros_adjuntos','adjunto','origen'],
+		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'desc_persona','ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','id_institucion_destino','nro_paginas','id_persona_remitente','id_persona_destino','id_persona','nombre_completo1','otros_adjuntos','adjunto','origen',
+		 {name:'acciones', type: 'string'},
+		 {name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s'},'desc_funcionario_origen'
+		 ],
 		sortInfo : {
 			field : 'id_correspondencia',
 			direction : 'desc'
@@ -1131,7 +1186,18 @@ header("content-type: text/javascript; charset=UTF-8");
 						items : [],
 						id_grupo : 1
 					}]
-				}, {
+				}/*, {
+					bodyStyle : 'padding-left:5px;padding-left:5px;',
+					items : [{
+						xtype : 'fieldset',
+						title : 'Datos Remitente Saliente',
+
+						// autoHeight: true,
+						items : [],
+						id_grupo : 4
+					}]
+				}*/
+				, {
 					bodyStyle : 'padding-left:5px;padding-left:5px;',
 					items : [{
 						xtype : 'fieldset',
@@ -1300,7 +1366,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			Ext.Ajax.request({
 				url : '../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
 				params : {
-					id_correspondencia : id_correspondencia
+					id_correspondencia : id_correspondencia,
+					id_origen : rec.data.id_origen
 				},
 				success : this.successDerivar,
 				failure : this.conexionFailure,

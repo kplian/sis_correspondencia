@@ -442,7 +442,7 @@ Phx.vista.Correspondencia=Ext.extend(Phx.gridInterfaz,{
    						type:'string'
    					},*/
    		   
-   			grid:false,
+   			grid:true,
    			form:true
    	},
  

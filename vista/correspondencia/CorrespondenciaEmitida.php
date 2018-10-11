@@ -22,8 +22,12 @@ header("content-type: text/javascript; charset=UTF-8");
 
         constructor: function (config) {
         	
-        	this.Atributos[this.getIndAtributo('fecha_reg')].grid=true;
+        //	this.Atributos[this.getIndAtributo('fecha_reg')].grid=true;
             this.Atributos[this.getIndAtributo('fecha_creacion_documento')].form=false;
+            this.Atributos[this.getIndAtributo('id_funcionario_saliente')].form=false;
+            this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+            this.Atributos[this.getIndAtributo('id_uo')].form=false;
+            this.Atributos[this.getIndAtributo('id_uo')].grid=false;            
             Phx.vista.CorrespondenciaEmitida.superclass.constructor.call(this, config);   
          
             this.init();
@@ -40,14 +44,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('FinalizarExterna').hide();
             //this.getBoton('SubirDocumento').show();
             //this.getBoton('Adjuntos').show();
-            this.getBoton('Corregir').hide();
+            //this.getBoton('Corregir').hide();
             //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
             //this.getBoton('Derivar').hide();
-            //this.getBoton('HojaRuta').hide();
+            this.getBoton('HojaRuta').hide();
             //this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide();
+            this.getBoton('Habilitar').hide();
 		
         },
       
@@ -106,7 +111,7 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonEdit: function () {
             Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
             this.adminGrupo({mostrar: [2], ocultar: [0, 1, 3]});
-            this.getComponente('id_uo').disable();
+           // this.getComponente('id_uo').disable();
             var data = this.sm.getSelected().data;
             console.log(data, data.estado)
             if (data.estado == 'borrador_envio') {
@@ -145,8 +150,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('SubirDocumento').enable();
                 this.getBoton('Plantilla').enable();
                 this.getBoton('Adjuntos').enable();
-                //this.getBoton('corregir').disable();
-                 this.getBoton('HojaRuta').disable();
+                this.getBoton('Corregir').disable();
+               //  this.getBoton('HojaRuta').disable();
                  this.getBoton('Historico').disable();
                  this.getBoton('Archivar').disable();
             }
@@ -154,11 +159,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 if (tb) {
 
                     this.getBoton('Plantilla').disable();
-
-                    this.getBoton('SubirDocumento').disable();
-                    //this.getBoton('corregir').enable();
+					 this.getBoton('Adjuntos').enable();
+                    this.getBoton('SubirDocumento').enable();
+                    this.getBoton('Corregir').enable();
                     this.getBoton('Derivar').disable();
-                    this.getBoton('HojaRuta').enable();
+                   // this.getBoton('HojaRuta').enable();
                     this.getBoton('Historico').enable();
                      this.getBoton('Archivar').enable();
                     this.getBoton('edit').disable();
@@ -174,6 +179,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         
         enableDisable:function(val){
+        	
       if(val =='interna'){
             this.cmpResponde.store.baseParams.tipo = val;
             this.cmpResponde.modificado = true;
@@ -197,7 +203,7 @@ header("content-type: text/javascript; charset=UTF-8");
          
      },
 		  iniciarEventos: function () {
-		  	
+		  	this.getBoton('Habilitar').hide();
 	         this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
              this.cmpAsocia = this.getComponente('asociar');
  

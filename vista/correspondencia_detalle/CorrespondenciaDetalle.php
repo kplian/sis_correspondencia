@@ -28,7 +28,14 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	 	 }
 	  }
 	
-	
+	  //9
+			this.addButton('Derivar', {
+				text : 'Derivar',
+				iconCls : 'badelante',
+				disabled : true,
+				handler : this.BDerivar,
+				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
+			});
 	},
 			
 	Atributos:[
@@ -492,9 +499,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		  			
 			  		this.getBoton('edit').disable();
 			  		this.getBoton('del').disable();
-			  		this.getBoton('new').disable();
-			  		this.getBoton('save').disable();
-			  	}
+			  		//this.getBoton('new').disable();
+			  			}
 		  } else {
 		 		if(tb){
 		  			
@@ -504,7 +510,19 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			  		this.getBoton('save').enable();
 			  	}
 		  	
-		  } 
+		  }
+		  
+		  if (data['estado']=='borrador_detalle_recibido') {
+		  	     this.getBoton('Derivar').enable();
+		  }else{
+		  	 	this.getBoton('Derivar').disable();
+		  }
+		 /* if (this.maestro.version > 0) {
+			this.getBoton('Derivar').enable();
+		} else {
+			this.getBoton('Derivar').disable();
+		}
+		*/
 		  
 		  return tb
 		
@@ -520,7 +538,38 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		//a this.Cmp.id_funcionario.disable();
 		//this.Cmp.id_funcionario.enableMultiSelect(true);	
 		Phx.vista.CorrespondenciaDetalle.superclass.onButtonNew.call(this);
-	}
+	},
+	//9
+		BDerivar : function() {
+
+			var rec = this.sm.getSelected();
+			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
+			if (confirm('Esta seguro de DERIVAR el documento  ?')){
+         	Phx.CP.loadingShow();
+			Ext.Ajax.request({
+				url : '../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
+				params : {
+					id_correspondencia : id_correspondencia,
+					id_origen          : this.maestro.id_origen
+				},
+				success : this.successDerivar,
+				failure : this.conexionFailure,
+				timeout : this.timeout,
+				scope : this
+			});
+		   }
+		},
+			successDerivar : function(resp) {
+
+			Phx.CP.loadingHide();
+			var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+			if (!reg.ROOT.error) {
+				alert(reg.ROOT.detalle.mensaje)
+
+			}
+			this.reload();
+
+		}
 
 }
 )

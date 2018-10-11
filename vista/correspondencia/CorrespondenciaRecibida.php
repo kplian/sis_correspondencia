@@ -44,6 +44,10 @@ Phx.vista.CorrespondenciaRecibida = {
 	
 	constructor: function(config) {
 		this.Atributos[this.getIndAtributo('fecha_documento')].form=false;
+		this.Atributos[this.getIndAtributo('id_funcionario_saliente')].form=false;
+        this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+        this.Atributos[this.getIndAtributo('id_uo')].form=false;
+        this.Atributos[this.getIndAtributo('id_uo')].grid=false;
 		this.Atributos[this.getIndAtributo('origen')].grid=true;
         this.Atributos[this.getIndAtributo('origen')].form=false;
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
@@ -54,7 +58,7 @@ Phx.vista.CorrespondenciaRecibida = {
            // this.getBoton('FinalizarExterna').hide();
             this.getBoton('SubirDocumento').hide();
             //this.getBoton('Adjuntos').show();
-            this.getBoton('Corregir').hide();
+            //this.getBoton('Corregir').hide();
             //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
@@ -100,7 +104,7 @@ Phx.vista.CorrespondenciaRecibida = {
            // this.getBoton('FinalizarExterna').hide();
             this.getBoton('SubirDocumento').hide();
             //this.getBoton('Adjuntos').show();
-            this.getBoton('Corregir').hide();
+            //this.getBoton('Corregir').hide();
             //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
@@ -153,8 +157,31 @@ Phx.vista.CorrespondenciaRecibida = {
 		
 		
 		
-		if(data['estado']=='recibido'){
+		if(data['estado']=='pendiente_recibido'){
+			 this.getBoton('FinalizarExterna').enable();
+            this.getBoton('Adjuntos').disable();
+            this.getBoton('VerDocumento').disable();
+            this.getBoton('Derivar').disable();
+            this.getBoton('HojaRuta').disable();
+            this.getBoton('Historico').disable();
+            this.getBoton('Archivar').disable();
+            this.getBoton('Corregir').disable();
 			
+		
+		}
+		else{
+			if(data['estado']=='enviado'){
+			this.getBoton('FinalizarExterna').disable();
+            this.getBoton('Adjuntos').enable();
+            this.getBoton('VerDocumento').enable();
+            this.getBoton('Derivar').disable();
+            this.getBoton('HojaRuta').enable();
+            this.getBoton('Historico').enable();
+            this.getBoton('Archivar').enable();
+            this.getBoton('Corregir').enable();
+            
+			
+		}else {
 			this.getBoton('FinalizarExterna').disable();
             this.getBoton('Adjuntos').enable();
             this.getBoton('VerDocumento').enable();
@@ -162,17 +189,11 @@ Phx.vista.CorrespondenciaRecibida = {
             this.getBoton('HojaRuta').enable();
             this.getBoton('Historico').enable();
             this.getBoton('Archivar').enable();
-		}
-		else{
-		    this.getBoton('FinalizarExterna').enable();
-            this.getBoton('Adjuntos').disable();
-            this.getBoton('VerDocumento').disable();
-            this.getBoton('Derivar').disable();
-            this.getBoton('HojaRuta').disable();
-            this.getBoton('Historico').disable();
-            this.getBoton('Archivar').disable();
-	
-		}
+            this.getBoton('Corregir').disable();
+          }
+      }
+      
+		
 		
 		Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n); 
 		return tb	

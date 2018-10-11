@@ -15,7 +15,7 @@ class ACTAdjunto extends ACTbase{
 		$this->objParam->defecto('dir_ordenacion','asc');
 
 		if($this->objParam->getParametro('id_origen')!=''){
-			$this->objParam->addFiltro("adj.id_correspondencia_origen = ''".$this->objParam->getParametro('id_origen')."''");
+			$this->objParam->addFiltro("cor.id_origen = ''".$this->objParam->getParametro('id_origen')."''");
 		}
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
@@ -39,7 +39,9 @@ class ACTAdjunto extends ACTbase{
 	}
 						
 	function eliminarAdjunto(){
-			$this->objFunc=$this->create('MODAdjunto');	
+		    
+		$this->objFunc=$this->create('MODAdjunto');	
+			
 		$this->res=$this->objFunc->eliminarAdjunto($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}

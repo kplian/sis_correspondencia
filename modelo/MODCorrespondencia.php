@@ -20,7 +20,8 @@ class MODCorrespondencia extends MODbase{
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='corres.ft_correspondencia_sel';
 		$this->transaccion='CO_CORSIM_SEL';
-		$this->tipo_procedimiento='SEL';//tipo de transaccion		
+		$this->tipo_procedimiento='SEL';//tipo de transaccion	
+		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
 		$this->setParametro('interface','interface','integer');
 		//$parametros  = $this->aParam->getArregloParametros('interface');		
 		//Definicion de la lista del resultado del query
@@ -32,7 +33,8 @@ class MODCorrespondencia extends MODbase{
  		$this->captura('referencia','varchar');
 		$this->captura('tipo','varchar');
 		$this->captura('fecha_reg','timestamp');
-		$this->captura('desc_funcionario','text');		
+		$this->captura('desc_funcionario','text');	
+		$this->captura('id_origen','integer');		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -113,6 +115,11 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('id_persona_destino','integer');
 		$this->captura('otros_adjuntos','varchar');
 		$this->captura('direccion_institucion','text');
+		$this->captura('desc_funcionario_de_plantilla','text');
+		$this->captura('adjunto','bigint');
+		$this->captura('fecha_creacion_documento','timestamp');
+		$this->captura('acciones','text');
+		$this->captura('id_acciones','text');
 
 		
 		//Ejecuta la instruccion
@@ -182,7 +189,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('id_acciones','text');
 		$this->captura('desc_cargo','varchar');
         $this->captura('fecha_documento_literal','text');
-		//$this->captura('iniciales','text');
+		$this->captura('desc_funcionario_plantilla','text');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -239,6 +246,7 @@ class MODCorrespondencia extends MODbase{
 		
 		$this->setParametro('cite','cite','varchar');
 
+		$this->setParametro('id_funcionario_saliente','id_funcionario_saliente','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -285,6 +293,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_institucion_destino','id_institucion_destino','int4');
 		$this->setParametro('id_persona_destino','id_persona_destino','int4');
 	    $this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
+		$this->setParametro('id_funcionario_saliente','id_funcionario_saliente','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -360,6 +369,8 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_documento','varchar');
 		$this->captura('origen','varchar');
 		$this->captura('desc_funcionario','text');
+		$this->captura('desc_funcionario_origen','text');
+		
 		$this->captura('acciones','text');
         $this->captura('desc_depto','text');
     
@@ -371,7 +382,9 @@ class MODCorrespondencia extends MODbase{
         $this->captura('version','int4');
         $this->captura('ruta_archivo','varchar');
         $this->captura('sw_archivado','varchar');
-
+        $this->captura('adjunto','bigint');
+		//$this->captura('acciones','text');
+		$this->captura('id_acciones','text');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -558,6 +571,7 @@ class MODCorrespondencia extends MODbase{
 		 //echo $_SERVER [ 'DOCUMENT_ROOT' ];
 		
 		if ($this->arregloFiles['file_correspondencia']['error']) {
+			
           switch ($this->arregloFiles['file_correspondencia']['error']){
                    case 1: // UPLOAD_ERR_INI_SIZE
                    throw new Exception("El archivo sobrepasa el limite autorizado por el servidor(archivo php.ini) !");
@@ -619,7 +633,7 @@ class MODCorrespondencia extends MODbase{
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
-
+        $this->setParametro('id_origen','id_origen','int4');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -902,6 +916,7 @@ function corregirCorrespondenciaExt()
 		$this->captura('otros_adjuntos','varchar');
 		$this->captura('adjunto','bigint');
         $this->captura('sw_fisico','varchar');
+		$this->captura('fecha_creacion_documento','timestamp');
 
 		
 
