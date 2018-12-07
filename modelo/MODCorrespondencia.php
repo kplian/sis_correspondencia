@@ -942,6 +942,8 @@ function corregirCorrespondenciaExt()
 		$this->captura('fecha_creacion_documento','timestamp');
         $this->captura('observaciones_archivado','text');
 	    $this->captura('estado_corre','varchar');
+		$this->captura('desc_funcionario','text');
+		$this->captura('acciones','text');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

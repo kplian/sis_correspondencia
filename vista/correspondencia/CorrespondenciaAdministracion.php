@@ -217,6 +217,8 @@ Phx.vista.CorrespondenciaAdministracion = {
 		  	this.getBoton('HabCorregir').disable();
             this.getBoton('FinCorregir').enable();
        	 } else {
+       	 	this.getBoton('edit').disable();
+       	 	this.getBoton('del').disable();
        	    this.getBoton('HabCorregir').enable();
        	    this.getBoton('SubirDocumento').disable();
        	    this.getBoton('Adjuntos').disable();
