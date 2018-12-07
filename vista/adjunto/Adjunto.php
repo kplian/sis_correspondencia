@@ -15,6 +15,8 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
+    	console.log(config);
+    	
 		Phx.vista.Adjunto.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen,estado:this.estado}})
@@ -354,11 +356,19 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 
 		},
        onButtonNew: function () {
-             if ( this.estado=='enviado'){
-             	alert ('No se puede añadir nuevos archivos ');
-             }else{
-             	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
-             }
+       	     alert (this.estado_corre);
+       	     if (this.estado_corre=='corr_borrador'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+	          	
+       	     }else{
+       	     	
+	       	     if ( this.estado=='enviado'){
+	             	alert ('No se puede añadir nuevos archivos ');
+	             }else{
+	             	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+	             }
+	          }
+             
              
         },
         onButtonEdit: function () {

@@ -457,7 +457,22 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			this.ocultarComponente(this.getComponente('id_funcionario'));	
 		}
 		
-
+         if(this.maestro.estado=='enviado'){
+		  				  			
+			  		this.getBoton('edit').disable();
+			  		this.getBoton('del').disable();
+			  		this.getBoton('Derivar').enable();
+			  		//this.getBoton('new').disable();
+			  		
+		  } else {
+		 	
+			  		this.getBoton('edit').enable();
+			  		this.getBoton('del').enable();
+			  		this.getBoton('new').enable();
+			  		this.getBoton('save').enable();
+			  		this.getBoton('Derivar').disable();
+			  
+		  }
 		//actualiza combos del departamento
 		// var cmbUo = this.getComponente('id_uo');
 		 /*if(this.maestro.codigo=='COR'){
@@ -472,6 +487,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		// this.Atributos.config['id_subsistema'].setValue(this.maestro.id_subsistema);
 
       /* if(m.id != 'id'){*/
+     	 //alert(this.maestro.estado);
+		 
     	 this.store.baseParams={id_correspondencia_fk:this.maestro.id_correspondencia};
 		 this.load({params:{start:0, limit:50}})
        /*}
@@ -494,11 +511,11 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		   console.log  
 		  console.log(this.maestro);
 		  //cuando el conrtato esta registrado el abogado no puede hacerle mas cambios
-		  if(this.maestro.estado=='enviado'){
+		  if(this.maestro.estado=='enviado' ){
 		  		if(tb){
-		  			
-			  		this.getBoton('edit').disable();
+		  			this.getBoton('edit').disable();
 			  		this.getBoton('del').disable();
+			  		this.getBoton('Derivar').enable();
 			  		//this.getBoton('new').disable();
 			  			}
 		  } else {
@@ -508,15 +525,29 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			  		this.getBoton('del').enable();
 			  		this.getBoton('new').enable();
 			  		this.getBoton('save').enable();
+			  		this.getBoton('Derivar').disable();
+			  		
 			  	}
 		  	
 		  }
 		  
 		  if (data['estado']=='borrador_detalle_recibido') {
+		  	   if(this.maestro.estado=='enviado' ){
 		  	     this.getBoton('Derivar').enable();
+		  	    }
+		  	   else{
+		  	     this.getBoton('Derivar').disable();
+		  	   }
+		  	   
+		  	     this.getBoton('edit').enable();
+		  	     this.getBoton('del').enable();
 		  }else{
 		  	 	this.getBoton('Derivar').disable();
+		  	 	this.getBoton('edit').disable();
+		  	    this.getBoton('del').disable();
 		  }
+		  
+		   
 		 /* if (this.maestro.version > 0) {
 			this.getBoton('Derivar').enable();
 		} else {
@@ -549,8 +580,10 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			Ext.Ajax.request({
 				url : '../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
 				params : {
-					id_correspondencia : id_correspondencia,
+					id_correspondencia : this.maestro.id_correspondencia,
 					id_origen          : this.maestro.id_origen
+					/*id_correspondencia : id_correspondencia,
+					id_origen          : this.maestro.id_origen*/
 				},
 				success : this.successDerivar,
 				failure : this.conexionFailure,

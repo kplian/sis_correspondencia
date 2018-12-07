@@ -21,7 +21,10 @@ class MODAdjunto extends MODbase
         $this->procedimiento = 'corres.ft_adjunto_sel';
         $this->transaccion = 'CORRES_ADJ_SEL';
         $this->tipo_procedimiento = 'SEL';//tipo de transaccion
-
+      
+		$id_correspondencia = $this->aParam->getParametro('id_correspondencia');
+		$this->setParametro('id_correspondencia', $id_correspondencia, 'int4');
+       
         //Definicion de la lista del resultado del query
         $this->captura('id_adjunto', 'int4');
         $this->captura('extension', 'varchar');
@@ -86,24 +89,28 @@ class MODAdjunto extends MODbase
 
         for ($i = 0; $i < $aux; $i++) {
             $img = pathinfo($this->arregloFiles['archivo']['name'][$i]);
-            $tmp_name = $numero.$this->arregloFiles['archivo']['tmp_name'][$i];
+            $tmp_name = $this->arregloFiles['archivo']['tmp_name'][$i];
             $tamano = ($this->arregloFiles['archivo']['size'][$i] / 1000) . "Kb"; //Obtenemos el tama?o en KB
 
             $nombre_archivo = $img['filename']; //nombre de archivo
+            $nombre_archivo= str_replace('.','',$nombre_archivo);
+           
             $extension = $img['extension']; //extension
             $basename = $img['basename']; //nombre de archivo con extension
             $unico_id = uniqid();
 
            // $file_name = md5($unico_id . $_SESSION["_SEMILLA"]);
-           
+           IF ($extension=='exe') {
+                throw new Exception("El archivo a subir no puede ser un ejecutable.");
+           }
             //$file_server_name = $file_name . ".$extension";
             $file_name = $numero.$nombre_archivo.$id_correspondencia;
 			$file_server_name = $numero.$nombre_archivo.$id_correspondencia.".$extension";
             move_uploaded_file($tmp_name, $ruta_destino . $file_server_name);
 
             $ruta_archivo = $ruta_destino . $file_server_name;
-
-
+             
+			    
             $this->aParam->addParametro('ruta_archivo', $ruta_archivo);
             $this->arreglo['ruta_archivo'] = $ruta_archivo; // esta ruta contiene con el archivo mas
 
@@ -189,21 +196,24 @@ class MODAdjunto extends MODbase
 
             
             $nombre_archivo = $img['filename']; //nombre de archivo
+            $nombre_archivo= str_replace('.','',$nombre_archivo);
             $extension = $img['extension']; //extension
             $basename = $img['basename']; //nombre de archivo con extension
             $unico_id = uniqid();
 
            // $file_name = md5($unico_id . $_SESSION["_SEMILLA"]);
-           
+             
             //$file_server_name = $file_name . ".$extension";
             $file_name = $numero.$nombre_archivo.$id_correspondencia;
+            
 			$file_server_name = $numero.$nombre_archivo.$id_correspondencia.".$extension";
         
 		    move_uploaded_file($tmp_name, $ruta_destino . $file_server_name);
 
             $ruta_archivo = $ruta_destino . $file_server_name;
 
-
+            /* echo $file_name;
+			 exit;*/
             $this->aParam->addParametro('ruta_archivo', $ruta_archivo);
             $this->arreglo['ruta_archivo'] = $ruta_archivo; // esta ruta contiene con el archivo mas
 
@@ -262,6 +272,11 @@ class MODAdjunto extends MODbase
     function eliminarAdjunto()
     {
         //Definicion de variables para ejecucion del procedimiento
+        //1.Dado el id_adjunto obtner datos del adjunto
+		//2.renombrar el nombre del adjunto en la tabla 
+		//3.Renombrar tambien  el nombre del archivo en fisico. 
+		
+		
         $this->procedimiento = 'corres.ft_adjunto_ime';
         $this->transaccion = 'CORRES_ADJ_ELI';
         $this->tipo_procedimiento = 'IME';

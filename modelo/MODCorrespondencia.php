@@ -64,10 +64,6 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('estado_reg','varchar');
 		$this->captura('fecha_documento','date');
 		$this->captura('fecha_fin','date');
-		
-	//	$this->captura('id_acciones','int4');//array
-		
-		$this->captura('id_archivo','integer[]');
 		$this->captura('id_correspondencia_fk','int4');
 		$this->captura('id_correspondencias_asociadas','integer[]');
 		$this->captura('id_depto','int4');
@@ -83,7 +79,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('nivel_prioridad','varchar');
 		$this->captura('numero','varchar');
 		$this->captura('observaciones_estado','text');
- 		$this->captura('referencia','varchar');
+ 		$this->captura('referencia','varchar'); 
 		$this->captura('respuestas','varchar');
 		$this->captura('sw_responsable','varchar');
 		$this->captura('tipo','varchar');
@@ -120,8 +116,10 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('fecha_creacion_documento','timestamp');
 		$this->captura('acciones','text');
 		$this->captura('id_acciones','text');
-
-		
+        $this->captura('fecha_documento_literal','text');
+		$this->captura('fecha_ult_derivado','timestamp');
+		$this->captura('persona_nombre_plantilla','text');
+		$this->captura('observaciones_archivado','text');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -146,11 +144,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('estado_reg','varchar');
 		$this->captura('fecha_documento','date');
 		$this->captura('fecha_fin','date');
-		
-	//	$this->captura('id_acciones','int4');//array
-		
-		$this->captura('id_archivo','integer[]');
-		$this->captura('id_correspondencia_fk','int4');
+	    $this->captura('id_correspondencia_fk','int4');
 		$this->captura('id_correspondencias_asociadas','integer[]');
 		$this->captura('id_depto','int4');
 		$this->captura('id_documento','int4');
@@ -206,14 +200,14 @@ class MODCorrespondencia extends MODbase{
 		$this->tipo_procedimiento='IME';
 			
 		//Define los parametros para la funcion
+		$vista = $this->aParam->getParametro('vista');
+		$this->aParam->addParametro('vista', $vista);
+		
+        $this->setParametro('vista','vista','varchar');
 		$this->setParametro('estado','estado','int4');
 		$this->setParametro('estado_reg','estado_reg','varchar');
 		$this->setParametro('fecha_documento','fecha_documento','date');
 		$this->setParametro('fecha_fin','fecha_fin','date');
-		
-		//$this->setParametro('id_acciones','id_acciones','varchar');//array
-		
-		//$this->setParametro('id_archivo','id_archivo','int4');
 		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','int');
 		$this->setParametro('id_correspondencias_asociadas','id_correspondencias_asociadas','varchar');
 		
@@ -268,7 +262,6 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('fecha_documento','fecha_documento','date');
 		$this->setParametro('fecha_fin','fecha_fin','date');
 		$this->setParametro('id_acciones','id_acciones','varchar');
-		$this->setParametro('id_archivo','id_archivo','int4');
 		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','int4');
 		$this->setParametro('id_correspondencias_asociadas','id_correspondencias_asociadas','varchar');
 		$this->setParametro('id_depto','id_depto','int4');
@@ -330,7 +323,7 @@ class MODCorrespondencia extends MODbase{
 
 
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
-       $this->setParametro('interface','interface','varchar');
+        $this->setParametro('interface','interface','varchar');
 		$this->setParametro('tipo','tipo','varchar');
 		//Definicion de la lista del resultado del query
 		$this->captura('id_origen','int4');
@@ -339,8 +332,6 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('estado_reg','varchar');
 		$this->captura('fecha_documento','date');
 		$this->captura('fecha_fin','date');
-		//$this->captura('id_acciones','int4');
-		//$this->captura('id_archivo','int4');
 		$this->captura('id_correspondencia_fk','int4');
 		$this->captura('id_correspondencias_asociadas','integer[]');
 		$this->captura('id_depto','int4');
@@ -377,14 +368,22 @@ class MODCorrespondencia extends MODbase{
         $this->captura('desc_uo','text');
 		$this->captura('desc_gestion','integer');
         $this->captura('desc_periodo','integer');
-        $this->captura('desc_persona','text');
-        $this->captura('desc_institucion','varchar');
+        $this->captura('nombre_completo1','text');
+        $this->captura('desc_insti','varchar');
         $this->captura('version','int4');
         $this->captura('ruta_archivo','varchar');
         $this->captura('sw_archivado','varchar');
         $this->captura('adjunto','bigint');
 		//$this->captura('acciones','text');
 		$this->captura('id_acciones','text');
+		$this->captura('fecha_creacion_documento','timestamp');
+		$this->captura('fecha_ult_derivado','timestamp');
+		$this->captura('observaciones_archivado','text');
+		$this->captura('cite','varchar');
+		$this->captura('otros_adjuntos','varchar');
+		$this->captura('nro_paginas','int');
+		$this->captura('desc_correspondencias_asociadas','text');
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -664,6 +663,26 @@ class MODCorrespondencia extends MODbase{
 		
 		
 	}
+function habCorregirCorrespondencia()
+	{
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_HABCORR_UPD';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+        $this->setParametro('observaciones','observaciones','varchar');
+		$this->setParametro('estado_corre','estado_corre','varchar');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+		
+		
+	}
 function corregirCorrespondenciaExt()
 	{
 		//Definicion de variables para ejecucion del procedimiento
@@ -755,7 +774,7 @@ function corregirCorrespondenciaExt()
 
 		$this->captura('fecha_documento','date');
 	    $this->captura('fecha_deriv','timestamp');
-
+        $this->captura('fecha_recepcion','timestamp');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -775,6 +794,8 @@ function corregirCorrespondenciaExt()
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		$this->setParametro('sw_archivado','sw_archivado','varchar');
+		$this->setParametro('observaciones_archivado','observaciones_archivado','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -791,6 +812,8 @@ function corregirCorrespondenciaExt()
 
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+		$this->setParametro('tipo_corres','tipo_corres','varchar');
+		
 		//$this->setParametro('sw_archivado','sw_archivado','varchar');
 
 		//Ejecuta la instruccion
@@ -856,9 +879,9 @@ function corregirCorrespondenciaExt()
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
-		$this->setParametro('interface','interface','varchar');
+		$this->setParametro('tipo','tipo','varchar');
 		$this->setParametro('estado','estado','varchar');
-
+		
 		//$this->setParametro('interface','interface','integer');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
 		
@@ -917,11 +940,12 @@ function corregirCorrespondenciaExt()
 		$this->captura('adjunto','bigint');
         $this->captura('sw_fisico','varchar');
 		$this->captura('fecha_creacion_documento','timestamp');
-
-		
+        $this->captura('observaciones_archivado','text');
+	    $this->captura('estado_corre','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
+		//echo $this->getConsulta();
 		$this->ejecutarConsulta();
 
 
@@ -1059,6 +1083,66 @@ function corregirCorrespondenciaExt()
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+		
+		
+	}
+	
+	function listarHojaPrincipal(){
+
+
+
+		//funcionon inserta correpondecia interna  y la esterna emitida
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='corres.ft_correspondencia_sel';
+		$this->transaccion='CO_HOJORIG_SEL';
+		$this->tipo_procedimiento='SEL';//tipo de transaccion
+        $this->setCount(false);
+		$this->setParametro('id_origen','id_origen','int4');
+		//$parametros  = $this->aParam->getArregloParametros('interface');
+		
+		
+		//Definicion de la lista del resultado del query
+		 $this->captura('numero','VARCHAR');
+  		 $this->captura('fecha_creacion_documento','TIMESTAMP');
+         $this->captura('tipo','VARCHAR(20)');
+         $this->captura('desc_insti','VARCHAR(100)');
+       	 $this->captura('nombre_persona','TEXT');
+  		 $this->captura('desc_funcionario','TEXT');
+  		 $this->captura('otros_adjuntos','VARCHAR(2000)');
+		 $this->captura('referencia','VARCHAR(500)');
+  		 $this->captura('mensaje','TEXT');
+		
+     
+		
+
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		//echo $this->getConsulta();
+		$this->ejecutarConsulta();
+
+
+	
+
+		//Devuelve la respuesta
+		return $this->respuesta;
+
+	}
+function eliminarAlarmaAnulada()
+	{
+		//Definicion de variables para ejecucion del procedimiento
+		$this->procedimiento='corres.ft_correspondencia_ime';
+		$this->transaccion='CO_ALAR_ANU';
+		$this->tipo_procedimiento='IME';
+				
+		//Define los parametros para la funcion
+		//$this->setParametro('id_correspondencia','id_correspondencia','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

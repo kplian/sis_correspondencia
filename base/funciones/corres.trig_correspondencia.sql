@@ -1,4 +1,3 @@
---------------- SQL ---------------
 CREATE OR REPLACE FUNCTION corres.trig_correspondencia (
 )
 RETURNS trigger AS

@@ -251,3 +251,20 @@ WITH (oids = false);
 
 
 /***********************************F-SCP-AVQ-CORRES-0-28/08/2018*****************************************/
+/***********************************I-SCP-AVQ-CORRES-0-15/10/2018*****************************************/
+CREATE TABLE corres.tasistente_permisos (
+  id_asistente_permisos INTEGER DEFAULT nextval('corres.tasistente_permisos_id_asistente_permisos_seq'::text::regclass) NOT NULL,
+  permitir_todo VARCHAR DEFAULT 'no'::character varying,
+  estado VARCHAR DEFAULT 'activo'::character varying,
+  id_asistente INTEGER,
+  CONSTRAINT tasistente_permisos_pkey PRIMARY KEY(id_asistente_permisos)
+) INHERITS (pxp.tbase)
+
+WITH (oids = false);
+
+COMMENT ON COLUMN corres.tasistente_permisos.permitir_todo
+IS 'Permitir ver todo o solamente lo que la persona a registrado.';
+/***********************************F-SCP-AVQ-CORRES-0-15/10/2018*****************************************/
+
+
+

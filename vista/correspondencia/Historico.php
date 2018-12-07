@@ -137,6 +137,42 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config : {
+				name : 'fecha_recepcion',
+				fieldLabel : 'Fecha Recepcion.',
+				allowBlank : true,
+
+				gwidth : 100,
+				renderer : function(value, p, record) {
+					return value ? value.dateFormat('d/m/Y h:i:s') : ''
+				}
+			},
+			type : 'DateField',
+			filters : {
+				pfiltro : 'cor.fecha_mod',
+				type : 'date'
+			},
+			id_grupo : 0,
+			grid : true,
+			form : false
+		},
+		/*{
+			config : {
+				name : 'fecha_recepcion',
+				fieldLabel : 'Fecha Recepcion',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'fecha_recepcion',
+				type : 'string'
+			},
+			id_grupo : 0,
+			grid : true,
+			form : false,
+			bottom_filter : true
+		},*/
+		{
+			config : {
 				name : 'estado',
 				fieldLabel : 'Estado',
 				gwidth : 120
@@ -150,11 +186,28 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 			grid : true,
 			form : false,
 			bottom_filter : true
+		},
+		{
+			config : {
+				name : 'mensaje',
+				fieldLabel : 'Mensaje',
+				gwidth : 120
+			},
+			type : 'TextArea',
+			filters : {
+				pfiltro : 'mensaje',
+				type : 'string'
+			},
+			id_grupo : 0,
+			egrid:true,
+			grid : true,
+			form : false,
+			bottom_filter : true
 		}
 	],
 		fileUpload:false,
 	tam_pag:50,	
-	title:'Hoja de Ruta',
+	title:'Histórico',
 	/*ActSave:'../../sis_correspondencia/control/Adjunto/insertarAdjunto',
 	ActDel:'../../sis_correspondencia/control/Adjunto/eliminarAdjunto',*/
 	ActList:'../../sis_correspondencia/control/Correspondencia/verHistorico',
@@ -169,7 +222,10 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 		{name:'mensaje', type: 'string'},
 		{name:'estado', type: 'string'},
 		{name:'fecha_documento', type: 'date',dateFormat:'Y-m-d'},
-		{name:'fecha_deriv', type: 'date',dateFormat:'Y-m-d H:i:s.u'}
+		{name:'fecha_deriv', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+		{name:'fecha_recepcion', type: 'date',dateFormat:'Y-m-d H:i:s.u'}/*,
+		
+		{name:'fecha_recepcion', type: 'string'},*/
 		
 	],
 	sortInfo:{

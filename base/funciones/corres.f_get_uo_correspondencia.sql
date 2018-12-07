@@ -1,4 +1,3 @@
---------------- SQL ---------------
 CREATE OR REPLACE FUNCTION corres.f_get_uo_correspondencia (
   fl_id_unidad_organizacional integer
 )

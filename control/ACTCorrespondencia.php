@@ -31,11 +31,7 @@ class ACTCorrespondencia extends ACTbase
 			} else {
 				$date = $this->objParam->getParametro('fecha');
 			}
-			//$date = date('d/m/Y');
-			/*$this->objParam->addFiltro("cor.id_funcionario IN (select * 
-										FROM orga.f_get_funcionarios_x_usuario_asistente(''" . $date . "'', " .
-																						 $_SESSION["ss_id_usuario"] . ") AS (id_funcionario INTEGER)) ");*/
-	
+				
 	   if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
             $this->objReporte = new Reporte($this->objParam, $this);
             $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondencia');
@@ -154,29 +150,24 @@ class ACTCorrespondencia extends ACTbase
     function corregirCorrespondencia()
     {
     	  $this->objFunSeguridad = $this->create('MODCorrespondencia');
-		/*if($this->objParam->getParametro('tipo')!='externa'){*/
+		
     	   $this->res = $this->objFunSeguridad->corregirCorrespondencia($this->objParam);
-	/*	}else{
-			$this->res = $this->objFunSeguridad->corregirCorrespondenciaExt($this->objParam);
-		}
-        */
-        //crea el objetoFunSeguridad que contiene todos los metodos del sistema de seguridad
-        /*$this->objFunSeguridad = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunSeguridad->corregirCorrespondencia($this->objParam);*/
+	
         //imprime respuesta en formato JSON
         $this->res->imprimirRespuesta($this->res->generarJson());
   
     }
-    /*function corregirCorrespondenciaExt()
+  function habCorregirCorrespondencia()
     {
-        //crea el objetoFunSeguridad que contiene todos los metodos del sistema de seguridad
-        $this->objFunSeguridad = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunSeguridad->corregirCorrespondenciaExt($this->objParam);
+    	  $this->objFunSeguridad = $this->create('MODCorrespondencia');
+		
+    	   $this->res = $this->objFunSeguridad->habCorregirCorrespondencia($this->objParam);
+	
         //imprime respuesta en formato JSON
         $this->res->imprimirRespuesta($this->res->generarJson());
- 
+  
     }
-*/
+  
     function consultaAsistente(){
     	 $this->objParam->parametros_consulta['ordenacion'] = 'id_asistente_permisos';
             $this->objParam->parametros_consulta['filtro'] = ' 0 = 0 ';
@@ -238,16 +229,23 @@ class ACTCorrespondencia extends ACTbase
 	 */
  function verHistorico()
     {
-    	      
     	if($this->objParam->getParametro('id_origen')!=''){
     		$id_correspondencia=$this->objParam->getParametro('id_origen');
 			$this->objParam->addParametro('id_correspondencia',$id_correspondencia);
 		}
 		
-        $this->objFunc = $this->create('MODCorrespondencia');
+    	if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
+			$this->objReporte = new Reporte($this->objParam,$this);
+			$this->res = $this->objReporte->generarReporteListado('MODCorrespondencia','hojaRuta');
+		} else{
+			$this->objFunc = $this->create('MODCorrespondencia');
         $this->res = $this->objFunc->hojaRuta();
-        $this->res->imprimirRespuesta($this->res->generarJson());
-    }
+		}
+		$this->res->imprimirRespuesta($this->res->generarJson());
+		
+    
+	}
+	
     function PlantillaCorrespondencia()
     {
 
@@ -297,7 +295,7 @@ class ACTCorrespondencia extends ACTbase
 
            // print_r ($correspondencia);
             //$nombre_archivo= $correspondencia[0]['desc_ruta_plantilla_documento'];
-            $png = $barcodeobj->getBarcodePngData($w = 2, $h = 2, $color = array(0, 0, 0));
+            $png = $barcodeobj->getBarcodePngData($w = 4, $h = 4, $color = array(0, 0, 0));
 
 
             $im = imagecreatefromstring($png);
@@ -321,12 +319,12 @@ class ACTCorrespondencia extends ACTbase
 
                 /*agrego a la plantilla word los datos */
                 $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($correspondencia[0]['desc_ruta_plantilla_documento']);
-
- //print_r($correspondenciaDetalle);
+							
+			
           $templateProcessor->cloneRow('destinatario', count($correspondenciaDetalle));
                 for ($i = 0; $i <= count($correspondenciaDetalle); $i++) {
                      
-                    $xml_destinatario = htmlspecialchars($correspondenciaDetalle[$i]['desc_funcionario_plantilla']) . '</w:t>
+                 $xml_destinatario = htmlspecialchars($correspondenciaDetalle[$i]['desc_funcionario_plantilla']) . '</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="003D7875" w:rsidRDefault="006C602F" w:rsidP="006C602F">
@@ -349,11 +347,13 @@ class ACTCorrespondencia extends ACTbase
                                     </w:pPr>
                                     <w:r>
                                         <w:rPr>
+                                            <w:rFonts w:ascii="Tahoma" w:hAnsi="Tahoma"/>
                                             <w:b/>
                                             <w:bCs/>
                                             <w:iCs/>
                                             <w:color w:val="000000"/>
                                             <w:lang w:val="es-ES"/>
+                                             <w:sz w:val="20"/>
                                         </w:rPr>
                                         <w:t>' . htmlspecialchars($correspondenciaDetalle[$i]["desc_cargo"]) . '</w:t>
                                     </w:r>
@@ -362,24 +362,20 @@ class ACTCorrespondencia extends ACTbase
 
                     $numero_key = $i + 1;
                     $key_name = '${destinatario#' . $numero_key . '}</w:t></w:r></w:p>';
-
-                    //$key_2 = '${destinatario#1}</w:t></w:r></w:p>';
-
+                  
+								
                     $templateProcessor->setValueDestinatario($key_name, $xml_destinatario);
                     $templateProcessor->setValue($key_name, $correspondenciaDetalle[$i]['desc_funcionario'].'<br /> '.$correspondenciaDetalle[$i]['desc_cargo']);
-                     
-
-                }
-
-                setlocale(LC_ALL, "es_ES@euro", "es_ES", "esp");
+                    }
+               setlocale(LC_ALL, "es_ES@euro", "es_ES", "esp");
 
                 $fecha_documento = strftime("%d/%m/%Y", strtotime($correspondencia[0]['fecha_documento']));
 
 
-                $templateProcessor->setImg('firma_digital', array('src' => $img_qr, 'swh' => '30'));
+                $templateProcessor->setImg('firma_digital', array('src' => $img_qr, 'swh' => '80'));
 
 
-                $templateProcessor->setImgFooter('qr', array('src' => $img_qr, 'swh' => '30'));
+                $templateProcessor->setImgFooter('qr', array('src' => $img_qr, 'swh' => '50'));
                //$templateProcessor->setImgHeader('qrh',array('src' => $img_qr, 'swh'=>'250'));
                 
                 //print_r($correspondenciaDetalle);
@@ -389,11 +385,12 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor->setValue('fecha', htmlspecialchars($fecha_documento));
                 $templateProcessor->setValue('mensaje', htmlspecialchars($correspondencia[0]['mensaje']));
                 $templateProcessor->setValue('numero', htmlspecialchars($correspondencia[0]['numero']));
-				$templateProcessor->setValue('fecha_documento_literal', htmlspecialchars($correspondenciaDetalle[0]['fecha_documento_literal']));
+				
+				$templateProcessor->setValue('fecha_documento_literal', htmlspecialchars($correspondencia[0]['fecha_documento_literal']));
                 $templateProcessor->setValue('iniciales', htmlspecialchars($correspondencia[0]['iniciales']));
                 $templateProcessor->setValue('direccion_institucion', htmlspecialchars($correspondencia[0]['direccion_institucion']));
                 $templateProcessor->setValue('desc_insti', htmlspecialchars($correspondencia[0]['desc_insti']));
-				$templateProcessor->setValue('nombre_completo', htmlspecialchars($correspondencia[0]['nombre_completo1']));
+				$templateProcessor->setValue('nombre_completo', htmlspecialchars($correspondencia[0]['persona_nombre_plantilla']));
                
   
                 //$templateProcessor->setValue('uo', htmlspecialchars($correspondencia[0]['desc_uo']));
@@ -402,7 +399,7 @@ class ACTCorrespondencia extends ACTbase
                 $nombre_archivo= str_replace('/','_',$correspondencia[0]['numero']);
 				$nombre_archivo= str_replace(' ','_',$nombre_archivo);
 				
-			
+			   
                  $templateProcessor->saveAs(dirname(__FILE__) . '/../../reportes_generados/' . $nombre_archivo . '.docx');
                
 				 $temp['docx'] = $nombre_archivo . '.docx';
@@ -423,7 +420,7 @@ class ACTCorrespondencia extends ACTbase
 
         } //fin catch
 
-
+       
     }
 	function hojaRuta()
     {
@@ -435,42 +432,65 @@ class ACTCorrespondencia extends ACTbase
             $this->res->imprimirRespuesta($this->res->generarJson());
             exit;
         }
+		
         $hoja_ruta = $this->res->getDatos();
 
         $id_origen = $hoja_ruta[0]['desc_id_origen'];
         $id_funcionario_origen = $hoja_ruta[0]['desc_id_funcionario_origen'];
 		$estado = $hoja_ruta[0]['estado'];
         //obtenemos la correspondencia original el origen
-       
+        
+              
         $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
-		$this->objParam->addParametro('estado', $estado);
+		//$this->objParam->addParametro('estado', $estado);
+       
+		/*$this->objParam->addParametro('estado', $estado);
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
         $this->objParam->defecto('dir_ordenacion', 'desc');
-        $this->objParam->addFiltro("cor.id_origen = " . $id_origen);
+        */
+        $this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
         $this->objFunc = $this->create('MODCorrespondencia');
-		if($this->objParam->getParametro('tipo_corres')!='externa'){
 			
-			$this->res = $this->objFunc->listarCorrespondencia();	
-		}else{
-			
-			$this->res = $this->objFunc->listarCorrespondenciaExterna();
-		}
-        
-
-
+		$this->res = $this->objFunc->listarHojaPrincipal();
+		
         if ($this->res->getTipo() == 'ERROR') {
             $this->res->imprimirRespuesta($this->res->generarJson());
             exit;
         }
         $correspondencia = $this->res->getDatos();
+		
 		if ($correspondencia[0]["tipo"]=='externa'){
 			
-			$remitente=$correspondencia[0]["desc_insti"].'-'.$correspondencia[0]["nombre_completo1"];
+			$nombre_completo=$correspondencia[0]["nombre_persona"];
+			
+			if (is_null($nombre_completo)){
+				
+				$remitente=$correspondencia[0]["desc_insti"];
+				
+			}else{
+				
+				$remitente=$correspondencia[0]["desc_insti"].' ' . '<br /><b style="font-size:8pt"> '.$correspondencia[0]["nombre_persona"]. ' </b>';
+			}
+			
+			
 			
 		}else{
 			$remitente=$correspondencia[0]["desc_funcionario"];
 		}
-        //print_r($correspondencia);
+        //print_r($correspondencia); 
+        
+             // validacion de fecha null para q muestre vacio
+        
+            if (is_null($correspondencia[0]['fecha_documento'])){
+			
+			  $fecha_documento = ' ';
+		      }else{
+		      	
+			 $fecha_documento = strftime("%d/%m/%Y", strtotime($correspondencia[0]['fecha_documento']));
+			 }
+        
+        
+		// vista o formato del pdf -> del boton hoja de recepcion
 
         $html = '
 			<!DOCTYPE html>
@@ -485,27 +505,27 @@ class ACTCorrespondencia extends ACTbase
 							.tg  {border-collapse:collapse;border-spacing:0; border: 0;}
 							.tg td{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
 							.tg th{font-family:Arial, sans-serif;font-size:12px;font-weight:normal;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
-							.tg .tg-e3zv{font-weight:bold;}
-							.tg .tg-yw4l{vertical-align:top; border: 0;}
+							.tg .tg-e3zv{font-weight:bold}
+							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
 							</style>
 							<CENTER><div><B>HOJA DE RECEPCION DE CORRESPONDENCIA</B></div></CENTER>
 							<hr />
 							<table class="tg"  border="0">
 							  <tr>
-								<th class="tg-e3zv" colspan="2">Nro: ' . $correspondencia[0]["numero"] . '</th>
+								<th class="tg-e3zv" colspan="4"> <FONT SIZE=3> Nro: ' . $correspondencia[0]["numero"] . ' </FONT > </th>
 								
-								<th class="tg-e3zv" colspan="4">Fecha Recep: ' . $correspondencia[0]["fecha_documento"] . '</th>
+								<th class="tg-e3zv" colspan="3">Fecha Recep: ' . $fecha_documento . '</th>
 								
 							
-								<th class="tg-9hbo" colspan="4">Tipo: ' . $correspondencia[0]["tipo"] . '</th>
+								<th class="tg-9hbo" colspan="14">Tipo: ' . $correspondencia[0]["tipo"] . '</th>
 								
 							  </tr>
 							  <tr>
-								<td class="tg-e3zv" colspan="2">Remitente:</td>
-								<td class="tg-e3zv" colspan="2">Referencia:</td>
-								<td class="tg-e3zv" colspan="2">Adjuntos:</td>
-								<td class="tg-9hbo" colspan="4">Doc. Física Entregada a:</td>
+								<td class="tg-e3zv" colspan="2"> <FONT SIZE=3> Remitente: </FONT ></td>
+								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Referencia:</FONT ></td>
+								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Adjuntos:</FONT ></td>
+								<td class="tg-9hbo" colspan="8"><FONT SIZE=3> Doc. Física Entregada A:</FONT ></td>
 								
 							  </tr>
 							 
@@ -513,7 +533,7 @@ class ACTCorrespondencia extends ACTbase
 								<td class="tg-yw4l" colspan="2">' . $remitente . '<br /><b style="font-size:6pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
 								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["referencia"] . '</td>
 								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["otros_adjuntos"] . '</td>
-								<td class="tg-yw4l" colspan="4">' . $correspondencia[0][0] . '</td>
+								<td class="tg-yw4l" colspan="4">' . $correspondencia[0]["mensaje"] . '</td>
 							  </tr>
 							   <tr>
 							      <td></td>
@@ -531,27 +551,100 @@ class ACTCorrespondencia extends ACTbase
 							      <td></td>
 							      <td></td>
 							  </tr>
-							  <tr>
-								<td class="tg-e3zv" colspan="2">Usuario Reg</td>
-								<td class="tg-e3zv" colspan="3">Derivado a:</td>
+							  <tr bgcolor="#CCCCCC">
+							
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td bgcolor="#CCCCCC"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Derivado A:</FONT ></td>
+									<td class="tg-9hbo"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+								
+								<td class="tg-9hbo colspan="2""><FONT SIZE=3> Fecha Recep. </FONT ></td>
 								<td class="tg-9hbo"></td>
-								<td class="tg-9hbo">Mensaje:</td>
-								<td class="tg-9hbo">Accion</td>
+								
+								<td class="tg-9hbo colspan="4""> <FONT SIZE=3>  Mensaje:  </FONT ></td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								
+								<td class="tg-9hbo"> <FONT SIZE=3>  Accion </FONT > </td>
 								<td class="tg-9hbo"></td>
-								<td class="tg-9hbo"></td>
+								
 							  </tr>
 							  ';
+							  
+							  
+		// forecha del detalle de derivacion
+		$vacio=' ';
+							  
         foreach ($hoja_ruta as $ruta) {
+        		
+        	
+        			 // Validacion del null para q salga blando o vavio en el pdf 
+        		     if (is_null($ruta['fecha_deriv'])){
+			
+			          $fecha_deriv  = '       ';
+		              }else{
+		      	
+			          $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_deriv']));	
+					 // $fecha_deriv = $ruta['fecha_deriv'];	
+			         }
+        	         
+        	         if (is_null($ruta['fecha_recepcion'])){
+			
+			          $fecha_recepcion2  = '       ';
+		              }else{
+		      	
+			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_recepcion']));
+					    // $fecha_recepcion2 = $ruta['fecha_recepcion'];	
+			         }
+        	        
+				 		
+				            	             	
+				   
+			        
+			
+							
             $html .= '
 							  <tr>
 								<td class="tg-yw4l" colspan="2">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
-								<td class="tg-yw4l" colspan="4">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l">' . $ruta['mensaje'] . '</td>
-								<td class="tg-yw4l">' . $ruta['acciones'] . '</td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l" colspan="1">' . $fecha_deriv . '</td>
+								
+								<td class="tg-yw4l" colspan="1" >' . $fecha_recepcion2 . '</td>
+								<td class="tg-yw4l" colspan="1"> </td>
+								
+								<td class="tg-yw4l" colspan="4">' . $ruta['mensaje'] . '</td>
+								<td class="tg-yw4l" colspan="2"> </td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['acciones'] . '</td>
 								<td class="tg-yw4l"></td>
 								<td class="tg-yw4l"></td>
 								<td class="tg-yw4l"></td>
-							  </tr>';
+									<td class="tg-yw4l"></td>
+										<td class="tg-yw4l"></td>
+							  </tr> 
+							  <tr> 
+							  <td class="tg-yw4l"></td>
+							  <tr/>
+							  
+							  <tr>
+							    <td class="tg-yw4l" colspan="2">&nbsp;</td>
+							    <td class="tg-yw4l" colspan="2"></td>
+							    <td class="tg-yw4l" colspan="2"></td>
+							    <td class="tg-yw4l" colspan="2" ></td>
+							    <td class="tg-yw4l" colspan="4"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l" colspan="2"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+						      </tr>';
+							  
+							  
 
         }
 
@@ -597,21 +690,17 @@ window.onload=function(){self.print();}
         $this->objParam->defecto('dir_ordenacion', 'asc');
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
         $this->objParam->addFiltro("cor.sw_archivado = ''si'' ");
-        if($this->objParam->getParametro('fecha')==''){
-				$date = date('d/m/Y');
-			} else {
-				$date = $this->objParam->getParametro('fecha');
-			}
-			//$date = date('d/m/Y');
-			/*$this->objParam->addFiltro("cor.id_funcionario IN (select * 
-										FROM orga.f_get_funcionarios_x_usuario_asistente(''" . $date . "'', " .
-																						 $_SESSION["ss_id_usuario"] . ") AS (id_funcionario INTEGER)) ");
-	
-	   
-		*/
-        $this->objFunc = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunc->listarCorrespondenciaRecibida();
-        $this->res->imprimirRespuesta($this->res->generarJson());
+        
+        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+            $this->objReporte = new Reporte($this->objParam, $this);
+            $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaRecibida');
+        } else {
+            $this->objFunc = $this->create('MODCorrespondencia');
+            $this->res = $this->objFunc->listarCorrespondenciaRecibida();
+           
+        }
+		 $this->res->imprimirRespuesta($this->res->generarJson());
+        
     }
 
     function listarCorrespondenciaFisicaEmitida()
@@ -672,8 +761,14 @@ window.onload=function(){self.print();}
     function listarCorrespondenciaExterna()
     {
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
-
-
+		$this->objParam->addFiltro(" cor.tipo = ''".$this->objParam->getParametro('tipo')."''");
+		$this->objParam->addFiltro(" cor.estado = ''".$this->objParam->getParametro('estado')."''");
+		if ($this->objParam->getParametro('vista')=='CorrespondenciaAdministracion' && $this->objParam->getParametro('estado')=='enviado')
+		{
+		}else{
+			$this->objParam->addFiltro(" cor.id_correspondencia_fk is null ");
+		}
+		
         if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
             $this->objReporte = new Reporte($this->objParam, $this);
             $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaExterna');
@@ -683,9 +778,7 @@ window.onload=function(){self.print();}
         }
 		$this->res->imprimirRespuesta($this->res->generarJson());
 
-        /*$this->objFunc = $this->create('MODCorrespondencia');
-        $this->res = $this->objFunc->listarCorrespondenciaExterna();
-        $this->res->imprimirRespuesta($this->res->generarJson());*/
+       
     }	
 	//manu,06/10/2017 agregando a control
 	function recuperarCodigoQR(){

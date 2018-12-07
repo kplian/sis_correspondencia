@@ -45,28 +45,19 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 	constructor: function(config) {
 	    
-	    //this.tipo.setValue('externa');
-        this.Atributos[this.getIndAtributo('id_depto')].form=true;
-        this.Atributos[this.getIndAtributo('id_depto')].form=true;
-        this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
-        this.Atributos[this.getIndAtributo('id_uo')].grid=false;
-        this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=true;
-        this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=true;  
-        this.Atributos[this.getIndAtributo('nro_paginas')].grid=true;
-        this.Atributos[this.getIndAtributo('nro_paginas')].form=true;
-        this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=true;
-        this.Atributos[this.getIndAtributo('otros_adjuntos')].form=true;
-        this.Atributos[this.getIndAtributo('cite')].grid=true;
-        this.Atributos[this.getIndAtributo('cite')].form=true;
-        this.Atributos[this.getIndAtributo('estado_reg')].grid=false;
-        this.Atributos[this.getIndAtributo('id_funcionario_saliente')].form=false;
+	    this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
+	    this.Atributos[this.getIndAtributo('id_uo')].grid=false;
         this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
-        this.Atributos[this.getIndAtributo('id_uo')].form=false;
-        this.Atributos[this.getIndAtributo('id_uo')].grid=false;
-        this.Atributos[this.getIndAtributo('id_funcionario')].form=false;
-        this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
-		
-        //this.Atributos[this.getIndAtributo('fecha_creacion_documento')].form=true;
+        this.Atributos[this.getIndAtributo('id_institucion_destino')].grid=false;
+        this.Atributos[this.getIndAtributo('id_persona_destino')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
+        this.Atributos[this.getIndAtributo('asociar')].grid=false;
+        this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=false;
+        this.Atributos[this.getIndAtributo('id_acciones')].grid=false;
+        this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
+        this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
+        
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 	    
 	    this.addButton('Finalizar', {
@@ -77,15 +68,9 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 				tooltip: '<b>Finalizar Recepción</b><br/>Finalizar el registro del Documento'
 			});
 
-            //this.bloquearOrdenamientoGrid();
             this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
-            //this.getBoton('SubirDocumento').show();
-            //this.getBoton('Adjuntos').show();
             this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
-            //this.getBoton('ImpCodigo').hide();
-            //this.getBoton('ImpCodigoDoc').hide();
             this.getBoton('Derivar').hide();
             this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
@@ -93,10 +78,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
             this.getBoton('Habilitar').hide();
 		  
 		this.init();  
-		//this.store.baseParams = {'vista': 'recepcion_correspondencia_externa','estado': this.swEstado};
-
-
-        this.store.baseParams = {'interface': 'externa','estado': this.swEstado};
+		this.store.baseParams = {'tipo': this.tipo,'estado': this.swEstado};
         this.load({params: {start: 0, limit: 50}})
 
 		//this.iniciarEventos();
@@ -112,58 +94,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
    },
    east : undefined,
    
-   
-   /*Atributos : [{
-   
-			config : {
-				name : 'id_correspondencias_asociadas',
-				fieldLabel : 'Responde a',
-				allowBlank : true,
-				emptyText : 'Correspondencias...',
-				store : new Ext.data.JsonStore({
-					url : '../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaSimplificada',
-					id : 'id_correspondencia',
-					root : 'datos',
-					sortInfo : {
-						field : 'id_correspondencia',
-						direction : 'desc'
-					},
-					totalProperty : 'total',
-					fields : ['id_correspondencia', 'numero', 'referencia', 'desc_funcionario'],
-					// turn on remote sorting
-					remoteSort : true,
-					baseParams : {
-						par_filtro : 'cor.numero#cor.referencia#funcionario.desc_funcionario1',
-						tipo:'saliente'
-					}
-				}),
-				tpl : '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{numero}</div><p style="padding-left: 20px;">{referencia}</p><p style="padding-left: 20px;">{desc_funcionario}</p> </div></tpl>',
-				valueField : 'id_correspondencia',
-				displayField : 'numero',
-				gdisplayField : 'desc_asociadas', //mapea al store del grid
-
-				hiddenName : 'id_correspondencias_asociadas',
-				forceSelection : true,
-				typeAhead : true,
-				triggerAction : 'all',
-				enableMultiSelect : true,
-				lazyRender : true,
-				mode : 'remote',
-				pageSize : 10,
-				queryDelay : 1000,
-				width : 250,
-				gwidth : 200,
-				minChars : 2,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_asociadas']);
-				}
-			},
-			type : 'AwesomeCombo',
-			id_grupo : 2,
-			
-			grid : false,
-			form : true
-		}],*/
+  
 	getParametrosFiltro: function () {
 		this.store.baseParams.estado = this.swEstado;
 	},
@@ -260,68 +191,57 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
        return tb
   },
 	onButtonNew: function () {
-		console.log('llega');
-
-
 		this.tipo = this.getComponente('tipo');
-		this.id_depto = this.getComponente('id_depto');
-		this.id_clasificador = this.getComponente('id_clasificador');
-		this.desc_clasificador = this.getComponente('desc_clasificador');
 		var cmbDoc = this.getComponente('id_documento');
+		
 		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonNew.call(this);
-    	this.Cmp.id_institucion_destino.hide();
-		this.Cmp.id_persona_destino.hide();
-		this.Cmp.id_acciones.hide();
-		this.Cmp.id_acciones.hide();
-
+    	
+    	this.ocultarComponente(this.Cmp.id_funcionario);
+		this.ocultarComponente(this.Cmp.id_uo);
+		this.ocultarComponente(this.Cmp.id_funcionario_saliente);
 		this.ocultarComponente(this.Cmp.id_persona_destino);
 		this.ocultarComponente(this.Cmp.id_institucion_destino);
+		this.ocultarComponente(this.Cmp.id_funcionarios);
+		this.ocultarComponente(this.Cmp.asociar);
+		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
-		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
-
+		  
 		this.adminGrupo({ ocultar: [3]});
 
-		console.log(this.Cmp);
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
-		/*this.id_depto.setValue('ENDE CORANI');
-		this.id_clasificador.setValue('PUBLICO');
-        this.desc_clasificador.setValue('PUBLICO');*/
-        /*this.id_clasificador.setValue(4);*/
-		//this.tipo.disable(true);
-		
-		cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es interna
+	
+		cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es externa
 		cmbDoc.modificado = true;
 		cmbDoc.reset();
 
 
-		this.ocultarComponente(this.Cmp.id_funcionario);
+		
 
 	},
 	
 	onButtonEdit: function () {
-		
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
 	
 		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonEdit.call(this);
-
-		this.Cmp.id_institucion_destino.hide();
-		this.Cmp.id_persona_destino.hide();
-		this.Cmp.id_acciones.hide();
-		this.Cmp.id_acciones.hide();
-
+		
+        this.ocultarComponente(this.Cmp.id_funcionario);
+		this.ocultarComponente(this.Cmp.id_uo);
+		this.ocultarComponente(this.Cmp.id_funcionario_saliente);
 		this.ocultarComponente(this.Cmp.id_persona_destino);
 		this.ocultarComponente(this.Cmp.id_institucion_destino);
+		this.ocultarComponente(this.Cmp.id_funcionarios);
+		this.ocultarComponente(this.Cmp.asociar);
+		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
+		  
 
-		this.adminGrupo({ ocultar: [3]});
+		this.adminGrupo({ ocultar: [0,3]});
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
-		this.ocultarComponente(this.Cmp.id_funcionario);
-		
-
+  	    this.ocultarComponente(this.Cmp.id_funcionario);
 	}
 
 	

@@ -14,8 +14,12 @@ class ACTAdjunto extends ACTbase{
 
 		$this->objParam->defecto('dir_ordenacion','asc');
 
+		/*if($this->objParam->getParametro('id_correspondencia')!=''){
+		    $id_correspondencia=$this->objParam->getParametro('id_correspondencia');
+			$this->objParam->addFiltro('id_correspondencia',$id_correspondencia);
+		}*/
 		if($this->objParam->getParametro('id_origen')!=''){
-			$this->objParam->addFiltro("cor.id_origen = ''".$this->objParam->getParametro('id_origen')."''");
+			$this->objParam->addFiltro("cor.id_correspondencia = ".$this->objParam->getParametro('id_origen')."");
 		}
 		if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
@@ -41,7 +45,11 @@ class ACTAdjunto extends ACTbase{
 	function eliminarAdjunto(){
 		    
 		$this->objFunc=$this->create('MODAdjunto');	
-			
+		if($this->objParam->getParametro('id_adjunto')!=''){
+			$this->objParam->addFiltro("adj.id_adjunto = ''".$this->objParam->getParametro('id_adjunto')."''");
+			$adjunto=$this->objFunc->listarAdjunto($this->objParam);
+		}
+        
 		$this->res=$this->objFunc->eliminarAdjunto($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}

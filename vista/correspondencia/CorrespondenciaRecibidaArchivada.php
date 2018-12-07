@@ -50,18 +50,17 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibidaArchivada',
 	
 	constructor: function(config) {
+		
+		this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
+       //   	this.setColumnHeader('id_institucion_remitente','Espectro');
 	    Phx.vista.CorrespondenciaRecibidaArchivada.superclass.constructor.call(this,config);
-        this.getBoton('Plantilla').hide();
-           // this.getBoton('FinalizarExterna').hide();
+	    
+            this.getBoton('Plantilla').hide();
             this.getBoton('SubirDocumento').hide();
-            //this.getBoton('Adjuntos').show();
             this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
-            //this.getBoton('Derivar').hide();
-            //this.getBoton('HojaRuta').hide();
-            //this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide(); 
             this.getBoton('Archivar').hide(); 
             this.getBoton('Habilitar').hide(); 
@@ -84,44 +83,36 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 		this.store.baseParams.tipo = this.swTipo;
 	},
    actualizarSegunTab: function (name, indice) {
-		console.log('externa',this.swTipo);
-                this.getBoton('Plantilla').hide();
+		
+            this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('SubirDocumento').hide();
-            //this.getBoton('Adjuntos').show();
             this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
             this.getBoton('Derivar').hide();
-            //this.getBoton('HojaRuta').hide();
-            //this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide(); 
             this.getBoton('Archivar').hide(); 
             this.getBoton('Habilitar').hide(); 
         
-		//this.getBoton('FinalizarExterna').enable();
-           this.getBoton('Adjuntos').enable();
+		    this.getBoton('Adjuntos').enable();
             this.getBoton('VerDocumento').enable();
             this.getBoton('Derivar').enable();
             this.getBoton('HojaRuta').enable();
             this.getBoton('Historico').enable();
             this.getBoton('Archivar').enable(); 
-		
+   	
+		 
 		 if(name=='externa'){
-				// this.getBoton('FinalizarExterna').show();
-              this.getBoton('Adjuntos').show();
+		 	  //this.ocultarColumnaByName('id_institucion_remitente');
+		 	  this.getBoton('Adjuntos').show();
               this.getBoton('VerDocumento').show();
-            //  this.getBoton('Derivar').show();
               this.getBoton('HojaRuta').show();
               this.getBoton('Historico').show();
-              this.getBoton('DesArchivar').show(); 
-            
-		}else{
-			 // tis.getBoton('FinalizarExterna').show();
-              this.getBoton('Adjuntos').show();
+              this.getBoton('DesArchivar').show();
+	    }else{
+			  this.getBoton('Adjuntos').show();
               this.getBoton('VerDocumento').show();
-              //this.getBoton('Derivar').show();
               this.getBoton('HojaRuta').show();
               this.getBoton('Historico').show();
               this.getBoton('DesArchivar').show();
@@ -130,7 +121,7 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 		
 		this.swTipo = name;
 		this.getParametrosFiltro();
-		this.load();
+		this.onReloadPage(name);
 	
 	},
     preparaMenu:function(n){
@@ -146,7 +137,8 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 	 
 		 return tb
 		
-	},finalizarRecepcion:function(){
+	},
+	finalizarRecepcion:function(){
 		var rec = this.sm.getSelected();
 
 		Ext.Ajax.request({
@@ -176,18 +168,17 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 			url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',
 			params: {
 				id_correspondencia: rec.data.id_correspondencia,
-				sw_archivado :'no'
+				sw_archivado :'no',
+				observaciones_archivado:''
+				
 			},
 			success: this.successFinalizar,
 			failure: this.conexionFailure,
 			timeout: this.timeout,
 			scope: this
 		});
-	}
-	
-	
-	
-   
+	},
+	east : undefined
 	
 	
 };

@@ -21,40 +21,31 @@ header("content-type: text/javascript; charset=UTF-8");
 
         constructor: function (config) {
         	
-        	//Habilitar atributos para la interfaz Correspondencia Saliente
-        	//this.Atributos[this.getIndAtributo('fecha_reg')].grid=true;
-            this.Atributos[this.getIndAtributo('id_institucion_destino')].grid=true;
-            this.Atributos[this.getIndAtributo('id_persona_destino')].grid=true;
-             this.Atributos[this.getIndAtributo('id_institucion_destino')].form=true;
-            this.Atributos[this.getIndAtributo('id_persona_destino')].form=true;
-            this.Atributos[this.getIndAtributo('id_acciones')].form=false;
-            this.Atributos[this.getIndAtributo('mensaje')].form=false;
-            this.Atributos[this.getIndAtributo('otros_adjuntos')].form=true;
-            this.Atributos[this.getIndAtributo('tipo')].form=true;
-            this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].form=true;
-             this.Atributos[this.getIndAtributo('fecha_creacion_documento')].form=false;
-             this.Atributos[this.getIndAtributo('id_funcionario')].form=false;
-             // this.Atributos[this.getIndAtributo('id_acciones')].form=false;
-             //this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
-             
+        	    this.Atributos[this.getIndAtributo('cite')].grid=false;
+			    this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=false;
+			    this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=false;
+			    this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=false;
+			    this.Atributos[this.getIndAtributo('nro_paginas')].grid=false;
+			    this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
+			    this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
+        	    this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+		        this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
+		        this.Atributos[this.getIndAtributo('id_documento')].grid=false;
+		        this.Atributos[this.getIndAtributo('asociar')].grid=false;
+		        this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
+		        this.Atributos[this.getIndAtributo('id_acciones')].grid=false;
+		        
+			           
             Phx.vista.CorrespondenciaSaliente.superclass.constructor.call(this, config);   
             
-           // this.getBoton('Plantilla').show();
             this.getBoton('FinalizarExterna').hide();
-           // this.getBoton('SubirDocumento').show();
-            //this.getBoton('Adjuntos').show();
-            //this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
             this.getBoton('Derivar').hide();
             this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
-            //this.getBoton('Finalizar').show();
-            //this.getBoton('Archivar').(); 
-             this.getBoton('Habilitar').hide();
-       
-       
+            this.getBoton('Habilitar').hide();
+            
        
        
             this.init();
@@ -68,10 +59,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.cmpResponde.modificado = true;
             this.cmpResponde.enable();
             this.cmpResponde.reset()
-            //this.cmpIdInstitucion.enable();
-            //this.cmpIdPersona.setVisible(false);
-            //this.cmpIdInstitucion.setVisible(true);
-        }
+         }
         else if (val =='externa'){
             this.cmpResponde.store.baseParams.tipo = val;
             this.cmpResponde.modificado = true;
@@ -88,28 +76,16 @@ header("content-type: text/javascript; charset=UTF-8");
             
             iniciarEventos: function () {
             	
-            	this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
+             this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
              this.cmpAsocia = this.getComponente('asociar');
- 
-            this.cmpAsocia.on('change', function (groupRadio,radio) {
-            	if(radio.inputValue){this.enableDisable(radio.inputValue);}
-            },this);
-          /*  var cmpFuncionarios = this.getComponente('id_funcionarios');
-            var cmpInstitucion = this.getComponente('id_institucion');
-            var cmpPersona = this.getComponente('id_persona');
-            var cmbDoc = this.getComponente('id_documento');
-            var cmpInstitucionDestino = this.getComponente('id_institucion_destino');
-            var cmpPersonaDestino = this.getComponente('id_persona_destino');
-             
-              			this.mostrarComponente(this.Cmp.id_persona_destino);
-                    	this.mostrarComponente(this.Cmp.id_institucion_destino);
-	                    this.ocultarComponente(cmpFuncionarios);*/
-    	                this.Cmp.id_institucion_destino.on('select',function(combo,record,index){
+             this.cmpAsocia.on('change', function (groupRadio,radio) {
+            	                                  if(radio.inputValue){this.enableDisable(radio.inputValue);}
+                                        },this);
+               this.Cmp.id_institucion_destino.on('select',function(combo,record,index){
 	    					this.Cmp.id_persona_destino.store.baseParams.id_institucion=combo.getValue();
 	   						this.Cmp.id_persona_destino.reset();
 	   						this.Cmp.id_persona_destino.modificado=true;
-	   						//this.Cmp.id_persona_destino.reset();
-	   		            },this);
+	   			       },this);
 	   		            
 	   		            console.log();
 
@@ -172,6 +148,7 @@ header("content-type: text/javascript; charset=UTF-8");
           preparaMenu: function (n) {
 
             Phx.vista.Correspondencia.superclass.preparaMenu.call(this, n);
+            
             var data = this.getSelectedData();
             var tb = this.tbar;
             //si el archivo esta escaneado se permite visualizar
@@ -199,10 +176,10 @@ header("content-type: text/javascript; charset=UTF-8");
             if (data['estado'] == 'enviado') {
                 if (tb) {
 
-                    this.getBoton('Plantilla').disable();
+                   // this.getBoton('Plantilla').disable();
                     this.getBoton('Finalizar').disable();
                     this.getBoton('Adjuntos').disable();
-                    this.getBoton('VerDocumento').disable();
+                    this.getBoton('VerDocumento').enable();
                     this.getBoton('SubirDocumento').disable();
                     this.getBoton('Corregir').enable();
                     this.getBoton('edit').disable();

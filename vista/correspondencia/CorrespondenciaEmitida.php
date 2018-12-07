@@ -22,37 +22,39 @@ header("content-type: text/javascript; charset=UTF-8");
 
         constructor: function (config) {
         	
-        //	this.Atributos[this.getIndAtributo('fecha_reg')].grid=true;
-            this.Atributos[this.getIndAtributo('fecha_creacion_documento')].form=false;
-            this.Atributos[this.getIndAtributo('id_funcionario_saliente')].form=false;
-            this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
-            this.Atributos[this.getIndAtributo('id_uo')].form=false;
-            this.Atributos[this.getIndAtributo('id_uo')].grid=false;            
+	            this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+		        this.Atributos[this.getIndAtributo('id_institucion_destino')].grid=false;
+		        this.Atributos[this.getIndAtributo('id_persona_destino')].grid=false;
+		        this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
+		        this.Atributos[this.getIndAtributo('asociar')].grid=false;
+		        this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
+		        this.Atributos[this.getIndAtributo('cite')].grid=false;
+			    this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=false;
+			    this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=false;
+			    this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=false;
+			    this.Atributos[this.getIndAtributo('nro_paginas')].grid=false;
+			    this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
+			    this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
+			    
+                    
             Phx.vista.CorrespondenciaEmitida.superclass.constructor.call(this, config);   
-         
+            
+            
+              this.getBoton('FinalizarExterna').hide();
+              this.getBoton('ImpCodigo').hide();
+              this.getBoton('ImpCodigoDoc').hide();
+              this.getBoton('HojaRuta').hide();
+              this.getBoton('Finalizar').hide();
+              this.getBoton('Habilitar').hide();
             this.init();
+            this.argumentExtraSubmit={'vista':'CorrespondenciaInterna'};
+
             this.store.baseParams = {'interface': 'interna'};
             this.load({params: {start: 0, limit: 50}})
             
 			
-			//this.Cmp.id_correspondencias_asociadas.disabled(true);
-            //this.getComponente('id_correspondencias_asociadas').setVisible(false);
-            
-           // console.log('asociadas:   ',this.getComponente('id_correspondencias_asociadas'));
-            
-            //   this.getBoton('Plantilla').hide();
-            this.getBoton('FinalizarExterna').hide();
-            //this.getBoton('SubirDocumento').show();
-            //this.getBoton('Adjuntos').show();
-            //this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
-            this.getBoton('ImpCodigo').hide();
-            this.getBoton('ImpCodigoDoc').hide();
-            //this.getBoton('Derivar').hide();
-            this.getBoton('HojaRuta').hide();
-            //this.getBoton('Historico').hide();
-            this.getBoton('Finalizar').hide();
-            this.getBoton('Habilitar').hide();
+		
+           
 		
         },
       
@@ -66,7 +68,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 callback : function (r) {
                     if (r.length == 1 ) {
                         this.Cmp.id_funcionario.setValue(r[0].data.id_funcionario);
-                       // this.Cmp.id_funcionario.fireEvent('select', this.Cmp.id_funcionario, r[0]);
                     }
 
                 }, scope : this
@@ -74,9 +75,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
             var cmbDoc = this.getComponente('id_documento');
             var cmpFuncionarios = this.getComponente('id_funcionarios');
-            //var cmpInstitucion = this.getComponente('id_institucion');
-            //var cmpPersona = this.getComponente('id_persona');
-
+          
 
 
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
@@ -91,7 +90,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_destino);
 
-            //this.getComponente('id_uo').enable();
             this.getComponente('id_clasificador').enable();
             this.getComponente('fecha_documento').disable();
             this.getComponente('mensaje').enable();
@@ -111,7 +109,6 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonEdit: function () {
             Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
             this.adminGrupo({mostrar: [2], ocultar: [0, 1, 3]});
-           // this.getComponente('id_uo').disable();
             var data = this.sm.getSelected().data;
             console.log(data, data.estado)
             if (data.estado == 'borrador_envio') {
@@ -135,6 +132,7 @@ header("content-type: text/javascript; charset=UTF-8");
             var data = this.getSelectedData();
             var tb = this.tbar;
             //si el archivo esta escaneado se permite visualizar
+             
             if (data['version'] > 0) {
                 this.getBoton('VerDocumento').enable();
                 this.getBoton('Derivar').enable()
@@ -151,19 +149,17 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('Plantilla').enable();
                 this.getBoton('Adjuntos').enable();
                 this.getBoton('Corregir').disable();
-               //  this.getBoton('HojaRuta').disable();
                  this.getBoton('Historico').disable();
                  this.getBoton('Archivar').disable();
             }
             if (data['estado'] == 'enviado') {
                 if (tb) {
 
-                    this.getBoton('Plantilla').disable();
+                    //this.getBoton('Plantilla').disable();
 					 this.getBoton('Adjuntos').enable();
                     this.getBoton('SubirDocumento').enable();
                     this.getBoton('Corregir').enable();
                     this.getBoton('Derivar').disable();
-                   // this.getBoton('HojaRuta').enable();
                     this.getBoton('Historico').enable();
                      this.getBoton('Archivar').enable();
                     this.getBoton('edit').disable();
@@ -185,10 +181,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.cmpResponde.modificado = true;
             this.cmpResponde.enable();
             this.cmpResponde.reset()
-            //this.cmpIdInstitucion.enable();
-            //this.cmpIdPersona.setVisible(false);
-            //this.cmpIdInstitucion.setVisible(true);
-        }
+         }
         else if (val =='externa'){
             this.cmpResponde.store.baseParams.tipo = val;
             this.cmpResponde.modificado = true;

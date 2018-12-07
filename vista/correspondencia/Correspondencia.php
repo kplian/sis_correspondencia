@@ -1,6 +1,5 @@
 <?php
 /**
- * @package pXP
  * @file gen-Correspondencia.php
  * @author  (rac)
  * @date 13-12-2011 16:13:21
@@ -27,7 +26,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.addButton('Plantilla', {
                 text: 'Plantilla',
                 iconCls: 'bword',
-                disabled: true,
+                disabled: false,
                 handler: this.BPlantilla,
                 tooltip: '<b>PlantillaCorrespondencia</b><br/>visualiza la plantilla correspondencia'
             });
@@ -56,16 +55,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				tooltip : '<b>Adjuntos</b><br/>Archivos adjuntos a la correspondencia'
 			});
 			
-            //5
-			this.addButton('Corregir', {
-
-				grupo : [0,1],
-				text : 'Corregir',
-				iconCls : 'bundo',
-				disabled : true,
-				handler : this.BCorregir,
-				tooltip : '<b>Corregir</b><br/>Si todos los envios de destinatarios se encuentran pendientes de lectura puede solicitar la corrección'
-			});   
+           
 			//6
 			this.addButton('VerDocumento', {
 				grupo : [0, 1],
@@ -141,20 +131,26 @@ header("content-type: text/javascript; charset=UTF-8");
 			handler: this.BHabilitar,
 			tooltip: '<b>Habilitar Anulados</b><br/>'
 		});
+		 //5
+			this.addButton('Corregir', {
+
+				grupo : [0,1],
+				text : 'Corregir',
+				iconCls : 'bundo',
+				disabled : true,
+				handler : this.BCorregir,
+				tooltip : '<b>Corregir</b><br/>Si todos los envios de destinatarios se encuentran pendientes de lectura puede solicitar la corrección'
+			});   
 		
 			this.iniciarEventos()
 		},
-		//Phx.CP.loadWindows('../../../sis_correspondencia/vista/correspondencia/Historico.php',remitente+' -- '+rec.data.numero, {
-			
-/*enderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_depto']);
-				}*/
+	
 		east : {
 			
 			 url: '../../../sis_correspondencia/vista/correspondencia_detalle/CorrespondenciaDetalle.php?estado='+this.estado+'',
 				
 			cls : 'CorrespondenciaDetalle',
-			title : 'Detalle',
+			title : 'Detalle de Derivación',
 			height : '50%'
 		},
 		Atributos : [{
@@ -166,33 +162,53 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type : 'Field',
 			form : true
-		}, {
+		},  {
 			config : {
-				name : 'nivel_prioridad',
+				name : 'archivado_imagen',
+				fieldLabel : 'Archivado',
+				gwidth : 50,
+				renderer : function(value, p, record) {
+					if (record.data.sw_archivado=='si'){
+						var icono = record.data.sw_archivado + '.png';
+					return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/" + icono +"' align='center' width='40' height='40' title='"+record.data.observaciones_archivado+"' /></div>"
+		
+					}
+				}
+			},
+			type : 'Field',
+			tooltip : '<b>Corregir</b><br/>Si todos los envios de destinatarios se encuentran pendientes de lectura puede solicitar la corrección',
+			filters : {
+				pfiltro : 'cor.sw_archivado',
+				type : 'string'
+			},
+			 form:false
+		}   
+			,{
+			config : {
+				name : 'nivel_prioridad_imagen',
 				fieldLabel : 'Prioridad',
 				gwidth : 30,
 				renderer : function(value, p, record) {
 					var icono = record.data.nivel_prioridad + '.png';
-					console.log('nivel_prioridad', record.data.nivel_prioridad)
-					console.log('icono', icono)
-					if (record.data.version > 0) {
-						icono = 'good';
+					var prioridad = '';
+					if (record.data.nivel_prioridad=='1alta'){
+						prioridad='Alta';
+					}else if (record.data.nivel_prioridad=='2media'){
+						prioridad='Media';
+					}else{
+				        prioridad='Baja';
+						
 					}
-					return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/" + record.data.nivel_prioridad + ".png' align='center' width='10' height='25'/></div>"
+					
+					return "<div style='text-align:center'><img title="+prioridad+" src = '../../../sis_correspondencia/imagenes/" + icono + "' align='center' width='10' height='25'/></div>"
 				}
 			},
 			type : 'Field',
+			egrid : false,
 			filters : {
 				pfiltro : 'cor.nivel_prioridad',
 				type : 'string'
 			},
-			
-			egrid : true,
-			filters : {
-				pfiltro : 'cor.version',
-				type : 'numeric'
-			},
-			id_grupo : 0,
 			grid : true,
 			form : false
 		}, 
@@ -204,18 +220,40 @@ header("content-type: text/javascript; charset=UTF-8");
 				gwidth : 60,
 				renderer : function(value, p, record) {
 					var icono = record.data.estado + '.png';
-					console.log('estado', record.data.estado)
-					console.log('icono', icono)
-					if (record.data.version > 0) {
-						icono = 'good';
+					var estado = '';
+					switch (record.data.estado){
+						case 'borrador_recepcion_externo': estado='Borrador'; 
+						        break;
+						case 'pendiente_recepcion_externo': estado='Pendiente Externo'; 
+						        break;
+						case 'enviado': estado='Enviado'; 
+						        break;
+						case 'borrador_envio':  estado='Borrador'; 
+						        break;
+						case 'pendiente_recibido': estado='Pendiente de Recepción'; 
+						        break;
+						case 'recibido': estado='Recibido'; 
+						        break;
+						case 'anulado': estado='Anulado'; 
+						        break;
+						     
+					};
+					if (record.data.estado == 'borrador_recepcion_externo' || record.data.estado=='borrador_envio') {
+						if (record.data.version>0) {
+							estado='Borrador, Documento Principal Subido Correctamente '
+							return "<div style='text-align:center'><img title='"+estado+"' src = '../../../sis_correspondencia/imagenes/borrador_recepcion_externo_adjdoc.png' align='center' width='40' height='40'/></div>"
+						}else{
+							return "<div style='text-align:center'><img title='"+estado+"' src = '../../../sis_correspondencia/imagenes/" + icono + "' align='center' width='40' height='40'/></div>"
+						}
+					}else{
+						return "<div style='text-align:center'><img title='"+estado+"' src = '../../../sis_correspondencia/imagenes/" + icono + "' align='center' width='40' height='40'/></div>"
 					}
-					return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/" + record.data.estado + ".png' align='center' width='40' height='40'/></div>"
 				}
 			},
 			type : 'Field',
-			egrid : true,
+			egrid : false,
 			filters : {
-				pfiltro : 'cor.version',
+				pfiltro : 'cor.estado',
 				type : 'numeric'
 			},
 			id_grupo : 0,
@@ -225,18 +263,18 @@ header("content-type: text/javascript; charset=UTF-8");
 			config : {
 				name : 'adjunto',
 				fieldLabel : 'Adjunto',
-				gwidth : 60,
+				gwidth : 40,
 				renderer : function(value, p, record) {
 					var icono = record.data.estado + '.png';
 					if (record.data.adjunto > 0) {
-						return "<div style='text-align:center'><img src = '../../../sis_correspondencia/imagenes/adjunto.png' align='center' width='40' height='40'/></div>";
+						return "<div style='text-align:center'><img title='Cantidad de Adjuntos: "+record.data.adjunto+"' src = '../../../sis_correspondencia/imagenes/adjunto.png' align='center' width='20' height='20'/></div>";
 					}
 					
 					
 				}
 			},
 			type : 'Field',
-			egrid : true,
+			egrid : false,
 			id_grupo : 0,
 			grid : true,
 			form : false
@@ -260,7 +298,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			config : {
 				name : 'cite',
 				fieldLabel : 'Cite',
-				gwidth : 200,
+				gwidth : 100,
 				width : 300
 			},
 			type : 'TextField',
@@ -271,8 +309,8 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			id_grupo : 1,
 
-			grid : false,
-			form : false,
+			grid : true,
+			form : true,
 			bottom_filter : true
 		}, 
 		{
@@ -283,7 +321,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				allowBlank : false,
 				format : 'd-m-Y',
 				width : 100,
-				gwidth : 100,
+				gwidth : 80,
 				renderer : function(value, p, record) {
 					return value ? value.dateFormat('d/m/Y') : ''
 				}
@@ -321,7 +359,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				pfiltro : 'insti.nombre',
 				type : 'string'
 			},
-			grid : false,
+			grid : true,
 			form : true,
 			bottom_filter : true
 		}, {
@@ -341,11 +379,12 @@ header("content-type: text/javascript; charset=UTF-8");
 			type : 'ComboRec',
 			id_grupo : 1,
 			filters : {
+				//pfiltro : 'persona.nombre_completo1',
 				pfiltro : 'persona.nombre_completo1',
 				type : 'string'
 			},
 
-			grid : false,
+			grid : true,
 			form : true,
 			bottom_filter : true
 		},
@@ -355,10 +394,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				name : 'referencia',
 				fieldLabel : 'Referencia',
 				allowBlank : true,
-				width : 300,
+				width : 600,
 				growMin : 100,
 				grow : true,
-				gwidth : 100,
+				gwidth : 200,
 				maxLength : 500
 			},
 			type : 'TextArea',
@@ -378,7 +417,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				width : 300,
 				growMin : 100,
 				grow : true,
-				gwidth : 100
+				gwidth : 200
 			},
 			type : 'TextArea',
 			filters : {
@@ -386,14 +425,14 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			id_grupo : 2,
-			grid : false,
-			form : false
+			grid : true,
+			form : true
 		}, 
 		{
 			config : {
 				name : 'nro_paginas',
 				fieldLabel : 'Numero Paginas',
-				gwidth : 120
+				gwidth : 100
 			},
 			type : 'TextField',
 			filters : {
@@ -401,8 +440,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'numeric'
 			},
 			id_grupo : 2,
-			grid : false,
-			form : false
+			grid : true,
+			form : true
 		},
 		{
 			config : {
@@ -436,15 +475,29 @@ header("content-type: text/javascript; charset=UTF-8");
 				//valorInicial:{ID:'interna',valor:'Interna'},
 				store : new Ext.data.ArrayStore({
 					fields : ['ID', 'valor'],
-					data : [['alta', 'Alta'], ['media', 'Media'], ['baja', 'Baja']]
+					data : [['1alta', 'Alta'], ['2media', 'Media'], ['3baja', 'Baja']]
 				}),
+				renderer : function(value, p, record) {
+					var prioridad = record.data.nivel_prioridad;
+					return  record.data.nivel_prioridad;
+					if (prioridad=='1alta'){
+						return 'Alta';
+					}else if (prioridad=='2media'){
+						return 'Media';
+					}else{
+				        return 'Baja';
+						
+					}
+					
+					//return String.format('{0}', record.data['desc_clasificador']);
+				},
 				valueField : 'ID',
 				displayField : 'valor',
 				width : 150
 
 			},
 			type : 'ComboBox',
-			valorInicial : 'media',
+			valorInicial : '2media',
 			filters : {
 				pfiltro : 'cor.nivel_prioridad',
 				type : 'string'
@@ -512,7 +565,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			id_grupo : 0,
-			grid : true,
+			grid : false,
 			form : false
 		},{
 			config : {
@@ -541,46 +594,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			grid : false,
-			form : false
-		}, {
-			config : {
-				name : 'id_archivo',
-				fieldLabel : 'Dig.',
-				gwidth : 30,
-				maxLength : 4
-			},
-			type : 'TextField',
-			//filters:{pfiltro:'cor.id_archivo',type:'numeric'},
-			id_grupo : 0,
-			grid : false,
-			form : false
-		}, {
-			config : {
-				name : 'id_depto',
-				origen : 'DEPTO',
-				allowBlank : true,
-				fieldLabel : 'Depto',
-				gdisplayField : 'desc_depto', //dibuja el campo extra de la consulta al hacer un inner join con orra tabla
-				width : 250,
-				gwidth : 200,
-				baseParams : {
-					estado : 'activo',
-					codigo_subsistema : 'CORRES'
-				}, //parametros adicionales que se le pasan al store
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_depto']);
-				}
-			},
-			//type:'TrigguerCombo',
-			type : 'ComboRec',
-			id_grupo : 0,
-			filters : {
-				pfiltro : 'depto.nombre',
-				type : 'string'
-			},
-			grid : false,
-			form : false
-		}, {
+			form : true
+		},  {
 			config : {
 				name : 'tipo',
 				fieldLabel : 'Tipo Correspondencia',
@@ -654,16 +669,13 @@ header("content-type: text/javascript; charset=UTF-8");
 			type : 'ComboBox',
 			id_grupo : 0,
 			filters : {
-				pfiltro : 'param.tdocumento',
+				pfiltro : 'doc.descripcion',
 				type : 'string'
 			},
 
 			grid : true,
 			form : true
 		}, 
-		
-		
-		
 		 {
 			config : {
 				name : 'fecha_creacion_documento',
@@ -687,7 +699,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : true,
 			form : true,
 			bottom_filter : true
-		}, 
+		},
+		 
 		{
 			config : {
 				name : 'origen',
@@ -700,7 +713,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			id_grupo : 1,
-			grid : false,
+			grid : true,
 			form : false
 		},
 		{
@@ -729,10 +742,6 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : true,
 			form : true
 		},
-			
-			
-	
-		
 		{
 			config : {
 				name : 'id_uo',
@@ -803,7 +812,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				pfiltro : 'insti.nombre',
 				type : 'string'
 			},
-			grid : false,
+			grid : true,
 			form : true
 		}, 
 				
@@ -828,7 +837,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 
-			grid : false,
+			grid : true,
 			form : true,
 			bottom_filter : true
 
@@ -872,7 +881,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			},
 			type : 'AwesomeCombo',
 			id_grupo : 3,
-			grid : false,
+			grid : true,
 			form : true
 		}, 
 		
@@ -917,8 +926,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				}),
 				tpl : '<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{numero}</div><p style="padding-left: 20px;">{referencia}</p><p style="padding-left: 20px;">{desc_funcionario}</p> </div></tpl>',
 				valueField : 'id_origen',
-				displayField : 'numero',
-				gdisplayField : 'desc_asociadas', //mapea al store del grid
+				displayField : 'desc_correspondencias_asociadas',
+				gdisplayField : 'desc_correspondencias_asociadas', //mapea al store del grid
 
 				hiddenName : 'id_correspondencias_asociadas',
 				forceSelection : true,
@@ -931,10 +940,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				queryDelay : 1000,
 				width : 250,
 				gwidth : 200,
-				minChars : 2,
+				minChars : 5,
 				disabled: true,
 				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_asociadas']);
+					return String.format('{0}', record.data['desc_correspondencias_asociadas']);
 				}
 			},
 			type : 'AwesomeCombo',
@@ -944,7 +953,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			 type:'string'
 			 },*/
 
-			grid : false,
+			grid : true,
 			form : true
 		},
 		
@@ -972,7 +981,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}),
 				valueField : 'id_accion',
 				displayField : 'nombre',
-				gdisplayField : 'desc_acciones', //mapea al store del grid
+				gdisplayField : 'acciones', //mapea al store del grid
 
 				hiddenName : 'id_acciones',
 				forceSelection : true,
@@ -980,19 +989,19 @@ header("content-type: text/javascript; charset=UTF-8");
 				triggerAction : 'all',
 				lazyRender : true,
 				mode : 'remote',
-				pageSize : 10,
+				pageSize : 20,
 				queryDelay : 1000,
 				width : 250,
 				gwidth : 200,
 				minChars : 2,
 				enableMultiSelect : true,
 				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_acciones']);
+					return String.format('{0}', record.data['acciones']);
 				}
 			},
 			type : 'AwesomeCombo',
 			id_grupo : 3,
-			grid : false,
+			grid : true,
 			form : true
 		}, 
 		{
@@ -1082,7 +1091,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			grid : true,
 			form : false
 		},
-	
+	/*
 	    
    	{
 			config:{
@@ -1098,9 +1107,9 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo:0,
 			grid:true,
 			form:false
-		},
+		},*/
 		{ config : {
-				name : 'id_funcionario',
+				name : 'id_funcionario_destino',
 				origen : 'FUNCIONARIOCAR',
 				fieldLabel : 'Funcionario Destino',
 				gdisplayField : 'desc_funcionario_origen', //mapea al store del grid
@@ -1115,15 +1124,60 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type : 'ComboRec',
-			id_grupo : 1,
+			id_grupo : 1,   
 			filters : {
-				pfiltro : 'desc_funcionario1',
+				pfiltro : 'emp_recepciona.desc_funcionario1',
 				type : 'string'
 			},
-
+            bottom_filter : false,
 			grid : true,
 			form : false
-		}
+		}, 
+		 {
+			config : {
+				name : 'fecha_ult_derivado',
+				fieldLabel : 'Fecha Derivado',
+				allowBlank : true,
+				anchor:'80%',
+				//format : 'd-m-Y',
+				gwidth : 100,
+				renderer : function(value, p, record) {
+					return value ? value.dateFormat('d/m/Y H:i:s'):''
+				}
+			},
+			type : 'DateField',
+			gwidth : 100,
+			//valorInicial : new Date(),
+			filters : {
+				pfiltro : 'cor.fecha_ult_derivado',
+				type : 'date'
+			},
+			id_grupo : 2,
+			grid : true,
+			form : false,
+			bottom_filter : false
+		},{
+			config : {
+				name : 'observaciones_archivado',
+				fieldLabel : 'Observaciones de Archivado',
+				width : 400,
+				growMin : 100,
+				grow : true,
+				gwidth : 400
+			},
+			type : 'TextArea',
+			filters : {
+				pfiltro : 'cor.observaciones_archivado',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : true,
+			form : false,
+			bottom_filter : false,
+			egrid : true,
+			disabled : true
+			
+		   }
 		],
 		title : 'Correspondencia',
 		ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
@@ -1138,18 +1192,65 @@ header("content-type: text/javascript; charset=UTF-8");
 			name : 'fecha_fin',
 			type : 'date',
 			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_acciones', 'id_archivo', 'id_correspondencia_fk', 'id_correspondencias_asociadas', 'id_depto', 'id_documento', 'id_funcionario', 'id_gestion',
-		 'id_institucion', 'id_periodo', 'id_persona', 'id_uo', 'mensaje', 'nivel', 'nivel_prioridad', 'numero', 'observaciones_estado', 'referencia', 
-		 'respuestas', 'sw_responsable', 'tipo', 
-		 {name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
-		 'id_usuario_reg', {
-			name : 'fecha_mod',
-			type : 'date',
-			dateFormat : 'Y-m-d H:i:s'
-		}, 'id_usuario_mod', 'usr_reg', 'usr_mod', 'cite', 'desc_depto', 'desc_documento', 'desc_funcionario', 'desc_persona','ruta_archivo', 'version', 'desc_uo', 'id_clasificador', 'desc_clasificador', 'id_origen', 'sw_archivado', 'estado_fisico', 'desc_insti','id_institucion_remitente','id_institucion_destino','nro_paginas','id_persona_remitente','id_persona_destino','id_persona','nombre_completo1','otros_adjuntos','adjunto','origen',
-		 {name:'acciones', type: 'string'},
-		 {name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s'},'desc_funcionario_origen'
-		 ],
+		}, 'id_acciones', 
+		   
+		   'id_correspondencia_fk',
+		   'id_correspondencias_asociadas',
+		   'id_depto',
+		   'id_documento',
+		   'id_funcionario',
+		   'id_gestion',
+		   'id_institucion',
+		   'id_periodo',
+		   'id_persona',
+		   'id_uo',
+		   {name:'mensaje', type: 'string'},
+		   'nivel',
+		   'nivel_prioridad',
+		   'numero',
+		   'observaciones_estado',
+		   'referencia', 
+		   'respuestas',
+		   'sw_responsable',
+		   'tipo', 
+		   {name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+		   'id_usuario_reg',
+		   {name : 'fecha_mod',type : 'date',dateFormat : 'Y-m-d H:i:s'},
+		    'id_usuario_mod',
+		    'usr_reg',
+		    'usr_mod',
+		    'cite',
+		    'desc_depto',
+		    'desc_documento',
+		    'desc_funcionario',
+		    'desc_persona',
+		    'ruta_archivo',
+		    'version',
+		    'desc_uo',
+		    'id_clasificador',
+		    'desc_clasificador',
+		    'id_origen',
+		    'sw_archivado',
+		    'estado_fisico',
+		    'desc_insti',
+		    'id_institucion_remitente',
+		    'id_institucion_destino',
+		    'nro_paginas',
+		    'id_persona_remitente',
+		    'id_persona_destino',
+		    'id_persona',
+		    'nombre_completo1',
+		    'otros_adjuntos',
+		    'adjunto','origen',
+		 	{name:'acciones', type: 'string'},
+			{name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+		 	{name:'fecha_ult_derivado', type: 'date',dateFormat:'Y-m-d H:i:s.u'},'desc_funcionario_origen',
+			{name:'observaciones_archivado', type: 'string'},
+			{name:'sw_archivado', type: 'string'},
+			{name:'desc_correspondencias_asociadas', type: 'string'},
+			{name:'estado_corre', type: 'string'}],
+		 	arrayDefaultColumHidden:['estado','nivel_prioridad','id_clasificador','estado','tipo','fecha_creacion_documento','origen','estado_reg','fecha_mod','usr_mod','id_uo'],
+	
 		sortInfo : {
 			field : 'id_correspondencia',
 			direction : 'desc'
@@ -1227,6 +1328,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			Phx.vista.Correspondencia.superclass.loadValoresIniciales.call(this);
 		},
+		
 		//1
         BPlantilla:function(){
 
@@ -1361,19 +1463,20 @@ header("content-type: text/javascript; charset=UTF-8");
 			var rec = this.sm.getSelected();
 			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
 			if (confirm('Esta seguro de DERIVAR el documento '+rec.data.numero + ' ?')){
-
-			Phx.CP.loadingShow();
-			Ext.Ajax.request({
-				url : '../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
-				params : {
-					id_correspondencia : id_correspondencia,
-					id_origen : rec.data.id_origen
-				},
-				success : this.successDerivar,
-				failure : this.conexionFailure,
-				timeout : this.timeout,
-				scope : this
-			});
+				if (confirm('Al realizar la derivación no podrá Añadir adjuntos, Modificar información respecto al documento, Esta de acuerdo?')){
+					Phx.CP.loadingShow();
+					Ext.Ajax.request({
+						url : '../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
+						params : {
+							id_correspondencia : id_correspondencia,
+							id_origen : rec.data.id_origen
+						},
+						success : this.successDerivar,
+						failure : this.conexionFailure,
+						timeout : this.timeout,
+						scope : this
+			  });
+			}
 		   }
 		},
 		//10
@@ -1448,18 +1551,26 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 	BArchivar:function(){
 		var rec = this.sm.getSelected();
-
-		Ext.Ajax.request({
-			url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',
-			params: {
-				id_correspondencia: rec.data.id_correspondencia,
-				sw_archivado :'si'
-			},
-			success: this.successFinalizar,
-			failure: this.conexionFailure,
-			timeout: this.timeout,
-			scope: this
-		});
+	  if(confirm('Esta seguro de Archivar el documento '+rec.data.numero+'?')){
+		var result = prompt('Especifique las razones por las que se corrige el Documento'+rec.data.numero);
+			   
+			  // Phx.CP.loadingShow();
+					//alert (result);   
+				if (result != null){
+				Ext.Ajax.request({
+					url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',
+					params: {
+						id_correspondencia: rec.data.id_correspondencia,
+						sw_archivado :'si',
+						observaciones_archivado:result
+					},
+					success: this.successFinalizar,
+					failure: this.conexionFailure,
+					timeout: this.timeout,
+					scope: this
+				});
+		      }
+	    }
 	},
 	BHabilitar:function(){
 		var rec = this.sm.getSelected();
@@ -1468,7 +1579,8 @@ header("content-type: text/javascript; charset=UTF-8");
 		Ext.Ajax.request({
 			url: '../../sis_correspondencia/control/Correspondencia/habilitarCorrespondencia',
 			params: {
-				id_correspondencia: rec.data.id_correspondencia
+				id_correspondencia: rec.data.id_correspondencia,
+				tipo_corres:rec.data.tipo
 			},
 			success: this.successFinalizar,
 			failure: this.conexionFailure,

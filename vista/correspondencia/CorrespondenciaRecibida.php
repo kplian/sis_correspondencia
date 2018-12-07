@@ -12,6 +12,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.CorrespondenciaRecibida = {
+	
     bsave:false,
     bnew:false,
 	bedit:false,
@@ -21,20 +22,7 @@ Phx.vista.CorrespondenciaRecibida = {
 	title: 'Recibida',
 	nombreVista: 'CorrespondenciaRecibida',
 	swTipo: 'externa',
-	/*gruposBarraTareas: [{
-		name: 'externa',
-		title: '<H1 align="center"><i class="fa fa-space-shuttle"></i> Externa</h1>',
-		grupo: 0,
-		height: 0
-	},
-		{
-			name: 'interna',
-			title: '<H1 align="center"><i class="fa fa-connectdevelop"></i> Interna</h1>',
-			grupo: 1,
-			height: 0
-		}
-
-	],*/
+	
 	beditGroups: [0, 1],
 	bactGroups: [0, 1],
 	btestGroups: [0,1],
@@ -43,50 +31,41 @@ Phx.vista.CorrespondenciaRecibida = {
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibida',
 	
 	constructor: function(config) {
-		this.Atributos[this.getIndAtributo('fecha_documento')].form=false;
-		this.Atributos[this.getIndAtributo('id_funcionario_saliente')].form=false;
+		//this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
+		
+		
+		this.Atributos[this.getIndAtributo('id_documento')].grid=false;
+		this.Atributos[this.getIndAtributo('id_uo')].grid=false;
         this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
-        this.Atributos[this.getIndAtributo('id_uo')].form=false;
-        this.Atributos[this.getIndAtributo('id_uo')].grid=false;
-		this.Atributos[this.getIndAtributo('origen')].grid=true;
-        this.Atributos[this.getIndAtributo('origen')].form=false;
+        this.Atributos[this.getIndAtributo('id_institucion_destino')].grid=false;
+        this.Atributos[this.getIndAtributo('id_persona_destino')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
+        this.Atributos[this.getIndAtributo('asociar')].grid=false;
+        this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=false;
+        this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
+         
+         if (config.tipo=='interna'){
+        	this.Atributos[this.getIndAtributo('cite')].grid=false;
+		    this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=false;
+		    this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=false;
+		    this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=false;
+		    this.Atributos[this.getIndAtributo('nro_paginas')].grid=false;
+		    this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=true;
+		    this.Atributos[this.getIndAtributo('id_documento')].grid=true;
+		    this.Atributos[this.getIndAtributo('id_uo')].grid=true;
+	      }
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
-	     console.log('AAAAAAAAAAAAAAAAAAAAAAAA');
-         console.log(this.tipo);
-         //this.bloquearOrdenamientoGrid();
+	     //this.bloquearOrdenamientoGrid();
            this.getBoton('Plantilla').hide();
-           // this.getBoton('FinalizarExterna').hide();
             this.getBoton('SubirDocumento').hide();
-            //this.getBoton('Adjuntos').show();
-            //this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
-            //this.getBoton('Derivar').hide();
-            //this.getBoton('HojaRuta').hide();
-            //this.getBoton('Historico').hide();
-            this.getBoton('Finalizar').hide(); 
+             this.getBoton('Finalizar').hide(); 
              this.getBoton('Habilitar').hide();
-		/*this.addButton('finalizarRecibido', {
-			grupo : [0,1],
-			text: 'Finalizar Recepcion',
-			iconCls: 'bgood',
-			disabled:true,
-			handler: this.finalizarRecepcion,
-			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
-		});	*/	
-		
-		/*this.addButton('Archivar', {
-			grupo : [0,1],
-			text: 'Archivar',
-			iconCls: 'bsave',
-			disabled: false,
-			handler: this.archivar,
-			tooltip: '<b>Archivar</b><br/>'
-		});*/
 		
 		
 		this.init();
+		
         this.store.baseParams = {'interface': 'recibida','tipo': this.tipo};
         this.load({params: {start: 0, limit: 50}})
 	  
@@ -94,68 +73,14 @@ Phx.vista.CorrespondenciaRecibida = {
    },
    getParametrosFiltro: function () {
 		this.store.baseParams.tipo = this.tipo;
-	},
-   actualizarSegunTab: function (name, indice) {
-		console.log('externa',name);
-
-		     //this.bloquearOrdenamientoGrid();
-      
-             this.getBoton('Plantilla').hide();
-           // this.getBoton('FinalizarExterna').hide();
-            this.getBoton('SubirDocumento').hide();
-            //this.getBoton('Adjuntos').show();
-            //this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
-            this.getBoton('ImpCodigo').hide();
-            this.getBoton('ImpCodigoDoc').hide();
-            //this.getBoton('Derivar').hide();
-            //this.getBoton('HojaRuta').hide();
-            //this.getBoton('Historico').hide();
-            this.getBoton('Finalizar').hide(); 
-             this.getBoton('Habilitar').hide();
-            
-            this.getBoton('FinalizarExterna').enable();
-            this.getBoton('Adjuntos').enable();
-            this.getBoton('VerDocumento').enable();
-            this.getBoton('Derivar').enable();
-            this.getBoton('HojaRuta').enable();
-            this.getBoton('Historico').enable();
-            this.getBoton('Archivar').enable(); 
-         /* if(name=='externa'){
-				 this.getBoton('FinalizarExterna').show();
-              this.getBoton('Adjuntos').show();
-              this.getBoton('VerDocumento').show();
-              this.getBoton('Derivar').show();
-              this.getBoton('HojaRuta').show();
-              this.getBoton('Historico').show();
-              this.getBoton('Archivar').show(); 
-            
-		}else{
-				*/	 this.getBoton('FinalizarExterna').show();
-              this.getBoton('Adjuntos').show();
-              this.getBoton('VerDocumento').show();
-              this.getBoton('Derivar').show();
-              this.getBoton('HojaRuta').show();
-              this.getBoton('Historico').show();
-              this.getBoton('Archivar').show(); 
-            
-		//}
-			           
-		this.swTipo = this.tipo;
-		this.getParametrosFiltro();
-		this.load();
-	
-	},
-	
+	}
+	,
 	preparaMenu:function(n){
 		     	
 		var data = this.getSelectedData();
 		console.log('data',data)
 		var tb =this.tbar;
 		//si el archivo esta escaneado se permite visualizar
-		
-		
-		
 		
 		if(data['estado']=='pendiente_recibido'){
 			 this.getBoton('FinalizarExterna').enable();

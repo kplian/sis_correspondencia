@@ -1,4 +1,3 @@
---------------- SQL ---------------
 CREATE OR REPLACE FUNCTION corres.f_get_uo_correspondencia_funcionario (
   fl_id_empleado integer,
   fl_filtro varchar [],

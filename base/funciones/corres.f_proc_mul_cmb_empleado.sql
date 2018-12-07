@@ -1,4 +1,3 @@
---------------- SQL ---------------
 CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado (
   fl_cadena varchar,
   fl_id_correspondencia integer,
@@ -169,14 +168,14 @@ BEGIN
 
                   -- RAC verifica que el empleado no tenga otra derivación
 
-                     IF (v_array_var is not NULL  and v_array_var != '') THEN
+                  /*   IF (v_array_var is not NULL  and v_array_var != '') THEN
                         v_num_emp =array_upper(v_array,1);
                         FOR v_j IN 1..v_num_emp loop
                             IF v_id_funcionario =v_array[v_j] THEN
                             raise exception 'El empleado % ya tiene derivaciones de este mismo mensaje',v_nombre_funcionario;
                            end if;
                         end loop;
-    				  END IF;
+    				  END IF;*/
 
 
                    INSERT INTO corres.tcorrespondencia
@@ -201,7 +200,8 @@ BEGIN
                       nivel_prioridad,
                       origen,
                       fecha_documento,
-                         id_origen
+                         id_origen,
+                      fecha_creacion_documento
                       )
                       values
                       (
@@ -226,7 +226,8 @@ BEGIN
                       fl_nivel_prioridad,
                       fl_origen,
                       fl_fecha_documento,
-                          f1_id_origen
+                          f1_id_origen,
+                      now()
                       ) RETURNING id_correspondencia into v_id_correspondencia;
 
 

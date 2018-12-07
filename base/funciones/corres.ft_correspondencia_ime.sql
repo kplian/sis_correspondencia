@@ -51,7 +51,7 @@ DECLARE
   v_id_correspondencias_asociadas_aux varchar;
   v_id_correspondencias_asociadas	INTEGER [];
   v_anular	integer;
-   v_id_funcionario                integer;
+ --  v_id_funcionario                integer;
     v_id_alarma                     INTEGER[];
     v_id_usuario_reg                integer;
     v_numero                        varchar;
@@ -71,6 +71,12 @@ DECLARE
     v_fecha_fin                    date;
     v_fecha_ultima                 date;
     v_id_correspondencia_detalle   integer;
+    v_id_funcionario               integer;
+    v_estado_ant                   varchar;
+    v_responsable                  varchar;
+    --v_estado                       varchar;
+    v_id_usuario                    integer;
+    version_origen                  integer;
            
    
 BEGIN
@@ -89,11 +95,21 @@ BEGIN
   if(p_transaccion='CO_COR_INS')then
 
     begin
-
       --obtener el uo del funcionario que esta reenviando
-      v_id_uo = corres.f_get_uo_correspondencia_funcionario(
-      v_parametros.id_funcionario, array ['activo', 'suplente'],
-      v_parametros.fecha_documento);
+      IF( v_parametros.tipo='saliente') THEN
+          
+         v_id_uo= ARRAY[1];
+
+         v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
+         v_id_funcionario=v_parametros.id_funcionario_saliente;
+      ELSE
+         v_id_uo = corres.f_get_uo_correspondencia_funcionario(
+         v_parametros.id_funcionario, array ['activo', 'suplente'],
+         v_parametros.fecha_documento);
+         v_id_funcionario=v_parametros.id_funcionario;
+      END IF;
+      
+     -- raise exception '%','ojos negros'||v_id_uo[2]; 
       
 
       --v_id_uo[2] es el id_uo
@@ -167,10 +183,10 @@ BEGIN
                   id_uo, mensaje, nivel, nivel_prioridad, numero,
                   referencia,
                   tipo, fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador)
+                    id_clasificador,id_correspondencias_asociadas,fecha_creacion_documento)
       values ( 'borrador_envio','activo', v_parametros.fecha_documento,
              v_id_depto, v_parametros.id_documento,
-             v_parametros.id_funcionario, v_id_gestion,
+             v_id_funcionario, v_id_gestion,
              v_parametros.id_institucion_destino,
              v_id_periodo,
              v_parametros.id_persona_destino,
@@ -179,7 +195,10 @@ BEGIN
              v_parametros.nivel_prioridad, v_num_corre,
              v_parametros.referencia,
              v_parametros.tipo, now(), p_id_usuario, null, null,
-             v_parametros.id_clasificador) RETURNING id_correspondencia
+             v_parametros.id_clasificador,
+              string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+              now()
+             ) RETURNING id_correspondencia
       into v_id_correspondencia;
 
       v_id_origen = v_id_correspondencia;
@@ -195,7 +214,7 @@ BEGIN
         SELECT f.desc_funcionario1
         into v_nombre_funcionario
         FROM orga.vfuncionario f
-        WHERE f.id_funcionario = v_parametros.id_funcionario;
+        WHERE f.id_funcionario = v_id_funcionario;
 
         v_origen = v_nombre_funcionario;
 
@@ -242,15 +261,14 @@ BEGIN
         IF(v_parametros.id_persona_destino is NULL and
           v_parametros.id_institucion_destino is NULL) THEN
           raise exception
-            'Debe especificar por los menos una persona o un institución destino'
-            ;
+            'Debe especificar por los menos una persona o un institución destino';
         END IF;
 
         --raise exception '%',v_parametros.id_institucion_destino;
        -- raise exception '%','ingresa a este lugar aaa  aa  a a a';
         --inserta della hijo
 
-        insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
+       /* insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
           id_acciones, id_correspondencia_fk, id_correspondencias_asociadas,
           id_depto, id_documento, id_gestion, id_institucion, id_periodo,
           id_persona, mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
@@ -266,7 +284,7 @@ BEGIN
                v_parametros.nivel_prioridad, v_num_corre,
                  v_parametros.referencia, v_parametros.tipo, now(),
                  p_id_usuario, null, null, v_parametros.id_clasificador) RETURNING id_correspondencia
-      into v_id_correspondencia_detalle;
+      into v_id_correspondencia_detalle;*/
 
       END IF;
       
@@ -296,7 +314,21 @@ BEGIN
 
     begin
       --obtenemos estado de correpondencia
+	/*	  IF( v_parametros.tipo='saliente') THEN
+          
+         v_id_uo= ARRAY[1];
 
+         v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
+         v_id_funcionario=v_parametros.id_funcionario_saliente;
+      ELSE
+         v_id_uo = corres.f_get_uo_correspondencia_funcionario(
+                    v_parametros.id_funcionario, array ['activo', 'suplente'],
+                    v_parametros.fecha_documento);
+         v_id_funcionario=v_parametros.id_funcionario;
+      END IF;
+      */
+     
+      
       select estado
       into v_estado
       from corres.tcorrespondencia c
@@ -308,7 +340,7 @@ BEGIN
 
         --Sentencia de la modificacion
          
-         raise exception '%',v_parametros.otros_adjuntos ;
+        -- raise exception '%',v_parametros.otros_adjuntos ;
          
         IF( v_parametros.tipo='interna') THEN  
             update corres.tcorrespondencia
@@ -327,7 +359,8 @@ BEGIN
               --v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
                 id_institucion=v_parametros.id_institucion_destino,
                 id_persona=v_parametros.id_persona_destino,
-                id_funcionario=v_parametros.id_funcionario,
+                id_uo=v_parametros.id_uo,
+              --  id_funcionario=v_parametros.id_funcionario,
                 otros_adjuntos=v_parametros.otros_adjuntos,
                 nivel_prioridad = v_parametros.nivel_prioridad,
                 referencia = v_parametros.referencia,
@@ -385,7 +418,7 @@ BEGIN
       * si es asi  modificar el estado del detalle a borrador_detalle_recibido
       */
        
-      FOR g_registros IN (SELECT id_correspondencia,estado 
+    /*  FOR g_registros IN (SELECT id_correspondencia,estado 
                            FROM corres.tcorrespondencia 
                            WHERE id_correspondencia_fk=v_parametros.id_correspondencia 
                            AND estado NOT LIKE 'borrador_detalle_recibido')LOOP
@@ -396,10 +429,7 @@ BEGIN
                            WHERE
                            id_correspondencia=g_registros.id_correspondencia;
                            
-                           -- Inserta estados a la tabla corres.tcorrespondencia_estado.
-                          INSERT INTO corres.tcorrespondencia_estado (id_usuario_reg,id_correspondencia,estado,observaciones_estado) 
-                          VALUES (p_id_usuario,g_registros.id_correspondencia,'borrador_detalle_recibido',g_registros.estado,'Modificación por subida de archivo');
-       END LOOP;
+        END LOOP;*/
      
 
       update corres.tcorrespondencia
@@ -444,13 +474,17 @@ BEGIN
         UPDATE
            corres.tcorrespondencia
         SET
-           estado='anulado'
+           estado='anulado',
+            id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
         WHERE id_correspondencia_fk = v_parametros.id_correspondencia;
         
         UPDATE
            corres.tcorrespondencia
         SET
-           estado='anulado'
+           estado='anulado',
+            id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
         WHERE id_correspondencia = v_parametros.id_correspondencia;
         
       /*	DELETE
@@ -496,16 +530,26 @@ BEGIN
 
 
             */
+      select estado_ant
+      into v_estado_aux
+      from corres.tcorrespondencia_estado 
+      where estado_reg='activo'
+      and id_correspondencia=v_parametros.id_correspondencia;
+      
+      IF (v_estado_aux!='enviado')THEN
+      
+        IF(not exists (
+          select 1
+          from corres.tcorrespondencia c
+          where c.id_correspondencia_fk = v_parametros.id_correspondencia and
+                c.estado = 'borrador_detalle_recibido')) THEN
 
-      IF(not exists (
-        select 1
-        from corres.tcorrespondencia c
-        where c.id_correspondencia_fk = v_parametros.id_correspondencia and
-              c.estado = 'borrador_detalle_recibido')) THEN
+          raise exception 'No existen envios pendientes';
 
-        raise exception 'No existen envios pendientes';
-
+        END IF;
+      
       END IF;
+     
       select estado,tipo
       into v_estado,v_tipo
       from corres.tcorrespondencia
@@ -569,35 +613,43 @@ BEGIN
      /*   */  
       --Devuelve la respuesta
       END LOOP;
-       if v_estado = 'recibido_derivacion'
+      /*Mod Ana Maria por el estado nunca llega */
+      --Añadir  un control para verificar si existe algun documento de origen.
+      SELECT version
+      INTO 	version_origen
+      FROM corres.tcorrespondencia
+      WHERE id_origen= v_parametros.id_origen;
+      
+     /*IF (version_origen=0)THEN
+      RAISE EXCEPTION '%','FAVOR SUBIR EL DOCUMENTO ORIGINAL ANTES DE REALIZAR LA DERIVACIÓN';
+      END IF;*/
+     
+      IF v_estado = 'borrador_detalle_recibido'
         THEN
-        update corres.tcorrespondencia
-        set estado = 'recibido',
-        fecha_ult_derivado = now()::timestamp
-        where id_correspondencia = v_parametros.id_correspondencia;
-        
-        -- Inserta estados a la tabla corres.tcorrespondencia_estado.
-      /*INSERT INTO corres.tcorrespondencia_estado (id_usuario_reg,id_correspondencia,estado,estado_ant,observaciones_estado) 
-      VALUES (p_id_usuario,v_parametros.id_correspondencia,'recibido','recibido_derivacion','Modificación a recibido');*/
-
-
+          update corres.tcorrespondencia
+          set estado = 'pendiente_recibido',
+          fecha_ult_derivado = now()::timestamp,
+          id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
+          where id_correspondencia = v_parametros.id_correspondencia;
+      
         ELSE
-        update corres.tcorrespondencia
-        set estado = 'enviado',
-        fecha_ult_derivado = now()::timestamp
-        where id_correspondencia = v_parametros.id_correspondencia;
-
-          -- Inserta estados a la tabla corres.tcorrespondencia_estado.
-     /* INSERT INTO corres.tcorrespondencia_estado (id_usuario_reg,id_correspondencia,estado,estado_ant,observaciones_estado) 
-      VALUES (p_id_usuario,v_parametros.id_correspondencia,'enviado','pendiente_recepcion_externo','Modificación a ENVIADO');*/
-
+          update corres.tcorrespondencia
+          set estado = 'enviado',
+          fecha_ult_derivado = now()::timestamp,
+           id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
+          
+          where id_correspondencia = v_parametros.id_correspondencia;
       END IF;
 
       -- actualiza hijos pendientes de envio
 
       update corres.tcorrespondencia
       set estado = 'pendiente_recibido',
-      fecha_ult_derivado = now()::timestamp
+      fecha_ult_derivado = now()::timestamp,
+      id_usuario_mod = p_id_usuario,
+      fecha_mod = now()
       where id_correspondencia_fk = v_parametros.id_correspondencia and
             estado = 'borrador_detalle_recibido';
 
@@ -631,9 +683,8 @@ BEGIN
             select 1
             from corres.tcorrespondencia c
             where c.id_correspondencia_fk = v_parametros.id_correspondencia and
-                  c.estado = 'recibido' or
-                  c.estado = 'borrador_deribado' or
-                  c.estado = 'pendiente_recibido')) THEN
+                  c.estado = 'recibido' or c.estado='enviado'
+                  )) THEN
 
             raise exception
               'Existen destinatarios que ya recibieron la correpondencia no se puede corregir'
@@ -641,26 +692,33 @@ BEGIN
 
           END IF;
       END IF;
-      
-      select c.estado
+      select estado_ant
+      into v_estado_aux
+      from corres.tcorrespondencia_estado 
+      where estado_reg='activo'
+      and id_correspondencia=v_parametros.id_correspondencia;
+     -- raise exception '%',v_parametros.id_correspondencia;
+     /* select c.estado
       into v_estado_aux
       from corres.tcorrespondencia c
-      where c.id_correspondencia = v_parametros.id_correspondencia;
+      where c.id_correspondencia = v_parametros.id_correspondencia;*/
 
      -- RAISE EXCEPTION '%',v_estado_aux;
 
       --actualiza padre
 
       update corres.tcorrespondencia
-      set estado = 'borrador_envio'
+      set estado = v_estado_aux,
+      id_usuario_mod = p_id_usuario,
+      fecha_mod = now()
       where id_correspondencia = v_parametros.id_correspondencia;
 
       -- actualiza hijos pendientes de envio
 
-      update corres.tcorrespondencia
+     /* update corres.tcorrespondencia
       set estado = 'borrador_detalle_recibido'
       where id_correspondencia_fk = v_parametros.id_correspondencia and
-            estado = 'pendiente_recibido';
+            estado = 'pendiente_recibido';*/
 
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia corregida');
@@ -704,20 +762,26 @@ BEGIN
  IF (v_parametros.interfaz !='administrador')THEN
       
       update corres.tcorrespondencia
-      set estado = 'borrador_recepcion_externo'     
+      set estado = 'borrador_recepcion_externo',
+          id_usuario_mod = p_id_usuario,
+          fecha_mod = now()     
       where id_correspondencia = v_parametros.id_correspondencia;
 
       -- actualiza hijos pendientes de envio
      
       update corres.tcorrespondencia
-      set estado = 'borrador_detalle_recibido'
+      set estado = 'borrador_detalle_recibido',
+           id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
       where id_correspondencia_fk = v_parametros.id_correspondencia and
             estado = 'pendiente_recibido';
             
      ELSE
           update corres.tcorrespondencia
           set estado = 'pendiente_recepcion_externo', 
-              observaciones_estado=observaciones_estado ||'-'||v_parametros.observaciones           
+              observaciones_estado=observaciones_estado ||'-'||v_parametros.observaciones,
+              id_usuario_mod = p_id_usuario,
+              fecha_mod = now()           
           where id_correspondencia = v_parametros.id_correspondencia;
          
        
@@ -752,19 +816,20 @@ BEGIN
       --RAISE EXCEPTION '%',v_datos_maestro.estado;
      
       if v_datos_maestro.estado = 'pendiente_recibido'
+      --if v_datos_maestro.estado != 'enviado'  
         THEN
         RAISE EXCEPTION '%',
           'No puedes agregar nuevos por que aun no finalizaste esta correspondencia'
           ;
       END IF ;
        
-      if v_datos_maestro.estado = 'recibido'
+     /* if v_datos_maestro.estado = 'recibido'
         THEN
         update corres.tcorrespondencia
         set estado = 'recibido_derivacion'
         where id_correspondencia = v_parametros.id_correspondencia_fk;
 
-      end if;
+      end if;*/
       select id_origen
       into v_id_origen
       from corres.tcorrespondencia
@@ -814,7 +879,19 @@ BEGIN
     elsif(p_transaccion='CO_CORDET_MOD')then
 
     begin
-      select *
+         select estado
+         into v_estado
+         from corres.tcorrespondencia_estado
+         where estado_reg='activo'
+         and id_correspondencia = v_parametros.id_correspondencia;
+         
+         select vus.desc_persona,dus.id_usuario
+         into v_responsable,v_id_usuario
+         from param.tdepto_usuario dus
+         inner join segu.vusuario vus on vus.id_usuario= dus.id_usuario
+         where dus.estado_reg='activo';
+       -- raise exception '%',v_estado;
+     /* select *
       into v_datos_maestro
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia_fk;
@@ -826,6 +903,14 @@ BEGIN
         RAISE EXCEPTION '%',
           'No puede editar el registro porque ya se derivo la correspondencia';
       END IF ;
+       */
+      IF (v_id_usuario != p_id_usuario)THEN  
+          IF (v_estado = 'pendiente_recibido')
+            THEN
+            RAISE EXCEPTION '%',
+              'No puede editar el registro porque ya se derivo la correspondencia, comuniquese con el Administrador de Correspondencia '||v_responsable;
+          END IF ;
+      END IF;
        
        update corres.tcorrespondencia
         set mensaje = v_parametros.mensaje,
@@ -855,7 +940,9 @@ BEGIN
 
     begin
       UPDATE corres.tcorrespondencia
-      set estado = 'recibido'
+      set estado = 'recibido',
+          id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
       WHERE id_correspondencia = v_parametros.id_correspondencia;
 
       -- raise exception 'resp%',v_resp_cm;
@@ -881,7 +968,9 @@ BEGIN
 
     begin
       UPDATE corres.tcorrespondencia
-      set sw_archivado = v_parametros.sw_archivado
+      set sw_archivado = v_parametros.sw_archivado,
+      id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
       WHERE id_correspondencia = v_parametros.id_correspondencia;
 
       -- raise exception 'resp%',v_resp_cm;
@@ -889,8 +978,7 @@ BEGIN
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia archivado(a)');
-      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
-        v_parametros.id_correspondencia::varchar);
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
 
       --Devuelve la respuesta
       return v_resp;
@@ -909,7 +997,9 @@ BEGIN
 
     
       UPDATE corres.tcorrespondencia
-      set estado_fisico = v_parametros.estado_fisico
+      set estado_fisico = v_parametros.estado_fisico,
+       id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
       WHERE id_correspondencia = v_parametros.id_correspondencia;
 
       -- raise exception 'resp%',v_resp_cm;
@@ -958,7 +1048,7 @@ BEGIN
            
             --Validar la fecha del Documento.
             --IF (v_parametros.tipo='externa') THEN
-               IF (EXISTS(select 1
+            /*   IF (EXISTS(select 1
             			from corres.tcorrespondencia cor
            				where cor.fecha_creacion_documento > v_parametros.fecha_creacion_documento
                 		and 
@@ -966,7 +1056,7 @@ BEGIN
                     ))THEN
                  RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;
                 
-                END IF;
+                END IF;*/
                   
            /* ELSE
                 IF (EXISTS(select 1
@@ -1110,6 +1200,19 @@ elsif(p_transaccion='CO_COREXT_MOD')then
            v_id_correspondencias_asociadas=string_to_array(v_id_correspondencias_asociadas_aux, ',')::integer [ ];
            
       END IF;
+      IF (v_parametros.id_institucion_remitente is null) THEN
+      	SELECT per.nombre_completo1
+        into v_origen
+        FROM segu.vpersona2 per
+        WHERE per.id_persona = v_parametros.id_persona_remitente;
+    
+      ELSE
+      	SELECT insti.nombre
+        into v_origen
+        FROM param.tinstitucion insti
+        WHERE insti.id_institucion = v_parametros.id_institucion_remitente;
+      
+      END IF;
         --Sentencia de la modificacion
 
         update corres.tcorrespondencia
@@ -1128,7 +1231,8 @@ elsif(p_transaccion='CO_COREXT_MOD')then
             otros_adjuntos = v_parametros.otros_adjuntos,
             cite = v_parametros.cite,
             fecha_mod = now(),
-            id_usuario_mod = p_id_usuario
+            id_usuario_mod = p_id_usuario,
+            origen = v_origen
         where id_correspondencia = v_parametros.id_correspondencia;
 
         /*elseif(v_estado = 'enviado') then
@@ -1239,7 +1343,9 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       WHERE id_correspondencia=v_parametros.id_correspondencia;
     
       UPDATE corres.tcorrespondencia
-      SET estado = v_parametros.estado
+      SET estado = v_parametros.estado,
+       id_usuario_mod = p_id_usuario,
+          fecha_mod = now()
       WHERE id_correspondencia = v_parametros.id_correspondencia;
       
       
