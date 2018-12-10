@@ -206,7 +206,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
 		  
-		this.adminGrupo({ ocultar: [3]});
+		this.adminGrupo({ ocultar: [3], mostrar:[0]});
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);

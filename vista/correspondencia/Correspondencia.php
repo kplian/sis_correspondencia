@@ -394,7 +394,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				name : 'referencia',
 				fieldLabel : 'Referencia',
 				allowBlank : true,
-				width : 600,
+				width : 400,
 				growMin : 100,
 				grow : true,
 				gwidth : 200,
@@ -689,7 +689,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type : 'DateField',
-			gwidth : 100,
+			
 			//valorInicial : new Date(),
 			filters : {
 				pfiltro : 'cor.fecha_creacion_documento',
