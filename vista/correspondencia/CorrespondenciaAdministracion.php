@@ -1,11 +1,11 @@
 <?php
 /**
 *@package pXP
-*@file gen-SistemaDist.php
-*@author  (fprudencio)
+*@file Correspondencia Administracion.php
+*@author  (Lanita)
 *@date 20-09-2011 10:22:05
 *@description Archivo con la interfaz de usuario que permite 
-*dar el visto a solicitudes de compra
+*dar el visto a solicitudes de compra 
 *
 */
 header("content-type: text/javascript; charset=UTF-8");
@@ -66,9 +66,7 @@ Phx.vista.CorrespondenciaAdministracion = {
         this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
         this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
         this.Atributos[this.getIndAtributo('archivado_imagen')].grid=true;
-        
-        
-         
+                
          if (config.tipo=='interna'){
         	this.Atributos[this.getIndAtributo('cite')].grid=false;
 		    this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=false;
@@ -175,9 +173,7 @@ Phx.vista.CorrespondenciaAdministracion = {
             this.getBoton('Adjuntos').show();
             this.getBoton('del').show(); 
             this.getBoton('HabCorregir').show();
-            this.getBoton('FinCorregir').show();
-        
-            
+            this.getBoton('FinCorregir').show();       
         	
         }else{
         	 this.getBoton('new').show();
