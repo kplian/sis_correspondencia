@@ -130,7 +130,14 @@ Phx.vista.CorrespondenciaAdministracion = {
    },
    
   //east : undefined,
-   
+   south : {
+			
+			 url: '../../../sis_correspondencia/vista/correspondencia/CorrespondenciaDetalleAnulado.php',
+				
+			cls : 'CorrespondenciaDetalleAnulado',
+			title : 'Detalle de Derivación Anulados',
+			height : '50%'
+		},
    	getParametrosFiltro: function () {
    	 	this.store.baseParams.estado = this.swEstado;
 		

@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
 )
 RETURNS varchar AS
 $body$
-/************************************************************************** SISTEMA:        Correspondencia
+/************************************************************************** SISTEMA: Correspondencia
  FUNCION:         corres.ft_correspondencia_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'corres.tcorrespondencia'
  AUTOR:          (rac)
@@ -77,6 +77,10 @@ DECLARE
     --v_estado                       varchar;
     v_id_usuario                    integer;
     version_origen                  integer;
+    v_ce_estado                     varchar;
+    v_id_alarma_reg                 integer;
+    v_observaciones_archivado       text;
+    v_estado_corre                  varchar;
            
    
 BEGIN
@@ -96,34 +100,21 @@ BEGIN
 
     begin
       --obtener el uo del funcionario que esta reenviando
-      IF( v_parametros.tipo='saliente') THEN
-          
-         v_id_uo= ARRAY[1];
-
-         v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
-         v_id_funcionario=v_parametros.id_funcionario_saliente;
-      ELSE
-         v_id_uo = corres.f_get_uo_correspondencia_funcionario(
-         v_parametros.id_funcionario, array ['activo', 'suplente'],
-         v_parametros.fecha_documento);
-         v_id_funcionario=v_parametros.id_funcionario;
-      END IF;
+      --   raise exception '%','ASDFASDF'||v_parametros.vista;
       
-     -- raise exception '%','ojos negros'||v_id_uo[2]; 
-      
-
-      --v_id_uo[2] es el id_uo
-
-      --obtener el departamento
-
+        --obtener el departamento
+       v_id_uo= ARRAY[1];
+      -- v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
+            v_id_uo = corres.f_get_uo_correspondencia_funcionario(
+                 v_parametros.id_funcionario, array ['activo', 'suplente'],
+                 v_parametros.fecha_documento);        
       SELECT dep.id_depto
       INTO v_id_depto
       FROM param.tdepto_uo duo
            INNER JOIN segu.tsubsistema sis ON sis.codigo = 'CORRES'
            INNER JOIN param.tdepto dep ON dep.id_depto = duo.id_depto
       WHERE duo.id_uo = ANY (v_id_uo);
-
-      IF v_id_depto is NULL THEN
+     IF v_id_depto is NULL THEN
 
         raise exception
          
@@ -139,13 +130,7 @@ BEGIN
       FROM param.tdocumento d
       WHERE d.id_documento = v_parametros.id_documento;
 
-      --0) Obtener numero de requerimiento en funcion del depto de legal
-    
-
-      v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo
-        [2],v_id_depto,p_id_usuario,'CORRES',NULL);
-
-      --1)obtiene el identificador de la gestion
+     --1)obtiene el identificador de la gestion
 
       select g.id_gestion
       into v_id_gestion
@@ -154,15 +139,87 @@ BEGIN
             g.gestion = to_char(now()::date, 'YYYY')::integer;
 
       --2 obtener el identificar del periodo
+      if (now()::date=v_parametros.fecha_documento)THEN
+          v_fecha_documento=now();
+      ELSE
+          v_fecha_documento=v_parametros.fecha_documento;
+      end if;
 
-      select p.id_periodo
-      into v_id_periodo
+      select p.id_periodo,p.fecha_ini, p.fecha_fin
+      into v_id_periodo,v_fecha_ini,v_fecha_fin
       from param.tperiodo p
       inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
              ges.estado_reg = 'activo'
       where p.estado_reg = 'activo' and
-            now()::date between p.fecha_ini and
+           v_fecha_documento::date between p.fecha_ini and
             p.fecha_fin;
+       IF( v_parametros.tipo='saliente') THEN
+              	  v_id_funcionario=v_parametros.id_funcionario_saliente;
+             ELSE
+            
+                 v_id_funcionario=v_parametros.id_funcionario;
+              END IF;
+       if (v_parametros.vista='CorrespondenciaAdministracion') then
+          /*  select p.id_periodo, p.fecha_ini, p.fecha_fin
+            into v_id,v_fecha_ini,v_fecha_fin
+            from param.tperiodo p
+            inner join param.tgestion ges 
+            on ges.id_gestion = p.id_gestion 
+            and ges.estado_reg ='activo'
+            where p.estado_reg='activo' and
+           v_parametros.fecha_documento between p.fecha_ini and p.fecha_fin ;*/
+           
+            --Validar la fecha del Documento.
+            IF (EXISTS(select 1
+            			from corres.tcorrespondencia cor
+           				where cor.fecha_documento > v_fecha_documento
+                		and 
+                        tipo=v_parametros.tipo and id_documento=v_parametros.id_documento and  cor.fecha_documento between v_fecha_ini and v_fecha_fin
+                    ))THEN
+                 RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_documento;
+            END IF;  
+            
+          
+           
+            v_fecha_creacion_documento=now();
+             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,v_id_periodo,v_id_uo
+                            [2],v_id_depto,p_id_usuario,'CORRES',NULL);
+           /* v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
+            v_parametros.id_depto, p_id_usuario,'CORRES',NULL);*/
+               --raise exception '%','ASDFASDF';
+  
+      else
+            
+            
+            
+            v_fecha_creacion_documento=now();
+             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo
+                           [2],v_id_depto,p_id_usuario,'CORRES',NULL);
+      end if;
+      
+      
+      
+     /* IF( v_parametros.tipo='saliente') THEN
+          
+         v_id_uo= ARRAY[1];
+
+         v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
+         v_id_funcionario=v_parametros.id_funcionario_saliente;
+      ELSE
+         v_id_uo = corres.f_get_uo_correspondencia_funcionario(
+         v_parametros.id_funcionario, array ['activo', 'suplente'],
+         v_parametros.fecha_documento);
+         v_id_funcionario=v_parametros.id_funcionario;
+      END IF;
+      */
+    
+      --0) Obtener numero de requerimiento en funcion del depto de legal
+    
+
+     /* v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo
+        [2],v_id_depto,p_id_usuario,'CORRES',NULL);
+*/
+     
       --determinamos el origen
       IF( v_parametros.tipo='saliente') THEN
          v_mensaje:='';
@@ -170,7 +227,7 @@ BEGIN
          v_mensaje:=v_parametros.mensaje;
       END IF;
       
-
+    --  raise exception '%','fga'||v_parametros.id_correspondencias_asociadas;
       --3 Sentencia de la insercion
 
       insert into corres.tcorrespondencia(estado,estado_reg, fecha_documento,
@@ -184,7 +241,9 @@ BEGIN
                   referencia,
                   tipo, fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
                     id_clasificador,id_correspondencias_asociadas,fecha_creacion_documento)
-      values ( 'borrador_envio','activo', v_parametros.fecha_documento,
+      values ( 'borrador_envio','activo', 
+            v_fecha_documento,
+            -- now()::date,
              v_id_depto, v_parametros.id_documento,
              v_id_funcionario, v_id_gestion,
              v_parametros.id_institucion_destino,
@@ -195,8 +254,11 @@ BEGIN
              v_parametros.nivel_prioridad, v_num_corre,
              v_parametros.referencia,
              v_parametros.tipo, now(), p_id_usuario, null, null,
-             v_parametros.id_clasificador,
-              string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+             v_parametros.id_clasificador,case when v_parametros.id_correspondencias_asociadas='' THEN
+                                                     NULL
+                                               ELSE
+              string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ]
+              END,
               now()
              ) RETURNING id_correspondencia
       into v_id_correspondencia;
@@ -251,7 +313,7 @@ BEGIN
           NULL,-- v_parametros.cite,
           v_parametros.nivel_prioridad,
           v_origen,
-          v_parametros.fecha_documento,
+          v_fecha_documento,
           v_id_origen,
           v_id_depto
         );
@@ -264,27 +326,7 @@ BEGIN
             'Debe especificar por los menos una persona o un institución destino';
         END IF;
 
-        --raise exception '%',v_parametros.id_institucion_destino;
-       -- raise exception '%','ingresa a este lugar aaa  aa  a a a';
-        --inserta della hijo
-
-       /* insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
-          id_acciones, id_correspondencia_fk, id_correspondencias_asociadas,
-          id_depto, id_documento, id_gestion, id_institucion, id_periodo,
-          id_persona, mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
-          fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod, id_clasificador)
-        values ('borrador_detalle_recibido', 'activo',
-          v_parametros.fecha_documento, string_to_array(
-          v_parametros.id_acciones, ',')::integer [ ], v_id_correspondencia,
-          string_to_array(v_parametros.id_correspondencias_asociadas, ',')::
-          integer [ ],null, v_parametros.id_documento,
-          v_id_gestion, v_parametros.id_institucion_destino, v_id_periodo,
-          v_parametros.id_persona_destino, v_parametros.mensaje, 1,
-  --nivel de anidamiento del arbol
-               v_parametros.nivel_prioridad, v_num_corre,
-                 v_parametros.referencia, v_parametros.tipo, now(),
-                 p_id_usuario, null, null, v_parametros.id_clasificador) RETURNING id_correspondencia
-      into v_id_correspondencia_detalle;*/
+    
 
       END IF;
       
@@ -344,8 +386,11 @@ BEGIN
          
         IF( v_parametros.tipo='interna') THEN  
             update corres.tcorrespondencia
-            set id_correspondencias_asociadas = string_to_array(
-              v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+            set id_correspondencias_asociadas = case when v_parametros.id_correspondencias_asociadas='' THEN
+                                                     NULL
+                                               ELSE
+              string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ]
+              END,
                 mensaje = v_parametros.mensaje,
                 nivel_prioridad = v_parametros.nivel_prioridad,
                 referencia = v_parametros.referencia,
@@ -355,12 +400,13 @@ BEGIN
             where id_correspondencia = v_parametros.id_correspondencia;
          ELSE
             update corres.tcorrespondencia
-            set --id_correspondencias_asociadas = string_to_array(
-              --v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+            set 
+                --id_correspondencias_asociadas = string_to_array(
+                --v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
                 id_institucion=v_parametros.id_institucion_destino,
                 id_persona=v_parametros.id_persona_destino,
                 id_uo=v_parametros.id_uo,
-              --  id_funcionario=v_parametros.id_funcionario,
+                --  id_funcionario=v_parametros.id_funcionario,
                 otros_adjuntos=v_parametros.otros_adjuntos,
                 nivel_prioridad = v_parametros.nivel_prioridad,
                 referencia = v_parametros.referencia,
@@ -370,6 +416,14 @@ BEGIN
                
             where id_correspondencia = v_parametros.id_correspondencia;
           END IF;
+          
+          UPDATE corres.tcorrespondencia
+          SET nivel_prioridad = v_parametros.nivel_prioridad,
+              referencia=v_parametros.referencia,
+              id_clasificador = v_parametros.id_clasificador,
+              fecha_mod = now(),
+              id_usuario_mod = p_id_usuario
+          WHERE id_correspondencia_fk=v_parametros.id_correspondencia;
 
         /*elseif(v_estado = 'enviado') then
         --  si ya fue enviado solo se puede modificar las correspodencia asociada
@@ -381,7 +435,7 @@ BEGIN
             fecha_mod = now(),
             id_usuario_mod = p_id_usuario
         where id_correspondencia = v_parametros.id_correspondencia;*/
-
+     
         else
 
         raise exception 'No se puede editar, el estado no es Borrador';
@@ -464,13 +518,83 @@ BEGIN
 
     begin
       -- Obtenemos el estado de la correspondencia
-      select estado
-      into v_estado
+      select estado, estado_corre
+      into v_estado,v_estado_corre
       from corres.tcorrespondencia c
       where c.id_correspondencia = v_parametros.id_correspondencia;
-      --Si estado es Borrador_envio se puede eliminar
-      IF (v_estado = 'borrador_envio' OR v_estado = 'borrador_recepcion_externo' OR v_estado = 'borrador_detalle_recibido') THEN
-      	--Sentencia de la eliminacion de la correspondencia detalle
+      -- Buscamos su estado de la correspondencia para saber si en algun momento esta correspondencia fue enviada.
+      SELECT ce.estado
+      INTO v_ce_estado
+      FROM corres.tcorrespondencia_estado ce
+      WHERE ce.id_correspondencia = v_parametros.id_correspondencia and ce.estado='enviado';
+            --Si estado es Borrador_envio se puede eliminar
+      IF (v_estado = 'borrador_envio' OR v_estado = 'borrador_recepcion_externo' OR v_estado = 'borrador_detalle_recibido' OR v_estado='pendiente_recepcion_externo'  or v_estado_corre='corr_borrador') THEN
+      
+          
+            --Si el estado  alguna vez ha sido enviado entonces enviar una alarma al funcionario para que notifique que se ha anulado el cite.
+      IF (v_ce_estado is not null)THEN
+             --Eliminar las alarmas porque al enviar generá una alarma.
+        Delete 
+        from param.talarma 
+        where id_alarma in 
+        (select id_alarma from corres.tcorrespondencia where id_correspondencia_fk=v_parametros.id_correspondencia);
+    	
+         FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
+                              vus.desc_persona,
+                              coalesce(co.referencia,'') as referencia,
+                              co.fecha_documento,
+                              co.fecha_reg,
+                              coalesce(co.origen,'') as remitente,
+                              (CASE WHEN (co.id_acciones is not null) then
+
+                                  (CASE WHEN (array_upper(co.id_acciones,1) is  not null) then
+                                      (
+                                       SELECT   pxp.list(acor.nombre) 
+                                       FROM corres.taccion acor
+                                       WHERE acor.id_accion = ANY ( co.id_acciones))
+                                    END )
+                                END )AS  acciones,
+                                co.id_correspondencia,
+                                co.tipo
+            	from corres.tcorrespondencia co
+                left join segu.vpersona pers on pers.id_persona=co.id_persona
+                left join param.tinstitucion ins on ins.id_institucion=co.id_institucion
+                inner join segu.vusuario vus on vus.id_usuario=co.id_usuario_reg
+                 where id_correspondencia_fk = v_parametros.id_correspondencia and co.estado ='pendiente_recibido') LOOP
+            
+                v_tipo:='';
+                IF (g_registros.tipo='interna')THEN
+                   v_tipo:='INTERNA';
+                ELSE
+                   v_tipo:='EXTERNA';
+                END IF;
+               v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
+                                                    '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
+                                                      <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
+                                                      <br><b>&nbsp;</b>Anulación de la Correspondencia '||v_tipo||' con los siguientes datos:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  <br>
+                                                      <b>&nbsp;</b>Nro:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.numero||' </b> <br> 
+                                                       <b>&nbsp;</b>Remitente:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.remitente||'</b>  <br> 
+                                                      <b>&nbsp;</b>Referencia:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.referencia||' </b> <br> 
+                                                      <b>&nbsp;</b>Fecha de Documento:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.fecha_documento||'</b>  <br> 
+                                                      <b>&nbsp;</b>Acción:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'||g_registros.acciones||' </b>  <br>',    --descripcion alarmce
+                                                
+                                                         --descripcion alarmce
+                                                    '../../../sis_correspondencia/vista/correspondencia/CorrespondenciaRecibida.php',--acceso directo
+                                                    now()::date,
+                                                    'notificacion',
+                                                    '',   -->
+                                                    g_registros.id_usuario_reg,
+                                                    '',
+                                                    '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
+                                                    'parametros',
+                                                    g_registros.id_usuario_reg,--id_usuario
+                                                    'Anulación de la Correspondencia '||v_tipo||': '||g_registros.numero,
+                                                    'anulacion@gmail.com','',NULL,null,NULL,'si');
+                                                   
+     
+     		 END LOOP;
+         END IF;
+         	--Sentencia de la eliminacion de la correspondencia detalle
         UPDATE
            corres.tcorrespondencia
         SET
@@ -486,24 +610,10 @@ BEGIN
             id_usuario_mod = p_id_usuario,
           fecha_mod = now()
         WHERE id_correspondencia = v_parametros.id_correspondencia;
-        
-      /*	DELETE
-      	FROM corres.tcorrespondencia
-      	WHERE id_correspondencia_fk = v_parametros.id_correspondencia;
-        --Sentencia de eliminacion de los adjuntos
-        DELETE
-        FROM corres.tadjunto
-        WHERE id_correspondencia_origen = v_parametros.id_correspondencia;
-        -- Sentencia de eliminacion de la correspondencia
-      	DELETE
-      	FROM corres.tcorrespondencia
-      	WHERE id_correspondencia = v_parametros.id_correspondencia;*/
-      ELSE
+       ELSE
       	RAISE EXCEPTION 'NO SE PUEDE ELIMINAR, EL ESTADO NO ES BORRADOR';
       END IF;
-      --RAISE EXCEPTION '%',v_estado; 
       
-
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia eliminado(a)');
@@ -535,7 +645,7 @@ BEGIN
       from corres.tcorrespondencia_estado 
       where estado_reg='activo'
       and id_correspondencia=v_parametros.id_correspondencia;
-      
+       -- raise exception '%',''||v_parametros.id_correspondencia;
       IF (v_estado_aux!='enviado')THEN
       
         IF(not exists (
@@ -561,9 +671,14 @@ BEGIN
         
          /*Adición la derivación, adición de la alarma para el envio del usuario al que va a enviar. 
         */
- 
-   FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,vus.desc_persona,co.referencia,co.fecha_documento,co.fecha_reg,
-                       co.origen as remitente,  (CASE WHEN (co.id_acciones is not null) then
+      
+   FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
+                              vus.desc_persona,
+                              coalesce(co.referencia,'') as referencia,
+                              co.fecha_documento,
+                              co.fecha_reg,
+                              coalesce(co.origen,'') as remitente,
+                              (CASE WHEN (co.id_acciones is not null) then
 
                                   (CASE WHEN (array_upper(co.id_acciones,1) is  not null) then
                                       (
@@ -571,19 +686,21 @@ BEGIN
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( co.id_acciones))
                                     END )
-                                END )AS  acciones
+                                END )AS  acciones,
+                                co.id_correspondencia,
+                                co.tipo
             	from corres.tcorrespondencia co
                 left join segu.vpersona pers on pers.id_persona=co.id_persona
                 left join param.tinstitucion ins on ins.id_institucion=co.id_institucion
                 inner join segu.vusuario vus on vus.id_usuario=co.id_usuario_reg
                  where id_correspondencia_fk = v_parametros.id_correspondencia and estado='borrador_detalle_recibido') LOOP
-                
-                IF (v_tipo='interna')THEN
+                v_tipo:='';
+                IF (g_registros.tipo='interna')THEN
                    v_tipo:='INTERNA';
                 ELSE
                    v_tipo:='EXTERNA';
                 END IF;
-                v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
+               v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
                                                       <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
                                                       <br><b>&nbsp;</b>Usted tiene Correspondencia '||v_tipo||' con los siguientes datos:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
@@ -605,13 +722,19 @@ BEGIN
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Nueva Correspondencia '||v_tipo||': '||g_registros.numero,
                                                     'rosanavq@gmail.com','',NULL,null,NULL,'si');
-                                                    --  raise notice '%','ingresa'||v_id_alarma[1];     
-               
-                                                   -- RETURN NEXT g_registros;
-                                            
-      --Definicion de la respuesta
-     /*   */  
-      --Devuelve la respuesta
+   
+   
+      --busqueda de la alarma generada
+      SELECT al.id_alarma
+      INTO v_id_alarma_reg
+      FROM param.talarma al
+      WHERE id_funcionario=g_registros.id_funcionario and titulo ilike '%'||g_registros.numero||'%'
+      order by id_alarma desc limit 1;
+      
+      UPDATE corres.tcorrespondencia
+      SET  id_alarma=v_id_alarma_reg
+      Where id_correspondencia=g_registros.id_correspondencia;
+      
       END LOOP;
       /*Mod Ana Maria por el estado nunca llega */
       --Añadir  un control para verificar si existe algun documento de origen.
@@ -655,8 +778,7 @@ BEGIN
 
      
      
-      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia derivada(a)'
-        );
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia derivada(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',v_parametros.id_correspondencia::varchar);
     
       return v_resp;
@@ -673,17 +795,15 @@ BEGIN
     elsif(p_transaccion='CO_CORUNDO_UPD')then
 
     begin
-      /*
-            verifica que tenga hijos con estado borrador detalle recibido
-
-
-            */
-      IF (v_parametros.interfaz!='administrador') THEN
+          
+    
+      /*  verifica que tenga hijos con estado borrador detalle recibido
+    */
           IF(exists (
             select 1
             from corres.tcorrespondencia c
             where c.id_correspondencia_fk = v_parametros.id_correspondencia and
-                  c.estado = 'recibido' or c.estado='enviado'
+                  (c.estado = 'recibido' or c.estado='enviado')
                   )) THEN
 
             raise exception
@@ -691,21 +811,12 @@ BEGIN
               ;
 
           END IF;
-      END IF;
-      select estado_ant
+     
+     select estado_ant
       into v_estado_aux
       from corres.tcorrespondencia_estado 
       where estado_reg='activo'
       and id_correspondencia=v_parametros.id_correspondencia;
-     -- raise exception '%',v_parametros.id_correspondencia;
-     /* select c.estado
-      into v_estado_aux
-      from corres.tcorrespondencia c
-      where c.id_correspondencia = v_parametros.id_correspondencia;*/
-
-     -- RAISE EXCEPTION '%',v_estado_aux;
-
-      --actualiza padre
 
       update corres.tcorrespondencia
       set estado = v_estado_aux,
@@ -715,10 +826,7 @@ BEGIN
 
       -- actualiza hijos pendientes de envio
 
-     /* update corres.tcorrespondencia
-      set estado = 'borrador_detalle_recibido'
-      where id_correspondencia_fk = v_parametros.id_correspondencia and
-            estado = 'pendiente_recibido';*/
+     
 
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia corregida');
@@ -944,7 +1052,17 @@ BEGIN
           id_usuario_mod = p_id_usuario,
           fecha_mod = now()
       WHERE id_correspondencia = v_parametros.id_correspondencia;
-
+      --AVQ
+      --Correspondencia Recibida eso significa que se actualizará la alarma en un estado inactivo para que no le muestre en la ventanitas de alarma
+      
+   --   raise exception '%',v_parametros.id_correspondencia;
+     /* UPDATE param.talarma
+      SET tipo='comunicado'
+      WHERE id_alarma  in (select id_alarma 
+                           from corres.tcorrespondencia
+                           where id_correspondencia=v_parametros.id_correspondencia);*/
+                           
+      
       -- raise exception 'resp%',v_resp_cm;
 
       --Definicion de la respuesta
@@ -957,7 +1075,7 @@ BEGIN
       return v_resp;
 
     end;
-    /*********************************
+/*********************************
 #TRANSACCION:  'CO_CORARCH_INS'
 #DESCRIPCION:    archiva o desarchiva la correspondencia
 #AUTOR:        favio figueroa
@@ -967,10 +1085,16 @@ BEGIN
     elsif(p_transaccion='CO_CORARCH_INS')then
 
     begin
+      Select coalesce(observaciones_archivado,'')
+      into v_observaciones_archivado
+      From corres.tcorrespondencia 
+      where id_correspondencia=v_parametros.id_correspondencia;
+      
       UPDATE corres.tcorrespondencia
       set sw_archivado = v_parametros.sw_archivado,
       id_usuario_mod = p_id_usuario,
-          fecha_mod = now()
+      fecha_mod = now(),
+      observaciones_archivado =v_observaciones_archivado||'-'||v_parametros.observaciones_archivado
       WHERE id_correspondencia = v_parametros.id_correspondencia;
 
       -- raise exception 'resp%',v_resp_cm;
@@ -1033,8 +1157,8 @@ BEGIN
       into v_codigo_documento
       FROM param.tdocumento d
       WHERE d.id_documento = v_parametros.id_documento;
+      
       --Validar la fecha del Documento.
-     
       if (v_parametros.fecha_creacion_documento is not null) then
       
             select p.id_periodo, p.fecha_ini, p.fecha_fin
@@ -1047,8 +1171,8 @@ BEGIN
            v_parametros.fecha_creacion_documento between p.fecha_ini and p.fecha_fin ;
            
             --Validar la fecha del Documento.
-            --IF (v_parametros.tipo='externa') THEN
-            /*   IF (EXISTS(select 1
+            IF (v_parametros.tipo='externa') THEN
+               IF (EXISTS(select 1
             			from corres.tcorrespondencia cor
            				where cor.fecha_creacion_documento > v_parametros.fecha_creacion_documento
                 		and 
@@ -1056,9 +1180,9 @@ BEGIN
                     ))THEN
                  RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;
                 
-                END IF;*/
-                  
-           /* ELSE
+                END IF;
+               
+            ELSE
                 IF (EXISTS(select 1
             			from corres.tcorrespondencia cor
            				where cor.fecha_creacion_documento > v_parametros.fecha_creacion_documento
@@ -1069,13 +1193,15 @@ BEGIN
                 
                 END IF;
             
-            END IF;  */
+            END IF;  
             
-           
+          
             v_fecha_creacion_documento=v_parametros.fecha_creacion_documento;
             
             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
+            
+        
       else
             v_fecha_creacion_documento=now();
              v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,NULL,NULL,
@@ -1336,25 +1462,25 @@ elsif(p_transaccion='CO_COREXT_MOD')then
     elsif(p_transaccion='CO_COREXTEST_INS')then
 
     begin
-    
-      SELECT id_correspondencia,estado
-      into v_datos_maestro
-      FROM corres.tcorrespondencia
-      WHERE id_correspondencia=v_parametros.id_correspondencia;
-    
       UPDATE corres.tcorrespondencia
       SET estado = v_parametros.estado,
-       id_usuario_mod = p_id_usuario,
+          id_usuario_mod = p_id_usuario,
           fecha_mod = now()
       WHERE id_correspondencia = v_parametros.id_correspondencia;
       
+      --AVQ
+      --Correspondencia Recibida eso significa que se actualizará la alarma en un estado inactivo para que no le muestre en la ventanitas de alarma
+      -- Inserta en una tabla alarma
+      INSERT INTO corres.talarma (SELECT * FROM param.talarma WHERE id_alarma in (select id_alarma 
+                          																  from corres.tcorrespondencia
+                                                                                          where id_correspondencia=v_parametros.id_correspondencia) );
+      -- Elimina la fila de la tabla param.talarma.
       
-
-     -- Inserta estados a la tabla corres.tcorrespondencia_estado.
-    /*  INSERT INTO corres.tcorrespondencia_estado (id_usuario_reg,id_correspondencia,estado,estado_ant,observaciones_estado) 
-      VALUES (p_id_usuario,v_parametros.id_correspondencia,v_parametros.estado,v_datos_maestro.estado,'Finalizar la Recepción');
-*/
-
+      DELETE FROM param.talarma where id_alarma in (select id_alarma 
+                          							 from corres.tcorrespondencia
+                                                     where id_correspondencia=v_parametros.id_correspondencia);
+     -- raise exception '%',v_parametros.id_correspondencia;
+   
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia recepcionada finalizado(a)');
@@ -1384,7 +1510,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
          					   c1.id_correspondencia_fk
   						FROM corres.tcorrespondencia c1
   						WHERE c1.id_correspondencia_fk = v_parametros.id_correspondencia AND
-        					  c1.estado_reg::text = 'inactivo'::text
+        					  c1.estado::text = 'anulado'::text
   						UNION
   						SELECT c2.id_correspondencia,
          					   c2.estado,
@@ -1392,7 +1518,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
   						FROM corres.tcorrespondencia c2,
        						 corres_asoc ca
   						WHERE c2.id_correspondencia_fk = ca.id_corres_asoc AND
-        				c2.estado_reg::text = 'inactivo'::text)
+        				c2.estado::text = 'anulado'::text)
                         
                         
 -- Consulta para cambia el estado a inactivo de los descendientes
@@ -1406,6 +1532,8 @@ elsif(p_transaccion='CO_COREXT_MOD')then
 
       -- Cambiamos el estado de la raiz a anulado
   
+      --Verificacamos si es externa.
+       IF (v_parametros.tipo_corres='externa')THEN
      
       	UPDATE corres.tcorrespondencia
         set 
@@ -1416,7 +1544,17 @@ elsif(p_transaccion='CO_COREXT_MOD')then
         id_usuario_mod = p_id_usuario
         WHERE id_correspondencia = v_parametros.id_correspondencia;
       -- raise exception 'resp%',v_resp_cm;
-
+      ELSE
+        UPDATE corres.tcorrespondencia
+        set 
+        estado_reg = 'activo',
+        estado = 'borrador_envio',
+        observaciones_estado='Activado por el usuario '||p_id_usuario,
+        fecha_mod = now(),
+        id_usuario_mod = p_id_usuario
+        WHERE id_correspondencia = v_parametros.id_correspondencia;
+      
+      END IF;
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia Habilitado(a)');
@@ -1427,7 +1565,9 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       return v_resp;
 
     end;
-      /*********************************
+    
+    
+ /*********************************
  #TRANSACCION:  'CO_COR_ANU'
  #DESCRIPCION:    cambia el estado de la correspondencia fisica
  #AUTOR:          fpc
@@ -1491,7 +1631,161 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       return v_resp;
 
     end;
+ /*********************************
+#TRANSACCION:  'CO_ALAR_ANU'
+#DESCRIPCION:    Eliminar todas las alarmas que fueron por anulación
+#AUTOR:        Ana Maria Villegas Quispe
+#FECHA:           07/11/2013 16:29
+***********************************/
 
+    elsif(p_transaccion='CO_ALAR_ANU')then
+
+    begin
+        
+      --AVQ
+      --Correspondencia Recibida eso significa que se actualizará la alarma en un estado inactivo para que no le muestre en la ventanitas de alarma
+      -- Inserta en una tabla alarma
+      INSERT INTO corres.talarma (SELECT * FROM param.talarma WHERE 
+                                   correos ilike '%anulacion@gmail.com%' 
+                                   --and estado_envio='exito' 
+                                  --and pendiente ='no' and sw_correo=1 
+                                    );
+      -- Elimina la fila de la tabla param.talarma.
+      
+      DELETE FROM param.talarma where id_alarma in (SELECT id_alarma FROM param.talarma WHERE 
+                                  					correos ilike '%anulacion@gmail.com%' 
+                                                    --and estado_envio='exito' 
+                                                     --and pendiente ='no' and sw_correo=1
+                                                     );
+     -- raise exception '%',v_parametros.id_correspondencia;
+   
+      --Definicion de la respuesta
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
+        'Correspondencia recepcionada finalizado(a)');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
+        v_parametros.id_correspondencia::varchar);
+
+      --Devuelve la respuesta
+      return v_resp;
+
+    end;
+
+    /*********************************
+     #TRANSACCION:  'CO_HABCORR_UPD'
+     #DESCRIPCION:    Habilitar para la correccion de Administración
+     #AUTOR:        avq
+     #FECHA:  06/12/2018
+    ***********************************/
+
+    elsif(p_transaccion='CO_HABCORR_UPD')then
+
+    begin
+          
+    
+      /*  verifica que sus hijos no hayan derivado la correspondencia
+    */
+          IF(exists (
+            select 1
+            from corres.tcorrespondencia c
+            where c.id_correspondencia_fk = v_parametros.id_correspondencia and
+                  ( c.estado='enviado')
+                  )) THEN
+
+            raise exception
+              'Existen destinatarios que ya Enviarón la correspondencia, es por tal razón que  no se puede corregir'
+              ;
+
+          END IF;
+     
+   /*   select estado_ant
+      into v_estado_aux
+      from corres.tcorrespondencia_estado 
+      where estado_reg='activo'
+      and id_correspondencia=v_parametros.id_correspondencia;*/
+
+      update corres.tcorrespondencia
+      set estado_corre = v_parametros.estado_corre,
+      id_usuario_mod = p_id_usuario,
+      fecha_mod = now()
+      where id_correspondencia = v_parametros.id_correspondencia;
+      
+      --Actualiza los hijos
+      update corres.tcorrespondencia
+      set estado_corre = v_parametros.estado_corre,
+      id_usuario_mod = p_id_usuario,
+      fecha_mod = now()
+      where id_correspondencia_fk = v_parametros.id_correspondencia;
+	
+   	  /*aca definimos si esta finalizando, mandara el mail*/	
+      if v_parametros.estado_corre = 'corregido' THEN
+      
+      	FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
+                              vus.desc_persona,
+                              coalesce(co.referencia,'') as referencia,
+                              co.fecha_documento,
+                              co.fecha_reg,
+                              coalesce(co.origen,'') as remitente,
+                              (CASE WHEN (co.id_acciones is not null) then
+
+                                  (CASE WHEN (array_upper(co.id_acciones,1) is  not null) then
+                                      (
+                                       SELECT   pxp.list(acor.nombre) 
+                                       FROM corres.taccion acor
+                                       WHERE acor.id_accion = ANY ( co.id_acciones))
+                                    END )
+                                END )AS  acciones,
+                                co.id_correspondencia,
+                                co.tipo
+            	from corres.tcorrespondencia co
+                left join segu.vpersona pers on pers.id_persona=co.id_persona
+                left join param.tinstitucion ins on ins.id_institucion=co.id_institucion
+                inner join segu.vusuario vus on vus.id_usuario=co.id_usuario_reg
+                 where id_correspondencia_fk = v_parametros.id_correspondencia and co.estado ='pendiente_recibido') LOOP
+            
+                v_tipo:='';
+                IF (g_registros.tipo='interna')THEN
+                   v_tipo:='INTERNA';
+                ELSE
+                   v_tipo:='EXTERNA';
+                END IF;
+               v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
+                                                    '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
+                                                      <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
+                                                      <br><b>&nbsp;</b>Anulación de la Correspondencia '||v_tipo||' con los siguientes datos:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  <br>
+                                                      <b>&nbsp;</b>Nro:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.numero||' </b> <br> 
+                                                       <b>&nbsp;</b>Remitente:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.remitente||'</b>  <br> 
+                                                      <b>&nbsp;</b>Referencia:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.referencia||' </b> <br> 
+                                                      <b>&nbsp;</b>Fecha de Documento:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.fecha_documento||'</b>  <br> 
+                                                      <b>&nbsp;</b>Acción:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'||g_registros.acciones||' </b>  <br>',    --descripcion alarmce
+                                                
+                                                         --descripcion alarmce
+                                                    '../../../sis_correspondencia/vista/correspondencia/CorrespondenciaRecibida.php',--acceso directo
+                                                    now()::date,
+                                                    'notificacion',
+                                                    '',   -->
+                                                    g_registros.id_usuario_reg,
+                                                    '',
+                                                    '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
+                                                    'parametros',
+                                                    g_registros.id_usuario_reg,--id_usuario
+                                                    'Modificación de la Correspondencia '||v_tipo||': '||g_registros.numero,
+                                                    'correspondencia@endecorani.bo','',NULL,null,NULL,'si');
+                                                   
+     
+     		 END LOOP;
+      end if;
+
+      --Definicion de la respuesta
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia Habilitada para Corrección');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
+        v_parametros.id_correspondencia::varchar);
+
+      --Devuelve la respuesta
+      return v_resp;
+
+    end;
+    
+    
     else
 
     raise exception 'Transaccion inexistente: %',p_transaccion;

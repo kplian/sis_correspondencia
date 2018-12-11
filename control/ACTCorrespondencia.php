@@ -88,6 +88,28 @@ class ACTCorrespondencia extends ACTbase
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
+    function listarCorrespondenciaDetalleAnulado()
+    {
+
+        $this->objParam->defecto('ordenacion', 'id_correspondencia');
+
+        $this->objParam->defecto('dir_ordenacion', 'desc');
+
+
+        if ($this->objParam->getParametro('id_correspondencia_fk') != '') {
+            $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia_fk'));
+        }
+
+        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+            $this->objReporte = new Reporte($this->objParam, $this);
+            $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaDetalleAnulado');
+        } else {
+            $this->objFunc = $this->create('MODCorrespondencia');
+            $this->res = $this->objFunc->listarCorrespondenciaDetalleAnulado();
+        }
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 
     function insertarCorrespondencia()
     { 
