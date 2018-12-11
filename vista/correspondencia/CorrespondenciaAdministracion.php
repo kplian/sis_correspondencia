@@ -94,7 +94,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 				text : 'Finalizar Corrección',
 				iconCls : 'bundo',
 				disabled : true,
-				handler : this.BHabCorregir,
+				handler : this.BFinCorregir,
 				tooltip : '<b>Corregir</b><br/>Finalización de la corrección.'
 			});   
 
