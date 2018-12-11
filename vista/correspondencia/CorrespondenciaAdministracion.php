@@ -213,9 +213,15 @@ Phx.vista.CorrespondenciaAdministracion = {
 
 		  var tb =this.tbar;
 		  //si el archivo esta escaneado se permite visualizar
-		  if (data.estado_corre=='corr_borrador'){
+		  if (data.estado_corre=='borrador_corre'){
 		  	this.getBoton('HabCorregir').disable();
             this.getBoton('FinCorregir').enable();
+            if (data.id_correspondencia_fk == undefined ){
+			  this.getBoton('edit').enable();
+			}else{
+		      this.getBoton('edit').disable();
+				
+			}
        	 } else {
        	 	this.getBoton('edit').disable();
        	 	this.getBoton('del').disable();
@@ -228,7 +234,6 @@ Phx.vista.CorrespondenciaAdministracion = {
             this.getBoton('FinCorregir').disable();
        	 	
        	 }
-     	//this.getBoton('Corregir').enable();
      
 		 return tb
 		
@@ -292,6 +297,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 		var cmbDoc = this.getComponente('id_documento');
 		   
 		//Phx.vista.CorrespondenciaAdministracion.superclass.onButtonNew.call(this);
+		
 		if (this.tipo=='externa'){
 	          	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();

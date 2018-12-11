@@ -121,7 +121,8 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 		
 		this.swTipo = name;
 		this.getParametrosFiltro();
-		this.onReloadPage(name);
+		this.load();
+		//this.onReloadPage(name);
 	
 	},
     preparaMenu:function(n){
