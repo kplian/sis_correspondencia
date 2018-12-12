@@ -528,6 +528,7 @@ BEGIN
       FROM corres.tcorrespondencia_estado ce
       WHERE ce.id_correspondencia = v_parametros.id_correspondencia and ce.estado='enviado';
             --Si estado es Borrador_envio se puede eliminar
+
       IF ((v_estado = 'borrador_envio' OR v_estado = 'borrador_recepcion_externo' OR v_estado = 'borrador_detalle_recibido' OR v_estado='pendiente_recepcion_externo')or( v_estado_corre='borrador_corre' )) THEN
       
       IF EXISTS (SELECT 
@@ -545,8 +546,9 @@ BEGIN
         from param.talarma 
         where id_alarma in 
         (select id_alarma from corres.tcorrespondencia where id_correspondencia_fk=v_parametros.id_correspondencia);
+
     	 FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
-                              vus.desc_persona,
+                            vus.desc_persona,
                               coalesce(co.referencia,'') as referencia,
                               co.fecha_documento,
                               co.fecha_reg,
@@ -601,9 +603,7 @@ BEGIN
      		 END LOOP;
          END IF;
          	--Sentencia de la eliminacion de la correspondencia detalle
-      
-            
-      
+
         UPDATE
            corres.tcorrespondencia
         SET
@@ -619,6 +619,7 @@ BEGIN
             id_usuario_mod = p_id_usuario,
           fecha_mod = now()
         WHERE id_correspondencia = v_parametros.id_correspondencia;
+
       END IF;
       ELSE
       	RAISE EXCEPTION 'NO SE PUEDE ELIMINAR, EL ESTADO NO ES BORRADOR';
@@ -1653,6 +1654,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
 
     end;
 
+
     /*********************************
      #TRANSACCION:  'CO_HABCORR_UPD'
      #DESCRIPCION:    Habilitar para la correccion de Administración
@@ -1701,6 +1703,65 @@ elsif(p_transaccion='CO_COREXT_MOD')then
      
       fecha_mod = now()
       where id_correspondencia_fk = v_parametros.id_correspondencia;
+	
+   	  /*aca definimos si esta finalizando, mandara el mail*/	
+      if v_parametros.estado_corre = 'corregido' THEN
+      
+      	FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
+                              vus.desc_persona,
+                              coalesce(co.referencia,'') as referencia,
+                              co.fecha_documento,
+                              co.fecha_reg,
+                              coalesce(co.origen,'') as remitente,
+                              (CASE WHEN (co.id_acciones is not null) then
+
+                                  (CASE WHEN (array_upper(co.id_acciones,1) is  not null) then
+                                      (
+                                       SELECT   pxp.list(acor.nombre) 
+                                       FROM corres.taccion acor
+                                       WHERE acor.id_accion = ANY ( co.id_acciones))
+                                    END )
+                                END )AS  acciones,
+                                co.id_correspondencia,
+                                co.tipo
+            	from corres.tcorrespondencia co
+                left join segu.vpersona pers on pers.id_persona=co.id_persona
+                left join param.tinstitucion ins on ins.id_institucion=co.id_institucion
+                inner join segu.vusuario vus on vus.id_usuario=co.id_usuario_reg
+                 where id_correspondencia_fk = v_parametros.id_correspondencia and co.estado ='pendiente_recibido') LOOP
+            
+                v_tipo:='';
+                IF (g_registros.tipo='interna')THEN
+                   v_tipo:='INTERNA';
+                ELSE
+                   v_tipo:='EXTERNA';
+                END IF;
+               v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
+                                                    '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
+                                                      <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
+                                                      <br><b>&nbsp;</b>Anulación de la Correspondencia '||v_tipo||' con los siguientes datos:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;  <br>
+                                                      <b>&nbsp;</b>Nro:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.numero||' </b> <br> 
+                                                       <b>&nbsp;</b>Remitente:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.remitente||'</b>  <br> 
+                                                      <b>&nbsp;</b>Referencia:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.referencia||' </b> <br> 
+                                                      <b>&nbsp;</b>Fecha de Documento:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '||g_registros.fecha_documento||'</b>  <br> 
+                                                      <b>&nbsp;</b>Acción:<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'||g_registros.acciones||' </b>  <br>',    --descripcion alarmce
+                                                
+                                                         --descripcion alarmce
+                                                    '../../../sis_correspondencia/vista/correspondencia/CorrespondenciaRecibida.php',--acceso directo
+                                                    now()::date,
+                                                    'notificacion',
+                                                    '',   -->
+                                                    g_registros.id_usuario_reg,
+                                                    '',
+                                                    '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
+                                                    'parametros',
+                                                    g_registros.id_usuario_reg,--id_usuario
+                                                    'Modificación de la Correspondencia '||v_tipo||': '||g_registros.numero,
+                                                    'correspondencia@endecorani.bo','',NULL,null,NULL,'si');
+                                                   
+     
+     		 END LOOP;
+      end if;
 
 
       --Definicion de la respuesta
@@ -1712,6 +1773,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       return v_resp;
 
     end;
+
     else
 
     raise exception 'Transaccion inexistente: %',p_transaccion;
