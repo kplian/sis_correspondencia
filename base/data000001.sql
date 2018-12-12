@@ -93,11 +93,9 @@ INSERT INTO pxp.variable_global ("variable", "valor", "descripcion")
 VALUES (E'corres_clase_reporte_codigo_v1', E'RCodigoQRCORR_v1', E'nombre de la clase utilizada para imprimir el codigo de correspondencia, el codigo de la clase debe acomodarce dentro del archivo');
 
 /***********************************F-DAT-MANU-CORRES-0-06/10/2017*****************************************/ 
-/***********************************I-DAT-AVQ-CORRES-0-29/08/2018*****************************************/
-----------------------------------
---COPY LINES TO data.sql FILE  
----------------------------------
 
+
+/***********************************I-DAT-JMH-CORRES-0-12/12/2018*****************************************/
 select pxp.f_insert_tgui ('Configuración', 'Configuración', 'CORCONF', 'si', 1, '', 2, '', '', 'CORRES');
 select pxp.f_insert_tgui ('Correspondencia Interna', 'Correspondencia Interna', 'BANCOR', 'si', 3, '', 2, '', '', 'CORRES');
 select pxp.f_insert_tgui ('Correspondencia Externa', 'Correspondencia Entrante o  Externa  Recibida', 'COREXTE', 'si', 2, '', 2, '', '', 'CORRES');
@@ -219,6 +217,8 @@ select pxp.f_insert_tgui ('Recibida Externa', 'Correspondencia Recibida Externa'
 select pxp.f_insert_tgui ('Administración', 'Referente a la Administración', 'CORADM', 'si', 5, '', 2, '', '', 'CORRES');
 select pxp.f_insert_tgui ('Administración Externa', 'Administración de Correspondencia', 'CORADMG', 'si', 1, 'sis_correspondencia/vista/correspondencia/CorrespondenciaAdministracion.php', 3, '', 'CorrespondenciaAdministracion', 'CORRES');
 select pxp.f_insert_tgui ('Administración Interna', 'Administración de Correspondencia Interna', 'ADMCORINT', 'si', 2, 'sis_correspondencia/vista/correspondencia/CorrespondenciaAdministracion.php', 3, '', 'CorrespondenciaAdministracion', 'CORRES');
+select pxp.f_insert_tgui ('Reporte', 'reporte correspondencia', 'REPCOR', 'si', 7, '', 2, '', '', 'CORRES');
+select pxp.f_insert_tgui ('Reporte Correspondencia', 'Reporte Correspondencia', 'RECODT', 'si', 1, 'sis_correspondencia/vista/reportes/FormReporteCorrespondencia.php', 3, '', 'FormReporteCorrespondencia', 'CORRES');
 select pxp.f_insert_tfuncion ('corres.f_arma_arbol', 'Funcion para tabla     ', 'CORRES');
 select pxp.f_insert_tfuncion ('corres.f_arma_arbol_inicia', 'Funcion para tabla     ', 'CORRES');
 select pxp.f_insert_tfuncion ('corres.f_encuentra_raiz', 'Funcion para tabla     ', 'CORRES');
@@ -298,9 +298,10 @@ select pxp.f_insert_tprocedimiento ('CO_COREXT_MOD', 'modifica el mensajero la c
 select pxp.f_insert_tprocedimiento ('CO_CORDET_MOD', 'Modificación de registros como detalle de correspondencia', 'si', '', '', 'corres.ft_correspondencia_ime');
 select pxp.f_insert_tprocedimiento ('CO_CORUNDOEXT_UPD', 'Para corregir en correspondencia externa', 'si', '', '', 'corres.ft_correspondencia_ime');
 select pxp.f_insert_tprocedimiento ('CO_COR_ANU', 'Anular una correspondencia anulada', 'si', '', '', 'corres.ft_correspondencia_ime');
+select pxp.f_insert_tprocedimiento ('CO_HOJORIG_SEL', 'Listado Hoja Recepción Cabecera.', 'si', '', '', 'corres.ft_correspondencia_sel');
+select pxp.f_insert_tprocedimiento ('CO_ALAR_ANU', 'Eliminar la alarma anulada', 'si', '', '', 'corres.ft_correspondencia_ime');
 select pxp.f_insert_trol ('Rol de correspondencia para todos los usuarios', 'COR - Interna', 'CORRES');
 select pxp.f_insert_trol ('Rol de Correspondencia para usuario recepción externos', 'COR - Externa', 'CORRES');
-
-/***********************************F-DAT-AVQ-CORRES-0-29/08/2018*****************************************/
-
-
+select pxp.f_insert_trol ('Administracion de Correspondencia', 'COR-ADMIN', 'CORRES');
+select pxp.f_insert_trol ('Permiso para Emitida Externa', 'COR-EmitidaExterna', 'CORRES');
+/***********************************F-DAT-JMH-CORRES-0-12/12/2018*****************************************/
