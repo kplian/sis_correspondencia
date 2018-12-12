@@ -96,8 +96,8 @@ class ACTCorrespondencia extends ACTbase
         $this->objParam->defecto('dir_ordenacion', 'desc');
 
 
-        if ($this->objParam->getParametro('id_correspondencia_fk') != '') {
-            $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia_fk'));
+        if ($this->objParam->getParametro('id_correspondencia_padre') != '') {
+            $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia_padre'));
         }
 
         if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
