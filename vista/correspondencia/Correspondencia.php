@@ -20,8 +20,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			Phx.vista.Correspondencia.superclass.constructor.call(this, config);
 
 			 
-		//	this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
-			//Botones.
+		//Botones.
 			//1
             this.addButton('Plantilla', {
                 text: 'Plantilla',
@@ -157,7 +156,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			//configuracion del componente
 			config : {
 				labelSeparator : '',
-				inputType : 'hidden',
+				inputType : 'hidden',  
 				name : 'id_correspondencia'
 			},
 			type : 'Field',
@@ -1267,7 +1266,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				defaults : {
 					border : false
 				},
-				width : 500,
+				width : 600,
 				items : [{
 					bodyStyle : 'padding-left:5px;padding-left:5px;',
 					items : [{
@@ -1287,17 +1286,16 @@ header("content-type: text/javascript; charset=UTF-8");
 						items : [],
 						id_grupo : 1
 					}]
-				}/*, {
-					bodyStyle : 'padding-left:5px;padding-left:5px;',
-					items : [{
-						xtype : 'fieldset',
-						title : 'Datos Remitente Saliente',
-
-						// autoHeight: true,
-						items : [],
-						id_grupo : 4
-					}]
-				}*/
+				}, {
+				bodyStyle : 'padding-left:5px;padding-left:5px;',
+				items : [{
+					xtype : 'fieldset',
+					title : 'Mensaje',
+					//autoHeight: true,
+					items : [],
+					id_grupo : 2
+				}]
+			   }
 				, {
 					bodyStyle : 'padding-left:5px;padding-left:5px;',
 					items : [{
@@ -1308,18 +1306,6 @@ header("content-type: text/javascript; charset=UTF-8");
 						items : [],
 						id_grupo : 3
 					}]
-				}]
-			}, {
-				bodyStyle : 'padding-left:5px;padding-left:5px;',
-				border : false,
-				hidden : false,
-				width : 500,
-				items : [{
-					xtype : 'fieldset',
-					title : 'Mensaje',
-					//autoHeight: true,
-					items : [],
-					id_grupo : 2
 				}]
 			}]
 		}],

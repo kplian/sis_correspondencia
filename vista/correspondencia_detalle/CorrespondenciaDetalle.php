@@ -100,9 +100,6 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				tpl:'<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{codigo}-{desc_funcionario1}</div><p style="padding-left: 20px;">{nombre_cargo}</p><p style="padding-left: 20px;">{email_empresa}</p> </div></tpl>',
 			    valueField: 'id_funcionario',
    				displayField: 'desc_funcionario1',
-   				/*renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_funcionario']);
-				}*/
    				hiddenName: 'id_funcionarios',
    				typeAhead: true,
        			triggerAction: 'all',
@@ -298,7 +295,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		{name:'desc_funcionario', type: 'string'},
 		{name:'desc_persona', type: 'string'},
 		{name:'desc_institucion', type: 'string'},
-		{name:'acciones', type: 'string'}
+		{name:'acciones', type: 'string'},
+		{name:'estado_corre', type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_correspondencia',
@@ -308,137 +306,13 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	bsave:true,
 	bnew:true,
 	
-	/*Grupos: [
-	            {
-	                layout: 'column',
-	                border: false,
-	                defaults: {
-	                   border: false
-	                },            
-	                items: [
-	                        {
-	                        bodyStyle: 'padding-left:5px;padding-left:5px;',
-	                        border: false,
-	                        defaults: {
-		     	                   border: false
-		     	                },   
-					        width: 500,
-					        items: [
-					           
-	    	               			 {
-	                	          	bodyStyle: 'padding-left:5px;padding-left:5px;',
-						          	 items: [{
-								            xtype: 'fieldset',
-								            title: 'Parametros',
-								           
-								            //autoHeight: true,
-								            items: [],
-									        id_grupo:0
-								        }]
-								    },{
-								    	 bodyStyle: 'padding-left:5px;padding-left:5px;',
-								        items: [{
-								            xtype: 'fieldset',
-								            title: 'Datos Remitente',
-								          
-								           // autoHeight: true,
-								            items: [],
-									        id_grupo:1
-								        }]
-								    },
-								    {
-								        bodyStyle: 'padding-left:5px;padding-left:5px;',
-								        items: [{
-								            xtype: 'fieldset',
-								          
-								            title: 'Datos Destinatario',
-								           // autoHeight: true,
-								            items: [],
-									        id_grupo:3
-								        }]
-								    } 
-					        ]
-					        },
-
-						    {
-						        bodyStyle: 'padding-left:5px;padding-left:5px;',
-						        border: false,
-						        width: 500,
-						        items: [{
-						            xtype: 'fieldset',
-						         
-						            title: 'Mensaje',
-						            //autoHeight: true,
-						            items: [],
-							        id_grupo:2
-						        }]
-						    } ]
-	            }
-	           
-	        ],*/
-
-	    /* loadValoresIniciales:function(){
-
-		Phx.vista.CorrespondenciaDetalle.superclass.loadValoresIniciales.call(this);
-
-		 var cmbDoc = this.getComponente('id_documento');
-		 var cmpFuncionarios = this.getComponente('id_funcionarios');
-	     var cmpInstitucion = this.getComponente('id_institucion');
-		 var cmpPersona = this.getComponente('id_persona');
-			
-			 this.ocultarComponente(cmpInstitucion);
-	         this.ocultarComponente(cmpPersona);
-	         this.mostrarComponente(cmpFuncionarios)
-	         cmbDoc.store.baseParams.tipo='interna';//valor por dfecto es interna	
-	         cmbDoc.modificado = true;
-	         cmbDoc.reset();
-
-
-
-        },   */    
+ 
 	iniciarEventos:function(){ 
-	 /*  if(this.maestro.estado=='enviado'){
-		  		*/
-			  		/*this.getBoton('edit').disable();
-			  		this.getBoton('del').disable();*/
+	
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
 			  
-		 // } 
-
-	/*	var cmpFuncionarios = this.getComponente('id_funcionarios');
-		var cmpInstitucion = this.getComponente('id_institucion');
-		var cmpPersona = this.getComponente('id_persona');
-		var cmbDoc = this.getComponente('id_documento');
-	*/	
 		
-	    //para habilitar el tipo de correspondecia para el sistema corres
-
-	/*	this.getComponente('tipo').on('select',function(combo,record,index){
-                //actualiza combos de documento segun el tipo
-        		cmbDoc.store.baseParams.tipo=record.data.ID;	
-                 cmbDoc.modificado = true;
-                 cmbDoc.reset();
-
-                 if(record.data.ID=='interna'){
-                	 this.ocultarComponente(cmpInstitucion);
-                	 this.ocultarComponente(cmpPersona);
-                	 this.mostrarComponente(cmpFuncionarios);
-                	 cmpPersona.reset();
-                	 cmpInstitucion.reset();
-                	 
-                     }
-                 else{
-                	 this.mostrarComponente(cmpInstitucion);
-                	 this.mostrarComponente(cmpPersona);
-                	 this.ocultarComponente(cmpFuncionarios);
-                	 cmpFuncionarios.reset();
-
-                     }
-        		
-    			
-		},this);*/
-
 	},
 	
 	
@@ -458,11 +332,9 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		}
 		
          if(this.maestro.estado=='enviado'){
-		  				  			
-			  		this.getBoton('edit').disable();
+		  	  		this.getBoton('edit').disable();
 			  		this.getBoton('del').disable();
 			  		this.getBoton('Derivar').enable();
-			  		//this.getBoton('new').disable();
 			  		
 		  } else {
 		 	
@@ -471,52 +343,38 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			  		this.getBoton('new').enable();
 			  		this.getBoton('save').enable();
 			  		this.getBoton('Derivar').disable();
-			  
 		  }
-		//actualiza combos del departamento
-		// var cmbUo = this.getComponente('id_uo');
-		 /*if(this.maestro.codigo=='COR'){
-			 cmbUo.store.baseParams.correspondencia='si'; 
-		
-		 }else{
-			delete  cmbUo.store.baseParams.correspondencia;
-			 }
-		 cmbUo.modificado = true;*/
-
-
-		// this.Atributos.config['id_subsistema'].setValue(this.maestro.id_subsistema);
-
-      /* if(m.id != 'id'){*/
-     	 //alert(this.maestro.estado);
+	
 		 
     	 this.store.baseParams={id_correspondencia_fk:this.maestro.id_correspondencia};
 		 this.load({params:{start:0, limit:50}})
-       /*}
-       else{
-    	 this.grid.getTopToolbar().disable();
-   		 this.grid.getBottomToolbar().disable(); 
-   		 this.store.removeAll(); 
-    	   
-       }*/
-       
-       
-			
-	},
+   	},
 	preparaMenu:function(n){
       	
       	Phx.vista.CorrespondenciaDetalle.superclass.preparaMenu.call(this,n);
       	
 		  var data = this.getSelectedData();
 		  var tb =this.tbar;
-		   console.log  
-		  console.log(this.maestro);
-		  //cuando el conrtato esta registrado el abogado no puede hacerle mas cambios
-		  if(this.maestro.estado=='enviado' ){
+		    if(this.maestro.estado=='enviado' ){
+		    //	alert(data.estado_corre);
 		  		if(tb){
-		  			this.getBoton('edit').disable();
-			  		this.getBoton('del').disable();
-			  		this.getBoton('Derivar').enable();
-			  		//this.getBoton('new').disable();
+		  			if (data.estado_corre=='borrador_corre'){
+		  				this.getBoton('edit').enable();
+					  	this.getBoton('Derivar').enable();	
+		  				if (data.estado=='enviado'){
+		  			    	this.getBoton('del').disable();
+					  		
+						}else{
+				 			this.getBoton('del').enable();
+					  		
+					    }
+					}   
+		  			else{
+					  		this.getBoton('edit').disable();
+					  		this.getBoton('del').disable();
+					  		this.getBoton('Derivar').enable();
+					  		
+			  		}
 			  			}
 		  } else {
 		 		if(tb){
@@ -542,19 +400,27 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		  	     this.getBoton('edit').enable();
 		  	     this.getBoton('del').enable();
 		  }else{
-		  	 	this.getBoton('Derivar').disable();
-		  	 	this.getBoton('edit').disable();
-		  	    this.getBoton('del').disable();
+		  	 	
+		  	 	if (this.maestro.estado_corre=='borrador_corre'){
+		  				this.getBoton('edit').enable();
+					  	this.getBoton('Derivar').enable();	
+		  				if (data.estado=='enviado'){
+		  					this.getBoton('del').disable();
+					  		
+						}else{
+				 			this.getBoton('del').enable();
+					  		
+					    }
+					} else{ 
+		  	 	
+					  	 	this.getBoton('Derivar').disable();
+					  	 	this.getBoton('edit').disable();
+					  	    this.getBoton('del').disable();
+		  	         }
 		  }
 		  
 		   
-		 /* if (this.maestro.version > 0) {
-			this.getBoton('Derivar').enable();
-		} else {
-			this.getBoton('Derivar').disable();
-		}
-		*/
-		  
+		
 		  return tb
 		
 	},
@@ -563,15 +429,18 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		//a this.Cmp.id_funcionario.disable();
 		//this.Cmp.id_funcionario.enableMultiSelect(true);	
 		Phx.vista.CorrespondenciaDetalle.superclass.onButtonEdit.call(this);
+		  	this.ocultarComponente(this.Cmp.id_funcionario);
+		      
 	}, 
 	onButtonNew: function () {
 		
 		//a this.Cmp.id_funcionario.disable();
 		//this.Cmp.id_funcionario.enableMultiSelect(true);	
 		Phx.vista.CorrespondenciaDetalle.superclass.onButtonNew.call(this);
+		this.mostrarComponente(this.Cmp.id_funcionario);
 	},
 	//9
-		BDerivar : function() {
+	BDerivar : function() {
 
 			var rec = this.sm.getSelected();
 			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;

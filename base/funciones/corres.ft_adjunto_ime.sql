@@ -35,6 +35,7 @@ DECLARE
     v_archivado              varchar;
     v_adjunto                record;
     v_adjuntos               record;
+    v_estado_corre           varchar;
 			    
 BEGIN
 
@@ -69,12 +70,12 @@ BEGIN
               END LOOP;
           
           
-             SELECT estado,sw_archivado
-             INTO v_estado,v_archivado
+             SELECT estado,sw_archivado,estado_corre
+             INTO v_estado,v_archivado,v_estado_corre
              FROM corres.tcorrespondencia
              WHERE id_correspondencia=v_registros_json.id_correspondencia;
              
-             IF (v_estado='enviado' or v_archivado ='si') THEN 
+             IF ((v_estado='enviado' or v_archivado ='si') and (v_estado_corre!='borrador_corre')) THEN 
                  RAISE EXCEPTION '%','EL DOCUMENTO EMITIDO YA HA SIDO REMITIDO, CONSULTE CON ADMINISTRACIÓN DE CORRESPONDENCIA.  ';
              END IF;
              SELECT estado,sw_archivado
@@ -212,7 +213,8 @@ BEGIN
              END IF;
              
                 UPDATE corres.tadjunto
-                SET estado_reg='inactivo'
+                SET estado_reg='inactivo',
+                ruta_archivo=v_adjunto.ruta_archivo||'Anulado'
                 WHERE id_adjunto=v_parametros.id_adjunto;
                
          --   END LOOP;       

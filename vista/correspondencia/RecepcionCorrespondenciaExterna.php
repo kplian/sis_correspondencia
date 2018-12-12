@@ -100,21 +100,14 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	},
 	actualizarSegunTab: function (name, indice) {
 		console.log(name);
-            //this.bloquearOrdenamientoGrid();
             this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
-            //this.getBoton('SubirDocumento').show();
-            //this.getBoton('Adjuntos').show();
-           this.getBoton('Corregir').hide();
-            //this.getBoton('VerDocumento').show();
-            //this.getBoton('ImpCodigo').hide();
-            //this.getBoton('ImpCodigoDoc').hide();
+            this.getBoton('Corregir').hide();
             this.getBoton('Derivar').hide();
             this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
-            //this.getBoton('Finalizar').show();
-             this.getBoton('Archivar').hide();
-           this.getBoton('Habilitar').hide();
+            this.getBoton('Archivar').hide();
+            this.getBoton('Habilitar').hide();
 
 		if(name=='borrador_recepcion_externo'){
 			
@@ -129,8 +122,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.swEstado = name;
 		this.getParametrosFiltro();
 		this.load();
-		//Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonAct.call(this);
-
+	
 
 	},
     preparaMenu:function(n){
@@ -205,6 +197,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.asociar);
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
+		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
 		  
 		this.adminGrupo({ ocultar: [3], mostrar:[0]});
 

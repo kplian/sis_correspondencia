@@ -316,25 +316,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		field: 'id_adjunto',
 		direction: 'ASC'
 	},
-	/*bdel:true,
-	bsave:true,
-	bnew:{
-		if (estado='recibido'){
-			 //console.log(this.estado);
-			  
-			  
-			   bdel:false;
-	           bsave:false;
-	           disabled:true;
-			}else
-			{
-			   bdel:true;
-	           bsave:true;
-	           disabled:false;
-			}
-	},
-	*/
-
+	
 		preparaMenu:function(n){
 
 			Phx.vista.Adjunto.superclass.preparaMenu.call(this,n);
@@ -356,8 +338,8 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 
 		},
        onButtonNew: function () {
-       	     alert (this.estado_corre);
-       	     if (this.estado_corre=='corr_borrador'){
+       	    // alert (this.estado_corre);
+       	     if (this.estado_corre=='borrador_corre'){
        	        	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
 	          	
        	     }else{

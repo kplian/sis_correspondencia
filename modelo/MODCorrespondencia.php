@@ -184,6 +184,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_cargo','varchar');
         $this->captura('fecha_documento_literal','text');
 		$this->captura('desc_funcionario_plantilla','text');
+		$this->captura('estado_corre','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -672,7 +673,7 @@ function habCorregirCorrespondencia()
 				
 		//Define los parametros para la funcion
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
-        $this->setParametro('observaciones','observaciones','varchar');
+        $this->setParametro('observaciones_estado','observaciones_estado','varchar');
 		$this->setParametro('estado_corre','estado_corre','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
