@@ -146,7 +146,7 @@ header("content-type: text/javascript; charset=UTF-8");
 	
 		east : {
 			
-			 url: '../../../sis_correspondencia/vista/correspondencia_detalle/CorrespondenciaDetalle.php?estado='+this.estado+'',
+			 url: '../../../sis_correspondencia/vista/correspondencia_detalle/CorrespondenciaDetalle.php',
 				
 			cls : 'CorrespondenciaDetalle',
 			title : 'Detalle de Derivación',

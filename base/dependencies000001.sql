@@ -6168,8 +6168,10 @@ select pxp.f_insert_trol_procedimiento_gui ('COR - Interna', 'CO_HOJORIG_SEL', '
 
 /***********************************F-DEP-JMH-CORRES-0-12/12/2018*****************************************/
 /***********************************I-DEP-ALG-CORRES-0-13/12/2018*****************************************/
+select pxp.f_insert_tprocedimiento_gui ('CO_CODEAN_SEL', 'CORADMG', 'no');
 select pxp.f_insert_trol_procedimiento_gui ('COR-ADMIN', 'CO_CODEAN_SEL', 'CORADMG');
 /***********************************F-DEP-ALG-CORRES-0-13/12/2018*****************************************/
 /***********************************I-DEP-ALG-CORRES-1-13/12/2018*****************************************/
+select pxp.f_insert_tprocedimiento_gui ('CO_HABCORR_UPD', 'CORADMG', 'no');
 select pxp.f_insert_trol_procedimiento_gui ('COR-ADMIN', 'CO_HABCORR_UPD', 'CORADMG');
 /***********************************F-DEP-ALG-CORRES-1-13/12/2018*****************************************/
