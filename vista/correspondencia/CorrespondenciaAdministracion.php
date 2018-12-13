@@ -15,6 +15,7 @@ Phx.vista.CorrespondenciaAdministracion = {
     bsave:false,
     bedit:true,
     bdel:true,
+    tipo_interfaz:'',
 	swEstado: 'anulado',
 	urlDepto:'../../sis_parametros/control/Depto/listarDeptoFiltradoDeptoUsuario',
 	gruposBarraTareas: [
@@ -115,11 +116,10 @@ Phx.vista.CorrespondenciaAdministracion = {
 		
 		this.init();  
 		this.argumentExtraSubmit={'vista':'CorrespondenciaAdministracion'};
-
+        this.tipo_interfaz=config.tipo;
         this.store.baseParams = {'tipo': this.tipo,'estado': this.swEstado,'vista':'CorrespondenciaAdministracion'};
         this.load({params: {start: 0, limit: 50}})
-
-		this.iniciarEventos();
+     	this.iniciarEventos();
     
    },
    iniciarEventos(){
@@ -294,9 +294,8 @@ Phx.vista.CorrespondenciaAdministracion = {
          Phx.vista.CorrespondenciaAdministracion.superclass.onButtonNew.call(this);
          
     	var cmbDoc = this.getComponente('id_documento');
-		   
-		
-		if (this.getComponente('tipo').getValue()=='externa'){
+		  
+		if (this.tipo_interfaz=='externa'){
 	          	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();
 		        this.Cmp.id_acciones.hide();
@@ -326,8 +325,8 @@ Phx.vista.CorrespondenciaAdministracion = {
 		        this.ocultarComponente(this.Cmp.fecha_creacion_documento);
 		
 		}
-           
-        if (this.getComponente('tipo').getValue()=='externa'){
+        if (this.tipo_interfaz=='externa'){
+        	
         	this.tipo = this.getComponente('tipo');
             this.tipo.setValue('externa');
 		    this.tipo.disable(true);
