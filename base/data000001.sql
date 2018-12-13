@@ -301,3 +301,26 @@ select pxp.f_insert_tprocedimiento ('SCO_GETQR_L_MOD', 'Recupera codigo QR segun
 select pxp.f_insert_tprocedimiento ('CO_COREXT_MOD', 'modifica el mensajero la correpondencia externa recibida(ENTRANTE)', 'si', '', '', 'corres.ft_correspondencia_ime');
 select pxp.f_insert_tprocedimiento ('CO_CORDET_MOD', 'Modificación de registros como detalle de correspondencia', 'si', '', '', 'corres.ft_correspondencia_ime');
 /***********************************F-DAT-JMH-CORRES-0-12/12/2018*****************************************/
+/***********************************I-DAT-ALG-CORRES-0-13/12/2018*****************************************/
+select pxp.f_delete_tgui ('CS');
+select pxp.f_insert_tgui ('Valores', 'Valores', 'GRUPCOR.1.1.1.1.2.1.2.3', 'no', 0, 'sis_parametros/vista/field_tipo_archivo/FieldTipoArchivoValor.php', 11, '', '40%', 'CORRES');
+select pxp.f_insert_tgui ('Valores', 'Valores', 'GRUPCOR.1.1.1.1.2.1.2.4', 'no', 0, 'sis_parametros/vista/field_valor_archivo/frmValor.php', 11, '', 'frmValor', 'CORRES');
+select pxp.f_insert_tgui ('Catálogo', 'Catálogo', 'GRUPCOR.1.1.1.1.2.1.2.4.1', 'no', 0, 'sis_parametros/vista/catalogo/Catalogo.php', 12, '', 'Catalogo', 'CORRES');
+select pxp.f_insert_tgui ('Adjuntos', 'Adjuntos', 'CEMITIDA.7', 'no', 0, 'sis_correspondencia/vista/adjunto/Adjunto.php?estado=', 4, '', 'Adjunto', 'CORRES');
+select pxp.f_insert_tprocedimiento ('CO_CORUNDOEXT_UPD', 'Corregir correspondecia externa si no tiene hijos abiertos', 'si', '', '', 'corres.ft_correspondencia_ime');
+select pxp.f_insert_tprocedimiento ('CO_COR_ANU', 'cambia el estado de la correspondencia fisica', 'si', '', '', 'corres.ft_correspondencia_ime');
+select pxp.f_insert_tprocedimiento ('CO_HOJORIG_SEL', 'Obtener Correspondencia Principal', 'si', '', '', 'corres.ft_correspondencia_sel');
+select pxp.f_insert_tprocedimiento ('CO_ALAR_ANU', 'Eliminar todas las alarmas que fueron por anulación', 'si', '', '', 'corres.ft_correspondencia_ime');
+select pxp.f_insert_tprocedimiento ('CO_ASPER_SEL', 'Consulta de datos', 'si', '', '', 'corres.ft_asistente_permisos_sel');
+select pxp.f_insert_tprocedimiento ('CO_ASPER_CONT', 'Conteo de registros', 'si', '', '', 'corres.ft_asistente_permisos_sel');
+select pxp.f_insert_tprocedimiento ('CO_CORHAB_INS', 'habilita una correspondencia anulada externa', 'si', '', '', 'corres.ft_correspondencia_ime');
+select pxp.f_insert_tprocedimiento ('CO_HABCORR_UPD', 'Habilitar para la correccion de Administración', 'si', '', '', 'corres.ft_correspondencia_ime');
+select pxp.f_insert_tprocedimiento ('CO_REPCOR_SEL', 'Reporte Tickets atendidos', 'si', '', '', 'corres.ft_reporte_sel');
+select pxp.f_insert_tprocedimiento ('CO_REPCOR_CONT', 'Reporte', 'si', '', '', 'corres.ft_reporte_sel');
+select pxp.f_insert_tprocedimiento ('CO_CODEAN_SEL', 'Consulta de resgistro de correspondecia detalle', 'si', '', '', 'corres.ft_correspondencia_sel');
+select pxp.f_insert_tprocedimiento ('CO_CODEAN_CONT', 'Conteo de registros de correspondencia detalle', 'si', '', '', 'corres.ft_correspondencia_sel');
+select pxp.f_insert_trol ('Rol de correspondencia para todos los usuarios', 'COR - Interna', 'CORRES');
+select pxp.f_insert_trol ('Rol de Correspondencia para usuario recepción externos', 'COR - Externa', 'CORRES');
+select pxp.f_insert_trol ('Administracion de Correspondencia', 'COR-ADMIN', 'CORRES');
+select pxp.f_insert_trol ('Permiso para Emitida Externa', 'COR-EmitidaExterna', 'CORRES');
+/***********************************F-DAT-ALG-CORRES-0-13/12/2018*****************************************/
