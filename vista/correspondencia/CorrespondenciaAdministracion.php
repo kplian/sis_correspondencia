@@ -186,6 +186,7 @@ Phx.vista.CorrespondenciaAdministracion = {
         	
         }else{
         	 this.getBoton('new').show();
+        	 this.getBoton('del').enable();
              this.getBoton('SubirDocumento').show();
              this.getBoton('Adjuntos').enable();
              this.getBoton('Historico').show();
@@ -236,6 +237,13 @@ Phx.vista.CorrespondenciaAdministracion = {
        	    this.getBoton('HojaRuta').disable();
        	    this.getBoton('Historico').disable();
             this.getBoton('FinCorregir').disable();
+            if (data.estado=='borrador_envio' || data.estado=='borrador_recepcion_externo'){
+            	this.getBoton('del').enable();
+       	   
+            }else{
+            	this.getBoton('del').disable();
+       	   
+            }
        	 	
        	 }
      
@@ -280,7 +288,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 					id_correspondencia : id_correspondencia,
 					estado_corre:'corregido',
 					tipo:this.getComponente('tipo').getValue(),
-					observaciones:result
+					observaciones_estado:rec.data.observaciones_estado+'Fin '
 				},
 				success : this.successDerivar,
 				failure : this.conexionFailure,
