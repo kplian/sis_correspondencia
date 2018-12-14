@@ -694,7 +694,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				pfiltro : 'cor.fecha_creacion_documento',
 				type : 'date'
 			},
-			id_grupo : 2,
+			id_grupo : 1,
 			grid : true,
 			form : true,
 			bottom_filter : true
@@ -756,7 +756,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type : 'ComboRec',
-			id_grupo : 1,
+			id_grupo : 4,
 			filters : {
 				pfiltro : 'desc_uo',
 				type : 'string'
@@ -781,7 +781,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type : 'ComboRec',
-			id_grupo : 1,
+			id_grupo : 4,
 			filters : {
 				pfiltro : 'desc_funcionario1',
 				type : 'string'
@@ -1305,6 +1305,17 @@ header("content-type: text/javascript; charset=UTF-8");
 						// autoHeight: true,
 						items : [],
 						id_grupo : 3
+					}]
+				},
+				 {
+					bodyStyle : 'padding-left:5px;padding-left:5px;',
+					items : [{
+						xtype : 'fieldset',
+						title : 'Datos Remitente Saliente',
+
+						// autoHeight: true,
+						items : [],
+						id_grupo : 4
 					}]
 				}]
 			}]

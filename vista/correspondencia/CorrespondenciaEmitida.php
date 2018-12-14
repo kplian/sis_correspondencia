@@ -79,16 +79,14 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
-            this.adminGrupo({mostrar: [0, 1, 2, 3]});
+            this.adminGrupo({ocultar:[4],mostrar: [0, 1, 2, 3]});
             this.mostrarComponente(cmpFuncionarios);
-
-            console.log('ver',this.Cmp);
-
 
             this.ocultarComponente(this.Cmp.id_persona_destino);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_destino);
+            this.ocultarComponente(this.Cmp.fecha_creacion_documento);
 
             this.getComponente('id_clasificador').enable();
             this.getComponente('fecha_documento').disable();

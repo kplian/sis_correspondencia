@@ -199,7 +199,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_acciones);
 		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
 		  
-		this.adminGrupo({ ocultar: [3], mostrar:[0]});
+		this.adminGrupo({ ocultar: [3,4], mostrar:[0,2]});
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
@@ -230,7 +230,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_acciones);
 		  
 
-		this.adminGrupo({ ocultar: [0,3]});
+		this.adminGrupo({ ocultar: [0,3,4]});
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);

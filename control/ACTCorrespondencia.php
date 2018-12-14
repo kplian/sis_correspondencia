@@ -470,6 +470,8 @@ class ACTCorrespondencia extends ACTbase
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
         $this->objParam->defecto('dir_ordenacion', 'desc');
         */
+       /* echo $id_origen;
+        exit;*/
         $this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
         $this->objFunc = $this->create('MODCorrespondencia');
 			
