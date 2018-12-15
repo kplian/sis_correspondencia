@@ -120,7 +120,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
             this.getBoton('Corregir').hide();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
-            this.getBoton('HojaRuta').hide();
+            this.getBoton('HojaRuta').enable();
             this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide();
             this.getBoton('Archivar').hide();
