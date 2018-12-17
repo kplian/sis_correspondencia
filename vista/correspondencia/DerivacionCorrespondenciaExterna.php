@@ -113,6 +113,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
             //this.getBoton('VerDocumento').show();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
+          //  this.getBoton('ImpBorrador').hide();
             //this.getBoton('Derivar').hide();
             //this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
@@ -151,18 +152,22 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
            // this.getBoton('anularCorrespondencia').hide();
             this.getBoton('Archivar').hide();
             this.getBoton('Habilitar').hide();
+                this.getBoton('ImpBorrador').enable();
 	
 		if(name=='enviado'){
 			this.getBoton('HojaRuta').show();
 			this.getBoton('Historico').show();
 			this.getBoton('Adjuntos').show();
 			this.getBoton('SubirDocumento').show();
+			this.getBoton('ImpBorrador').hide();
 			//this.getBoton('anularCorrespondencia').show();
 			//this.getBoton('Corregir').hide();
 			this.getBoton('HojaRuta').enable();
 			this.getBoton('Historico').enable();
 			this.getBoton('Archivar').enable();
+			
 			 this.getBoton('del').hide();
+			 
 		}else{
 			
 			//this.bloquearOrdenamientoGrid();
@@ -180,6 +185,8 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
             this.getBoton('Finalizar').hide();
             //this.getBoton('anularCorrespondencia').hide();
             this.getBoton('Archivar').hide();
+            this.getBoton('ImpBorrador').show();
+            this.getBoton('ImpBorrador').enable();
 		}
 		
 		
