@@ -678,7 +678,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		 {
 			config : {
 				name : 'fecha_creacion_documento',
-				fieldLabel : 'Fecha Creación del Documento',
+				fieldLabel : 'Fecha Recepción',
 				allowBlank : true,
 				anchor:'80%',
 				//format : 'd-m-Y',
