@@ -1165,7 +1165,7 @@ BEGIN
   elsif(p_transaccion='CO_CORHOJ_SEL')then
 
     begin
-
+   --   raise exception '%',v_parametros.id_correspondencia;
 
       select id_origen, tipo, id_usuario_reg
       into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg
@@ -1188,8 +1188,8 @@ BEGIN
         END IF;  
         IF (v_id_funcionario_origen is null)THEN
          raise exception '%', 'La correspondencia no ha sido registrada por un funcionario.';
-        END IF;          
-
+        END IF; 
+     
 			--obtenemos el id_origen de la correspondencia
 			v_consulta = '
 			WITH RECURSIVE correspondencia_detalle(id_correspondencia) AS (
@@ -1227,12 +1227,8 @@ cor.id_correspondencia,
   '||v_id_funcionario_origen||' as desc_id_funcionario_origen,
   cor.estado,
   cor.fecha_documento,
- -- cor.fecha_mod,
   cor.fecha_ult_derivado,
- /* coalesce((select fecha_reg ::text
-  from corres.tcorrespondencia_estado corest
-  where corest.id_correspondencia=cordet.id_correspondencia and estado=''recibido'')::text,''''::text) as fecha_recepcion
-*/(select fecha_reg 
+ (select fecha_reg 
   from corres.tcorrespondencia_estado corest
   where corest.id_correspondencia=cordet.id_correspondencia and estado=''recibido''
   order by corest.id_correspondencia_estado asc limit 1)::timestamp as fecha_recepcion
@@ -1252,7 +1248,7 @@ ORDER BY  id_correspondencia ASC ';
 
 --raise exception '%','llega'||v_id_funcionario_origen;
       --Devuelve la respuesta
-  
+
       return v_consulta;
 
     end;
@@ -1573,12 +1569,17 @@ where tiene is not null ';
 #DESCRIPCION:	Obtener Correspondencia Principal 
 #AUTOR:		    AVQ
 #FECHA:		    29/10/2018
+#Modificacion   Ana Maria  17/12/2018 se ha modificado el criterio de filtro.
 ***********************************/
   elsif(p_transaccion='CO_HOJORIG_SEL')then
 
     begin
+      select id_origen, tipo, id_usuario_reg
+      into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg
+      from corres.tcorrespondencia
+      where id_correspondencia = v_parametros.id_correspondencia;
 
-
+      
       --Sentencia de la consulta
       v_consulta:=' select
                     numero,
@@ -1594,9 +1595,10 @@ where tiene is not null ';
                    left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                    left join segu.vpersona persona on persona.id_persona=cor.id_persona
                    left join orga.vfuncionario fun on fun.id_funcionario=cor.id_funcionario
-                   where ';
+                   where id_origen= '||v_id_origen||' and ';
 
 			v_consulta:=v_consulta||v_parametros.filtro;
+  --raise exception '%',v_parametros.filtro;         
 
       --Devuelve la respuesta
       return v_consulta;

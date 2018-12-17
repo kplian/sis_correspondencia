@@ -113,12 +113,15 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
-            this.adminGrupo({mostrar: [0,1, 2,3]});
+            this.adminGrupo({mostrar: [0,1, 2,3,4]});
             this.ocultarComponente(cmpFuncionarios);
 
             console.log('ver',this.Cmp);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
+            this.ocultarComponente(this.Cmp.cite);
+            this.ocultarComponente(this.Cmp.fecha_creacion_documento);
+            this.ocultarComponente(this.Cmp.id_funcionario);
             
             this.fecha_documento = this.getComponente('fecha_documento');
             this.fecha_documento.disable(true);
@@ -135,7 +138,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
         onButtonEdit: function () {
             Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
-            this.adminGrupo({mostrar: [3], ocultar: [0,1]});
+            this.adminGrupo({mostrar: [3], ocultar: [0,1,4]});
             this.ocultarComponente(this.Cmp.id_funcionarios);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);

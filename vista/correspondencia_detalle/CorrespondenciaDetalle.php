@@ -26,6 +26,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	 	 	
 	 	 	this.onEnablePanel(this,dataMaestro)
 	 	 }
+	 	
 	  }
 	
 	  //9
@@ -36,6 +37,12 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				handler : this.BDerivar,
 				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
 			});
+			 console.log(config);
+	 	 if ((config.idContenedorPadre=='docs-CORADMG')|| (config.idContenedorPadre=='docs-ADMCORINT')){
+	 	 	  this.getBoton('Derivar').show();
+	 	 }else{
+	 	 	this.getBoton('Derivar').hide();
+	 	 }
 	},
 			
 	Atributos:[
@@ -337,13 +344,19 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			  		this.getBoton('Derivar').enable();
 			  		
 		  } else {
+		 	    if (this.maestro.estado=='pendiente_recibido'){
+                  	
+                  		this.getBoton('new').disable();
+			  			this.getBoton('Derivar').disable();
+			  		
+		  			}else{
 		 	
 			  		this.getBoton('edit').enable();
 			  		this.getBoton('del').enable();
 			  		this.getBoton('new').enable();
-			  		this.getBoton('save').enable();
 			  		this.getBoton('Derivar').disable();
-		  }
+			  		}
+			   }
 	
 		 
     	 this.store.baseParams={id_correspondencia_fk:this.maestro.id_correspondencia};
@@ -356,8 +369,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		  var data = this.getSelectedData();
 		  var tb =this.tbar;
 		    if(this.maestro.estado=='enviado' ){
-		    //	alert(data.estado_corre);
-		  		if(tb){
+		   	if(tb){
 		  			if (data.estado_corre=='borrador_corre'){
 		  				this.getBoton('edit').enable();
 					  	this.getBoton('Derivar').enable();	
@@ -476,4 +488,3 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 }
 )
 </script>
-

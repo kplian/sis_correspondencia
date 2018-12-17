@@ -187,7 +187,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		var cmbDoc = this.getComponente('id_documento');
 		
 		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonNew.call(this);
-    	
+    	this.adminGrupo({ ocultar: [3,4], mostrar:[0,2]});
+
     	this.ocultarComponente(this.Cmp.id_funcionario);
 		this.ocultarComponente(this.Cmp.id_uo);
 		this.ocultarComponente(this.Cmp.id_funcionario_saliente);
@@ -198,9 +199,10 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
 		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
-		  
-		this.adminGrupo({ ocultar: [3], mostrar:[0]});
-
+		/*this.ocultarComponente(this.Cmp.asociar);
+        this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);*/
+		     
+		
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
 	
@@ -230,7 +232,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_acciones);
 		  
 
-		this.adminGrupo({ ocultar: [0,3]});
+		this.adminGrupo({ ocultar: [0,3,4]});
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);

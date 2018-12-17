@@ -1172,7 +1172,8 @@ function corregirCorrespondenciaExt()
 		$this->transaccion='CO_HOJORIG_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
         $this->setCount(false);
-		$this->setParametro('id_origen','id_origen','int4');
+		//$this->setParametro('id_','id_origen','int4');
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
 		
 		

@@ -455,6 +455,7 @@ class ACTCorrespondencia extends ACTbase
             exit;
         }
 		
+		
         $hoja_ruta = $this->res->getDatos();
 
         $id_origen = $hoja_ruta[0]['desc_id_origen'];
@@ -470,7 +471,8 @@ class ACTCorrespondencia extends ACTbase
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
         $this->objParam->defecto('dir_ordenacion', 'desc');
         */
-        $this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
+       	
+		//$this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
         $this->objFunc = $this->create('MODCorrespondencia');
 			
 		$this->res = $this->objFunc->listarHojaPrincipal();

@@ -686,7 +686,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		 {
 			config : {
 				name : 'fecha_creacion_documento',
-				fieldLabel : 'Fecha Creación del Documento',
+				fieldLabel : 'Fecha Recepción',
 				allowBlank : true,
 				anchor:'80%',
 				//format : 'd-m-Y',
@@ -702,7 +702,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				pfiltro : 'cor.fecha_creacion_documento',
 				type : 'date'
 			},
-			id_grupo : 2,
+			id_grupo : 1,
 			grid : true,
 			form : true,
 			bottom_filter : true
@@ -764,7 +764,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type : 'ComboRec',
-			id_grupo : 1,
+			id_grupo : 4,
 			filters : {
 				pfiltro : 'desc_uo',
 				type : 'string'
@@ -789,7 +789,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				}
 			},
 			type : 'ComboRec',
-			id_grupo : 1,
+			id_grupo : 4,
 			filters : {
 				pfiltro : 'desc_funcionario1',
 				type : 'string'
@@ -1314,6 +1314,17 @@ header("content-type: text/javascript; charset=UTF-8");
 						items : [],
 						id_grupo : 3
 					}]
+				},
+				 {
+					bodyStyle : 'padding-left:5px;padding-left:5px;',
+					items : [{
+						xtype : 'fieldset',
+						title : 'Datos Remitente Saliente',
+
+						// autoHeight: true,
+						items : [],
+						id_grupo : 4
+					}]
 				}]
 			}]
 		}],
@@ -1481,6 +1492,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				url : '../../sis_correspondencia/control/Correspondencia/hojaRuta',
 				params : {
 					id_correspondencia : rec.data.id_correspondencia,
+					id_origen: rec.data.id_origen,
 					tipo_corres:rec.data.tipo,
 					start : 0,
 					limit : 1
