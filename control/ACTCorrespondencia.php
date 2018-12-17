@@ -772,7 +772,7 @@ window.onload=function(){self.print();}
 				<meta charset="UTF-8">
 				<title></title>
 			</head>
-			<body>
+			<body background="imagenes/fondo_borrador.png" bgcolor="FFCECB">
 
 			<style type="text/css">
 							.tg  {border-collapse:collapse;border-spacing:0; border: 0;}

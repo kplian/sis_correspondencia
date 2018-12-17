@@ -81,14 +81,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
 
 			});
-			this.addButton('ImpBorrador', {
-				text: 'Imprimir Borrador',
-				iconCls: 'bprintcheck',
-				disabled: true,
-				handler: this.BImpBorrador,
-				tooltip: '<b>Imprimir Borrador </b><br/>imprimir borrador correspondencia'
-
-			});
+		
             
 			//9
 			this.addButton('Derivar', {
@@ -1504,24 +1497,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 
 		},
-		BImpBorrador : function() {
-			
-			var rec = this.sm.getSelected();
-			Ext.Ajax.request({
-				url : '../../sis_correspondencia/control/Correspondencia/hojaRutaBorrador',
-				params : {
-					id_correspondencia : rec.data.id_correspondencia,
-					tipo_corres:rec.data.tipo,
-					start : 0,
-					limit : 1
-				},
-				success : this.successImpBorrador,
-				failure : this.conexionFailure,
-				timeout : this.timeout,
-				scope : this
-			});
-
-		},
+	
 		/* 11 histórico.
 		 * hoja pop up para la hoja de ruta
 		 */
