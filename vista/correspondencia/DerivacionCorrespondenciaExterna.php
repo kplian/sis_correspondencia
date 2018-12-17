@@ -68,14 +68,22 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 
 	//	this.bloquearOrdenamientoGrid();
+         this.addButton('ImpBorrador', {
+				text: 'Imprimir Borrador',
+				iconCls: 'bprintcheck',
+				disabled: false,
+				handler: this.BImpBorrador,
+				tooltip: '<b>Imprimir Borrador </b><br/>imprimir borrador correspondencia'
 
+			});
+            
 		 
 	       this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
 
-            this.getBoton('ImpBorrador').hide();
+           // this.getBoton('ImpBorrador').hide();
             //this.getBoton('Derivar').hide();
             //this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
@@ -218,6 +226,25 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		var rec = this.sm.getSelected();
 
 	},
+		BImpBorrador : function() {
+			
+			var rec = this.sm.getSelected();
+			Ext.Ajax.request({
+				url : '../../sis_correspondencia/control/Correspondencia/hojaRutaBorrador',
+				params : {
+					id_correspondencia : rec.data.id_correspondencia,
+					id_origen: rec.data.id_origen,
+					tipo_corres:rec.data.tipo,
+					start : 0,
+					limit : 1
+				},
+				success : this.successHojaRuta,
+				failure : this.conexionFailure,
+				timeout : this.timeout,
+				scope : this
+			});
+
+		},
 	finalizarRecepcionExterna:function () {
 
 		var rec = this.sm.getSelected();
