@@ -447,6 +447,14 @@ class ACTCorrespondencia extends ACTbase
 	function hojaRuta()
     {
         $this->objFunc = $this->create('MODCorrespondencia');
+		
+		if ($this->objParam->getParametro('estado_reporte')=='borrador'){
+			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA EN BORRADOR';
+		}else{
+			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA';
+		
+		}
+		
         $this->res = $this->objFunc->hojaRuta();
 
 
@@ -465,15 +473,7 @@ class ACTCorrespondencia extends ACTbase
         
               
         $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
-		//$this->objParam->addParametro('estado', $estado);
-       
-		/*$this->objParam->addParametro('estado', $estado);
-        $this->objParam->defecto('ordenacion', 'id_correspondencia');
-        $this->objParam->defecto('dir_ordenacion', 'desc');
-        */
-       	
-		//$this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
-        $this->objFunc = $this->create('MODCorrespondencia');
+		$this->objFunc = $this->create('MODCorrespondencia');
 			
 		$this->res = $this->objFunc->listarHojaPrincipal();
 		
@@ -533,7 +533,7 @@ class ACTCorrespondencia extends ACTbase
 							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
 							</style>
-							<CENTER><div><B>HOJA DE RECEPCION DE CORRESPONDENCIA</B></div></CENTER>
+							<CENTER><div><B>'.$titulo.'</B></div></CENTER>
 							<hr />
 							<table class="tg"  border="0">
 							  <tr>

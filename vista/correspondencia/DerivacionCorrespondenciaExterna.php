@@ -69,23 +69,20 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 	//	this.bloquearOrdenamientoGrid();
          this.addButton('ImpBorrador', {
-				text: 'Imprimir Borrador',
+				text: 'Vista Previa',
 				iconCls: 'bprintcheck',
 				disabled: false,
 				handler: this.BImpBorrador,
-				tooltip: '<b>Imprimir Borrador </b><br/>imprimir borrador correspondencia'
+				tooltip: '<b>Vista Previa</b><br/> Vista Previa Correspondencia'
 
 			});
             
 		 
-	       this.getBoton('Plantilla').hide();
+	        this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
-
-           // this.getBoton('ImpBorrador').hide();
-            //this.getBoton('Derivar').hide();
-            //this.getBoton('HojaRuta').hide();
+            this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide();
             this.getBoton('Archivar').hide();
@@ -140,7 +137,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
             this.getBoton('Corregir').hide();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
-            this.getBoton('HojaRuta').enable();
+            this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide();
             this.getBoton('Archivar').hide();
@@ -230,11 +227,12 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			
 			var rec = this.sm.getSelected();
 			Ext.Ajax.request({
-				url : '../../sis_correspondencia/control/Correspondencia/hojaRutaBorrador',
+				url : '../../sis_correspondencia/control/Correspondencia/hojaRuta',
 				params : {
 					id_correspondencia : rec.data.id_correspondencia,
 					id_origen: rec.data.id_origen,
 					tipo_corres:rec.data.tipo,
+					estado_reporte:'borrador',
 					start : 0,
 					limit : 1
 				},

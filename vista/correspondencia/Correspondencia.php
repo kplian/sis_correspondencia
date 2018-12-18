@@ -1487,6 +1487,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_correspondencia : rec.data.id_correspondencia,
 					id_origen: rec.data.id_origen,
 					tipo_corres:rec.data.tipo,
+					estado_reporte:'finalizado',
 					start : 0,
 					limit : 1
 				},
