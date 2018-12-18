@@ -226,7 +226,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			
 			var rec = this.sm.getSelected();
 			Ext.Ajax.request({
-				url : '../../sis_correspondencia/control/Correspondencia/hojaRuta',
+				url : '../../sis_correspondencia/control/Correspondencia/hojaRutaBorrador',
 				params : {
 					id_correspondencia : rec.data.id_correspondencia,
 					id_origen: rec.data.id_origen,
