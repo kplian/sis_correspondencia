@@ -71,19 +71,36 @@ class ACTCorrespondencia extends ACTbase
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion', 'desc');
-
-
-        if ($this->objParam->getParametro('id_correspondencia_fk') != '') {
+		
+		if ($this->objParam->getParametro('estado') == 'anulado') {
+            
+			if ($this->objParam->getParametro('id_correspondencia_fk') != '') {
             $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia_fk'));
+		        }
+		
+		        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+		            $this->objReporte = new Reporte($this->objParam, $this);
+		            $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaDetalleAnulado');
+		        } else {
+		            $this->objFunc = $this->create('MODCorrespondencia');
+		            $this->res = $this->objFunc->listarCorrespondenciaDetalleAnulado();
+		        }
+			
+        }else{
+        	if ($this->objParam->getParametro('id_correspondencia_fk') != '') {
+            $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia_fk'));
+	        }
+	
+	        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
+	            $this->objReporte = new Reporte($this->objParam, $this);
+	            $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaDetalle');
+	        } else {
+	            $this->objFunc = $this->create('MODCorrespondencia');
+	            $this->res = $this->objFunc->listarCorrespondenciaDetalle();
+	        }
         }
 
-        if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
-            $this->objReporte = new Reporte($this->objParam, $this);
-            $this->res = $this->objReporte->generarReporteListado('MODCorrespondencia', 'listarCorrespondenciaDetalle');
-        } else {
-            $this->objFunc = $this->create('MODCorrespondencia');
-            $this->res = $this->objFunc->listarCorrespondenciaDetalle();
-        }
+        
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }

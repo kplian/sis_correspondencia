@@ -13,11 +13,23 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
+		//* Creación para el combo en la grilla/
+		 this.initButtons=[this.cmbEstado];
+		
     	//llama al constructor de la clase padre
 		Phx.vista.CorrespondenciaDetalle.superclass.constructor.call(this,config);
 
 		this.init();
 		this.bloquearMenus();
+		
+		this.cmbEstado.on('select', function(c,r,i){
+	    	if(this.validarFiltros()){
+                  this.capturaFiltros();
+           }
+		},this);
+		
+		this.cmbEstado.on('clearcmb', function() {this.DisableSelect();this.store.removeAll();}, this);
+		
 		/*this.getBoton('new').disable();
 	    this.getBoton('save').disable();*/
 		if(Phx.CP.getPagina(this.idContenedorPadre)){
@@ -318,11 +330,57 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
+			  		
+		this.cmbEstado.store.load({paraºms:{start:0,limit:this.tam_pag},
+           callback : function (r) {
+   		    console.log('r',r)
+           		if (r.length == 1 ) {
+           			this.cmbEstado.setValue(r[0].data.ID);
+           			this.cmbEstado.fireEvent('select',this.cmbEstado, this.cmbEstado.store.getById(r[0].data.ID));         
+                }
+            }, scope : this
+        });
 			  
 		
 	},
+	getParametrosFiltro: function () {
+   	 	this.store.baseParams.estado = this.cmbEstado.getValue();
+		
+	},
+	capturaFiltros:function(combo, record, index){
+		this.desbloquearOrdenamientoGrid();
+        this.getParametrosFiltro();
+        this.load({params:{start:0, limit:50}});
+	},
 	
-	
+	cmbEstado: new Ext.form.ComboBox({
+				
+				fieldLabel : 'Estado',
+				typeAhead : true,
+				allowBlank : false,
+				triggerAction : 'all',
+				emptyText : 'Seleccione Opcion...',
+				selectOnFocus : true,
+				mode : 'local',
+				//valorInicial:{ID:'interna',valor:'Interna'},
+				store : new Ext.data.ArrayStore({
+					fields : ['ID', 'valor'],
+					data : [['activo', 'Activos'], ['anulado', 'Anulado']]
+				}),
+				valueField : 'ID',
+				displayField : 'valor',
+				width : 150
+		}),
+		
+	validarFiltros:function(){
+		
+        if(this.cmbEstado.isValid()){// && this.cmbTipoPres.validate()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    },
 	onReloadPage:function(m){
 
        
