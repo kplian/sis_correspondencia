@@ -612,8 +612,7 @@ class ACTCorrespondencia extends ACTbase
 			          $fecha_deriv  = '       ';
 		              }else{
 		      	
-			          //$fecha_deriv = '  '.strftime("%d/%m/%Y %H:%m:%s", strtotime($ruta['fecha_deriv']));
-					  $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%M:%S", strtotime($ruta['fecha_deriv']));	
+			          $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_deriv']));	
 					 // $fecha_deriv = $ruta['fecha_deriv'];	
 			         }
         	         
@@ -622,7 +621,7 @@ class ACTCorrespondencia extends ACTbase
 			          $fecha_recepcion2  = '       ';
 		              }else{
 		      	
-			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%M:%S", strtotime($ruta['fecha_recepcion']));
+			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_recepcion']));
 					    // $fecha_recepcion2 = $ruta['fecha_recepcion'];	
 			         }
         	        
@@ -636,7 +635,7 @@ class ACTCorrespondencia extends ACTbase
 							  <tr>
 								<td class="tg-yw4l" colspan="2">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
 								<td class="tg-yw4l" colspan="2">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l" colspan="1">' . $fecha_deriv. '</td>
+								<td class="tg-yw4l" colspan="1">' . $fecha_deriv . '</td>
 								
 								<td class="tg-yw4l" colspan="1" >' . $fecha_recepcion2 . '</td>
 								<td class="tg-yw4l" colspan="1"> </td>
@@ -772,9 +771,27 @@ window.onload=function(){self.print();}
 				<meta charset="UTF-8">
 				<title></title>
 			</head>
-			<body background="imagenes/fondo_borrador.png" bgcolor="FFCECB">
+			<body style="position:absolute">
+<!-- agrega marca de agua pero falta centrear en la hoja>
+			<div style="position:absolute">
+  <p style="font-size:120px">Background</p>
+	</div>
+-->
+	<style type="text/css">
+	
+	.watermarked {
+  position: relative;
+}
 
-			<style type="text/css">
+
+    .watermark
+    {
+        position: absolute;
+        top: 60px;
+        left: 80px;
+        opacity: 0.2;
+    }
+	
 							.tg  {border-collapse:collapse;border-spacing:0; border: 0;}
 							.tg td{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
 							.tg th{font-family:Arial, sans-serif;font-size:12px;font-weight:normal;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
@@ -782,7 +799,20 @@ window.onload=function(){self.print();}
 							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
 							</style>
-							<CENTER><div><B>HOJA DE RECEPCION DE CORRESPONDENCIA BORRADOR </B></div></CENTER>
+							
+<div style="position: relative; left: 0; top: 0;">
+        
+        <img src="../../../sis_correspondencia/imagenes/fondo_borrador.png" class="watermark"/>
+    </div>
+							<CENTER>
+							  <spam align = "right">  
+							      <div align="right" style="color:#F00"><!--<img src="../../../sis_correspondencia/imagenes/fondo_borrador.png">-->BORRADOR </div>
+							    </spam > 
+                              <div > 
+							    <p>  <spam > <B>HOJA DE RECEPCION DE CORRESPONDENCIA </B> </spam > 
+						        </p>
+							  </div>
+							</CENTER>
 							<hr />
 							<table class="tg"  border="0">
 							  <tr>

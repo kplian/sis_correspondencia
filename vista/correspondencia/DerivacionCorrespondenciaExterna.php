@@ -69,11 +69,11 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 	//	this.bloquearOrdenamientoGrid();
          this.addButton('ImpBorrador', {
-				text: 'Imprimir Borrador',
+				text: 'Vista Previa',
 				iconCls: 'bprintcheck',
 				disabled: false,
 				handler: this.BImpBorrador,
-				tooltip: '<b>Imprimir Borrador </b><br/>imprimir borrador correspondencia'
+				tooltip: '<b>Vista Previa </b><br/> Vista previa de la correspondencia'
 
 			});
             
