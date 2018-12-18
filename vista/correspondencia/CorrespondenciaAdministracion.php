@@ -128,18 +128,16 @@ Phx.vista.CorrespondenciaAdministracion = {
 	   		this.Cmp.id_persona_remitente.reset();
 	   		this.Cmp.id_persona_remitente.modificado=true;
 	   		
-	   	},this)
+	   	},this);
+	   	this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
+        this.cmpAsocia = this.getComponente('asociar');
+ 
+        this.cmpAsocia.on('change', function (groupRadio,radio) {
+          	if(radio.inputValue){this.enableDisable(radio.inputValue);}
+            },this);
    },
    
- // east : undefined,
-  /* south : {
-			
-			 url: '../../../sis_correspondencia/vista/correspondencia/CorrespondenciaDetalleAnulado.php',
-				
-			cls : 'CorrespondenciaDetalleAnulado',
-			title : 'Detalle de Derivación Anulados',
-			height : '50%'
-		},*/
+ 
    	getParametrosFiltro: function () {
    	 	this.store.baseParams.estado = this.swEstado;
 		
@@ -442,7 +440,28 @@ Phx.vista.CorrespondenciaAdministracion = {
 	                
         }
        return tb
-  }
+ },
+ enableDisable:function(val){
+        	
+      if(val =='interna'){
+            this.cmpResponde.store.baseParams.tipo = val;
+            this.cmpResponde.modificado = true;
+            this.cmpResponde.enable();
+            this.cmpResponde.reset()
+         }
+        else if (val =='externa'){
+            this.cmpResponde.store.baseParams.tipo = val;
+            this.cmpResponde.modificado = true;
+            this.cmpResponde.enable();
+            this.cmpResponde.reset();
+            
+         }
+         else {
+         	   this.cmpResponde.disable(); 
+         	    this.cmpResponde.reset();     	
+         }
+         
+     }
 
 	
 };

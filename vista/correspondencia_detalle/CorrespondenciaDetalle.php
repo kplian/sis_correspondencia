@@ -14,10 +14,15 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	constructor:function(config){
 		this.maestro=config.maestro;
 		//* Creación para el combo en la grilla/
-		 this.initButtons=[this.cmbEstado];
 		
+		if ((config.idContenedorPadre=='docs-CORADMG')|| (config.idContenedorPadre=='docs-ADMCORINT')){
+	 	 	  this.initButtons=[this.cmbEstado];
+	 	 }
+
     	//llama al constructor de la clase padre
 		Phx.vista.CorrespondenciaDetalle.superclass.constructor.call(this,config);
+
+
 
 		this.init();
 		this.bloquearMenus();
@@ -50,11 +55,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
 			});
 			 console.log(config);
-	 	 if ((config.idContenedorPadre=='docs-CORADMG')|| (config.idContenedorPadre=='docs-ADMCORINT')){
-	 	 	  this.getBoton('Derivar').show();
-	 	 }else{
-	 	 	this.getBoton('Derivar').hide();
-	 	 }
+	 	 
 	},
 			
 	Atributos:[
@@ -354,7 +355,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	},
 	
 	cmbEstado: new Ext.form.ComboBox({
-				
+				name:'ComboEstado',
 				fieldLabel : 'Estado',
 				typeAhead : true,
 				allowBlank : false,
