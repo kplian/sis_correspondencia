@@ -1171,7 +1171,12 @@ BEGIN
       into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
-      
+--      raise exception '%',v_parametros.estado_reporte;
+      if (v_parametros.estado_reporte='finalizado')then
+          v_filtro=' cor.estado not in (''borrador_detalle_recibido'',''anulado'') ';
+      else
+          v_filtro=' 0=0 ';
+      end if;
 	  SELECT id_persona INTO v_id_persona
       FROM segu.tusuario
       WHERE id_usuario=v_id_usuario_reg;
@@ -1227,7 +1232,8 @@ cor.id_correspondencia,
   '||v_id_funcionario_origen||' as desc_id_funcionario_origen,
   cor.estado,
   cor.fecha_documento,
-  cor.fecha_ult_derivado,
+  cor_fk.fecha_ult_derivado,
+
  (select fecha_reg 
   from corres.tcorrespondencia_estado corest
   where corest.id_correspondencia=cordet.id_correspondencia and estado=''recibido''
@@ -1243,7 +1249,7 @@ inner join segu.vpersona per on per.id_persona = fun.id_persona
   INNER JOIN corres.tcorrespondencia cor_fk on cor_fk.id_correspondencia = cor.id_correspondencia_fk
 left JOIN orga.tfuncionario fun_fk on fun_fk.id_funcionario = cor_fk.id_funcionario
 left join segu.vpersona per_fk on per_fk.id_persona = fun_fk.id_persona
-	WHERE cor.estado not in (''borrador_detalle_recibido'',''anulado'')
+	WHERE '||v_filtro||'
 ORDER BY  id_correspondencia ASC ';
 
 --raise exception '%','llega'||v_id_funcionario_origen;

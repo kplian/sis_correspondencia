@@ -821,7 +821,7 @@ function corregirCorrespondenciaExt()
 		$this->setCount(false);
 
 		$this->setParametro('id_correspondencia','id_correspondencia','integer');
-
+        $this->setParametro('estado_reporte','estado_reporte','varchar');
 		$this->captura('numero','varchar');
 		$this->captura('id_correspondencia_fk','int4');
 		$this->captura('desc_person_fk','text');

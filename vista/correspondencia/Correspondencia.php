@@ -81,6 +81,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
 
 			});
+		
             
 			//9
 			this.addButton('Derivar', {
@@ -678,7 +679,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		 {
 			config : {
 				name : 'fecha_creacion_documento',
-				fieldLabel : 'Fecha Creación del Documento',
+				fieldLabel : 'Fecha Recepción',
 				allowBlank : true,
 				anchor:'80%',
 				//format : 'd-m-Y',
@@ -1486,6 +1487,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_correspondencia : rec.data.id_correspondencia,
 					id_origen: rec.data.id_origen,
 					tipo_corres:rec.data.tipo,
+					estado_reporte:'finalizado',
 					start : 0,
 					limit : 1
 				},
@@ -1496,6 +1498,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 
 		},
+	
 		/* 11 histórico.
 		 * hoja pop up para la hoja de ruta
 		 */

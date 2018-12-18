@@ -146,9 +146,9 @@ Phx.vista.CorrespondenciaAdministracion = {
 	},
 	
 	actualizarSegunTab: function (name, indice) {
-			  var data = this.getSelectedData();
+			var data = this.getSelectedData();
 
-           this.getBoton('Plantilla').hide();
+            this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('SubirDocumento').hide();
             this.getBoton('Adjuntos').hide();
@@ -187,6 +187,7 @@ Phx.vista.CorrespondenciaAdministracion = {
         	
         }else{
         	 this.getBoton('new').show();
+        	 this.getBoton('edit').show();
         	 this.getBoton('del').enable();
              this.getBoton('SubirDocumento').show();
              this.getBoton('Adjuntos').enable();
@@ -240,9 +241,11 @@ Phx.vista.CorrespondenciaAdministracion = {
             this.getBoton('FinCorregir').disable();
             if (data.estado=='borrador_envio' || data.estado=='borrador_recepcion_externo'){
             	this.getBoton('del').enable();
+            	this.getBoton('edit').enable();
        	   
             }else{
             	this.getBoton('del').disable();
+            	this.getBoton('edit').disable();
        	   
             }
        	 	
@@ -305,28 +308,25 @@ Phx.vista.CorrespondenciaAdministracion = {
     	var cmbDoc = this.getComponente('id_documento');
 		
 		if (this.tipo_interfaz=='externa'){
+			    this.adminGrupo({ ocultar: [3,4], mostrar:[0,2,1]});
 	          	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();
 		        this.Cmp.id_acciones.hide();
 		      	this.ocultarComponente(this.Cmp.id_persona_destino);
 		        this.ocultarComponente(this.Cmp.id_institucion_destino);
 		        this.ocultarComponente(this.Cmp.id_acciones);
-         		this.adminGrupo({ ocultar: [3,4], mostrar:[0,2,1]});
          		this.ocultarComponente(this.Cmp.id_funcionario);
        	    	this.ocultarComponente(this.Cmp.asociar);
          		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
          		
 		
-		}else{
+		}else{  this.adminGrupo({ ocultar: [3,4], mostrar:[0,2,1]});
 		       	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();
 		        this.Cmp.id_institucion_remitente.hide();
 		        this.Cmp.id_persona_remitente.hide();
 	            this.ocultarComponente(this.Cmp.id_persona_destino);
 		        this.ocultarComponente(this.Cmp.id_institucion_destino);
-		        //this.ocultarComponente(this.Cmp.id_funcionario_saliente);
- 		        this.adminGrupo({ ocultar: [3,4], mostrar:[0,2,1]});
-		        //this.ocultarComponente(this.Cmp.id_uo);
 		        this.ocultarComponente(this.Cmp.id_persona_remitente);
 		        this.ocultarComponente(this.Cmp.id_institucion_remitente);
 		        this.ocultarComponente(this.Cmp.cite);
@@ -361,6 +361,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 		   
 		  
 		if (this.getComponente('tipo').getValue()=='externa'){  
+			 	this.adminGrupo({ ocultar: [0,3,4]});
 	          	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();
 		        this.Cmp.id_acciones.hide();
@@ -369,7 +370,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 		        this.ocultarComponente(this.Cmp.id_funcionario_saliente);
 		        this.ocultarComponente(this.Cmp.id_institucion_destino);
 		        this.ocultarComponente(this.Cmp.id_acciones);
-         		this.adminGrupo({ ocultar: [0,3]});
+         		this.adminGrupo({ ocultar: [0,3,4]});
          		this.ocultarComponente(this.Cmp.id_funcionario);
          		this.ocultarComponente(this.Cmp.asociar);
          		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
@@ -377,7 +378,7 @@ Phx.vista.CorrespondenciaAdministracion = {
          		
          		
 		   
-		}else{
+		}else{    this.adminGrupo({ ocultar: [0,3,4]});
 		       	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();
 		        this.Cmp.id_institucion_remitente.hide();
@@ -385,7 +386,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 	            this.ocultarComponente(this.Cmp.id_persona_destino);
 		        this.ocultarComponente(this.Cmp.id_institucion_destino);
 		        this.ocultarComponente(this.Cmp.id_funcionario_saliente);
-		         this.adminGrupo({ ocultar: [0,3]});
+		        
 		        this.ocultarComponente(this.Cmp.id_uo);
 		        this.ocultarComponente(this.Cmp.id_persona_remitente);
 		        this.ocultarComponente(this.Cmp.id_institucion_remitente);

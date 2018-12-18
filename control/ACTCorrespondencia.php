@@ -464,6 +464,14 @@ class ACTCorrespondencia extends ACTbase
 	function hojaRuta()
     {
         $this->objFunc = $this->create('MODCorrespondencia');
+		
+		if ($this->objParam->getParametro('estado_reporte')=='borrador'){
+			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA EN BORRADOR';
+		}else{
+			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA';
+		
+		}
+		
         $this->res = $this->objFunc->hojaRuta();
 
 
@@ -482,15 +490,7 @@ class ACTCorrespondencia extends ACTbase
         
               
         $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
-		//$this->objParam->addParametro('estado', $estado);
-       
-		/*$this->objParam->addParametro('estado', $estado);
-        $this->objParam->defecto('ordenacion', 'id_correspondencia');
-        $this->objParam->defecto('dir_ordenacion', 'desc');
-        */
-       	
-		//$this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
-        $this->objFunc = $this->create('MODCorrespondencia');
+		$this->objFunc = $this->create('MODCorrespondencia');
 			
 		$this->res = $this->objFunc->listarHojaPrincipal();
 		
@@ -550,7 +550,7 @@ class ACTCorrespondencia extends ACTbase
 							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
 							</style>
-							<CENTER><div><B>HOJA DE RECEPCION DE CORRESPONDENCIA</B></div></CENTER>
+							<CENTER><div><B>'.$titulo.'</B></div></CENTER>
 							<hr />
 							<table class="tg"  border="0">
 							  <tr>
@@ -707,6 +707,291 @@ window.onload=function(){self.print();}
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+	
+	
+	/****hoja de ruta o hoja de recepcion borrador ************/
+	
+		function hojaRutaBorrador()
+    {
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->hojaRuta();
+
+
+        if ($this->res->getTipo() == 'ERROR') {
+            $this->res->imprimirRespuesta($this->res->generarJson());
+            exit;
+        }
+		
+        $hoja_ruta = $this->res->getDatos();
+        $id_origen = 110;
+       // $id_origen = $hoja_ruta[0]['desc_id_origen'];
+        $id_funcionario_origen = $hoja_ruta[0]['desc_id_funcionario_origen'];
+		$estado = $hoja_ruta[0]['estado'];
+        //obtenemos la correspondencia original el origen
+        
+              
+        $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
+		//$this->objParam->addParametro('estado', $estado);
+       
+		/*$this->objParam->addParametro('estado', $estado);
+        $this->objParam->defecto('ordenacion', 'id_correspondencia');
+        $this->objParam->defecto('dir_ordenacion', 'desc');
+        */
+        $this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
+        $this->objFunc = $this->create('MODCorrespondencia');
+			
+		$this->res = $this->objFunc->listarHojaPrincipal();
+		
+        if ($this->res->getTipo() == 'ERROR') {
+            $this->res->imprimirRespuesta($this->res->generarJson());
+            exit;
+        }
+        $correspondencia = $this->res->getDatos();
+		
+		if ($correspondencia[0]["tipo"]=='externa'){
+			
+			$nombre_completo=$correspondencia[0]["nombre_persona"];
+			
+			if (is_null($nombre_completo)){
+				
+				$remitente=$correspondencia[0]["desc_insti"];
+				
+			}else{
+				
+				$remitente=$correspondencia[0]["desc_insti"].' ' . '<br /><b style="font-size:8pt"> '.$correspondencia[0]["nombre_persona"]. ' </b>';
+			}
+			
+			
+			
+		}else{
+			$remitente=$correspondencia[0]["desc_funcionario"];
+		}
+        //print_r($correspondencia); 
+        
+             // validacion de fecha null para q muestre vacio
+        
+            if (is_null($correspondencia[0]['fecha_documento'])){
+			
+			  $fecha_documento = ' ';
+		      }else{
+		      	
+			 $fecha_documento = strftime("%d/%m/%Y", strtotime($correspondencia[0]['fecha_documento']));
+			 }
+        
+        
+		// vista o formato del pdf -> del boton hoja de recepcion
+
+        $html = '
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<title></title>
+			</head>
+			<body style="position:absolute">
+<!-- agrega marca de agua pero falta centrear en la hoja>
+			<div style="position:absolute">
+  <p style="font-size:120px">Background</p>
+	</div>
+-->
+	<style type="text/css">
+	
+	.watermarked {
+  position: relative;
+}
+
+
+    .watermark
+    {
+        position: absolute;
+        top: 60px;
+        left: 80px;
+        opacity: 0.2;
+    }
+	
+							.tg  {border-collapse:collapse;border-spacing:0; border: 0;}
+							.tg td{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
+							.tg th{font-family:Arial, sans-serif;font-size:12px;font-weight:normal;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+							.tg .tg-e3zv{font-weight:bold}
+							.tg .tg-yw4l{vertical-align:top; border: 0}
+							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
+							</style>
+							
+<div style="position: relative; left: 0; top: 0;">
+        
+        <img src="../../../sis_correspondencia/imagenes/fondo_borrador.png" class="watermark"/>
+    </div>
+							<CENTER>
+							  <spam align = "right">  
+							      <div align="right" style="color:#F00"><!--<img src="../../../sis_correspondencia/imagenes/fondo_borrador.png">-->BORRADOR </div>
+							    </spam > 
+                              <div > 
+							    <p>  <spam > <B>HOJA DE RECEPCION DE CORRESPONDENCIA </B> </spam > 
+						        </p>
+							  </div>
+							</CENTER>
+							<hr />
+							<table class="tg"  border="0">
+							  <tr>
+								<th class="tg-e3zv" colspan="4"> <FONT SIZE=3> Nro: ' . $correspondencia[0]["numero"] . ' </FONT > </th>
+								
+								<th class="tg-e3zv" colspan="3">Fecha Recep: ' . $fecha_documento . '</th>
+								
+							
+								<th class="tg-9hbo" colspan="14">Tipo: ' . $correspondencia[0]["tipo"] . '</th>
+								
+							  </tr>
+							  <tr>
+								<td class="tg-e3zv" colspan="2"> <FONT SIZE=3> Remitente: </FONT ></td>
+								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Referencia:</FONT ></td>
+								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Adjuntos:</FONT ></td>
+								<td class="tg-9hbo" colspan="8"><FONT SIZE=3> Doc. Física Entregada A:</FONT ></td>
+								
+							  </tr>
+							 
+							  <tr>
+								<td class="tg-yw4l" colspan="2">' . $remitente . '<br /><b style="font-size:6pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["referencia"] . '</td>
+								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["otros_adjuntos"] . '</td>
+								<td class="tg-yw4l" colspan="4">' . $correspondencia[0]["mensaje"] . '</td>
+							  </tr>
+							   <tr>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							  </tr>
+							  <tr>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							  </tr>
+							  <tr bgcolor="#CCCCCC">
+							
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td bgcolor="#CCCCCC"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Derivado A:</FONT ></td>
+									<td class="tg-9hbo"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+								
+								<td class="tg-9hbo colspan="2""><FONT SIZE=3> Fecha Recep. </FONT ></td>
+								<td class="tg-9hbo"></td>
+								
+								<td class="tg-9hbo colspan="4""> <FONT SIZE=3>  Mensaje:  </FONT ></td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								
+								<td class="tg-9hbo"> <FONT SIZE=3>  Accion </FONT > </td>
+								<td class="tg-9hbo"></td>
+								
+							  </tr>
+							  ';
+							  
+							  
+		// forecha del detalle de derivacion
+		$vacio=' ';
+							  
+        foreach ($hoja_ruta as $ruta) {
+        		
+        	
+        			 // Validacion del null para q salga blando o vavio en el pdf 
+        		     if (is_null($ruta['fecha_deriv'])){
+			
+			          $fecha_deriv  = '       ';
+		              }else{
+		      	
+			          $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_deriv']));	
+					 // $fecha_deriv = $ruta['fecha_deriv'];	
+			         }
+        	         
+        	         if (is_null($ruta['fecha_recepcion'])){
+			
+			          $fecha_recepcion2  = '       ';
+		              }else{
+		      	
+			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_recepcion']));
+					    // $fecha_recepcion2 = $ruta['fecha_recepcion'];	
+			         }
+        	        
+				 		
+				            	             	
+				   
+			        
+			
+							
+            $html .= '
+							  <tr>
+								<td class="tg-yw4l" colspan="2">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l" colspan="1">' . $fecha_deriv . '</td>
+								
+								<td class="tg-yw4l" colspan="1" >' . $fecha_recepcion2 . '</td>
+								<td class="tg-yw4l" colspan="1"> </td>
+								
+								<td class="tg-yw4l" colspan="4">' . $ruta['mensaje'] . '</td>
+								<td class="tg-yw4l" colspan="2"> </td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['acciones'] . '</td>
+								<td class="tg-yw4l"></td>
+								<td class="tg-yw4l"></td>
+								<td class="tg-yw4l"></td>
+									<td class="tg-yw4l"></td>
+										<td class="tg-yw4l"></td>
+							  </tr> 
+							  <tr> 
+							  <td class="tg-yw4l"></td>
+							  <tr/>
+							  
+							  <tr>
+							    <td class="tg-yw4l" colspan="2">&nbsp;</td>
+							    <td class="tg-yw4l" colspan="2"></td>
+							    <td class="tg-yw4l" colspan="2"></td>
+							    <td class="tg-yw4l" colspan="2" ></td>
+							    <td class="tg-yw4l" colspan="4"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l" colspan="2"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+							    <td class="tg-yw4l"></td>
+						      </tr>';
+							  
+							  
+
+        }
+
+        $html .= '</table>
+
+	<script type="text/javascript">
+window.onload=function(){self.print();}
+</script>
+
+			</body>
+			</html>
+';
+
+        $temp['html'] = $html;
+
+
+        $this->res->setDatos($temp);
+
+
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
+	
+	
+	
+	
+	/*****/
+	
 	
 
     function archivarCorrespondencia()
