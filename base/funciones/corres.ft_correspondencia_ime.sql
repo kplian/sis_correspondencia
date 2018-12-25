@@ -100,20 +100,29 @@ BEGIN
 
     begin
       --obtener el uo del funcionario que esta reenviando
-      --   raise exception '%','ASDFASDF'||v_parametros.vista;
+--        raise exception '%','ASDFASDF'||v_parametros.tipo;
       
         --obtener el departamento
+         IF( v_parametros.tipo='saliente') THEN
+              	  v_id_funcionario=v_parametros.id_funcionario_saliente;
+             ELSE
+            
+                 v_id_funcionario=v_parametros.id_funcionario;
+              END IF;
+              
        v_id_uo= ARRAY[1];
       -- v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
             v_id_uo = corres.f_get_uo_correspondencia_funcionario(
-                 v_parametros.id_funcionario, array ['activo', 'suplente'],
-                 v_parametros.fecha_documento);        
+            v_id_funcionario, array ['activo', 'suplente'],
+            v_parametros.fecha_documento);   
       SELECT dep.id_depto
       INTO v_id_depto
       FROM param.tdepto_uo duo
-           INNER JOIN segu.tsubsistema sis ON sis.codigo = 'CORRES'
-           INNER JOIN param.tdepto dep ON dep.id_depto = duo.id_depto
+      INNER JOIN segu.tsubsistema sis ON sis.codigo = 'CORRES'
+      INNER JOIN param.tdepto dep ON dep.id_depto = duo.id_depto
       WHERE duo.id_uo = ANY (v_id_uo);
+      
+    
      IF v_id_depto is NULL THEN
 
         raise exception
@@ -122,7 +131,7 @@ BEGIN
          v_id_uo;
 
       END IF;
-
+ 
       --   obtener documento
 
       SELECT d.codigo
@@ -139,11 +148,11 @@ BEGIN
             g.gestion = to_char(now()::date, 'YYYY')::integer;
 
       --2 obtener el identificar del periodo
-      if (now()::date=v_parametros.fecha_documento)THEN
+      IF (now()::date=v_parametros.fecha_documento)THEN
           v_fecha_documento=now();
       ELSE
           v_fecha_documento=v_parametros.fecha_documento;
-      end if;
+      END IF;
 
       select p.id_periodo,p.fecha_ini, p.fecha_fin
       into v_id_periodo,v_fecha_ini,v_fecha_fin
@@ -153,12 +162,8 @@ BEGIN
       where p.estado_reg = 'activo' and
            v_fecha_documento::date between p.fecha_ini and
             p.fecha_fin;
-       IF( v_parametros.tipo='saliente') THEN
-              	  v_id_funcionario=v_parametros.id_funcionario_saliente;
-             ELSE
-            
-                 v_id_funcionario=v_parametros.id_funcionario;
-              END IF;
+           
+ 
        if (v_parametros.vista='CorrespondenciaAdministracion') then
           /*  select p.id_periodo, p.fecha_ini, p.fecha_fin
             into v_id,v_fecha_ini,v_fecha_fin
@@ -182,7 +187,7 @@ BEGIN
           
            
             v_fecha_creacion_documento=now();
-             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,v_id_periodo,v_id_uo
+             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id_periodo,v_id_uo
                             [2],v_id_depto,p_id_usuario,'CORRES',NULL);
            /* v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);*/
@@ -199,7 +204,7 @@ BEGIN
       
       
       
-     /* IF( v_parametros.tipo='saliente') THEN
+/*      IF( v_parametros.tipo='saliente') THEN
           
          v_id_uo= ARRAY[1];
 
@@ -210,8 +215,8 @@ BEGIN
          v_parametros.id_funcionario, array ['activo', 'suplente'],
          v_parametros.fecha_documento);
          v_id_funcionario=v_parametros.id_funcionario;
-      END IF;
-      */
+      END IF;*/
+      
     
       --0) Obtener numero de requerimiento en funcion del depto de legal
     
@@ -401,8 +406,8 @@ BEGIN
          ELSE
             update corres.tcorrespondencia
             set 
-                --id_correspondencias_asociadas = string_to_array(
-                --v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+                id_correspondencias_asociadas = string_to_array(
+                v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
                 id_institucion=v_parametros.id_institucion_destino,
                 id_persona=v_parametros.id_persona_destino,
                 id_uo=v_parametros.id_uo,
@@ -1310,7 +1315,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       from corres.tcorrespondencia c
       where c.id_correspondencia = v_parametros.id_correspondencia;
 
-      if(v_estado = 'borrador_recepcion_externo' OR v_estado = 'pendiente_recepcion_externo' OR v_estado_corre='borrador_corre') then
+      if(v_estado = 'borrador_recepcion_externo' OR v_estado = 'borrador_envio'  OR v_estado = 'pendiente_recepcion_externo' OR v_estado_corre='borrador_corre') then
 	       	
       IF(v_parametros.id_correspondencias_asociadas='')THEN
            v_id_correspondencias_asociadas=NULL;

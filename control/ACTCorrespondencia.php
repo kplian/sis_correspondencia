@@ -270,9 +270,9 @@ class ACTCorrespondencia extends ACTbase
     {
     	if($this->objParam->getParametro('id_origen')!=''){
     		$id_correspondencia=$this->objParam->getParametro('id_origen');
-			$this->objParam->addParametro('id_correspondencia',$id_correspondencia);
 		}
-		
+			$this->objParam->addParametro('id_correspondencia',$id_correspondencia);
+			$this->objParam->addParametro('estado_reporte','finalizado');
     	if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODCorrespondencia','hojaRuta');
@@ -709,11 +709,19 @@ window.onload=function(){self.print();}
     }
 	
 	
-	/****hoja de ruta o hoja de recepcion borrador ************/
-	
-		function hojaRutaBorrador()
+	/*********************hoja borrador ***************/
+
+function hojaRutaBorrador()
     {
-        $this->objFunc = $this->create('MODCorrespondencia');
+      $this->objFunc = $this->create('MODCorrespondencia');
+		
+		if ($this->objParam->getParametro('estado_reporte')=='borrador'){
+			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA EN BORRADOR';
+		}else{
+			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA';
+		
+		}
+		
         $this->res = $this->objFunc->hojaRuta();
 
 
@@ -722,23 +730,17 @@ window.onload=function(){self.print();}
             exit;
         }
 		
+		
         $hoja_ruta = $this->res->getDatos();
-        $id_origen = 110;
-       // $id_origen = $hoja_ruta[0]['desc_id_origen'];
+
+        $id_origen = $hoja_ruta[0]['desc_id_origen'];
         $id_funcionario_origen = $hoja_ruta[0]['desc_id_funcionario_origen'];
 		$estado = $hoja_ruta[0]['estado'];
         //obtenemos la correspondencia original el origen
         
               
         $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
-		//$this->objParam->addParametro('estado', $estado);
-       
-		/*$this->objParam->addParametro('estado', $estado);
-        $this->objParam->defecto('ordenacion', 'id_correspondencia');
-        $this->objParam->defecto('dir_ordenacion', 'desc');
-        */
-        $this->objParam->addFiltro("cor.id_correspondencia = " . $id_origen);
-        $this->objFunc = $this->create('MODCorrespondencia');
+		$this->objFunc = $this->create('MODCorrespondencia');
 			
 		$this->res = $this->objFunc->listarHojaPrincipal();
 		
@@ -780,7 +782,6 @@ window.onload=function(){self.print();}
         
         
 		// vista o formato del pdf -> del boton hoja de recepcion
-
         $html = '
 			<!DOCTYPE html>
 			<html lang="en">
@@ -891,7 +892,7 @@ window.onload=function(){self.print();}
 								
 								<td class="tg-9hbo"> <FONT SIZE=3>  Accion </FONT > </td>
 								<td class="tg-9hbo"></td>
-								
+								<td class="tg-9hbo"> <FONT SIZE=3>  Estado </FONT > </td>
 							  </tr>
 							  ';
 							  
@@ -939,6 +940,7 @@ window.onload=function(){self.print();}
 								<td class="tg-yw4l" colspan="4">' . $ruta['mensaje'] . '</td>
 								<td class="tg-yw4l" colspan="2"> </td>
 								<td class="tg-yw4l" colspan="2">' . $ruta['acciones'] . '</td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['estado'] . '</td>
 								<td class="tg-yw4l"></td>
 								<td class="tg-yw4l"></td>
 								<td class="tg-yw4l"></td>

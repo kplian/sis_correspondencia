@@ -81,12 +81,15 @@ header("content-type: text/javascript; charset=UTF-8");
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
             this.adminGrupo({ocultar:[4],mostrar: [0, 1, 2, 3]});
             this.mostrarComponente(cmpFuncionarios);
-
             this.ocultarComponente(this.Cmp.id_persona_destino);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_destino);
             this.ocultarComponente(this.Cmp.fecha_creacion_documento);
+            this.ocultarComponente(this.Cmp.cite);
+            this.ocultarComponente(this.Cmp.otros_adjuntos);
+            this.ocultarComponente(this.Cmp.nro_paginas);
+            
 
             this.getComponente('id_clasificador').enable();
             this.getComponente('fecha_documento').disable();
@@ -107,6 +110,10 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonEdit: function () {
             Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
             this.adminGrupo({mostrar: [2], ocultar: [0, 1, 3]});
+             this.ocultarComponente(this.Cmp.cite);
+            this.ocultarComponente(this.Cmp.otros_adjuntos);
+            this.ocultarComponente(this.Cmp.nro_paginas);
+            
             var data = this.sm.getSelected().data;
             console.log(data, data.estado)
             if (data.estado == 'borrador_envio') {
