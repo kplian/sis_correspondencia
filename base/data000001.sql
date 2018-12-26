@@ -324,3 +324,10 @@ select pxp.f_insert_trol ('Rol de Correspondencia para usuario recepción extern
 select pxp.f_insert_trol ('Administracion de Correspondencia', 'COR-ADMIN', 'CORRES');
 select pxp.f_insert_trol ('Permiso para Emitida Externa', 'COR-EmitidaExterna', 'CORRES');
 /***********************************F-DAT-ALG-CORRES-0-13/12/2018*****************************************/
+/***********************************I-DAT-JMH-CORRES-0-26/12/2018*****************************************/
+select pxp.f_delete_tgui ('CS');
+select pxp.f_insert_tgui ('Valores', 'Valores', 'GRUPCOR.1.1.1.1.2.1.2.5', 'no', 0, 'sis_parametros/vista/field_tipo_archivo/FieldTipoArchivoValor.php', 11, '', '40%', 'CORRES');
+select pxp.f_insert_tgui ('Valores', 'Valores', 'GRUPCOR.1.1.1.1.2.1.2.6', 'no', 0, 'sis_parametros/vista/field_valor_archivo/frmValor.php', 11, '', 'frmValor', 'CORRES');
+select pxp.f_insert_tgui ('Catálogo', 'Catálogo', 'GRUPCOR.1.1.1.1.2.1.2.6.1', 'no', 0, 'sis_parametros/vista/catalogo/Catalogo.php', 12, '', 'Catalogo', 'CORRES');
+select pxp.f_insert_tgui ('Adjuntos', 'Adjuntos', 'CEMITIDA.6', 'no', 0, 'sis_correspondencia/vista/adjunto/Adjunto.php?estado=', 4, '', 'Adjunto', 'CORRES');
+/***********************************F-DAT-JMH-CORRES-0-26/12/2018*****************************************/
