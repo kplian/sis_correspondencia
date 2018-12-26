@@ -22,7 +22,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.CorrespondenciaDetalle.superclass.constructor.call(this,config);
 
-
+		
 
 		this.init();
 		this.bloquearMenus();
@@ -327,12 +327,11 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	bnew:true,
 	
  
-	iniciarEventos:function(){ 
-	
+	iniciarEventos:function(){
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
-			  		
-		this.cmbEstado.store.load({paraºms:{start:0,limit:this.tam_pag},
+		  		
+		this.cmbEstado.store.load({params:{start:0,limit:this.tam_pag},
            callback : function (r) {
    		    console.log('r',r)
            		if (r.length == 1 ) {
@@ -417,9 +416,9 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			  		}
 			   }
 	
-		 
+		 this.cmbEstado.reset();	
     	 this.store.baseParams={id_correspondencia_fk:this.maestro.id_correspondencia};
-		 this.load({params:{start:0, limit:50}})
+		// this.load({params:{start:0, limit:50}})
    	},
 	preparaMenu:function(n){
       	
