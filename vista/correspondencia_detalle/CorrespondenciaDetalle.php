@@ -425,6 +425,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
       	
       	Phx.vista.CorrespondenciaDetalle.superclass.preparaMenu.call(this,n);
       	
+      	
+      	
 		  var data = this.getSelectedData();
 		  var tb =this.tbar;
 		    if(this.maestro.estado=='enviado' ){

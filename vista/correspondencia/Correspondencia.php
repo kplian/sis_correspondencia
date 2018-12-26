@@ -469,9 +469,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				typeAhead : true,
 				allowBlank : false,
 				triggerAction : 'all',
-				emptyText : 'Seleccione Opcion...',
 				selectOnFocus : true,
+				forceSelection: true,
 				mode : 'local',
+				minChars: 2,
 				//valorInicial:{ID:'interna',valor:'Interna'},
 				store : new Ext.data.ArrayStore({
 					fields : ['ID', 'valor'],
@@ -500,7 +501,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			valorInicial : '2media',
 			filters : {
 				pfiltro : 'cor.nivel_prioridad',
-				type : 'string'
+				type : 'string'	
 			},
 			id_grupo : 2,
 			default:'Media',
