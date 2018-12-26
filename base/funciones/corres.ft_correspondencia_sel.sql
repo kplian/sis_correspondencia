@@ -29,20 +29,19 @@ DECLARE
 	v_nombre_funcion   	text;
 	v_resp				varchar;
 
-  v_filtro            varchar;
-  v_id_origen				INTEGER;
+  v_filtro                varchar;
+  v_id_origen			  INTEGER;
   v_id_funcionario_origen integer;
-  v_permiso VARCHAR;
-  v_deptos VARCHAR;
-  v_tipo_correspondencia varchar;
-  v_id_usuario_reg INTEGER;
-  v_id_persona INTEGER;
-  v_cargo      varchar;
-  v_id_depto   integer;
-  v_permitir_todo varchar;
-  v_fecha_consulta  date;
-  v_id_funcionario  integer;
-   --v_id_funcionario  integer;
+  v_permiso               VARCHAR;
+  v_deptos                VARCHAR;
+  v_tipo_correspondencia  varchar;
+  v_id_usuario_reg        INTEGER;
+  v_id_persona            INTEGER;
+  v_cargo                 varchar;
+  v_id_depto              integer;
+  v_permitir_todo         varchar;
+  v_fecha_consulta        date;
+  v_id_funcionario        integer;
   v_id_funcionarios_permitidos   INTEGER[];
   v_id_asistente     INTEGER;
 			    
@@ -338,7 +337,17 @@ BEGIN
                          pxp.f_fecha_literal(cor.fecha_documento) as fecha_documento_literal,
                          cor.fecha_ult_derivado,
                          INITCAP(coalesce(persona.nombre_completo1,'' ''))::text as nombre_persona_plantilla,
-                         observaciones_archivado 
+                         cor.observaciones_archivado,
+                         
+                                 coalesce(
+                        (CASE WHEN (coror.id_correspondencias_asociadas is not null) then
+
+                                      (
+                                       SELECT   pxp.list(corr.numero) 
+                                       FROM corres.tcorrespondencia corr
+                                       WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
+                                   END ),'' '')AS  correspondencias_asociadas
+                                 
                        	from corres.tcorrespondencia cor						
                         inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         
@@ -349,6 +358,8 @@ BEGIN
                         inner join segu.vpersona person on person.id_persona=fun.id_persona
 				       
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
+                        inner join corres.tcorrespondencia coror on coror.id_correspondencia=cor.id_origen
+                     
                         inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
@@ -1465,7 +1476,16 @@ where tiene is not null ';
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
-                                END )AS  acciones
+                                END )AS  acciones,
+                                
+                                 coalesce(
+                        (CASE WHEN (coror.id_correspondencias_asociadas is not null) then
+
+                                      (
+                                       SELECT   pxp.list(corr.numero) 
+                                       FROM corres.tcorrespondencia corr
+                                       WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
+                                   END ),'' '')AS  correspondencias_asociadas
 
 
                         from corres.tcorrespondencia cor
@@ -1585,7 +1605,7 @@ where tiene is not null ';
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
 
-      
+     -- raise exception '%',v_parametros.id_correspondencia;
       --Sentencia de la consulta
       v_consulta:=' select
                     numero,
@@ -1596,7 +1616,8 @@ where tiene is not null ';
                     fun.desc_funcionario1 as desc_funcionario,
                     otros_adjuntos,
                     referencia,
-                    mensaje                                                    
+                    mensaje,
+                    cor.fecha_documento                                                    
                     from corres.tcorrespondencia cor
                    left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                    left join segu.vpersona persona on persona.id_persona=cor.id_persona

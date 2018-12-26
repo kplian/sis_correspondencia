@@ -17,8 +17,8 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Historico.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen}})
-		this.argumentExtraSubmit={'id_correspondencia':this.id_origen};
+		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen,'estado_reporte':'finalizado'}})
+		this.argumentExtraSubmit={'id_correspondencia':this.id_origen,'estado_reporte':'finalizado'};
 
 
 	},
@@ -203,7 +203,24 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 			grid : true,
 			form : false,
 			bottom_filter : true
-		}
+		},
+		{
+			config : {
+				name : 'estado_reporte',
+				fieldLabel : 'Estado',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'estado_reporte',
+				type : 'string'
+			},
+			id_grupo : 0,
+			default:'finalizado',
+			grid : false,
+			form : false,
+			bottom_filter : false
+		},
 	],
 		fileUpload:false,
 	tam_pag:50,	

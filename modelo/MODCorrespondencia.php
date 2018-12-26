@@ -120,6 +120,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('fecha_ult_derivado','timestamp');
 		$this->captura('persona_nombre_plantilla','text');
 		$this->captura('observaciones_archivado','text');
+		$this->captura('desc_correspondencias_asociadas','text');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -1010,6 +1011,7 @@ function corregirCorrespondenciaExt()
 	    $this->captura('estado_corre','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('acciones','text');
+		$this->captura('desc_correspondencias_asociadas','text');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1187,10 +1189,9 @@ function corregirCorrespondenciaExt()
   		 $this->captura('otros_adjuntos','VARCHAR(2000)');
 		 $this->captura('referencia','VARCHAR(500)');
   		 $this->captura('mensaje','TEXT');
+		 $this->captura('fecha_documento','date');
+         
 		
-     
-		
-
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->getConsulta();

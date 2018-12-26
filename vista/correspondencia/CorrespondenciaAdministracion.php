@@ -318,11 +318,13 @@ Phx.vista.CorrespondenciaAdministracion = {
          		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
          		
 		
-		}else{  this.adminGrupo({ ocultar: [3,4], mostrar:[0,2,1]});
+		}else{  this.adminGrupo({ ocultar: [4], mostrar:[0,2,1]});
 		       	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();
 		        this.Cmp.id_institucion_remitente.hide();
 		        this.Cmp.id_persona_remitente.hide();
+		        this.mostrarComponente(this.Cmp.id_funcionarios);
+		       
 	            this.ocultarComponente(this.Cmp.id_persona_destino);
 		        this.ocultarComponente(this.Cmp.id_institucion_destino);
 		        this.ocultarComponente(this.Cmp.id_persona_remitente);
@@ -331,7 +333,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 		        this.ocultarComponente(this.Cmp.otros_adjuntos);
 		        this.ocultarComponente(this.Cmp.nro_paginas);
 		        this.ocultarComponente(this.Cmp.fecha_creacion_documento);
-		
+		      
 		}
         if (this.tipo_interfaz=='externa'){
         	

@@ -183,7 +183,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		var cmbDoc = this.getComponente('id_documento');
 	
 		Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonEdit.call(this);
-
+        this.adminGrupo({ ocultar: [0,3,4],mostrar:[2]});
 		this.ocultarComponente(this.Cmp.id_funcionario);
 		this.ocultarComponente(this.Cmp.id_uo);
 		this.ocultarComponente(this.Cmp.id_funcionario_saliente);
@@ -194,7 +194,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
 		this.ocultarComponente(this.Cmp.fecha_creacion_documento);  
-		this.adminGrupo({ ocultar: [0,3,4],mostrar:[2]});
+		
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
