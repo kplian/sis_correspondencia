@@ -55,6 +55,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
 			});
 			 console.log(config);
+			 
+	
 	 	 
 	},
 			
@@ -381,10 +383,12 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
             return false;
         }
     },
-	onReloadPage:function(m){
+	onReloadPage:function(config){
 
        
-		this.maestro=m;
+		this.maestro=config;
+		console.log(config);
+		
 		this.Atributos[1].valorInicial=this.maestro.id_correspondencia;
 
 		if(this.maestro.tipo=='interna' || this.maestro.tipo=='externa'){
@@ -418,6 +422,12 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	
 		 this.cmbEstado.reset();	
     	 this.store.baseParams={id_correspondencia_fk:this.maestro.id_correspondencia};
+    	 
+    	if ((config.idContenedorPadre!='docs-CORADMG')|| (config.idContenedorPadre!='docs-ADMCORINT')){
+	 	 	  this.load({params:{start:0, limit:50}})
+	 	 	  console.log('aqui ingreso en el load');
+	 	 }
+    	 
 		// this.load({params:{start:0, limit:50}})
    	},
 	preparaMenu:function(n){
