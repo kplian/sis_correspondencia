@@ -92,7 +92,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	   		
 	   	},this)
    },
-   east : undefined,
+  // east : undefined,
    
   
 	getParametrosFiltro: function () {
