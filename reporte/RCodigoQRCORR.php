@@ -94,7 +94,7 @@ class RCodigoQRCORR extends ReportePDF {
 
 	function imprimirCodigo($style){
 		$this->AddPage();
-		$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 1, 1,80,0, $style,'T',true);
+		//$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 1, 1,80,0, $style,'T',true);
 		$this->SetFont('','B',30);		
 		$this->ln(5);
 		$this->SetFont('','',22);	
@@ -185,10 +185,10 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 
 	function imprimirCodigo($style){
 		$this->AddPage();
-		$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 100, 1, 15,0, $style,'T',true);
+		//$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 100, 1, 15,0, $style,'T',true);
 		$this->SetFont('','B',15);		
 		$this->ln(5);
-		$this->SetFont('','',7);	
+		$this->SetFont('','',10);	
 		$this->Text(115, 3, 'RECIBIDO', false, false, true, 0,5,'',false,'',1);
 		$this->Text(115, 6, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',1);
 		$this->Text(115, 9, trim($this->cod['num']), false, false, true, 0,5,'',false,'',1);				

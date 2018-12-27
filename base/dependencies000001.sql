@@ -6175,3 +6175,6 @@ select pxp.f_insert_trol_procedimiento_gui ('COR-ADMIN', 'CO_CODEAN_SEL', 'CORAD
 select pxp.f_insert_tprocedimiento_gui ('CO_HABCORR_UPD', 'CORADMG', 'no');
 select pxp.f_insert_trol_procedimiento_gui ('COR-ADMIN', 'CO_HABCORR_UPD', 'CORADMG');
 /***********************************F-DEP-ALG-CORRES-1-13/12/2018*****************************************/
+/***********************************I-DEP-AVQ-CORRES-2-27/12/2018*****************************************/
+ALTER TABLE corres.tcorrespondencia ADD COLUMN estado_corre  VARCHAR(30);
+/***********************************F-DEP-AVQ-CORRES-2-27/12/2018*****************************************/
