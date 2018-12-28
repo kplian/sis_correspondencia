@@ -11237,3 +11237,30 @@ select pxp.f_insert_trol_procedimiento_gui ('COR-ADMIN', 'CO_ACCO_SEL', 'ACCCOR'
 /***********************************I-DEP-AVQ-CORRES-0-27/12/2018*****************************************/
 ALTER TABLE corres.tcorrespondencia ADD COLUMN estado_corre  VARCHAR(30);
 /***********************************F-DEP-AVQ-CORRES-0-27/12/2018*****************************************/
+/***********************************I-DEP-AVQ-CORRES-0-28/12/2018*****************************************/
+update segu.tgui
+set parametros= '{"tipo":"interna"}'
+where codigo_gui='CRECI';
+
+update segu.tgui
+set parametros= '{"tipo":"externa"}'
+where codigo_gui='RECEPEXTE';
+
+update segu.tgui
+set parametros= '{"tipo":"externa"}'
+where codigo_gui='DEVCOREX';
+
+update segu.tgui
+set parametros= '{"tipo":"externa"}'
+where codigo_gui='COREXT';
+
+update segu.tgui
+set parametros= '{"tipo":"externa","estado":"borrador_recepcion_externo"}'
+where codigo_gui='CORADMG';
+
+update segu.tgui
+set parametros= '{"tipo":"interna","estado":"borrador_envio"}'
+where codigo_gui='ADMCORINT';
+
+/***********************************F-DEP-AVQ-CORRES-0-28/12/2018*****************************************/
+
