@@ -35,6 +35,9 @@ header("content-type: text/javascript; charset=UTF-8");
 			    this.Atributos[this.getIndAtributo('nro_paginas')].grid=false;
 			    this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
 			    this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
+			    this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+			    this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
+			    
 			    
                     
             Phx.vista.CorrespondenciaEmitida.superclass.constructor.call(this, config);   
@@ -89,8 +92,9 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.cite);
             this.ocultarComponente(this.Cmp.otros_adjuntos);
             this.ocultarComponente(this.Cmp.nro_paginas);
-            
-
+            this.ocultarComponente(this.Cmp.persona_firma);
+            this.ocultarComponente(this.Cmp.tipo_documento);
+ 			    
             this.getComponente('id_clasificador').enable();
             this.getComponente('fecha_documento').disable();
             this.getComponente('mensaje').enable();
@@ -110,9 +114,10 @@ header("content-type: text/javascript; charset=UTF-8");
         onButtonEdit: function () {
             Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
             this.adminGrupo({mostrar: [2], ocultar: [0, 1, 3]});
-             this.ocultarComponente(this.Cmp.cite);
+            this.ocultarComponente(this.Cmp.cite);
             this.ocultarComponente(this.Cmp.otros_adjuntos);
             this.ocultarComponente(this.Cmp.nro_paginas);
+            this.ocultarComponente(this.Cmp.tipo_documento);
             
             var data = this.sm.getSelected().data;
             console.log(data, data.estado)

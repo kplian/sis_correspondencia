@@ -1268,7 +1268,7 @@ BEGIN
                   id_gestion, id_institucion, id_periodo, id_persona, id_uo,
                     mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
                     fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador,nro_paginas,otros_adjuntos,cite,origen,fecha_creacion_documento)
+                    id_clasificador,nro_paginas,otros_adjuntos,cite,origen,fecha_creacion_documento,persona_firma,tipo_documento)
       values ('borrador_recepcion_externo', 'activo',
         v_parametros.fecha_documento, v_id_correspondencias_asociadas, 
         v_parametros.id_depto, v_parametros.id_documento, NULL,
@@ -1278,7 +1278,9 @@ BEGIN
                v_parametros.mensaje, 0, --nivel de anidamiento del arbol
              v_parametros.nivel_prioridad, v_num_corre, v_parametros.referencia,
                'externa', now(), p_id_usuario, null, null,
-               v_parametros.id_clasificador, v_parametros.nro_paginas, v_parametros.otros_adjuntos, v_parametros.cite,v_origen,v_fecha_creacion_documento) RETURNING id_correspondencia
+               v_parametros.id_clasificador, v_parametros.nro_paginas, 
+               v_parametros.otros_adjuntos, v_parametros.cite,v_origen,
+               v_fecha_creacion_documento,v_parametros.persona_firma,v_parametros.tipo_documento) RETURNING id_correspondencia
       into v_id_correspondencia;
 
       v_id_origen = v_id_correspondencia;
@@ -1355,7 +1357,9 @@ elsif(p_transaccion='CO_COREXT_MOD')then
             otros_adjuntos = v_parametros.otros_adjuntos,
             cite = v_parametros.cite,
             fecha_mod = now(),
-            id_usuario_mod = p_id_usuario
+            id_usuario_mod = p_id_usuario,
+            persona_firma=v_parametros.persona_firma,
+            tipo_documento=v_parametros.tipo_documento
             --origen = v_origen
         where id_correspondencia = v_parametros.id_correspondencia;
 

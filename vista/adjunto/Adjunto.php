@@ -339,8 +339,10 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		},
        onButtonNew: function () {
        	    // alert (this.estado_corre);
+       	    
        	     if (this.estado_corre=='borrador_corre'){
        	        	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+       	        	
 	          	
        	     }else{
        	     	
@@ -354,18 +356,30 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
              
         },
         onButtonEdit: function () {
-             if (this.estado=='enviado'){
-             	alert ('No se puede modificar los archivos ya enviados');
-             }else{
-             	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
-             }
+        	 if (this.estado_corre=='borrador_corre'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
+       	        	
+	          	
+       	     }else{
+	             if (this.estado=='enviado'){
+	             	alert ('No se puede modificar los archivos ya enviados');
+	             }else{
+	             	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
+	             }
+	         }
         },
         onButtonDel: function () {
-             if (this.estado=='enviado'){
-             	alert ('No se puede eliminar los archivos ya enviados');
-             }else{
-             	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
-             }
+        	 if (this.estado_corre=='borrador_corre'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
+       	        	
+	          	
+       	     }else{
+		             if (this.estado=='enviado'){
+		             	alert ('No se puede eliminar los archivos ya enviados');
+		             }else{
+		             	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
+		             }
+		     }
         },
 		verArchivoAdjunto:function(){
 

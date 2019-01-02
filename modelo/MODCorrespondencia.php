@@ -121,6 +121,8 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('persona_nombre_plantilla','text');
 		$this->captura('observaciones_archivado','text');
 		$this->captura('desc_correspondencias_asociadas','text');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('persona_firma','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -450,6 +452,9 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('otros_adjuntos','varchar');
 		$this->captura('nro_paginas','int');
 		$this->captura('desc_correspondencias_asociadas','text');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('persona_firma','varchar');
+		
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1012,6 +1017,9 @@ function corregirCorrespondenciaExt()
 		$this->captura('desc_funcionario','text');
 		$this->captura('acciones','text');
 		$this->captura('desc_correspondencias_asociadas','text');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('persona_firma','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1052,6 +1060,9 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 		$this->setParametro('cite','cite','varchar');
         $this->setParametro('fecha_creacion_documento','fecha_creacion_documento','date');
+		$this->setParametro('persona_firma','persona_firma','varchar');
+		$this->setParametro('tipo_documento','tipo_documento','varchar');
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -1081,6 +1092,9 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('nro_paginas','nro_paginas','int4');
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 	    $this->setParametro('cite','cite','varchar');
+		$this->setParametro('persona_firma','persona_firma','varchar');
+		$this->setParametro('tipo_documento','tipo_documento','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

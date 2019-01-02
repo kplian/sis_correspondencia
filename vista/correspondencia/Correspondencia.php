@@ -1178,7 +1178,58 @@ header("content-type: text/javascript; charset=UTF-8");
 			egrid : true,
 			disabled : true
 			
-		   }
+		   },{
+			config : {
+				name : 'persona_firma',
+				fieldLabel : 'Persona que Firma Carta',
+				width : 400,
+				//growMin : 100,
+				//grow : true,
+				gwidth : 400
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.persona_firma',
+				type : 'string'
+			},
+			id_grupo : 1,
+			grid : true,
+			form : true,
+			bottom_filter : false,
+			egrid : false
+			
+		   },  {
+			config : {
+				name : 'tipo_documento',
+				fieldLabel : 'Tipo Documento',
+				typeAhead : true,
+				allowBlank : false,
+				triggerAction : 'all',
+				emptyText : 'Seleccione Opcion...',
+				selectOnFocus : true,
+				width : 250,
+				mode : 'local',
+
+				store : new Ext.data.ArrayStore({
+					fields : ['ID', 'valor'],
+					data : [['boleta_de_garantia', 'Boleta de Garantia'], ['factura', 'Factura'], ['otros', 'Otros']],
+
+				}),
+				valueField : 'ID',
+				displayField : 'valor'
+
+			},
+			type : 'ComboBox',
+			valorInicial : 'otros',
+			filters : {
+				pfiltro : 'cor.tipo_documento',
+				type : 'string'
+			},
+			id_grupo : 2,
+			grid : true,
+			form : true
+		}
+		   
 		],
 		title : 'Correspondencia',
 		ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
@@ -1239,17 +1290,20 @@ header("content-type: text/javascript; charset=UTF-8");
 		    'nro_paginas',
 		    'id_persona_remitente',
 		    'id_persona_destino',
-		    'id_persona',
+		    'id_persona',  
 		    'nombre_completo1',
 		    'otros_adjuntos',
 		    'adjunto','origen',
 		 	{name:'acciones', type: 'string'},
-			{name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+			{name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s'},
 		 	{name:'fecha_ult_derivado', type: 'date',dateFormat:'Y-m-d H:i:s.u'},'desc_funcionario_origen',
 			{name:'observaciones_archivado', type: 'string'},
 			{name:'sw_archivado', type: 'string'},
 			{name:'desc_correspondencias_asociadas', type: 'string'},
-			{name:'estado_corre', type: 'string'}],
+			{name:'estado_corre', type: 'string'},
+			{name:'tipo_documento', type: 'string'},
+			{name:'persona_firma', type: 'string'}
+			],
 		 	arrayDefaultColumHidden:['estado','nivel_prioridad','id_clasificador','estado','tipo','fecha_creacion_documento','origen','estado_reg','fecha_mod','usr_mod','id_uo'],
 	
 		sortInfo : {
@@ -1387,6 +1441,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					width : 900,
 					height : 400
 				}, rec.data, this.idContenedor, 'Adjunto')
+				
 			},
 		//5
 		BCorregir : function() {

@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -304,6 +305,7 @@ BEGIN
                             usu2.cuenta as usr_mod,
                             doc.descripcion as desc_documento,
                             depto.nombre as desc_depto,
+                            
                             funcionario.desc_funcionario1 as desc_funcionario,
                             cor.ruta_archivo,
                             cor.version,                            
@@ -321,8 +323,8 @@ BEGIN
                             cor.otros_adjuntos,
                             coalesce (insti.direccion,'''')||'' ''||coalesce(insti.telefono1,'''')||'' ''||coalesce(insti.telefono2,'''')||'' ''||coalesce(insti.celular1,'''')||'' ''||coalesce(insti.celular2,''''),
                             initcap(person.nombre)||'' ''||initcap(person.ap_paterno)||'' ''||initcap(person.ap_materno) as desc_funcionario_de_plantilla,
-                              (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_origen) as adjunto,
-                              cor.fecha_creacion_documento,
+                              (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_origen and estado_reg=''activo'') as adjunto,
+                              cor.fecha_creacion_documento as fecha_creacion_documento,
                                  
                         (CASE WHEN (cor.id_acciones is not null) then
 
@@ -338,15 +340,16 @@ BEGIN
                          cor.fecha_ult_derivado,
                          INITCAP(coalesce(persona.nombre_completo1,'' ''))::text as nombre_persona_plantilla,
                          cor.observaciones_archivado,
-                         
-                                 coalesce(
+                                  coalesce(
                         (CASE WHEN (coror.id_correspondencias_asociadas is not null) then
 
                                       (
                                        SELECT   pxp.list(corr.numero) 
                                        FROM corres.tcorrespondencia corr
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
-                                   END ),'' '')AS  correspondencias_asociadas
+                                   END ),'' '')AS  correspondencias_asociadas,
+                                   cor.tipo_documento,
+                                   cor.persona_firma
                                  
                        	from corres.tcorrespondencia cor						
                         inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
@@ -939,8 +942,8 @@ BEGIN
 						usu2.cuenta as usr_mod,
                         doc.descripcion as desc_documento	,
                         cor.origen,
-                        emp_recepciona1.desc_funcionario1 as desc_funcionario,
-                        emp_recepciona.desc_funcionario1 as desc_funcionario_origen,
+                        coalesce(emp_recepciona1.desc_funcionario1,''Recepcionista'') as desc_funcionario,
+                         emp_recepciona.desc_funcionario1 as desc_funcionario_origen,
                         (CASE WHEN (cor.id_acciones is not null) then
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
@@ -960,7 +963,7 @@ BEGIN
                                 (select cor1.version from corres.tcorrespondencia cor1 where cor1.id_correspondencia=cor.id_correspondencia_fk) as version,
                                 (select cor1.ruta_archivo from corres.tcorrespondencia cor1 where cor1.id_correspondencia=cor.id_correspondencia_fk) as ruta_archivo,
                                 cor.sw_archivado,
-                                (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_origen) as adjunto,
+                                (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_origen and estado_reg=''activo'') as adjunto,
                                 array_to_string(cor.id_acciones,'','') as id_acciones,
                                  cor.fecha_creacion_documento,
                                  cor.fecha_ult_derivado,
@@ -975,7 +978,9 @@ BEGIN
                                        SELECT   pxp.list(corr.numero) 
                                        FROM corres.tcorrespondencia corr
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
-                                   END ),'' '')AS  correspondencias_asociadas
+                                   END ),'' '')AS  correspondencias_asociadas,
+                                       cor.tipo_documento,
+                                   cor.persona_firma
                                 
                                 
                      	from corres.tcorrespondencia cor
@@ -1462,7 +1467,7 @@ where tiene is not null ';
                             cor.id_persona as id_persona_remitente,
                             coalesce(persona.nombre_completo1,'''') as desc_persona,
                             coror.otros_adjuntos,
-                            (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_correspondencia) as adjunto,
+                            (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_origen and estado_reg=''activo'') as adjunto,
                             cor.sw_fisico,
                             cor.fecha_creacion_documento,
                             cor.observaciones_archivado,
@@ -1485,7 +1490,9 @@ where tiene is not null ';
                                        SELECT   pxp.list(corr.numero) 
                                        FROM corres.tcorrespondencia corr
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
-                                   END ),'' '')AS  correspondencias_asociadas
+                                   END ),'' '')AS  correspondencias_asociadas,
+                                       cor.tipo_documento,
+                                   cor.persona_firma
 
 
                         from corres.tcorrespondencia cor

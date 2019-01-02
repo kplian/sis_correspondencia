@@ -79,6 +79,8 @@ Phx.vista.CorrespondenciaAdministracion = {
 		    this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=true;
 		    this.Atributos[this.getIndAtributo('id_documento')].grid=true;
 		    this.Atributos[this.getIndAtributo('id_uo')].grid=true;
+		    this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
 	      }
 	    Phx.vista.CorrespondenciaAdministracion.superclass.constructor.call(this,config);
 	    
@@ -333,6 +335,8 @@ Phx.vista.CorrespondenciaAdministracion = {
 		        this.ocultarComponente(this.Cmp.otros_adjuntos);
 		        this.ocultarComponente(this.Cmp.nro_paginas);
 		        this.ocultarComponente(this.Cmp.fecha_creacion_documento);
+		        this.ocultarComponente(this.Cmp.persona_firma);
+                this.ocultarComponente(this.Cmp.tipo_documento);
 		      
 		}
         if (this.tipo_interfaz=='externa'){
