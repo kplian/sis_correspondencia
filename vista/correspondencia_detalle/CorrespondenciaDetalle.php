@@ -56,7 +56,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			});
 			 console.log(config);
 			 
-	
+	this.iniciarEventos();
 	 	 
 	},
 			
@@ -332,8 +332,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	iniciarEventos:function(){
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
-		  		
-		this.cmbEstado.store.load({params:{start:0,limit:this.tam_pag},
+		  		console.log('entra a eventos');
+	/*	this.cmbEstado.store.load({params:{start:0,limit:this.tam_pag},
            callback : function (r) {
    		    console.log('r',r)
            		if (r.length == 1 ) {
@@ -341,8 +341,11 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
            			this.cmbEstado.fireEvent('select',this.cmbEstado, this.cmbEstado.store.getById(r[0].data.ID));         
                 }
             }, scope : this
-        });
-			  
+        });*/
+		//this.cmbFuncionario = this.getComponente('id_funcionario');
+		this.Cmp.id_funcionario.on('select', function(c, r, i){
+			console.log(this.store.data.length);
+			console.log(this.store.data.items)}, this);	  
 		
 	},
 	getParametrosFiltro: function () {
