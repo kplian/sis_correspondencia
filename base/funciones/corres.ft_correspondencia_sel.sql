@@ -1612,7 +1612,7 @@ where tiene is not null ';
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
 
-     -- raise exception '%',v_parametros.id_correspondencia;
+      --raise exception '%',v_parametros.filtro;
       --Sentencia de la consulta
       v_consulta:=' select
                     numero,
@@ -1629,12 +1629,10 @@ where tiene is not null ';
                    left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                    left join segu.vpersona persona on persona.id_persona=cor.id_persona
                    left join orga.vfuncionario fun on fun.id_funcionario=cor.id_funcionario
-                   where id_origen= '||v_id_origen||' and ';
+                   where cor.id_correspondencia= '||v_id_origen||' and ';
 
 			v_consulta:=v_consulta||v_parametros.filtro;
-  --raise exception '%',v_parametros.filtro;         
-
-      --Devuelve la respuesta
+       --Devuelve la respuesta
       return v_consulta;
 
     end;
