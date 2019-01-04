@@ -26,6 +26,15 @@ class ACTCorrespondencia extends ACTbase
         $this->objParam->defecto('dir_ordenacion', 'desc');
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
 		$this->objParam->addFiltro("cor.sw_archivado = ''no'' ");
+		if ($this->objParam->getParametro('vista')=='CorrespondenciaAdministracion' && $this->objParam->getParametro('estado')=='enviado')
+		    {
+			}
+			else{
+			//$this->objParam->addFiltro(" cor.id_correspondencia_fk is null ");
+			       
+			$this->objParam->addFiltro(" (cor.estado_corre is null or cor.estado_corre not in (''borrador_corre''))");
+	     	}
+		
 		if($this->objParam->getParametro('fecha')==''){
 				$date = date('d/m/Y');
 			} else {
@@ -235,6 +244,14 @@ class ACTCorrespondencia extends ACTbase
 
         $this->objParam->addFiltro("cor.sw_archivado = ''no'' ");
 
+		if ($this->objParam->getParametro('vista')=='CorrespondenciaAdministracion' && $this->objParam->getParametro('estado')=='enviado')
+		    {
+			}
+			else{
+			//$this->objParam->addFiltro(" cor.id_correspondencia_fk is null ");
+			   
+			$this->objParam->addFiltro(" (cor.estado_corre is null or cor.estado_corre not in (''borrador_corre''))");
+	     	}
 		
 			
 		if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
@@ -549,6 +566,19 @@ class ACTCorrespondencia extends ACTbase
 							.tg .tg-e3zv{font-weight:bold}
 							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
+							.tg .tg-9hbd{background-color: orange;
+							             margin: 5px;
+										 padding: 5px;
+										 font-family:Arial, sans-serif;
+										 font-size:12px;
+										 border-style:solid;
+										 border-width:1px;
+										 overflow:hidden;
+										 word-break:normal;
+										 font-weight:bold;
+										 vertical-align:top}     
+							.tg .tg-9hbd1{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:normal;vertical-align:top}
+						
 							</style>
 							<CENTER><div><B>'.$titulo.'</B></div></CENTER>
 							<hr />
@@ -581,13 +611,14 @@ class ACTCorrespondencia extends ACTbase
 							  
 							 </table> 
 						<table class="tg"  border="0">
+							  <th class="tg-e3zv" colspan="6" >DETALLE DE DERIVACIONES</th>
 							  <tr bgcolor="#CCCCCC">
-							    <td class="tg-9hbo"> <FONT SIZE=3> Usuario Reg. </FONT ></td>
-								<td class="tg-9hbo"> <FONT SIZE=3> Derivado A:</FONT ></td>
-								<td class="tg-9hbo"> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
-								<td class="tg-9hbo"> <FONT SIZE=3> Mensaje:  </FONT ></td>
-								<td class="tg-9hbo"> <FONT SIZE=3> Accion </FONT > </td>
-								<td class="tg-9hbo"><FONT SIZE=3> Fecha Recep. </FONT ></td>
+							    <td class="tg-9hbd"> <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Derivado A:</FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Mensaje:  </FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Accion </FONT > </td>
+								<td class="tg-9hbd"><FONT SIZE=3> Fecha Recep. </FONT ></td>
 						      </tr>
 							  ';
 							  
@@ -625,16 +656,13 @@ class ACTCorrespondencia extends ACTbase
 							
             $html .= '
 							  <tr>
-								<td class="tg-yw4l" >(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
-								<td class="tg-yw4l">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l">' . $fecha_deriv . '</td>
-								<td class="tg-yw4l">' . $ruta['mensaje'] . '</td>
-								<td class="tg-yw4l">' . $ruta['acciones'] . '</td>
-								<td class="tg-yw4l">' . $fecha_recepcion2 . '</td>
+								<td class="tg-9hbd1">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
+								<td class="tg-9hbd1">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-9hbd1">' . $fecha_deriv . '</td>
+								<td class="tg-9hbd1">' . $ruta['mensaje'] . '</td>
+								<td class="tg-9hbd1">' . $ruta['acciones'] . '</td>
+								<td class="tg-9hbd1">' . $fecha_recepcion2 . '</td>
 							  </tr> 
-							  <tr> 
-							  <td class="tg-yw4l"></td>
-							  <tr/>
 							  
 							 
 						      
@@ -767,12 +795,22 @@ function hojaRutaBorrador()
 	
 							.tg  {border-collapse:collapse;border-spacing:0; border: 0}
 							
-							.tg td{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
+							.tg td{font-family:Arial, sans-serif;font-size:12px;padding:5px;margin: 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
 							.tg th{font-family:Arial, sans-serif;font-size:12px;font-weight:normal;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
 							.tg .tg-e3zv{font-weight:bold}
-							.tg .tg-yw4l{vertical-align:top; border: 0}
+							.tg .tg-yw4l{vertical-align:top; border: 0;padding:5px;margin: 5px}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
-							.tg .tg-9hbd{background-color:#FF0000;font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;vertical-align:top}
+							.tg .tg-9hbd{background-color: orange;
+							             margin: 5px;
+										 padding:5px;
+										 font-family:Arial, sans-serif;
+										 font-size:12px;
+										 border-style:solid;
+										 border-width:1px;
+										 overflow:hidden;
+										 word-break:normal;
+										 font-weight:bold;
+										 vertical-align:top}     
 							.tg .tg-9hbd1{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:normal;vertical-align:top}
 							
 							</style>
@@ -818,8 +856,8 @@ function hojaRutaBorrador()
 							  </tr>
 							  </table>
 							  <table class="tg" border="0" >
-							  <th class="tg-yw4l" colspan="7" >DETALLE DE DERIVACIONES fdfdf</th>
-							   <tr bgcolor="#CCCCCC">
+							  <th class="tg-e3zv" colspan="7" >DETALLE DE DERIVACIONES </th>
+							   <tr class="tg-9hbd">
 								<td class="tg-9hbd" > <FONT SIZE=3> Usuario Reg. </FONT ></td>
 								<td class="tg-9hbd" > <FONT SIZE=3> Derivado A</FONT ></td>
 								<td class="tg-9hbd" > <FONT SIZE=3> Fecha Deriv. </FONT ></td>
@@ -1002,10 +1040,13 @@ window.onload=function(){self.print();}
 		$this->objParam->addFiltro(" cor.tipo = ''".$this->objParam->getParametro('tipo')."''");
 		$this->objParam->addFiltro(" cor.estado = ''".$this->objParam->getParametro('estado')."''");
 		if ($this->objParam->getParametro('vista')=='CorrespondenciaAdministracion' && $this->objParam->getParametro('estado')=='enviado')
-		{
-		}else{
+		    {
+			}
+			else{
 			$this->objParam->addFiltro(" cor.id_correspondencia_fk is null ");
-		}
+			
+			$this->objParam->addFiltro(" (cor.estado_corre is null or cor.estado_corre not in (''borrador_corre''))");
+	     	}
 		
         if ($this->objParam->getParametro('tipoReporte') == 'excel_grid' || $this->objParam->getParametro('tipoReporte') == 'pdf_grid') {
             $this->objReporte = new Reporte($this->objParam, $this);
