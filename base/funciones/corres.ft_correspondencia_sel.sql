@@ -1,4 +1,3 @@
-
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -1008,6 +1007,7 @@ BEGIN
 			--cor.estado in (''pendiente_recibido'',''recibido'',''recibido_derivacion'',''enviado'') and 
             --            cor.tipo in (''saliente'') 
 			--Definicion de la respuesta
+           -- raise exception '%',v_parametros.filtro;
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by  ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
             --raise exception '%','backtone    '||v_consulta;
@@ -1621,7 +1621,7 @@ where tiene is not null ';
                     insti.nombre as desc_insti,
                     persona.nombre_completo1 as nombre_persona,
                     fun.desc_funcionario1 as desc_funcionario,
-                    otros_adjuntos,
+                    replace(otros_adjuntos,''.'',''<br>'') as otros_adjuntos,
                     referencia,
                     mensaje,
                     cor.fecha_documento                                                    
