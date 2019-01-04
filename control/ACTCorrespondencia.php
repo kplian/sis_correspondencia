@@ -772,11 +772,12 @@ function hojaRutaBorrador()
 							.tg .tg-e3zv{font-weight:bold}
 							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
-							.tg .tg-9hbd{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;vertical-align:top}
+							.tg .tg-9hbd{background-color:#FF0000;font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;vertical-align:top}
+							.tg .tg-9hbd1{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:normal;vertical-align:top}
+							
 							</style>
 							
-<div style="position: relative; left: 0; top: 0;">
-        
+<div style="position: relative; left: 0; top: 0;">        
         <img src="../../../sis_correspondencia/imagenes/fondo_borrador.png" class="watermark"/>
     </div>
 							<CENTER>
@@ -863,13 +864,13 @@ function hojaRutaBorrador()
 							
             $html .= '
 							  <tr>
-								<td class="tg-yw4l"  >(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
-								<td class="tg-yw4l"  >' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l"  >' . $fecha_deriv . '</td>
-								<td class="tg-yw4l"  >' . $ruta['mensaje'] . '</td>
-								<td class="tg-yw4l"  >' . $ruta['acciones'] . '</td>
-								<td class="tg-yw4l"  >' . $ruta['estado'] . '</td>
-								<td class="tg-yw4l"  >' . $fecha_recepcion2 . '</td>
+								<td class="tg-9hbd1"   >(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
+								<td class="tg-9hbd1"  >' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-9hbd1"  >' . $fecha_deriv . '</td>
+								<td class="tg-9hbd1"  >' . $ruta['mensaje'] . '</td>
+								<td class="tg-9hbd1"  >' . $ruta['acciones'] . '</td>
+								<td class="tg-9hbd1"  >' . $ruta['estado'] . '</td>
+								<td class="tg-9hbd1"  >' . $fecha_recepcion2 . '</td>
 								</tr> 
 							  
 							  
