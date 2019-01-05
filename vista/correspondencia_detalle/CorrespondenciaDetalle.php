@@ -332,21 +332,20 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	iniciarEventos:function(){
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
-		  		console.log('entra a eventos');
-	/*	this.cmbEstado.store.load({params:{start:0,limit:this.tam_pag},
-           callback : function (r) {
-   		    console.log('r',r)
-           		if (r.length == 1 ) {
-           			this.cmbEstado.setValue(r[0].data.ID);
-           			this.cmbEstado.fireEvent('select',this.cmbEstado, this.cmbEstado.store.getById(r[0].data.ID));         
-                }
-            }, scope : this
-        });*/
-		//this.cmbFuncionario = this.getComponente('id_funcionario');
+		/** PS-84 **/
 		this.Cmp.id_funcionario.on('select', function(c, r, i){
-			console.log(this.store.data.length);
-			console.log(this.store.data.items)}, this);	  
-		
+			var aux=this.store.data.length;
+			for (i=0;i<aux;i++){
+				var funcio=this.store.data.items[i].data.id_funcionario;
+				console.log('func='+funcio+' comb='+r.id)
+				if (funcio==r.id){
+					alert ('EL FUNCIONARIO YA ESTA REGISTRADO')
+					this.Cmp.id_funcionario.reset();
+					break;
+				    }
+		    	}
+			}, this);
+		/** PS-84 **/
 	},
 	getParametrosFiltro: function () {
    	 	this.store.baseParams.estado = this.cmbEstado.getValue();
@@ -556,7 +555,78 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			}
 			this.reload();
 
-		}
+		},
+	definirFormularioVentana: function() {
+        var me = this;
+        //define la altura en porcentaje al repecto de body
+        me.fheight = me.calTamPor(me.fheight, Ext.getBody())
+
+        me.form = new Ext.form.FormPanel({
+            id: me.idContenedor + '_W_F',
+            items: me.Grupos.length >1 ?me.Grupos:me.Grupos[0],
+            fileUpload: me.fileUpload,
+            padding: me.paddingForm,
+            bodyStyle: me.bodyStyleForm,
+            border: me.borderForm,
+            frame: me.frameForm, 
+            autoScroll: false,
+            autoDestroy: true,
+            autoScroll: true
+        });
+
+        
+        
+        // Definicion de la ventana que contiene al formulario
+        me.window = new Ext.Window({
+            title: me.title,
+            modal: me.winmodal,
+            width: me.fwidth,
+            height: me.fheight,
+            bodyStyle: 'padding:5px;',
+            layout: 'fit',
+            hidden: true,
+            autoScroll: false,
+            maximizable: true,
+            buttons: [ {
+	                xtype: 'splitbutton',
+	                text: '<i class="fa fa-check"></i> Guardar + Nuevo',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': true,
+	                    def: 'reset'
+	                },
+	                scope: me,
+	                menu: [{
+		                    text: 'Guardar + reset',
+		                    argument: {
+		                        'news': true,
+		                        def: 'reset'
+		                    },
+		                    handler: me.onSubmit,
+		                    scope: me
+	                	}]
+                }, 
+                {
+	                text: '<i class="fa fa-check"></i> Guardar',
+	                arrowAlign: 'bottom',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': false
+	                },
+	                scope: me
+
+                },
+                {
+	                text: '<i class="fa fa-times"></i> Declinar',
+	                handler: me.onDeclinar,
+					scope: me
+               }],
+            items: me.form,
+            autoDestroy: true,
+            closeAction: 'hide'
+        });
+
+    },
 
 }
 )
