@@ -101,7 +101,7 @@ BEGIN
     begin
       --obtener el uo del funcionario que esta reenviando
 --        raise exception '%','ASDFASDF'||v_parametros.tipo;
-      
+     
         --obtener el departamento
          IF( v_parametros.tipo='saliente') THEN
               	  v_id_funcionario=v_parametros.id_funcionario_saliente;
@@ -114,7 +114,8 @@ BEGIN
       -- v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
             v_id_uo = corres.f_get_uo_correspondencia_funcionario(
             v_id_funcionario, array ['activo', 'suplente'],
-            v_parametros.fecha_documento);   
+            v_parametros.fecha_documento);
+              
       SELECT dep.id_depto
       INTO v_id_depto
       FROM param.tdepto_uo duo
@@ -131,7 +132,7 @@ BEGIN
          v_id_uo;
 
       END IF;
- 
+  
       --   obtener documento
 
       SELECT d.codigo
@@ -148,22 +149,14 @@ BEGIN
             g.gestion = to_char(now()::date, 'YYYY')::integer;
 
       --2 obtener el identificar del periodo
-      IF (now()::date=v_parametros.fecha_documento)THEN
+   /*   IF (now()::date=v_parametros.fecha_documento)THEN
           v_fecha_documento=now();
       ELSE
           v_fecha_documento=v_parametros.fecha_documento;
-      END IF;
+      END IF;*/
 
-      select p.id_periodo,p.fecha_ini, p.fecha_fin
-      into v_id_periodo,v_fecha_ini,v_fecha_fin
-      from param.tperiodo p
-      inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
-             ges.estado_reg = 'activo'
-      where p.estado_reg = 'activo' and
-           v_fecha_documento::date between p.fecha_ini and
-            p.fecha_fin;
-           
- 
+      
+
        if (v_parametros.vista='CorrespondenciaAdministracion') then
           /*  select p.id_periodo, p.fecha_ini, p.fecha_fin
             into v_id,v_fecha_ini,v_fecha_fin
@@ -185,22 +178,37 @@ BEGIN
             END IF;  
             
           
-           
             v_fecha_creacion_documento=now();
              v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id_periodo,v_id_uo
                             [2],v_id_depto,p_id_usuario,'CORRES',NULL);
            /* v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);*/
                --raise exception '%','ASDFASDF';
+                v_fecha_documento=v_parametros.fecha_documento;
+                
+   
+           
   
       else
-            
+      
+         
+           v_fecha_documento=now();  
             
             
             v_fecha_creacion_documento=now();
              v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo
                            [2],v_id_depto,p_id_usuario,'CORRES',NULL);
+                            
       end if;
+      
+      select p.id_periodo,p.fecha_ini, p.fecha_fin
+      into v_id_periodo,v_fecha_ini,v_fecha_fin
+      from param.tperiodo p
+      inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
+             ges.estado_reg = 'activo'
+      where p.estado_reg = 'activo' and
+           v_fecha_documento::date between p.fecha_ini and
+            p.fecha_fin;
       
       
       
@@ -226,15 +234,14 @@ BEGIN
 */
      
       --determinamos el origen
-      IF( v_parametros.tipo='saliente') THEN
-         v_mensaje:='';
+    /*  IF( v_parametros.tipo='saliente') THEN
+         v_mensaje:='v_pa';
       ELSE
          v_mensaje:=v_parametros.mensaje;
-      END IF;
+      END IF;*/
       
     --  raise exception '%','fga'||v_parametros.id_correspondencias_asociadas;
       --3 Sentencia de la insercion
-
       insert into corres.tcorrespondencia(estado,estado_reg, fecha_documento,
                 
                   id_depto, id_documento,
@@ -254,7 +261,7 @@ BEGIN
              v_parametros.id_institucion_destino,
              v_id_periodo,
              v_parametros.id_persona_destino,
-             v_id_uo [ 2 ], v_mensaje, 0,
+             v_id_uo [ 2 ], v_parametros.mensaje, 0,
              --nivel de anidamiento del arbol
              v_parametros.nivel_prioridad, v_num_corre,
              v_parametros.referencia,
@@ -267,7 +274,7 @@ BEGIN
               now()
              ) RETURNING id_correspondencia
       into v_id_correspondencia;
-
+  
       v_id_origen = v_id_correspondencia;
       UPDATE corres.tcorrespondencia
       set id_origen = v_id_correspondencia
@@ -417,7 +424,8 @@ BEGIN
                 referencia = v_parametros.referencia,
                 fecha_mod = now(),
                 id_usuario_mod = p_id_usuario,
-                id_clasificador = v_parametros.id_clasificador
+                id_clasificador = v_parametros.id_clasificador,
+                mensaje = v_parametros.mensaje
                
             where id_correspondencia = v_parametros.id_correspondencia;
           END IF;
@@ -1805,3 +1813,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION corres.ft_correspondencia_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

@@ -34,7 +34,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		        this.Atributos[this.getIndAtributo('asociar')].grid=false;
 		        this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
 		        this.Atributos[this.getIndAtributo('id_acciones')].grid=false;
-		        this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+		      //  this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
 			    this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
 			    
 		        
@@ -129,7 +129,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.fecha_creacion_documento);
             this.ocultarComponente(this.Cmp.id_funcionario);
             this.ocultarComponente(this.Cmp.id_acciones);
-            this.ocultarComponente(this.Cmp.persona_firma);
+          //  this.ocultarComponente(this.Cmp.persona_firma);
             this.ocultarComponente(this.Cmp.tipo_documento);
             
             this.fecha_documento = this.getComponente('fecha_documento');

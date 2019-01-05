@@ -86,10 +86,11 @@ class MODAdjunto extends MODbase
             throw new Exception("El archivo no puede estar vacio");
         }
 
-
+$tamano_comp=0;
         for ($i = 0; $i < $aux; $i++) {
             $img = pathinfo($this->arregloFiles['archivo']['name'][$i]);
             $tmp_name = $this->arregloFiles['archivo']['tmp_name'][$i];
+			$tamano_comp=$this->arregloFiles['archivo']['size'][$i] / 1000;
             $tamano = ($this->arregloFiles['archivo']['size'][$i] / 1000) . "Kb"; //Obtenemos el tama?o en KB
 
             $nombre_archivo = $img['filename']; //nombre de archivo
@@ -103,7 +104,14 @@ class MODAdjunto extends MODbase
            IF ($extension=='exe') {
                 throw new Exception("El archivo a subir no puede ser un ejecutable.");
            }
-            //$file_server_name = $file_name . ".$extension";
+		   //  throw new Exception("El archivo a subir no puede ser un ejecutable.".$tamano_comp);
+		     
+		   if ($tamano_comp>=20000){
+		   	   throw new Exception("El archivo a subir excede la capacidad permitida que es de 20 MB..");
+			  
+            
+		   }   
+		    //$file_server_name = $file_name . ".$extension";
             $file_name = $numero.$nombre_archivo.$id_correspondencia;
 			$file_server_name = $numero.$nombre_archivo.$id_correspondencia.".$extension";
             move_uploaded_file($tmp_name, $ruta_destino . $file_server_name);

@@ -1193,8 +1193,8 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			id_grupo : 1,
-			grid : true,
-			form : true,
+			grid : false,
+			form : false,
 			bottom_filter : false,
 			egrid : false
 			
@@ -1207,25 +1207,44 @@ header("content-type: text/javascript; charset=UTF-8");
 				triggerAction : 'all',
 				emptyText : 'Seleccione Opcion...',
 				selectOnFocus : true,
+				forceSelection: true,
 				width : 250,
 				mode : 'local',
 
 				store : new Ext.data.ArrayStore({
 					fields : ['ID', 'valor'],
-					data : [['boleta_de_garantia', 'Boleta de Garantia'], ['factura', 'Factura'], ['otros', 'Otros']],
+					data : [['carta_recibida', 'Carta Recibida'],['factura', 'Factura'],['boleta_de_garantia', 'Boleta de Garantia'],['resolucion', 'Resolucion'],['acta', 'Acta']],
 
 				}),
+				renderer : function(value, p, record) {
+					var tipo_documento = record.data.tipo_documento;
+					return  record.data.tipo_documento;
+					if (tipo_documento=='carta_recibida'){
+						return 'Carta Recibida';
+					}else if (tipo_documento=='factura'){
+						return 'Factura';
+					}else if (tipo_documento=='resolucion'){
+						return 'Resolucion';
+					}else if (tipo_documento=='acta'){
+						return 'Acta';
+					}else{
+				        return 'Boleta de Garantia';
+						
+					}
+					
+					//return String.format('{0}', record.data['desc_clasificador']);
+				},
 				valueField : 'ID',
 				displayField : 'valor'
 
 			},
 			type : 'ComboBox',
-			valorInicial : 'otros',
+			valorInicial : 'carta_recibida',
 			filters : {
 				pfiltro : 'cor.tipo_documento',
 				type : 'string'
 			},
-			id_grupo : 2,
+			id_grupo : 0,
 			grid : true,
 			form : true
 		}

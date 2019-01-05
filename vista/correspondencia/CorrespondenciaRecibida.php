@@ -53,7 +53,7 @@ Phx.vista.CorrespondenciaRecibida = {
 		    this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=true;
 		    this.Atributos[this.getIndAtributo('id_documento')].grid=true;
 		    this.Atributos[this.getIndAtributo('id_uo')].grid=true;
-		    this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+		   // this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
 			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
 	      }
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);

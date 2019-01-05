@@ -516,37 +516,34 @@ class ACTCorrespondencia extends ACTbase
             exit;
         }
         $correspondencia = $this->res->getDatos();
-		
+		$fecha_label='';
 		if ($correspondencia[0]["tipo"]=='externa'){
 			
-			$nombre_completo=$correspondencia[0]["nombre_persona"];
-			
-			if (is_null($nombre_completo)){
-				
-				$remitente=$correspondencia[0]["desc_insti"];
-				
-			}else{
-				
-				$remitente=$correspondencia[0]["desc_insti"].' ' . '<br /><b style="font-size:8pt"> '.$correspondencia[0]["nombre_persona"]. ' </b>';
-			}
-			
-			
-			
-		}else{
-			$remitente=$correspondencia[0]["desc_funcionario"];
-		}
-        //print_r($correspondencia); 
-        
-             // validacion de fecha null para q muestre vacio
-        
-            if (is_null($correspondencia[0]['fecha_documento'])){
+			$remitente=$correspondencia[0]["desc_insti"].'-'.$correspondencia[0]["nombre_completo1"];
+			$fecha_label='Fecha de Recep: ';
+			/* if (is_null($correspondencia[0]['fecha_creacion_documento'])){
 			
 			  $fecha_documento = ' ';
 		      }else{
-		      	
+		      	*/
+			 $fecha_documento = strftime("%d/%m/%Y", strtotime($correspondencia[0]['fecha_creacion_documento']));
+			 //}
+			
+		}else{
+			$fecha_label='Fecha de Documento: ';
+			
+			$remitente=$correspondencia[0]["desc_funcionario"];
+			/* if (is_null($correspondencia[0]['fecha_creacion_documento'])){
+			
+			  $fecha_documento = ' ';
+		      }else{
+		      	*/
 			 $fecha_documento = strftime("%d/%m/%Y", strtotime($correspondencia[0]['fecha_documento']));
-			 }
+			 //}
+		}
+
         
+           
         
 		// vista o formato del pdf -> del boton hoja de recepcion
 
@@ -564,20 +561,30 @@ class ACTCorrespondencia extends ACTbase
 							.tg td{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
 							.tg th{font-family:Arial, sans-serif;font-size:12px;font-weight:normal;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
 							.tg .tg-e3zv{font-weight:bold}
+							.tg .tg-e3zv1{font-weight:bold;
+							             border-style:ridge;
+										 border-width:1px;
+										 border-color: LightGray ;
+										 }
 							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
-							.tg .tg-9hbd{background-color: orange;
+							.tg .tg-9hbd{background-color: orange; 
 							             margin: 5px;
 										 padding: 5px;
 										 font-family:Arial, sans-serif;
 										 font-size:12px;
-										 border-style:solid;
+										 border-style:ridge;
 										 border-width:1px;
+										 border-color: LightGray;
 										 overflow:hidden;
 										 word-break:normal;
 										 font-weight:bold;
 										 vertical-align:top}     
-							.tg .tg-9hbd1{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:normal;vertical-align:top}
+							.tg .tg-9hbd1{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;
+							 border-style:ridge;
+										 border-width:1px;
+										 border-color: LightGray ;
+										overflow:hidden;word-break:normal;font-weight:normal;vertical-align:top}
 						
 							</style>
 							<CENTER><div><B>'.$titulo.'</B></div></CENTER>
@@ -586,7 +593,7 @@ class ACTCorrespondencia extends ACTbase
 							  <tr>
 								<th class="tg-e3zv"> <FONT SIZE=3> Nro: ' . $correspondencia[0]["numero"] . ' </FONT > </th>
 								
-								<th class="tg-e3zv">Fecha Recep: ' . $fecha_documento . '</th>
+								<th class="tg-e3zv">'.$fecha_label. $fecha_documento . '</th>
 								
 							
 								<th class="tg-9hbo">Tipo: ' . $correspondencia[0]["tipo"] . '</th>
@@ -611,7 +618,7 @@ class ACTCorrespondencia extends ACTbase
 							  
 							 </table> 
 						<table class="tg"  border="0">
-							  <th class="tg-e3zv" colspan="6" >DETALLE DE DERIVACIONES</th>
+							  <th class="tg-e3zv1" colspan="6" >DETALLE DE DERIVACIONES</th>
 							  <tr bgcolor="#CCCCCC">
 							    <td class="tg-9hbd"> <FONT SIZE=3> Usuario Reg. </FONT ></td>
 								<td class="tg-9hbd"> <FONT SIZE=3> Derivado A:</FONT ></td>

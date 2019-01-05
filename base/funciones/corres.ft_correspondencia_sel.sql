@@ -1622,7 +1622,7 @@ where tiene is not null ';
                     persona.nombre_completo1 as nombre_persona,
                     fun.desc_funcionario1 as desc_funcionario,
                     replace(otros_adjuntos,''.'',''<br>'') as otros_adjuntos,
-                    referencia,
+                     replace(referencia,''.'',''<br>'')as referencia,
                     mensaje,
                     cor.fecha_documento                                                    
                     from corres.tcorrespondencia cor
@@ -1659,3 +1659,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION corres.ft_correspondencia_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;
