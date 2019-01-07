@@ -552,68 +552,43 @@ class ACTCorrespondencia extends ACTbase
 							</style>
 							<CENTER><div><B>'.$titulo.'</B></div></CENTER>
 							<hr />
-							<table class="tg"  border="0">
+							<table class="tg"  border="0" width="100%">
 							  <tr>
-								<th class="tg-e3zv" colspan="4"> <FONT SIZE=3> Nro: ' . $correspondencia[0]["numero"] . ' </FONT > </th>
+								<th class="tg-e3zv"> <FONT SIZE=3> Nro: ' . $correspondencia[0]["numero"] . ' </FONT > </th>
 								
-								<th class="tg-e3zv" colspan="3">Fecha Recep: ' . $fecha_documento . '</th>
+								<th class="tg-e3zv">Fecha Recep: ' . $fecha_documento . '</th>
 								
 							
-								<th class="tg-9hbo" colspan="14">Tipo: ' . $correspondencia[0]["tipo"] . '</th>
+								<th class="tg-9hbo">Tipo: ' . $correspondencia[0]["tipo"] . '</th>
 								
 							  </tr>
+							  </table>
+							  <table class="tg"  border="0" width="100%">
 							  <tr>
-								<td class="tg-e3zv" colspan="2"> <FONT SIZE=3> Remitente: </FONT ></td>
-								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Referencia:</FONT ></td>
-								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Adjuntos:</FONT ></td>
-								<td class="tg-9hbo" colspan="8"><FONT SIZE=3> Doc. Física Entregada A:</FONT ></td>
+								<td class="tg-e3zv" width="25%"> <FONT SIZE=3> Remitente: </FONT ></td>
+								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Referencia:</FONT ></td>
+								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Adjuntos:</FONT ></td>
+								<td class="tg-9hbo" width="25%"><FONT SIZE=3> Doc. Física Entregada A:</FONT ></td>
 								
 							  </tr>
 							 
 							  <tr>
-								<td class="tg-yw4l" colspan="2">' . $remitente . '<br /><b style="font-size:6pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["referencia"] . '</td>
-								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["otros_adjuntos"] . '</td>
-								<td class="tg-yw4l" colspan="4">' . $correspondencia[0]["mensaje"] . '</td>
+								<td class="tg-yw4l">' . $remitente . '<br /><b style="font-size:6pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l">' . $correspondencia[0]["referencia"] . '</td>
+								<td class="tg-yw4l">' . $correspondencia[0]["otros_adjuntos"] . '</td>
+								<td class="tg-yw4l">' . $correspondencia[0]["mensaje"] . '</td>
 							  </tr>
-							   <tr>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							  </tr>
-							  <tr>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							  </tr>
+							  
+							 </table> 
+						<table class="tg"  border="0">
 							  <tr bgcolor="#CCCCCC">
-							
-								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Usuario Reg. </FONT ></td>
-								<td bgcolor="#CCCCCC"></td>
-								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Derivado A:</FONT ></td>
-									<td class="tg-9hbo"></td>
-								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
-								
-								<td class="tg-9hbo colspan="2""><FONT SIZE=3> Fecha Recep. </FONT ></td>
-								<td class="tg-9hbo"></td>
-								
-								<td class="tg-9hbo colspan="4""> <FONT SIZE=3>  Mensaje:  </FONT ></td>
-								<td class="tg-9hbo colspan="2""> </td>
-								<td class="tg-9hbo colspan="2""> </td>
-								<td class="tg-9hbo"> </td>
-								<td class="tg-9hbo"> </td>
-								<td class="tg-9hbo"> </td>
-								
-								<td class="tg-9hbo"> <FONT SIZE=3>  Accion </FONT > </td>
-								<td class="tg-9hbo"></td>
-								
-							  </tr>
+							    <td class="tg-9hbo"> <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td class="tg-9hbo"> <FONT SIZE=3> Derivado A:</FONT ></td>
+								<td class="tg-9hbo"> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+								<td class="tg-9hbo"> <FONT SIZE=3> Mensaje:  </FONT ></td>
+								<td class="tg-9hbo"> <FONT SIZE=3> Accion </FONT > </td>
+								<td class="tg-9hbo"><FONT SIZE=3> Fecha Recep. </FONT ></td>
+						      </tr>
 							  ';
 							  
 							  
@@ -650,43 +625,23 @@ class ACTCorrespondencia extends ACTbase
 							
             $html .= '
 							  <tr>
-								<td class="tg-yw4l" colspan="2">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
-								<td class="tg-yw4l" colspan="2">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l" colspan="1">' . $fecha_deriv . '</td>
-								
-								<td class="tg-yw4l" colspan="1" >' . $fecha_recepcion2 . '</td>
-								<td class="tg-yw4l" colspan="1"> </td>
-								
-								<td class="tg-yw4l" colspan="4">' . $ruta['mensaje'] . '</td>
-								<td class="tg-yw4l" colspan="2"> </td>
-								<td class="tg-yw4l" colspan="2">' . $ruta['acciones'] . '</td>
-								<td class="tg-yw4l"></td>
-								<td class="tg-yw4l"></td>
-								<td class="tg-yw4l"></td>
-									<td class="tg-yw4l"></td>
-										<td class="tg-yw4l"></td>
+								<td class="tg-yw4l" >(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
+								<td class="tg-yw4l">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l">' . $fecha_deriv . '</td>
+								<td class="tg-yw4l">' . $ruta['mensaje'] . '</td>
+								<td class="tg-yw4l">' . $ruta['acciones'] . '</td>
+								<td class="tg-yw4l">' . $fecha_recepcion2 . '</td>
 							  </tr> 
 							  <tr> 
 							  <td class="tg-yw4l"></td>
 							  <tr/>
 							  
-							  <tr>
-							    <td class="tg-yw4l" colspan="2">&nbsp;</td>
-							    <td class="tg-yw4l" colspan="2"></td>
-							    <td class="tg-yw4l" colspan="2"></td>
-							    <td class="tg-yw4l" colspan="2" ></td>
-							    <td class="tg-yw4l" colspan="4"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l" colspan="2"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-						      </tr>';
+							 
+						      
+						  
+						      ';
 							  
-							  
-
+							
         }
 
         $html .= '</table>
@@ -810,16 +765,19 @@ function hojaRutaBorrador()
         opacity: 0.2;
     }
 	
-							.tg  {border-collapse:collapse;border-spacing:0; border: 0;}
+							.tg  {border-collapse:collapse;border-spacing:0; border: 0}
+							
 							.tg td{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;}
 							.tg th{font-family:Arial, sans-serif;font-size:12px;font-weight:normal;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
 							.tg .tg-e3zv{font-weight:bold}
 							.tg .tg-yw4l{vertical-align:top; border: 0}
 							.tg .tg-9hbo{font-weight:bold;vertical-align:top}
+							.tg .tg-9hbd{background-color:#FF0000;font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;vertical-align:top}
+							.tg .tg-9hbd1{font-family:Arial, sans-serif;font-size:12px;padding:5px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:normal;vertical-align:top}
+							
 							</style>
 							
-<div style="position: relative; left: 0; top: 0;">
-        
+<div style="position: relative; left: 0; top: 0;">        
         <img src="../../../sis_correspondencia/imagenes/fondo_borrador.png" class="watermark"/>
     </div>
 							<CENTER>
@@ -832,7 +790,7 @@ function hojaRutaBorrador()
 							  </div>
 							</CENTER>
 							<hr />
-							<table class="tg"  border="0">
+							<table class="tg"  border="0" width="100%">
 							  <tr>
 								<th class="tg-e3zv" colspan="4"> <FONT SIZE=3> Nro: ' . $correspondencia[0]["numero"] . ' </FONT > </th>
 								
@@ -842,57 +800,33 @@ function hojaRutaBorrador()
 								<th class="tg-9hbo" colspan="14">Tipo: ' . $correspondencia[0]["tipo"] . '</th>
 								
 							  </tr>
+							  </table>
+							  <table class="tg"  border="0" width="100%">
 							  <tr>
-								<td class="tg-e3zv" colspan="2"> <FONT SIZE=3> Remitente: </FONT ></td>
-								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Referencia:</FONT ></td>
-								<td class="tg-e3zv" colspan="2"><FONT SIZE=3> Adjuntos:</FONT ></td>
-								<td class="tg-9hbo" colspan="8"><FONT SIZE=3> Doc. Física Entregada A:</FONT ></td>
+								<td class="tg-e3zv" width="25%"> <FONT SIZE=3> Remitente </FONT ></td>
+								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Referencia</FONT ></td>
+								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Adjuntos</FONT ></td>
+								<td class="tg-9hbo" width="25%"><FONT SIZE=3> Doc. Física Entregada A</FONT ></td>
 								
 							  </tr>
 							 
 							  <tr>
-								<td class="tg-yw4l" colspan="2">' . $remitente . '<br /><b style="font-size:6pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["referencia"] . '</td>
-								<td class="tg-yw4l" colspan="2">' . $correspondencia[0]["otros_adjuntos"] . '</td>
-								<td class="tg-yw4l" colspan="4">' . $correspondencia[0]["mensaje"] . '</td>
+								<td class="tg-yw4l" width="25%">' . $remitente . '<br /><b style="font-size:6pt">' . $correspondencia[0]["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l" width="25%">' . $correspondencia[0]["referencia"] . '</td>
+								<td class="tg-yw4l" width="25%">' . $correspondencia[0]["otros_adjuntos"] . '</td>
+								<td class="tg-yw4l" width="25%">' . $correspondencia[0]["mensaje"] . '</td>
 							  </tr>
-							   <tr>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							  </tr>
-							  <tr>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							      <td></td>
-							  </tr>
-							  <tr bgcolor="#CCCCCC">
-							
-								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Usuario Reg. </FONT ></td>
-								<td bgcolor="#CCCCCC"></td>
-								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Derivado A:</FONT ></td>
-									<td class="tg-9hbo"></td>
-								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
-								
-								<td class="tg-9hbo colspan="2""><FONT SIZE=3> Fecha Recep. </FONT ></td>
-								<td class="tg-9hbo"></td>
-								
-								<td class="tg-9hbo colspan="4""> <FONT SIZE=3>  Mensaje:  </FONT ></td>
-								<td class="tg-9hbo colspan="2""> </td>
-								<td class="tg-9hbo colspan="2""> </td>
-								<td class="tg-9hbo"> </td>
-								<td class="tg-9hbo"> </td>
-								<td class="tg-9hbo"> </td>
-								
-								<td class="tg-9hbo"> <FONT SIZE=3>  Accion </FONT > </td>
-								<td class="tg-9hbo"></td>
-								<td class="tg-9hbo"> <FONT SIZE=3>  Estado </FONT > </td>
+							  </table>
+							  <table class="tg" border="0" >
+							  <th class="tg-yw4l" colspan="7" >DETALLE DE DERIVACIONES fdfdf</th>
+							   <tr bgcolor="#CCCCCC">
+								<td class="tg-9hbd" > <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td class="tg-9hbd" > <FONT SIZE=3> Derivado A</FONT ></td>
+								<td class="tg-9hbd" > <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+							    <td class="tg-9hbd" > <FONT SIZE=3>  Mensaje  </FONT ></td>
+								<td class="tg-9hbd" > <FONT SIZE=3>  Accion </FONT > </td>
+								<td class="tg-9hbd" > <FONT SIZE=3>  Estado </FONT > </td>
+								<td class="tg-9hbd" ><FONT SIZE=3> Fecha Recep. </FONT ></td>
 							  </tr>
 							  ';
 							  
@@ -930,41 +864,17 @@ function hojaRutaBorrador()
 							
             $html .= '
 							  <tr>
-								<td class="tg-yw4l" colspan="2">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
-								<td class="tg-yw4l" colspan="2">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
-								<td class="tg-yw4l" colspan="1">' . $fecha_deriv . '</td>
-								
-								<td class="tg-yw4l" colspan="1" >' . $fecha_recepcion2 . '</td>
-								<td class="tg-yw4l" colspan="1"> </td>
-								
-								<td class="tg-yw4l" colspan="4">' . $ruta['mensaje'] . '</td>
-								<td class="tg-yw4l" colspan="2"> </td>
-								<td class="tg-yw4l" colspan="2">' . $ruta['acciones'] . '</td>
-								<td class="tg-yw4l" colspan="2">' . $ruta['estado'] . '</td>
-								<td class="tg-yw4l"></td>
-								<td class="tg-yw4l"></td>
-								<td class="tg-yw4l"></td>
-									<td class="tg-yw4l"></td>
-										<td class="tg-yw4l"></td>
-							  </tr> 
-							  <tr> 
-							  <td class="tg-yw4l"></td>
-							  <tr/>
+								<td class="tg-9hbd1"   >(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
+								<td class="tg-9hbd1"  >' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-9hbd1"  >' . $fecha_deriv . '</td>
+								<td class="tg-9hbd1"  >' . $ruta['mensaje'] . '</td>
+								<td class="tg-9hbd1"  >' . $ruta['acciones'] . '</td>
+								<td class="tg-9hbd1"  >' . $ruta['estado'] . '</td>
+								<td class="tg-9hbd1"  >' . $fecha_recepcion2 . '</td>
+								</tr> 
 							  
-							  <tr>
-							    <td class="tg-yw4l" colspan="2">&nbsp;</td>
-							    <td class="tg-yw4l" colspan="2"></td>
-							    <td class="tg-yw4l" colspan="2"></td>
-							    <td class="tg-yw4l" colspan="2" ></td>
-							    <td class="tg-yw4l" colspan="4"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l" colspan="2"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-							    <td class="tg-yw4l"></td>
-						      </tr>';
+							  
+							 ';
 							  
 							  
 

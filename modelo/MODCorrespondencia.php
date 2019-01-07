@@ -1200,7 +1200,7 @@ function corregirCorrespondenciaExt()
          $this->captura('desc_insti','VARCHAR(100)');
        	 $this->captura('nombre_persona','TEXT');
   		 $this->captura('desc_funcionario','TEXT');
-  		 $this->captura('otros_adjuntos','VARCHAR(2000)');
+  		 $this->captura('otros_adjuntos','TEXT');
 		 $this->captura('referencia','VARCHAR(500)');
   		 $this->captura('mensaje','TEXT');
 		 $this->captura('fecha_documento','date');
