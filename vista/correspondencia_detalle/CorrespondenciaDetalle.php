@@ -332,21 +332,20 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	iniciarEventos:function(){
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
-		  		console.log('entra a eventos');
-	/*	this.cmbEstado.store.load({params:{start:0,limit:this.tam_pag},
-           callback : function (r) {
-   		    console.log('r',r)
-           		if (r.length == 1 ) {
-           			this.cmbEstado.setValue(r[0].data.ID);
-           			this.cmbEstado.fireEvent('select',this.cmbEstado, this.cmbEstado.store.getById(r[0].data.ID));         
-                }
-            }, scope : this
-        });*/
-		//this.cmbFuncionario = this.getComponente('id_funcionario');
+		/** PS-84 **/
 		this.Cmp.id_funcionario.on('select', function(c, r, i){
-			console.log(this.store.data.length);
-			console.log(this.store.data.items)}, this);	  
-		
+			var aux=this.store.data.length;
+			for (i=0;i<aux;i++){
+				var funcio=this.store.data.items[i].data.id_funcionario;
+				console.log('func='+funcio+' comb='+r.id)
+				if (funcio==r.id){
+					alert ('EL FUNCIONARIO YA ESTA REGISTRADO')
+					this.Cmp.id_funcionario.reset();
+					break;
+				    }
+		    	}
+			}, this);
+		/** PS-84 **/
 	},
 	getParametrosFiltro: function () {
    	 	this.store.baseParams.estado = this.cmbEstado.getValue();
