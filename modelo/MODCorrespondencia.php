@@ -514,32 +514,30 @@ class MODCorrespondencia extends MODbase{
 		return $this->respuesta;
 	}
 
-    function subirCorrespondencia(){
-		  
-		  
+    function subirCorrespondencia()
+    {
 		    $cone = new conexion();
 			$this->link = $cone->conectarpdo();
-				
+			$copiado = false;	
 			$sql = "SELECT tamano FROM param.ttipo_archivo WHERE codigo='CORRPRIN'";
 			$res = $this->link->prepare($sql);
 			$res->execute();
 			$result = $res->fetchAll(PDO::FETCH_ASSOC);
 			$tamano_archivo=$result[0]['tamano'];
-			if((($this->arregloFiles['file_correspondencia']['size'] / 1000) / 1024) > $tamano_archivo  ){
+			  
+			try{
+				
+                $this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);		
+		  	    $this->link->beginTransaction();
+                //var_dump($tamano_archivo);
+				
+				  if((($this->arregloFiles['file_correspondencia']['size'] / 1000) / 1024) > $tamano_archivo  ){
 	                throw new Exception("El tamaño del Archivo supera a la configuración");
 	
 	            }
-				
-			
-			
-                if ($this->arregloFiles['file_correspondencia']['name'] == "") {
+			    if ($this->arregloFiles['file_correspondencia']['name'] == "") {
 					throw new Exception("El archivo no puede estar vacio");
 				}
-			try{
-                $this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);		
-		  	    $this->link->beginTransaction();
-            //var_dump($tamano_archivo);
-				
 				
 				$this->procedimiento='corres.ft_correspondencia_ime';
 		        $this->transaccion='CO_ARCHCOR_MOD';
@@ -549,10 +547,7 @@ class MODCorrespondencia extends MODbase{
 		        $this->arreglo['version'] = $version;
 				$this->arreglo['numero']= str_replace('/','_',$this->arreglo['numero']);
 				$this->arreglo['numero']= str_replace(' ','_',$this->arreglo['numero']);
-				//$this->arreglo['numero'] = "sdasdf/asdf";
-				
-				
-				//validar que no sea un arhvio en blanco
+				//validar que no sea un archvo en blanco
 				$file_name = $this->getFileName2('file_correspondencia', 'id_correspondencia', '','_v'.$version);
 				
 			  
@@ -585,10 +580,7 @@ class MODCorrespondencia extends MODbase{
 	              
 				   //revisamos si ya existe el archivo la verison anterior sera mayor a cero
 				   $respuesta = $resp_procedimiento['datos'];
-				   //var_dump($respuesta);
-				   
-				   
-				   //cipiamos el nuevo archivo 
+				     //cipiamos el nuevo archivo 
 	               $this->setFile('file_correspondencia','id_correspondencia', false,100000 ,array('doc','pdf','docx','jpg','jpeg','bmp','gif','png','PDF','DOC','DOCX','xls','xlsx','XLS','XLSX','rar'), $folder = '','_v'.$version);
 	            }
 				
@@ -597,16 +589,11 @@ class MODCorrespondencia extends MODbase{
 				$this->respuesta=new Mensaje();
 				$this->respuesta->setMensaje($resp_procedimiento['tipo_respuesta'],$this->nombre_archivo,$resp_procedimiento['mensaje'],$resp_procedimiento['mensaje_tec'],'base',$this->procedimiento,$this->transaccion,$this->tipo_procedimiento,$this->consulta);
 				$this->respuesta->setDatos($respuesta);
-				 
-				
-				
 			}
-             
-				
-			catch (Exception $e) {
+    		catch (Exception $e) {
 		    		
 								
-		    	$link->rollBack(); 
+		    	$this->link->rollBack(); 
 				
 				
 		    	$this->respuesta=new Mensaje();
