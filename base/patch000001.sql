@@ -152,6 +152,28 @@ WITH (oids = false);
 COMMENT ON COLUMN corres.tasistente_permisos.permitir_todo
 IS 'Permitir ver todo o solamente lo que la persona a registrado.';
 /***********************************F-SCP-AVQ-CORRES-0-15/10/2018*****************************************/
+/***********************************I-SCP-AVQ-CORRES-0-27/12/2018*****************************************/
+ALTER TABLE corres.tcorrespondencia ADD COLUMN estado_corre  VARCHAR(30);
+/***********************************F-SCP-AVQ-CORRES-0-27/12/2018*****************************************/
+/***********************************I-SCP-AVQ-CORRES-0-31/12/2018*****************************************/
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN tipo_documento VARCHAR(100);
+
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN tipo_documento SET DEFAULT 'otros';
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN persona_firma VARCHAR(100);
+/***********************************F-SCP-AVQ-CORRES-0-31/12/2018*****************************************/
+/***********************************I-SCP-AVQ-CORRES-0-15/01/2019*****************************************/
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN id_alarma Integer;
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN observaciones_archivado TEXT;
+
+/***********************************F-SCP-AVQ-CORRES-0-15/01/2019*****************************************/
+
 
 
 

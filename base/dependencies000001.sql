@@ -280,9 +280,6 @@ select pxp.f_insert_testructura_gui ('REPCOR', 'CORRES');
 select pxp.f_insert_testructura_gui ('RECODT', 'REPCOR');
 
 /***********************************F-DEP-JMH-CORRES-0-26/12/2018*****************************************/
-/***********************************I-DEP-AVQ-CORRES-0-27/12/2018*****************************************/
-ALTER TABLE corres.tcorrespondencia ADD COLUMN estado_corre  VARCHAR(30);
-/***********************************F-DEP-AVQ-CORRES-0-27/12/2018*****************************************/
 /***********************************I-DEP-AVQ-CORRES-0-28/12/2018*****************************************/
 update segu.tgui
 set parametros= '{"tipo":"interna"}'
@@ -309,13 +306,3 @@ set parametros= '{"tipo":"interna","estado":"borrador_envio"}'
 where codigo_gui='ADMCORINT';
 
 /***********************************F-DEP-AVQ-CORRES-0-28/12/2018*****************************************/
-/***********************************I-DEP-AVQ-CORRES-0-31/12/2018*****************************************/
-ALTER TABLE corres.tcorrespondencia
-  ADD COLUMN tipo_documento VARCHAR(100);
-
-ALTER TABLE corres.tcorrespondencia
-  ALTER COLUMN tipo_documento SET DEFAULT 'otros';
-
-ALTER TABLE corres.tcorrespondencia
-  ADD COLUMN persona_firma VARCHAR(100);
-/***********************************F-DEP-AVQ-CORRES-0-31/12/2018*****************************************/
