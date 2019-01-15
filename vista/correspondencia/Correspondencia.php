@@ -1628,10 +1628,8 @@ header("content-type: text/javascript; charset=UTF-8");
 	BArchivar:function(){
 		var rec = this.sm.getSelected();
 	  if(confirm('Esta seguro de Archivar el documento '+rec.data.numero+'?')){
-		var result = prompt('Especifique las razones por las que se corrige el Documento'+rec.data.numero);
-			   
-			  // Phx.CP.loadingShow();
-					//alert (result);   
+	  	var result = prompt('Especifique la ubicación física del documento y las razones por las que se archiva el Documento'+rec.data.numero);
+		
 				if (result != null){
 				Ext.Ajax.request({
 					url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',

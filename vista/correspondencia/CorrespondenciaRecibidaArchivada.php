@@ -55,7 +55,7 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
         this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
         // this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
 			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
-			
+		 this.Atributos[this.getIndAtributo('archivado_imagen')].grid=true;	
        //   	this.setColumnHeader('id_institucion_remitente','Espectro');
 	    Phx.vista.CorrespondenciaRecibidaArchivada.superclass.constructor.call(this,config);
 	    
