@@ -1179,7 +1179,7 @@ function corregirCorrespondenciaExt()
 		
 		//Definicion de la lista del resultado del query
 		 $this->captura('numero','VARCHAR');
-  		 $this->captura('fecha_creacion_documento','TIMESTAMP');
+  		 $this->captura('fecha_creacion_documento','TIMESTAMP');		 	 
          $this->captura('tipo','VARCHAR(20)');
          $this->captura('desc_insti','VARCHAR(100)');
        	 $this->captura('nombre_persona','TEXT');
@@ -1187,7 +1187,7 @@ function corregirCorrespondenciaExt()
   		 $this->captura('otros_adjuntos','VARCHAR(2000)');
 		 $this->captura('referencia','VARCHAR(500)');
   		 $this->captura('mensaje','TEXT');
-		
+		 $this->captura('fecha_documento','TIMESTAMP');	
      
 		
 
