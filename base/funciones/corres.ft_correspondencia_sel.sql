@@ -1248,7 +1248,7 @@ cor.id_correspondencia,
   '||v_id_funcionario_origen||' as desc_id_funcionario_origen,
   cor.estado,
   cor.fecha_documento,
-  cor_fk.fecha_ult_derivado,
+  cor.fecha_ult_derivado,
 
  (select fecha_reg 
   from corres.tcorrespondencia_estado corest
