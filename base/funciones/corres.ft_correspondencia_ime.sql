@@ -100,20 +100,30 @@ BEGIN
 
     begin
       --obtener el uo del funcionario que esta reenviando
-      --   raise exception '%','ASDFASDF'||v_parametros.vista;
-      
+--        raise exception '%','ASDFASDF'||v_parametros.tipo;
+     
         --obtener el departamento
+         IF( v_parametros.tipo='saliente') THEN
+              	  v_id_funcionario=v_parametros.id_funcionario_saliente;
+             ELSE
+            
+                 v_id_funcionario=v_parametros.id_funcionario;
+              END IF;
+              
        v_id_uo= ARRAY[1];
       -- v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
             v_id_uo = corres.f_get_uo_correspondencia_funcionario(
-                 v_parametros.id_funcionario, array ['activo', 'suplente'],
-                 v_parametros.fecha_documento);        
+            v_id_funcionario, array ['activo', 'suplente'],
+            v_parametros.fecha_documento);
+              
       SELECT dep.id_depto
       INTO v_id_depto
       FROM param.tdepto_uo duo
-           INNER JOIN segu.tsubsistema sis ON sis.codigo = 'CORRES'
-           INNER JOIN param.tdepto dep ON dep.id_depto = duo.id_depto
+      INNER JOIN segu.tsubsistema sis ON sis.codigo = 'CORRES'
+      INNER JOIN param.tdepto dep ON dep.id_depto = duo.id_depto
       WHERE duo.id_uo = ANY (v_id_uo);
+      
+    
      IF v_id_depto is NULL THEN
 
         raise exception
@@ -122,7 +132,7 @@ BEGIN
          v_id_uo;
 
       END IF;
-
+  
       --   obtener documento
 
       SELECT d.codigo
@@ -139,26 +149,14 @@ BEGIN
             g.gestion = to_char(now()::date, 'YYYY')::integer;
 
       --2 obtener el identificar del periodo
-      if (now()::date=v_parametros.fecha_documento)THEN
+   /*   IF (now()::date=v_parametros.fecha_documento)THEN
           v_fecha_documento=now();
       ELSE
           v_fecha_documento=v_parametros.fecha_documento;
-      end if;
+      END IF;*/
 
-      select p.id_periodo,p.fecha_ini, p.fecha_fin
-      into v_id_periodo,v_fecha_ini,v_fecha_fin
-      from param.tperiodo p
-      inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
-             ges.estado_reg = 'activo'
-      where p.estado_reg = 'activo' and
-           v_fecha_documento::date between p.fecha_ini and
-            p.fecha_fin;
-       IF( v_parametros.tipo='saliente') THEN
-              	  v_id_funcionario=v_parametros.id_funcionario_saliente;
-             ELSE
-            
-                 v_id_funcionario=v_parametros.id_funcionario;
-              END IF;
+      
+
        if (v_parametros.vista='CorrespondenciaAdministracion') then
           /*  select p.id_periodo, p.fecha_ini, p.fecha_fin
             into v_id,v_fecha_ini,v_fecha_fin
@@ -180,26 +178,41 @@ BEGIN
             END IF;  
             
           
-           
             v_fecha_creacion_documento=now();
-             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,v_id_periodo,v_id_uo
+             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id_periodo,v_id_uo
                             [2],v_id_depto,p_id_usuario,'CORRES',NULL);
            /* v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);*/
                --raise exception '%','ASDFASDF';
+                v_fecha_documento=v_parametros.fecha_documento;
+                
+   
+           
   
       else
-            
+      
+         
+           v_fecha_documento=now();  
             
             
             v_fecha_creacion_documento=now();
              v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo
                            [2],v_id_depto,p_id_usuario,'CORRES',NULL);
+                            
       end if;
       
+      select p.id_periodo,p.fecha_ini, p.fecha_fin
+      into v_id_periodo,v_fecha_ini,v_fecha_fin
+      from param.tperiodo p
+      inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
+             ges.estado_reg = 'activo'
+      where p.estado_reg = 'activo' and
+           v_fecha_documento::date between p.fecha_ini and
+            p.fecha_fin;
       
       
-     /* IF( v_parametros.tipo='saliente') THEN
+      
+/*      IF( v_parametros.tipo='saliente') THEN
           
          v_id_uo= ARRAY[1];
 
@@ -210,8 +223,8 @@ BEGIN
          v_parametros.id_funcionario, array ['activo', 'suplente'],
          v_parametros.fecha_documento);
          v_id_funcionario=v_parametros.id_funcionario;
-      END IF;
-      */
+      END IF;*/
+      
     
       --0) Obtener numero de requerimiento en funcion del depto de legal
     
@@ -221,15 +234,14 @@ BEGIN
 */
      
       --determinamos el origen
-      IF( v_parametros.tipo='saliente') THEN
-         v_mensaje:='';
+    /*  IF( v_parametros.tipo='saliente') THEN
+         v_mensaje:='v_pa';
       ELSE
          v_mensaje:=v_parametros.mensaje;
-      END IF;
+      END IF;*/
       
     --  raise exception '%','fga'||v_parametros.id_correspondencias_asociadas;
       --3 Sentencia de la insercion
-
       insert into corres.tcorrespondencia(estado,estado_reg, fecha_documento,
                 
                   id_depto, id_documento,
@@ -249,7 +261,7 @@ BEGIN
              v_parametros.id_institucion_destino,
              v_id_periodo,
              v_parametros.id_persona_destino,
-             v_id_uo [ 2 ], v_mensaje, 0,
+             v_id_uo [ 2 ], v_parametros.mensaje, 0,
              --nivel de anidamiento del arbol
              v_parametros.nivel_prioridad, v_num_corre,
              v_parametros.referencia,
@@ -262,7 +274,7 @@ BEGIN
               now()
              ) RETURNING id_correspondencia
       into v_id_correspondencia;
-
+  
       v_id_origen = v_id_correspondencia;
       UPDATE corres.tcorrespondencia
       set id_origen = v_id_correspondencia
@@ -401,8 +413,8 @@ BEGIN
          ELSE
             update corres.tcorrespondencia
             set 
-                --id_correspondencias_asociadas = string_to_array(
-                --v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
+                id_correspondencias_asociadas = string_to_array(
+                v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
                 id_institucion=v_parametros.id_institucion_destino,
                 id_persona=v_parametros.id_persona_destino,
                 id_uo=v_parametros.id_uo,
@@ -412,7 +424,8 @@ BEGIN
                 referencia = v_parametros.referencia,
                 fecha_mod = now(),
                 id_usuario_mod = p_id_usuario,
-                id_clasificador = v_parametros.id_clasificador
+                id_clasificador = v_parametros.id_clasificador,
+                mensaje = v_parametros.mensaje
                
             where id_correspondencia = v_parametros.id_correspondencia;
           END IF;
@@ -1263,7 +1276,9 @@ BEGIN
                   id_gestion, id_institucion, id_periodo, id_persona, id_uo,
                     mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
                     fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador,nro_paginas,otros_adjuntos,cite,origen,fecha_creacion_documento)
+                    id_clasificador,nro_paginas,otros_adjuntos,cite,origen,fecha_creacion_documento,
+                    --persona_firma,
+                    tipo_documento)
       values ('borrador_recepcion_externo', 'activo',
         v_parametros.fecha_documento, v_id_correspondencias_asociadas, 
         v_parametros.id_depto, v_parametros.id_documento, NULL,
@@ -1273,7 +1288,11 @@ BEGIN
                v_parametros.mensaje, 0, --nivel de anidamiento del arbol
              v_parametros.nivel_prioridad, v_num_corre, v_parametros.referencia,
                'externa', now(), p_id_usuario, null, null,
-               v_parametros.id_clasificador, v_parametros.nro_paginas, v_parametros.otros_adjuntos, v_parametros.cite,v_origen,v_fecha_creacion_documento) RETURNING id_correspondencia
+               v_parametros.id_clasificador, v_parametros.nro_paginas, 
+               v_parametros.otros_adjuntos, v_parametros.cite,v_origen,
+               v_fecha_creacion_documento,
+               --v_parametros.persona_firma,
+               v_parametros.tipo_documento) RETURNING id_correspondencia
       into v_id_correspondencia;
 
       v_id_origen = v_id_correspondencia;
@@ -1310,7 +1329,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       from corres.tcorrespondencia c
       where c.id_correspondencia = v_parametros.id_correspondencia;
 
-      if(v_estado = 'borrador_recepcion_externo' OR v_estado = 'pendiente_recepcion_externo' OR v_estado_corre='borrador_corre') then
+      if(v_estado = 'borrador_recepcion_externo' OR v_estado = 'borrador_envio'  OR v_estado = 'pendiente_recepcion_externo' OR v_estado_corre='borrador_corre') then
 	       	
       IF(v_parametros.id_correspondencias_asociadas='')THEN
            v_id_correspondencias_asociadas=NULL;
@@ -1350,7 +1369,9 @@ elsif(p_transaccion='CO_COREXT_MOD')then
             otros_adjuntos = v_parametros.otros_adjuntos,
             cite = v_parametros.cite,
             fecha_mod = now(),
-            id_usuario_mod = p_id_usuario
+            id_usuario_mod = p_id_usuario,
+           -- persona_firma=v_parametros.persona_firma,
+            tipo_documento=v_parametros.tipo_documento
             --origen = v_origen
         where id_correspondencia = v_parametros.id_correspondencia;
 
@@ -1796,3 +1817,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION corres.ft_correspondencia_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

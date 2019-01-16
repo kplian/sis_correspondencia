@@ -79,6 +79,8 @@ Phx.vista.CorrespondenciaAdministracion = {
 		    this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=true;
 		    this.Atributos[this.getIndAtributo('id_documento')].grid=true;
 		    this.Atributos[this.getIndAtributo('id_uo')].grid=true;
+		   //this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
 	      }
 	    Phx.vista.CorrespondenciaAdministracion.superclass.constructor.call(this,config);
 	    
@@ -128,22 +130,21 @@ Phx.vista.CorrespondenciaAdministracion = {
 	   		this.Cmp.id_persona_remitente.reset();
 	   		this.Cmp.id_persona_remitente.modificado=true;
 	   		
-	   	},this)
+	   	},this);
+	   	this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
+        this.cmpAsocia = this.getComponente('asociar');
+ 
+        this.cmpAsocia.on('change', function (groupRadio,radio) {
+          	if(radio.inputValue){this.enableDisable(radio.inputValue);}
+            },this);
    },
    
-  //east : undefined,
-   south : {
-			
-			 url: '../../../sis_correspondencia/vista/correspondencia/CorrespondenciaDetalleAnulado.php',
-				
-			cls : 'CorrespondenciaDetalleAnulado',
-			title : 'Detalle de Derivación Anulados',
-			height : '50%'
-		},
+ 
    	getParametrosFiltro: function () {
    	 	this.store.baseParams.estado = this.swEstado;
 		
 	},
+	
 	actualizarSegunTab: function (name, indice) {
 			var data = this.getSelectedData();
 
@@ -319,11 +320,13 @@ Phx.vista.CorrespondenciaAdministracion = {
          		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
          		
 		
-		}else{  this.adminGrupo({ ocultar: [3,4], mostrar:[0,2,1]});
+		}else{  this.adminGrupo({ ocultar: [4], mostrar:[0,2,1]});
 		       	this.Cmp.id_institucion_destino.hide();
 		        this.Cmp.id_persona_destino.hide();
 		        this.Cmp.id_institucion_remitente.hide();
 		        this.Cmp.id_persona_remitente.hide();
+		        this.mostrarComponente(this.Cmp.id_funcionarios);
+		       
 	            this.ocultarComponente(this.Cmp.id_persona_destino);
 		        this.ocultarComponente(this.Cmp.id_institucion_destino);
 		        this.ocultarComponente(this.Cmp.id_persona_remitente);
@@ -332,11 +335,13 @@ Phx.vista.CorrespondenciaAdministracion = {
 		        this.ocultarComponente(this.Cmp.otros_adjuntos);
 		        this.ocultarComponente(this.Cmp.nro_paginas);
 		        this.ocultarComponente(this.Cmp.fecha_creacion_documento);
-		
+		      // this.ocultarComponente(this.Cmp.persona_firma);
+                this.ocultarComponente(this.Cmp.tipo_documento);
+		      
 		}
         if (this.tipo_interfaz=='externa'){
         	
-        	this.tipo = this.getComponente('tipo');
+        	this.tipo = this.getComponente('tipo'); 
             this.tipo.setValue('externa');
 		    this.tipo.disable(true);
         	cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es interna
@@ -441,7 +446,28 @@ Phx.vista.CorrespondenciaAdministracion = {
 	                
         }
        return tb
-  }
+ },
+ enableDisable:function(val){
+        	
+      if(val =='interna'){
+            this.cmpResponde.store.baseParams.tipo = val;
+            this.cmpResponde.modificado = true;
+            this.cmpResponde.enable();
+            this.cmpResponde.reset()
+         }
+        else if (val =='externa'){
+            this.cmpResponde.store.baseParams.tipo = val;
+            this.cmpResponde.modificado = true;
+            this.cmpResponde.enable();
+            this.cmpResponde.reset();
+            
+         }
+         else {
+         	   this.cmpResponde.disable(); 
+         	    this.cmpResponde.reset();     	
+         }
+         
+     }
 
 	
 };

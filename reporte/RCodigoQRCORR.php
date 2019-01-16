@@ -67,7 +67,7 @@ class RCodigoQRCORR extends ReportePDF {
 		$style = array(
 			'border' => 0,
 			'vpadding' => 'auto',
-			'hpadding' => 'auto',
+			'hpadding' => 'auto',	
 			'fgcolor' => array(0,0,0),
 			'bgcolor' => false, //array(255,255,255)
 			'module_width' => 4, // width of a single module in points
@@ -94,14 +94,14 @@ class RCodigoQRCORR extends ReportePDF {
 
 	function imprimirCodigo($style){
 		$this->AddPage();
-		$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 1, 1,80,0, $style,'T',true);
+		//$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 1, 1,80,0, $style,'T',true);
 		$this->SetFont('','B',30);		
 		$this->ln(5);
 		$this->SetFont('','',22);	
-		$this->Text(80, 10, 'RECIBIDO', false, false, true, 0,5,'',false,'',2);
-		$this->Text(80, 25, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',2);
-		$this->Text(80, 35, trim($this->cod['num']), false, false, true, 0,5,'',false,'',2);				
-		$this->Text(80, 45, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',2);
+		$this->Text(0, 0, 'RECIBIDO', false, false, true, 0,5,'',false,'',2);
+		$this->Text(0, 0, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',2);
+		$this->Text(0, 0, trim($this->cod['num']), false, false, true, 0,5,'',false,'',2);				
+		$this->Text(0, 0, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',2);
 			
 	}
 }
@@ -148,7 +148,7 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 			// para imprimir varios codigos
 			$this->detalle = $detalle;
 		}
-		$this->SetMargins(1, 1, 1, true);
+		$this->SetMargins(10, 10, 10, true);
 	}
 	
 	function Header() {}
@@ -185,14 +185,14 @@ class RCodigoQRCORR_v1 extends  ReportePDF {
 
 	function imprimirCodigo($style){
 		$this->AddPage();
-		$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 100, 1, 15,0, $style,'T',true);
+		//$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 100, 1, 15,0, $style,'T',true);
 		$this->SetFont('','B',15);		
 		$this->ln(5);
-		$this->SetFont('','',7);	
-		$this->Text(115, 3, 'RECIBIDO', false, false, true, 0,5,'',false,'',1);
-		$this->Text(115, 6, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',1);
-		$this->Text(115, 9, trim($this->cod['num']), false, false, true, 0,5,'',false,'',1);				
-		$this->Text(115, 12, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',1);
+		$this->SetFont('','',10);	
+		$this->Text(0, 3, '', false, false, true, 0,5,'',false,'',1);
+		$this->Text(0, 6, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',1);
+		$this->Text(0, 9, trim($this->cod['num']), false, false, true, 0,5,'',false,'',1);				
+		$this->Text(0, 12, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',1);
 	}
 }
 ?>

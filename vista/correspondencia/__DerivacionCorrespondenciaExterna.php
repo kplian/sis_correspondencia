@@ -14,7 +14,7 @@ header("content-type: text/javascript; charset=UTF-8");
 Phx.vista.DerivacionCorrespondenciaExterna = {
     bsave:false,	
 	bnew:false,
-	bedit:true,
+	bedit:false,
 	bdel:true,
 	swEstado: 'pendiente_recepcion_externo',
 	gruposBarraTareas: [{

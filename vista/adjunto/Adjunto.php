@@ -339,8 +339,10 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		},
        onButtonNew: function () {
        	    // alert (this.estado_corre);
+       	    
        	     if (this.estado_corre=='borrador_corre'){
        	        	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+       	        	
 	          	
        	     }else{
        	     	
@@ -354,18 +356,30 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
              
         },
         onButtonEdit: function () {
-             if (this.estado=='enviado'){
-             	alert ('No se puede modificar los archivos ya enviados');
-             }else{
-             	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
-             }
+        	 if (this.estado_corre=='borrador_corre'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
+       	        	
+	          	
+       	     }else{
+	             if (this.estado=='enviado'){
+	             	alert ('No se puede modificar los archivos ya enviados');
+	             }else{
+	             	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
+	             }
+	         }
         },
         onButtonDel: function () {
-             if (this.estado=='enviado'){
-             	alert ('No se puede eliminar los archivos ya enviados');
-             }else{
-             	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
-             }
+        	 if (this.estado_corre=='borrador_corre'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
+       	        	
+	          	
+       	     }else{
+		             if (this.estado=='enviado'){
+		             	alert ('No se puede eliminar los archivos ya enviados');
+		             }else{
+		             	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
+		             }
+		     }
         },
 		verArchivoAdjunto:function(){
 
@@ -375,7 +389,73 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 			var nombre_archivo = data.nombre_archivo+'.'+data.extension;
 			window.open(data.ruta_archivo);
 
-		}
+		},
+		
+		definirFormularioVentana: function() {
+        var me = this;
+        //define la altura en porcentaje al repecto de body
+        me.fheight = me.calTamPor(me.fheight, Ext.getBody())
+
+        me.form = new Ext.form.FormPanel({
+            id: me.idContenedor + '_W_F',
+            items: me.Grupos.length >1 ?me.Grupos:me.Grupos[0],
+            fileUpload: me.fileUpload,
+            padding: me.paddingForm,
+            bodyStyle: me.bodyStyleForm,
+            border: me.borderForm,
+            frame: me.frameForm, 
+            autoScroll: false,
+            autoDestroy: true,
+            autoScroll: true
+        });
+
+        
+        
+        // Definicion de la ventana que contiene al formulario
+        me.window = new Ext.Window({
+            title: me.title,
+            modal: me.winmodal,
+            width: me.fwidth,
+            height: me.fheight,
+            bodyStyle: 'padding:5px;',
+            layout: 'fit',
+            hidden: true,
+            autoScroll: false,
+            maximizable: true,
+            buttons: [ {
+	                //xtype: 'splitbutton',
+	                text: '<i class="fa fa-check"></i> Guardar + Nuevo',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': true,
+	                    def: 'reset'
+	                },
+	                scope: me,
+	                
+                }, 
+                {
+	                text: '<i class="fa fa-check"></i> Guardar',
+	                arrowAlign: 'bottom',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': false
+	                },
+	                scope: me
+
+                },
+                {
+	                text: '<i class="fa fa-times"></i> Declinar',
+	                handler: me.onDeclinar,
+					scope: me
+               }],
+            items: me.form,
+            autoDestroy: true,
+            closeAction: 'hide'
+        });
+
+    },
+
+		
 	}
 )
 </script>

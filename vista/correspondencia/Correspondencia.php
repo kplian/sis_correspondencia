@@ -469,9 +469,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				typeAhead : true,
 				allowBlank : false,
 				triggerAction : 'all',
-				emptyText : 'Seleccione Opcion...',
 				selectOnFocus : true,
+				forceSelection: true,
 				mode : 'local',
+				minChars: 2,
 				//valorInicial:{ID:'interna',valor:'Interna'},
 				store : new Ext.data.ArrayStore({
 					fields : ['ID', 'valor'],
@@ -500,7 +501,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			valorInicial : '2media',
 			filters : {
 				pfiltro : 'cor.nivel_prioridad',
-				type : 'string'
+				type : 'string'	
 			},
 			id_grupo : 2,
 			default:'Media',
@@ -1177,7 +1178,77 @@ header("content-type: text/javascript; charset=UTF-8");
 			egrid : true,
 			disabled : true
 			
-		   }
+		   },{
+			config : {
+				name : 'persona_firma',
+				fieldLabel : 'Persona que Firma Carta',
+				width : 400,
+				//growMin : 100,
+				//grow : true,
+				gwidth : 400
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.persona_firma',
+				type : 'string'
+			},
+			id_grupo : 1,
+			grid : false,
+			form : false,
+			bottom_filter : false,
+			egrid : false
+			
+		   },  {
+			config : {
+				name : 'tipo_documento',
+				fieldLabel : 'Tipo Documento',
+				typeAhead : true,
+				allowBlank : false,
+				triggerAction : 'all',
+				emptyText : 'Seleccione Opcion...',
+				selectOnFocus : true,
+				forceSelection: true,
+				width : 250,
+				mode : 'local',
+
+				store : new Ext.data.ArrayStore({
+					fields : ['ID', 'valor'],
+					data : [['carta_recibida', 'Carta Recibida'],['factura', 'Factura'],['boleta_de_garantia', 'Boleta de Garantia'],['resolucion', 'Resolucion'],['acta', 'Acta']],
+
+				}),
+				renderer : function(value, p, record) {
+					var tipo_documento = record.data.tipo_documento;
+					return  record.data.tipo_documento;
+					if (tipo_documento=='carta_recibida'){
+						return 'Carta Recibida';
+					}else if (tipo_documento=='factura'){
+						return 'Factura';
+					}else if (tipo_documento=='resolucion'){
+						return 'Resolucion';
+					}else if (tipo_documento=='acta'){
+						return 'Acta';
+					}else{
+				        return 'Boleta de Garantia';
+						
+					}
+					
+					//return String.format('{0}', record.data['desc_clasificador']);
+				},
+				valueField : 'ID',
+				displayField : 'valor'
+
+			},
+			type : 'ComboBox',
+			valorInicial : 'carta_recibida',
+			filters : {
+				pfiltro : 'cor.tipo_documento',
+				type : 'string'
+			},
+			id_grupo : 0,
+			grid : true,
+			form : true
+		}
+		   
 		],
 		title : 'Correspondencia',
 		ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
@@ -1238,17 +1309,20 @@ header("content-type: text/javascript; charset=UTF-8");
 		    'nro_paginas',
 		    'id_persona_remitente',
 		    'id_persona_destino',
-		    'id_persona',
+		    'id_persona',  
 		    'nombre_completo1',
 		    'otros_adjuntos',
 		    'adjunto','origen',
 		 	{name:'acciones', type: 'string'},
-			{name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+			{name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s'},
 		 	{name:'fecha_ult_derivado', type: 'date',dateFormat:'Y-m-d H:i:s.u'},'desc_funcionario_origen',
 			{name:'observaciones_archivado', type: 'string'},
 			{name:'sw_archivado', type: 'string'},
 			{name:'desc_correspondencias_asociadas', type: 'string'},
-			{name:'estado_corre', type: 'string'}],
+			{name:'estado_corre', type: 'string'},
+			{name:'tipo_documento', type: 'string'},
+			{name:'persona_firma', type: 'string'}
+			],
 		 	arrayDefaultColumHidden:['estado','nivel_prioridad','id_clasificador','estado','tipo','fecha_creacion_documento','origen','estado_reg','fecha_mod','usr_mod','id_uo'],
 	
 		sortInfo : {
@@ -1386,6 +1460,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					width : 900,
 					height : 400
 				}, rec.data, this.idContenedor, 'Adjunto')
+				
 			},
 		//5
 		BCorregir : function() {
@@ -1553,10 +1628,8 @@ header("content-type: text/javascript; charset=UTF-8");
 	BArchivar:function(){
 		var rec = this.sm.getSelected();
 	  if(confirm('Esta seguro de Archivar el documento '+rec.data.numero+'?')){
-		var result = prompt('Especifique las razones por las que se corrige el Documento'+rec.data.numero);
-			   
-			  // Phx.CP.loadingShow();
-					//alert (result);   
+	  	var result = prompt('Especifique la ubicación física del documento y las razones por las que se archiva el Documento'+rec.data.numero);
+		
 				if (result != null){
 				Ext.Ajax.request({
 					url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',

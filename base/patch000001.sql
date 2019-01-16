@@ -13,12 +13,7 @@ CREATE TABLE corres.tadjunto (
   nombre_archivo VARCHAR(255),
   extension VARCHAR(255),
   id_correspondencia_origen INTEGER,
-  CONSTRAINT pk_tcorrespondencia__id_adjunto PRIMARY KEY(id_adjunto),
-  CONSTRAINT tadjunto_fk FOREIGN KEY (id_correspondencia_origen)
-    REFERENCES corres.tcorrespondencia(id_correspondencia)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
+  CONSTRAINT pk_tcorrespondencia__id_adjunto PRIMARY KEY(id_adjunto)
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
@@ -34,22 +29,7 @@ CREATE TABLE corres.tcomision (
   id_comision SERIAL,
   id_funcionario INTEGER,
   id_correspondencia INTEGER,
-  CONSTRAINT pk_tcorrespondencia__id_comision PRIMARY KEY(id_comision),
-  CONSTRAINT fk_tcomision__id_correspondencia FOREIGN KEY (id_correspondencia)
-    REFERENCES corres.tcorrespondencia(id_correspondencia)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcomision__id_funcionario FOREIGN KEY (id_funcionario)
-    REFERENCES orga.tfuncionario(id_funcionario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcomision__id_usuario FOREIGN KEY (id_usuario_reg)
-    REFERENCES segu.tusuario(id_usuario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
+  CONSTRAINT pk_tcorrespondencia__id_comision PRIMARY KEY(id_comision)
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
@@ -94,57 +74,8 @@ CREATE TABLE corres.tcorrespondencia (
   sw_fisico VARCHAR(2) DEFAULT 'si'::character varying NOT NULL,
   fecha_creacion_documento TIMESTAMP WITHOUT TIME ZONE,
   CONSTRAINT pk_tcorrespondencia__id_correspondencia PRIMARY KEY(id_correspondencia),
-  CONSTRAINT tcorrespondencia__estado__chk CHECK (((estado)::text = 'borrador_detalle_recibido'::text) OR ((estado)::text = 'pendiente_recibido'::text) OR ((estado)::text = 'recibido'::text) OR ((estado)::text = 'recibido_derivacion'::text) OR ((estado)::text = 'borrador_envio'::text) OR ((estado)::text = 'enviado'::text) OR ((estado)::text = 'borrador_recepcion_externo'::text) OR ((estado)::text = 'pendiente_recepcion_externo'::text) OR ((estado)::text = 'anulado'::text)),
-  CONSTRAINT fk_tcorrespondencia__id_clasificacor FOREIGN KEY (id_clasificador)
-    REFERENCES segu.tclasificador(id_clasificador)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_codumento FOREIGN KEY (id_documento)
-    REFERENCES param.tdocumento(id_documento)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_correspondencia FOREIGN KEY (id_correspondencia_fk)
-    REFERENCES corres.tcorrespondencia(id_correspondencia)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_depto FOREIGN KEY (id_depto)
-    REFERENCES param.tdepto(id_depto)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_funcionario FOREIGN KEY (id_funcionario)
-    REFERENCES orga.tfuncionario(id_funcionario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_gestion FOREIGN KEY (id_gestion)
-    REFERENCES param.tgestion(id_gestion)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_periodo FOREIGN KEY (id_periodo)
-    REFERENCES param.tperiodo(id_periodo)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_persona FOREIGN KEY (id_persona)
-    REFERENCES segu.tpersona(id_persona)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_uo FOREIGN KEY (id_uo)
-    REFERENCES orga.tuo(id_uo)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia__id_usuario FOREIGN KEY (id_usuario_reg)
-    REFERENCES segu.tusuario(id_usuario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
+  CONSTRAINT tcorrespondencia__estado__chk CHECK (((estado)::text = 'borrador_detalle_recibido'::text) OR ((estado)::text = 'pendiente_recibido'::text) OR ((estado)::text = 'recibido'::text) OR ((estado)::text = 'recibido_derivacion'::text) OR ((estado)::text = 'borrador_envio'::text) OR ((estado)::text = 'enviado'::text) OR ((estado)::text = 'borrador_recepcion_externo'::text) OR ((estado)::text = 'pendiente_recepcion_externo'::text) OR ((estado)::text = 'anulado'::text))
+  
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
@@ -164,10 +95,6 @@ IS 'Indica quien tiene el fisico';
 COMMENT ON COLUMN corres.tcorrespondencia.fecha_creacion_documento
 IS 'Fecha de Creación del Documento';
 
-CREATE TRIGGER trig_correspondencia_estado
-  AFTER INSERT OR UPDATE 
-  ON corres.tcorrespondencia FOR EACH ROW 
-  EXECUTE PROCEDURE corres.trig_correspondencia();
   
   CREATE TABLE corres.tcorrespondencia_estado (
   id_correspondencia_estado SERIAL,
@@ -175,17 +102,7 @@ CREATE TRIGGER trig_correspondencia_estado
   estado VARCHAR(50) NOT NULL,
   estado_ant VARCHAR(50),
   observaciones_estado TEXT,
-  CONSTRAINT pk_tcorrespondencia__id_correspondencia_estado PRIMARY KEY(id_correspondencia_estado),
-  CONSTRAINT fk_tcorrespondencia_estado__id_correspondencia FOREIGN KEY (id_correspondencia)
-    REFERENCES corres.tcorrespondencia(id_correspondencia)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT fk_tcorrespondencia_estado__id_usuario_reg FOREIGN KEY (id_usuario_reg)
-    REFERENCES segu.tusuario(id_usuario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
+  CONSTRAINT pk_tcorrespondencia__id_correspondencia_estado PRIMARY KEY(id_correspondencia_estado)  
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
@@ -205,17 +122,7 @@ CREATE TABLE corres.tgrupo (
   nombre VARCHAR(250),
   correo VARCHAR(100),
   obs TEXT,  
-  CONSTRAINT pk_tcorrespondencia__id_grupo PRIMARY KEY(id_grupo),
-  CONSTRAINT tgrupo__id_usuario_fk FOREIGN KEY (id_usuario_reg)
-    REFERENCES segu.tusuario(id_usuario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT tgrupo__is_usuario_mod_fk FOREIGN KEY (id_usuario_mod)
-    REFERENCES segu.tusuario(id_usuario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
+  CONSTRAINT pk_tcorrespondencia__id_grupo PRIMARY KEY(id_grupo)
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
@@ -224,27 +131,7 @@ CREATE TABLE corres.tgrupo_funcionario (
   id_grupo_funcionario SERIAL,
   id_grupo INTEGER,     
   id_funcionario INTEGER,
-  CONSTRAINT pk_tcorrespondencia__id_grupo_funcionario PRIMARY KEY(id_grupo_funcionario),
-  CONSTRAINT tgrupo_funcionario__id_grupo_fk FOREIGN KEY (id_grupo)
-    REFERENCES corres.tgrupo(id_grupo)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT tgrupo_funcionario__id_usuaio_mod_fk FOREIGN KEY (id_usuario_mod)
-    REFERENCES segu.tusuario(id_usuario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT tgrupo_funcionario__if_funcionario_fk FOREIGN KEY (id_funcionario)
-    REFERENCES orga.tfuncionario(id_funcionario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE,
-  CONSTRAINT tgrupo_funcionario_id_usuario_reg_fk FOREIGN KEY (id_usuario_reg)
-    REFERENCES segu.tusuario(id_usuario)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-    NOT DEFERRABLE
+  CONSTRAINT pk_tcorrespondencia__id_grupo_funcionario PRIMARY KEY(id_grupo_funcionario)
 ) INHERITS (pxp.tbase)
 
 WITH (oids = false);
@@ -265,6 +152,28 @@ WITH (oids = false);
 COMMENT ON COLUMN corres.tasistente_permisos.permitir_todo
 IS 'Permitir ver todo o solamente lo que la persona a registrado.';
 /***********************************F-SCP-AVQ-CORRES-0-15/10/2018*****************************************/
+/***********************************I-SCP-AVQ-CORRES-0-27/12/2018*****************************************/
+ALTER TABLE corres.tcorrespondencia ADD COLUMN estado_corre  VARCHAR(30);
+/***********************************F-SCP-AVQ-CORRES-0-27/12/2018*****************************************/
+/***********************************I-SCP-AVQ-CORRES-0-31/12/2018*****************************************/
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN tipo_documento VARCHAR(100);
+
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN tipo_documento SET DEFAULT 'otros';
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN persona_firma VARCHAR(100);
+/***********************************F-SCP-AVQ-CORRES-0-31/12/2018*****************************************/
+/***********************************I-SCP-AVQ-CORRES-0-15/01/2019*****************************************/
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN id_alarma Integer;
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN observaciones_archivado TEXT;
+
+/***********************************F-SCP-AVQ-CORRES-0-15/01/2019*****************************************/
+
 
 
 

@@ -13,11 +13,28 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
+		//* Creación para el combo en la grilla/
+		
+		if ((config.idContenedorPadre=='docs-CORADMG')|| (config.idContenedorPadre=='docs-ADMCORINT')){
+	 	 	  this.initButtons=[this.cmbEstado];
+	 	 }
+
     	//llama al constructor de la clase padre
 		Phx.vista.CorrespondenciaDetalle.superclass.constructor.call(this,config);
 
+		
+
 		this.init();
 		this.bloquearMenus();
+		
+		this.cmbEstado.on('select', function(c,r,i){
+	    	if(this.validarFiltros()){
+                  this.capturaFiltros();
+           }
+		},this);
+		
+		this.cmbEstado.on('clearcmb', function() {this.DisableSelect();this.store.removeAll();}, this);
+		
 		/*this.getBoton('new').disable();
 	    this.getBoton('save').disable();*/
 		if(Phx.CP.getPagina(this.idContenedorPadre)){
@@ -38,11 +55,9 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
 			});
 			 console.log(config);
-	 	 if ((config.idContenedorPadre=='docs-CORADMG')|| (config.idContenedorPadre=='docs-ADMCORINT')){
-	 	 	  this.getBoton('Derivar').show();
-	 	 }else{
-	 	 	this.getBoton('Derivar').hide();
-	 	 }
+			 
+	this.iniciarEventos();
+	 	 
 	},
 			
 	Atributos:[
@@ -314,19 +329,68 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	bnew:true,
 	
  
-	iniciarEventos:function(){ 
-	
+	iniciarEventos:function(){
 			  		this.getBoton('new').disable();
 			  		this.getBoton('save').disable();
-			  
+		/** PS-84 **/
+		this.Cmp.id_funcionario.on('select', function(c, r, i){
+			var aux=this.store.data.length;
+			for (i=0;i<aux;i++){
+				var funcio=this.store.data.items[i].data.id_funcionario;
+				console.log('func='+funcio+' comb='+r.id)
+				if (funcio==r.id){
+					alert ('EL FUNCIONARIO YA ESTA REGISTRADO')
+					this.Cmp.id_funcionario.reset();
+					break;
+				    }
+		    	}
+			}, this);
+		/** PS-84 **/
+	},
+	getParametrosFiltro: function () {
+   	 	this.store.baseParams.estado = this.cmbEstado.getValue();
 		
 	},
+	capturaFiltros:function(combo, record, index){
+		this.desbloquearOrdenamientoGrid();
+        this.getParametrosFiltro();
+        this.load({params:{start:0, limit:50}});
+	},
 	
-	
-	onReloadPage:function(m){
+	cmbEstado: new Ext.form.ComboBox({
+				name:'ComboEstado',
+				fieldLabel : 'Estado',
+				typeAhead : true,
+				allowBlank : false,
+				triggerAction : 'all',
+				emptyText : 'Seleccione Opcion...',
+				selectOnFocus : true,
+				mode : 'local',
+				//valorInicial:{ID:'interna',valor:'Interna'},
+				store : new Ext.data.ArrayStore({
+					fields : ['ID', 'valor'],
+					data : [['activo', 'Activos'], ['anulado', 'Anulado']]
+				}),
+				valueField : 'ID',
+				displayField : 'valor',
+				width : 150
+		}),
+		
+	validarFiltros:function(){
+		
+        if(this.cmbEstado.isValid()){// && this.cmbTipoPres.validate()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    },
+	onReloadPage:function(config){
 
        
-		this.maestro=m;
+		this.maestro=config;
+		console.log(config);
+		
 		this.Atributos[1].valorInicial=this.maestro.id_correspondencia;
 
 		if(this.maestro.tipo=='interna' || this.maestro.tipo=='externa'){
@@ -358,13 +422,21 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			  		}
 			   }
 	
-		 
+		 this.cmbEstado.reset();	
     	 this.store.baseParams={id_correspondencia_fk:this.maestro.id_correspondencia};
-		 this.load({params:{start:0, limit:50}})
+    	 
+    	if ((config.idContenedorPadre!='docs-CORADMG')|| (config.idContenedorPadre!='docs-ADMCORINT')){
+	 	 	  this.load({params:{start:0, limit:50}})
+	 	 	  console.log('aqui ingreso en el load');
+	 	 }
+    	 
+		// this.load({params:{start:0, limit:50}})
    	},
 	preparaMenu:function(n){
       	
       	Phx.vista.CorrespondenciaDetalle.superclass.preparaMenu.call(this,n);
+      	
+      	
       	
 		  var data = this.getSelectedData();
 		  var tb =this.tbar;
@@ -483,7 +555,78 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			}
 			this.reload();
 
-		}
+		},
+	definirFormularioVentana: function() {
+        var me = this;
+        //define la altura en porcentaje al repecto de body
+        me.fheight = me.calTamPor(me.fheight, Ext.getBody())
+
+        me.form = new Ext.form.FormPanel({
+            id: me.idContenedor + '_W_F',
+            items: me.Grupos.length >1 ?me.Grupos:me.Grupos[0],
+            fileUpload: me.fileUpload,
+            padding: me.paddingForm,
+            bodyStyle: me.bodyStyleForm,
+            border: me.borderForm,
+            frame: me.frameForm, 
+            autoScroll: false,
+            autoDestroy: true,
+            autoScroll: true
+        });
+
+        
+        
+        // Definicion de la ventana que contiene al formulario
+        me.window = new Ext.Window({
+            title: me.title,
+            modal: me.winmodal,
+            width: me.fwidth,
+            height: me.fheight,
+            bodyStyle: 'padding:5px;',
+            layout: 'fit',
+            hidden: true,
+            autoScroll: false,
+            maximizable: true,
+            buttons: [ {
+	                xtype: 'splitbutton',
+	                text: '<i class="fa fa-check"></i> Guardar + Nuevo',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': true,
+	                    def: 'reset'
+	                },
+	                scope: me,
+	                menu: [{
+		                    text: 'Guardar + reset',
+		                    argument: {
+		                        'news': true,
+		                        def: 'reset'
+		                    },
+		                    handler: me.onSubmit,
+		                    scope: me
+	                	}]
+                }, 
+                {
+	                text: '<i class="fa fa-check"></i> Guardar',
+	                arrowAlign: 'bottom',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': false
+	                },
+	                scope: me
+
+                },
+                {
+	                text: '<i class="fa fa-times"></i> Declinar',
+	                handler: me.onDeclinar,
+					scope: me
+               }],
+            items: me.form,
+            autoDestroy: true,
+            closeAction: 'hide'
+        });
+
+    },
 
 }
 )

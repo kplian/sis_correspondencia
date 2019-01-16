@@ -34,6 +34,9 @@ header("content-type: text/javascript; charset=UTF-8");
 		        this.Atributos[this.getIndAtributo('asociar')].grid=false;
 		        this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
 		        this.Atributos[this.getIndAtributo('id_acciones')].grid=false;
+		      //  this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+			    this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
+			    
 		        
 			           
             Phx.vista.CorrespondenciaSaliente.superclass.constructor.call(this, config);   
@@ -49,11 +52,12 @@ header("content-type: text/javascript; charset=UTF-8");
        
        
             this.init();
+            this.argumentExtraSubmit={'vista':'CorrespondenciaInterna'};
             this.store.baseParams = {'interface': 'saliente'};
             this.load({params: {start: 0, limit: 50}})
             },
             
-            enableDisable:function(val){
+     enableDisable:function(val){
       if(val =='interna'){
             this.cmpResponde.store.baseParams.tipo = val;
             this.cmpResponde.modificado = true;
@@ -113,15 +117,20 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
-            this.adminGrupo({mostrar: [0,1, 2,3,4]});
+            this.adminGrupo({mostrar: [0,1,2,3,4]});
+            this.ocultarComponente(this.Cmp.cite);
+            this.ocultarComponente(this.Cmp.otros_adjuntos);
+            this.ocultarComponente(this.Cmp.nro_paginas);
+           
             this.ocultarComponente(cmpFuncionarios);
-
-            console.log('ver',this.Cmp);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
             this.ocultarComponente(this.Cmp.cite);
             this.ocultarComponente(this.Cmp.fecha_creacion_documento);
             this.ocultarComponente(this.Cmp.id_funcionario);
+            this.ocultarComponente(this.Cmp.id_acciones);
+          //  this.ocultarComponente(this.Cmp.persona_firma);
+            this.ocultarComponente(this.Cmp.tipo_documento);
             
             this.fecha_documento = this.getComponente('fecha_documento');
             this.fecha_documento.disable(true);
@@ -142,6 +151,8 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.id_funcionarios);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
+                this.ocultarComponente(this.Cmp.id_acciones);
+        
                console.log('ver',this.Cmp.id_institucion_destino);
             var data = this.sm.getSelected().data;
             //console.log(data, data.estado)

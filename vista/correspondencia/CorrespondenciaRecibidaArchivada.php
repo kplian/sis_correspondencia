@@ -53,6 +53,9 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 		
 		this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
         this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
+        // this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
+		 this.Atributos[this.getIndAtributo('archivado_imagen')].grid=true;	
        //   	this.setColumnHeader('id_institucion_remitente','Espectro');
 	    Phx.vista.CorrespondenciaRecibidaArchivada.superclass.constructor.call(this,config);
 	    
@@ -103,7 +106,7 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
             this.getBoton('Archivar').enable(); 
    	
 		 
-		 if(name=='externa'){
+		 if(name=='externa'|| name=='interna'){
 		 	  //this.ocultarColumnaByName('id_institucion_remitente');
 		 	  this.getBoton('Adjuntos').show();
               this.getBoton('VerDocumento').show();
@@ -113,8 +116,8 @@ Phx.vista.CorrespondenciaRecibidaArchivada = {
 	    }else{
 			  this.getBoton('Adjuntos').show();
               this.getBoton('VerDocumento').show();
-              this.getBoton('HojaRuta').show();
-              this.getBoton('Historico').show();
+              this.getBoton('HojaRuta').disable();
+              this.getBoton('Historico').disable();
               this.getBoton('DesArchivar').show();
             
 		}

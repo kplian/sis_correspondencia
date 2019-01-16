@@ -120,6 +120,9 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('fecha_ult_derivado','timestamp');
 		$this->captura('persona_nombre_plantilla','text');
 		$this->captura('observaciones_archivado','text');
+		$this->captura('desc_correspondencias_asociadas','text');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('persona_firma','varchar');
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -449,6 +452,9 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('otros_adjuntos','varchar');
 		$this->captura('nro_paginas','int');
 		$this->captura('desc_correspondencias_asociadas','text');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('persona_firma','varchar');
+		
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -508,17 +514,28 @@ class MODCorrespondencia extends MODbase{
 		return $this->respuesta;
 	}
 
-    function subirCorrespondencia(){
-		
+    function subirCorrespondencia()
+    {
 		    $cone = new conexion();
-			$link = $cone->conectarpdo();
-			$copiado = false;			
-			try {
+			$this->link = $cone->conectarpdo();
+			$copiado = false;	
+			$sql = "SELECT tamano FROM param.ttipo_archivo WHERE codigo='CORRPRIN'";
+			$res = $this->link->prepare($sql);
+			$res->execute();
+			$result = $res->fetchAll(PDO::FETCH_ASSOC);
+			$tamano_archivo=$result[0]['tamano'];
+			  
+			try{
 				
-				$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);		
-		  	    $link->beginTransaction();
+                $this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);		
+		  	    $this->link->beginTransaction();
+                //var_dump($tamano_archivo);
 				
-				if ($this->arregloFiles['file_correspondencia']['name'] == "") {
+				  if((($this->arregloFiles['file_correspondencia']['size'] / 1000) / 1024) > $tamano_archivo  ){
+	                throw new Exception("El tamaño del Archivo supera a la configuración");
+	
+	            }
+			    if ($this->arregloFiles['file_correspondencia']['name'] == "") {
 					throw new Exception("El archivo no puede estar vacio");
 				}
 				
@@ -530,15 +547,10 @@ class MODCorrespondencia extends MODbase{
 		        $this->arreglo['version'] = $version;
 				$this->arreglo['numero']= str_replace('/','_',$this->arreglo['numero']);
 				$this->arreglo['numero']= str_replace(' ','_',$this->arreglo['numero']);
-				//$this->arreglo['numero'] = "sdasdf/asdf";
-				
-				/*echo "sale algo!!!!modificado".print_r($this->arreglo);
-				exit;*/
-				//validar que no sea un arhvio en blanco
+				//validar que no sea un archvo en blanco
 				$file_name = $this->getFileName2('file_correspondencia', 'id_correspondencia', '','_v'.$version);
 				
-			  /* print_r ($file_name);
-			   exit;*/
+			  
 			    //manda como parametro la url completa del archivo 
 	            $this->aParam->addParametro('ruta_archivo', $file_name[2]);
 	            $this->arreglo['ruta_archivo'] = $file_name[2];
@@ -552,7 +564,7 @@ class MODCorrespondencia extends MODbase{
 				      
 	            //Ejecuta la instruccion
 	            $this->armarConsulta();
-				$stmt = $link->prepare($this->consulta);		  
+				$stmt = $this->link->prepare($this->consulta);		  
 			  	$stmt->execute();
 				$result = $stmt->fetch(PDO::FETCH_ASSOC);				
 				$resp_procedimiento = $this->divRespuesta($result['f_intermediario_ime']);
@@ -568,29 +580,20 @@ class MODCorrespondencia extends MODbase{
 	              
 				   //revisamos si ya existe el archivo la verison anterior sera mayor a cero
 				   $respuesta = $resp_procedimiento['datos'];
-				   //var_dump($respuesta);
-				   
-				   
-				   //cipiamos el nuevo archivo 
+				     //cipiamos el nuevo archivo 
 	               $this->setFile('file_correspondencia','id_correspondencia', false,100000 ,array('doc','pdf','docx','jpg','jpeg','bmp','gif','png','PDF','DOC','DOCX','xls','xlsx','XLS','XLSX','rar'), $folder = '','_v'.$version);
 	            }
 				
 				
-				$link->commit();
+				$this->link->commit();
 				$this->respuesta=new Mensaje();
 				$this->respuesta->setMensaje($resp_procedimiento['tipo_respuesta'],$this->nombre_archivo,$resp_procedimiento['mensaje'],$resp_procedimiento['mensaje_tec'],'base',$this->procedimiento,$this->transaccion,$this->tipo_procedimiento,$this->consulta);
 				$this->respuesta->setDatos($respuesta);
-				 
-				
-				
 			}
-             /*  echo "salen".$e->getCode();
-				exit;*/
-				
-			catch (Exception $e) {
+    		catch (Exception $e) {
 		    		
 								
-		    	$link->rollBack(); 
+		    	$this->link->rollBack(); 
 				
 				
 		    	$this->respuesta=new Mensaje();
@@ -601,11 +604,13 @@ class MODCorrespondencia extends MODbase{
 				} else {//es un error lanzado con throw exception
 					throw new Exception($e->getMessage(), 2);
 				}
+			
 		}    
 	   
 				
 	    return $this->respuesta;
 	}
+	
 
     function subirCorrespondencia_bk(){
 	
@@ -1010,6 +1015,10 @@ function corregirCorrespondenciaExt()
 	    $this->captura('estado_corre','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('acciones','text');
+		$this->captura('desc_correspondencias_asociadas','text');
+		$this->captura('tipo_documento','varchar');
+		$this->captura('persona_firma','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1050,6 +1059,9 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 		$this->setParametro('cite','cite','varchar');
         $this->setParametro('fecha_creacion_documento','fecha_creacion_documento','date');
+		$this->setParametro('persona_firma','persona_firma','varchar');
+		$this->setParametro('tipo_documento','tipo_documento','varchar');
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -1079,6 +1091,9 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('nro_paginas','nro_paginas','int4');
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 	    $this->setParametro('cite','cite','varchar');
+		$this->setParametro('persona_firma','persona_firma','varchar');
+		$this->setParametro('tipo_documento','tipo_documento','varchar');
+		
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1184,13 +1199,19 @@ function corregirCorrespondenciaExt()
          $this->captura('desc_insti','VARCHAR(100)');
        	 $this->captura('nombre_persona','TEXT');
   		 $this->captura('desc_funcionario','TEXT');
-  		 $this->captura('otros_adjuntos','VARCHAR(2000)');
-		 $this->captura('referencia','VARCHAR(500)');
+  		 $this->captura('otros_adjuntos','TEXT');
+		 $this->captura('referencia','TEXT');
   		 $this->captura('mensaje','TEXT');
+<<<<<<< HEAD
 		 $this->captura('fecha_documento','TIMESTAMP');	
      
 		
 
+=======
+		 $this->captura('fecha_documento','date');
+         
+		
+>>>>>>> 55e3238bbe50aca9a97896c138a306ef1c85778c
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->getConsulta();
