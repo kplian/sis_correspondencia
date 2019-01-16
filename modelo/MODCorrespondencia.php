@@ -1201,17 +1201,10 @@ function corregirCorrespondenciaExt()
   		 $this->captura('desc_funcionario','TEXT');
   		 $this->captura('otros_adjuntos','TEXT');
 		 $this->captura('referencia','TEXT');
-  		 $this->captura('mensaje','TEXT');
-<<<<<<< HEAD
-		 $this->captura('fecha_documento','TIMESTAMP');	
-     
-		
+  		 $this->captura('mensaje','TEXT');    
 
-=======
-		 $this->captura('fecha_documento','date');
-         
-		
->>>>>>> 55e3238bbe50aca9a97896c138a306ef1c85778c
+		 $this->captura('fecha_documento','date');         
+	
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->getConsulta();
