@@ -1169,6 +1169,16 @@ BEGIN
       into v_codigo_documento
       FROM param.tdocumento d
       WHERE d.id_documento = v_parametros.id_documento;
+      --Validar cite 
+     IF EXISTS( SELECT 1 
+                FROM corres.tcorrespondencia
+                WHERE 
+                id_institucion=v_parametros.id_institucion_remitente AND
+                cite like '%'||v_parametros.cite||'%')THEN
+
+      RAISE EXCEPTION '%','EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.';
+
+      END IF;
       
       --Validar la fecha del Documento.
       if (v_parametros.fecha_creacion_documento is not null) then
@@ -1337,6 +1347,16 @@ elsif(p_transaccion='CO_COREXT_MOD')then
            v_id_correspondencias_asociadas_aux:=ltrim(rtrim(v_parametros.id_correspondencias_asociadas,'}'),'{');
            v_id_correspondencias_asociadas=string_to_array(v_id_correspondencias_asociadas_aux, ',')::integer [ ];
            
+      END IF;
+      --Validar cite
+      IF EXISTS( SELECT 1 
+                FROM corres.tcorrespondencia
+                WHERE 
+                id_institucion=v_parametros.id_institucion_remitente AND
+                cite like '%'||v_parametros.cite||'%')THEN
+
+      RAISE EXCEPTION '%','EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.';
+
       END IF;
       IF (v_parametros.id_institucion_remitente is null) THEN
       	SELECT per.nombre_completo1
