@@ -783,7 +783,7 @@ BEGIN
         ELSE
           update corres.tcorrespondencia
           set estado = 'enviado',
-          fecha_ult_derivado = now()::timestamp,
+         -- fecha_ult_derivado = now()::timestamp,
            id_usuario_mod = p_id_usuario,
           fecha_mod = now()
           
