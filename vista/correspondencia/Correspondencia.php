@@ -21,6 +21,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			 
 		//Botones.
+			
 			//1
             this.addButton('Plantilla', {
                 text: 'Plantilla',
@@ -53,8 +54,6 @@ header("content-type: text/javascript; charset=UTF-8");
 				handler : this.BAdjuntos,
 				tooltip : '<b>Adjuntos</b><br/>Archivos adjuntos a la correspondencia'
 			});
-			
-           
 			//6
 			this.addButton('VerDocumento', {
 				grupo : [0, 1],
@@ -66,7 +65,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			});
 			//7
 			this.addButton('ImpCodigo', {
-				text: 'Imprimir Sticker',
+				text: 'Imprimir Cite',
 				iconCls: 'bprint',
 				disabled: true,
 				handler: this.BImpCodigo,
@@ -76,7 +75,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			this.addButton('ImpCodigoDoc', {
 				text: 'Imprimir Documento',
 				iconCls: 'bprintcheck',
-				disabled: true,
+				disabled: false,
 				handler: this.BImpCodigoDoc,
 				tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
 
@@ -1400,7 +1399,19 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			Phx.vista.Correspondencia.superclass.loadValoresIniciales.call(this);
 		},
-		
+		//0
+		Bfactura: function(){	
+			var rec = this.sm.getSelected();
+			Phx.CP.loadingShow();		
+			Ext.Ajax.request({
+				url: '../../sis_correspondencia/control/Correspondencia/impFactura',
+				params: { 'id_correspondencia': rec.data.id_correspondencia },
+				success : this.successExport,
+				failure: this.conexionFailure,
+				timeout: this.timeout,
+				scope: this
+			});
+		},
 		//1
         BPlantilla:function(){
 

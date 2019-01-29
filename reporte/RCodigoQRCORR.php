@@ -69,7 +69,7 @@ class RCodigoQRCORR extends ReportePDF {
 
 		//$line_width = 0.99 / $this->getScaleFactor();
 		//$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
-		$fontname = TCPDF_FONTS::addTTFfont('/var/www/html/kerp/pxp/lib/tcpdf/fonts/pixelmix/pixelmix.ttf', 'TrueTypeUnicode', '', 96); 
+		$fontname = TCPDF_FONTS::addTTFfont('/var/www/html/kerp/pxp/lib/tcpdf/fonts/pixelmix.ttf', 'TrueTypeUnicode', '', 96); 
 		$this->SetFont($fontname, '', 11, '', false);
 		$this->Cell(75, 0, '', '', 0, 'R');
 		$pagenumtxt2 = 'ENDE CORANI S.A.';

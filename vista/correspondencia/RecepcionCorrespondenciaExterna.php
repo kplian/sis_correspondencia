@@ -76,6 +76,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
             this.getBoton('Historico').hide();
             this.getBoton('Archivar').hide();
             this.getBoton('Habilitar').hide();
+            this.getBoton('ImpCodigoDoc').hide();   
+                
 		  
 		this.init();  
 		this.store.baseParams = {'tipo': this.tipo,'estado': this.swEstado};
@@ -108,6 +110,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
             this.getBoton('Historico').hide();
             this.getBoton('Archivar').hide();
             this.getBoton('Habilitar').hide();
+            this.getBoton('ImpCodigoDoc').hide();   
 
 		if(name=='borrador_recepcion_externo'){
 			
@@ -146,7 +149,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			this.getBoton('VerDocumento').enable();
 			this.getBoton('Finalizar').enable();
 			this.getBoton('ImpCodigo').enable();
-		    this.getBoton('ImpCodigoDoc').enable();
+		    //this.getBoton('ImpCodigoDoc').enable();
 		}
 		
 		if (data['estado'] == 'pendiente_recepcion_externo') {
@@ -156,7 +159,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			this.getBoton('Corregir').enable();
 			this.getBoton('Finalizar').disable();
 			this.getBoton('ImpCodigo').disable();
-		    this.getBoton('ImpCodigoDoc').disable();
+		   // this.getBoton('ImpCodigoDoc').disable();
 		    this.getBoton('edit').disable();
 			this.getBoton('del').disable();
 			 this.getBoton('HojaRuta').enable();
@@ -175,7 +178,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			this.getBoton('VerDocumento').disable();
 			this.getBoton('Finalizar').disable();
 			this.getBoton('ImpCodigo').disable();
-		    this.getBoton('ImpCodigoDoc').disable();
+		 // this.getBoton('ImpCodigoDoc').disable();
 		    this.getBoton('edit').disable();
 			this.getBoton('del').disable();
                     

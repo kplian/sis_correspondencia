@@ -1097,8 +1097,8 @@ window.onload=function(){self.print();}
 		$dataSource = $this->recuperarCodigoQR();		
 		$orientacion = 'L';
 		$titulo = 'Códigos Correspondencia';				
-		$width = 160;  
-		$height = 80;
+		$width = 200;  
+		$height = 150;
 		$this->objParam->addParametro('orientacion',$orientacion);
 		$this->objParam->addParametro('tamano',array($width, $height));		
 		$this->objParam->addParametro('titulo_archivo',$titulo);        
