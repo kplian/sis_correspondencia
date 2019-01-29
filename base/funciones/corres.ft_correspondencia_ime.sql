@@ -17,7 +17,7 @@ RETURNS varchar AS'
  DESCRIPCION:
  AUTOR:
  FECHA:
-***************************************************************************/
+****************************************************************************/
 
 DECLARE
 
@@ -781,7 +781,9 @@ BEGIN
       
         ELSE
           update corres.tcorrespondencia
+
           set estado = ''enviado'',
+     
          -- fecha_ult_derivado = now()::timestamp,
            id_usuario_mod = p_id_usuario,
           fecha_mod = now()
@@ -1173,6 +1175,7 @@ BEGIN
                 FROM corres.tcorrespondencia
                 WHERE 
                 id_institucion=v_parametros.id_institucion_remitente AND
+
                 cite like ''%''||v_parametros.cite||''%'' and (v_parametros.cite!=null or v_parametros.cite!=''''))THEN
 
       RAISE EXCEPTION ''%'',''EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.'';
@@ -1352,7 +1355,9 @@ elsif(p_transaccion=''CO_COREXT_MOD'')then
                 FROM corres.tcorrespondencia
                 WHERE 
                 id_institucion=v_parametros.id_institucion_remitente AND
+
                 cite like ''%''||v_parametros.cite||''%'' AND id_correspondencia != v_parametros.id_correspondencia and (v_parametros.cite!=null or v_parametros.cite!=''''))THEN
+
 
       RAISE EXCEPTION ''%'',''EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.'';
 
