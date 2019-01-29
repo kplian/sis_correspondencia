@@ -73,8 +73,8 @@ class RCodigoQRCORR extends ReportePDF {
 		$this->SetFont($fontname, '', 11, '', false);
 		$this->Cell(75, 0, '', '', 0, 'R');
 		$pagenumtxt2 = 'ENDE CORANI S.A.';
-		$this->Cell(75, 0, $pagenumtxt2, '', 0, 'R');
-		$this->Cell(33, 0, trim($this->cod['num']), '', 0, 'R');
+		$this->Cell(71, 0, $pagenumtxt2, '', 0, 'R');
+		$this->Cell(43, 0, trim($this->cod['num']), '', 0, 'R');
 			
 		$this->Ln();
 		$this->Cell(75, 0, $pagenumtxt, '', 0, 'R');
