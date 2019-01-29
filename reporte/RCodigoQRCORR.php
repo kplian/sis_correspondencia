@@ -35,7 +35,6 @@ class RCodigoQRCORR extends ReportePDF {
 	var $referencia;
 	
 	function datosHeader ( $tipo, $detalle ) {
-		//var_dump($detalle);
 		$this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-2;
 		$this->datos_detalle = $detalle;
 		$this->datos_titulo = $totales;
@@ -66,41 +65,36 @@ class RCodigoQRCORR extends ReportePDF {
 		$this->setY(-20);
 		$ormargins = $this->getOriginalMargins();
 		$this->SetTextColor(0, 0, 0);
-		//set style for cell border
-		$line_width = 0.85 / $this->getScaleFactor();
-		$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
-		//$ancho = round(($this->getPageWidth() - $ormargins['left'] - $ormargins['right']) / 3);
-		//var_dump($ancho);
-		//exit;	
-		$this->Ln(1);
-		$cur_y = $this->GetY();
-		//$this->Cell($ancho, 0, 'Generado por XPHS', 'T', 0, 'L');
-		$this->SetFont('helvetica','',13);
-		
-		$p = '____________________________';
-		
-		$this->Cell(90, 0, '', '', 0, 'R');
-		
-		$this->Cell(90, 0, $p, '', 0, 'R');
-		
-		$this->Ln();
-		
-		$this->Cell(70, 0, '', '', 0, 'R');
-		$pagenumtxt = 'CORRESPONDENCIA';
-		$this->Cell(70, 0, $pagenumtxt, '', 0, 'R');
-		
-		$this->Cell(47, 0, trim($this->cod['fec']), '', 0, 'R');
-        $this->Ln();
-		$this->Cell(70, 0, '', '', 0, 'R');
+	
+
+		//$line_width = 0.99 / $this->getScaleFactor();
+		//$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+		$fontname = TCPDF_FONTS::addTTFfont('/var/www/html/kerp/pxp/lib/tcpdf/fonts/pixelmix/pixelmix.ttf', 'TrueTypeUnicode', '', 96); 
+		$this->SetFont($fontname, '', 11, '', false);
+		$this->Cell(75, 0, '', '', 0, 'R');
 		$pagenumtxt2 = 'ENDE CORANI S.A.';
-		$this->Cell(70, 0, $pagenumtxt2, '', 0, 'R');
-		$this->Cell(31, 0, trim($this->cod['num']), '', 0, 'R');
+		$this->Cell(75, 0, $pagenumtxt2, '', 0, 'R');
+		$this->Cell(33, 0, trim($this->cod['num']), '', 0, 'R');
+			
+		$this->Ln();
+		$this->Cell(75, 0, $pagenumtxt, '', 0, 'R');
 		
 		
-		$this->Ln($line_width);
+		setlocale(LC_TIME, 'es_ES');
+		$dia = date("d",strtotime($this->cod['fec']));
+		$month = date("m",strtotime($this->cod['fec']));
+		$fecha = DateTime::createFromFormat('!m', $month);
+		$mes = strftime("%B", $fecha->getTimestamp());
+		
+		$anio = date("Y",strtotime($this->cod['fec']));
+		$hora = date("H:i:s",strtotime($this->cod['fec']));
+		
+		$this->Cell(98, 0, $dia.'-'.strtoupper (substr($mes,0,3)).'-'.$anio.'  '.$hora, '', 0, 'R');
+        
+		//$this->Ln($line_width);
 	}
 	function generarReporte() {
-		/*$this->setFontSubsetting(false);*/
+		$this->setFontSubsetting(false);
 		$style = array(
 			'border' => 3,
 			'vpadding' => '500',
@@ -111,12 +105,12 @@ class RCodigoQRCORR extends ReportePDF {
 			'module_height' => 4 // height of a single module in points
 		);
 		$this->imprimirCodigo();
-		/*if($this->tipo == 'unico'){
+		if($this->tipo == 'unico'){
 			$this->imprimirCodigo($style);
 		}
 		else{
 			//imprime varios codigos ....
-			/*foreach ($this->detalle as $val) {
+			foreach ($this->detalle as $val) {
 				$this->cod = array('id'  => $val['id_activo_fijo'],
 								'ref' => $val['referencia'],
 								'fec' => $val['fecha_reg'],
@@ -126,21 +120,20 @@ class RCodigoQRCORR extends ReportePDF {
 				$this->codigo_qr = json_encode($this->cod);
 				$this->imprimirCodigo($style);	
 			}
-		}*/
+		}
 	}
 
 	function imprimirCodigo(){
-	/*
-		 $this->AddPage();
-        //$this->SetFillColor(192,192,192, true);
-        $this->SetFont('helvetica','B',8);
-        $this->Cell(100,40,'RECIBIDO' ,0,0,'C',0);
-        $this->SetFont('','',7);
-        $this->Ln(3);
-        $this->Cell(35,5,'NOMBRE CAJERO:' ,0,0,'R');
-        $this->Cell(70,5,trim($this->cod['num']),1,0,'L');
-        $this->Cell(30,5,'FECHA DE VENTA:' ,0,0,'R');
-        $this->Cell(45,5,trim($this->cod['num']),1,1,'L');	*/
+	
+		/*	$this->AddPage();
+		//$this->write2DBarcode($this->codigo_qr, 'QRCODE,L', 1, 1,80,0, $style,'T',true);
+		$this->SetFont('','B',30);		
+		$this->ln(5);
+		$this->SetFont('','',22);	
+		$this->Text(0, 0, 'RECIBIDO', false, false, true, 0,5,'',false,'',2);
+		$this->Text(0, 0, trim($this->cod['nom']), false, false, true, 0,5,'',false,'',2);
+		$this->Text(0, 0, trim($this->cod['num']), false, false, true, 0,5,'',false,'',2);				
+		$this->Text(0, 0, substr($this->cod['fec'], 0, 19), false, false, true, 0,5,'',false,'',2);*/
 	}
 }
 // 
