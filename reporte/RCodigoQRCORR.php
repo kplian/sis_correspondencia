@@ -74,7 +74,13 @@ class RCodigoQRCORR extends ReportePDF {
 		$this->Cell(75, 0, '', '', 0, 'R');
 		$pagenumtxt2 = 'ENDE CORANI S.A.';
 		$this->Cell(71, 0, $pagenumtxt2, '', 0, 'R');
-		$this->Cell(43, 0, trim($this->cod['num']), '', 0, 'R');
+		
+		$c1 = substr(($this->cod['num']),-4);
+		$c2 = substr($c1,2);
+		$resultado = substr(($this->cod['num']),0,-4);
+		$res=strlen(($this->cod['num']));
+		
+		$this->Cell(39, 0,$resultado.$c2, '', 0, 'R');
 			
 		$this->Ln();
 		$this->Cell(75, 0, $pagenumtxt, '', 0, 'R');
