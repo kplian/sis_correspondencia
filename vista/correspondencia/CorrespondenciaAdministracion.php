@@ -68,6 +68,7 @@ Phx.vista.CorrespondenciaAdministracion = {
         this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
         this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
         this.Atributos[this.getIndAtributo('archivado_imagen')].grid=true;
+        this.Atributos[this.getIndAtributo('id_depto')].form=true;
        
          
          if (config.tipo=='interna'){
@@ -81,6 +82,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 		    this.Atributos[this.getIndAtributo('id_uo')].grid=true;
 		   //this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
 			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
+			 this.Atributos[this.getIndAtributo('id_depto')].form=false;
 	      }
 	    Phx.vista.CorrespondenciaAdministracion.superclass.constructor.call(this,config);
 	    
