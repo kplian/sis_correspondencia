@@ -62,7 +62,8 @@ class RCodigoQRCORR extends ReportePDF {
 	
 	function Header() {}
 	function Footer() {
-		$this->setY(-15);
+		//$this->setY(-20);
+		$this->setY(-10);
 		$ormargins = $this->getOriginalMargins();
 		$this->SetTextColor(0, 0, 0);
 	
