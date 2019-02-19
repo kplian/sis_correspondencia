@@ -519,7 +519,7 @@ class ACTCorrespondencia extends ACTbase
 		$fecha_label='';
 		if ($correspondencia[0]["tipo"]=='externa'){
 			
-			$remitente=$correspondencia[0]["desc_insti"].'-'.$correspondencia[0]["nombre_completo1"];
+			$remitente=$correspondencia[0]["desc_insti"].' - '.$correspondencia[0]["nombre_persona"];
 			$fecha_label='Fecha de Recep: ';
 			/* if (is_null($correspondencia[0]['fecha_creacion_documento'])){
 			
@@ -602,10 +602,10 @@ class ACTCorrespondencia extends ACTbase
 							  </table>
 							  <table class="tg"  border="0" width="100%">
 							  <tr>
-								<td class="tg-e3zv" width="25%"> <FONT SIZE=3> Remitente: </FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Referencia:</FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Adjuntos:</FONT ></td>
-								<td class="tg-9hbo" width="25%"><FONT SIZE=3> Doc. Física Entregada A:</FONT ></td>
+								<td class="tg-e3zv" width="25%">Remitente: </td>
+								<td class="tg-e3zv" width="25%">Referencia:</td>
+								<td class="tg-e3zv" width="25%">Adjuntos:</td>
+								<td class="tg-9hbo" width="25%">Doc. Física Entregada A:</td>
 								
 							  </tr>
 							 
@@ -620,12 +620,12 @@ class ACTCorrespondencia extends ACTbase
 						<table class="tg"  border="0">
 							  <th class="tg-e3zv1" colspan="6" >DETALLE DE DERIVACIONES</th>
 							  <tr bgcolor="#CCCCCC">
-							    <td class="tg-9hbd"> <FONT SIZE=3> Usuario Reg. </FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Derivado A:</FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Mensaje:  </FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Accion </FONT > </td>
-								<td class="tg-9hbd"><FONT SIZE=3> Fecha Recep. </FONT ></td>
+							    <td class="tg-9hbd"> Usuario Reg. </td>
+								<td class="tg-9hbd"> Derivado A:</td>
+								<td class="tg-9hbd"> Fecha Deriv. </td>
+								<td class="tg-9hbd"> Mensaje:  </td>
+								<td class="tg-9hbd"> Accion </td>
+								<td class="tg-9hbd"> Fecha Recep. </td>
 						      </tr>
 							  ';
 							  
@@ -848,10 +848,10 @@ function hojaRutaBorrador()
 							  </table>
 							  <table class="tg"  border="0" width="100%">
 							  <tr>
-								<td class="tg-e3zv" width="25%"> <FONT SIZE=3> Remitente </FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Referencia</FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Adjuntos</FONT ></td>
-								<td class="tg-9hbo" width="25%"><FONT SIZE=3> Doc. Física Entregada A</FONT ></td>
+								<td class="tg-e3zv" width="25%">Remitente </td>
+								<td class="tg-e3zv" width="25%">Referencia</td>
+								<td class="tg-e3zv" width="25%">Adjuntos</td>
+								<td class="tg-9hbo" width="25%">Doc. Física Entregada A</td>
 								
 							  </tr>
 							 
@@ -865,13 +865,13 @@ function hojaRutaBorrador()
 							  <table class="tg" border="0" >
 							  <th class="tg-e3zv" colspan="7" >DETALLE DE DERIVACIONES </th>
 							   <tr class="tg-9hbd">
-								<td class="tg-9hbd" > <FONT SIZE=3> Usuario Reg. </FONT ></td>
-								<td class="tg-9hbd" > <FONT SIZE=3> Derivado A</FONT ></td>
-								<td class="tg-9hbd" > <FONT SIZE=3> Fecha Deriv. </FONT ></td>
-							    <td class="tg-9hbd" > <FONT SIZE=3>  Mensaje  </FONT ></td>
-								<td class="tg-9hbd" > <FONT SIZE=3>  Accion </FONT > </td>
-								<td class="tg-9hbd" > <FONT SIZE=3>  Estado </FONT > </td>
-								<td class="tg-9hbd" ><FONT SIZE=3> Fecha Recep. </FONT ></td>
+								<td class="tg-9hbd"> Usuario Reg.</td>
+								<td class="tg-9hbd"> Derivado A: </td>
+								<td class="tg-9hbd"> Fecha Deriv. </td>
+							    <td class="tg-9hbd"> Mensaje</td>
+								<td class="tg-9hbd"> Accion </td>
+								<td class="tg-9hbd"> Estado </td>
+								<td class="tg-9hbd"> Fecha Recep. </td>
 							  </tr>
 							  ';
 							  
@@ -943,9 +943,6 @@ window.onload=function(){self.print();}
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-	
-	
-	
 	
 	/*****/
 	
