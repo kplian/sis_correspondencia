@@ -57,7 +57,6 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
         this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
         this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
-        this.Atributos[this.getIndAtributo('id_depto')].form=true;
         
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 	    
@@ -139,8 +138,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		  var tb =this.tbar;
 		  //si el archivo esta escaneado se permite visualizar
 
-        this.getBoton('ImpCodigo').enable();
-        
+
 		if (data['estado'] == 'borrador_recepcion_externo') {
 
 			this.getBoton('SubirDocumento').enable();
@@ -161,11 +159,12 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			this.getBoton('VerDocumento').enable();
 			this.getBoton('Corregir').enable();
 			this.getBoton('Finalizar').disable();
-			
+			this.getBoton('ImpCodigo').disable();
 		   // this.getBoton('ImpCodigoDoc').disable();
 		    this.getBoton('edit').disable();
 			this.getBoton('del').disable();
 			 this.getBoton('HojaRuta').enable();
+			 //habilitacion de imprpesion de CITE en el tab finalizar
 			 this.getBoton('ImpCodigo').enable();
 		}
 		
