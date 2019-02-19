@@ -57,6 +57,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
         this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
         this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
+        this.Atributos[this.getIndAtributo('id_depto')].form=true;
+        //habilitacion de campo departamento
         
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 	    
