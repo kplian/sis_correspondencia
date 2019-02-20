@@ -605,7 +605,7 @@ class ACTCorrespondencia extends ACTbase
 								<td class="tg-e3zv" width="25%">Remitente: </td>
 								<td class="tg-e3zv" width="25%">Referencia:</td>
 								<td class="tg-e3zv" width="25%">Adjuntos:</td>
-								<td class="tg-9hbo" width="25%">Doc. Física Entregada A:</td>
+								<td class="tg-9hbo" width="25%">Doc. Físico Entregada A:</td>
 								
 							  </tr>
 							 
