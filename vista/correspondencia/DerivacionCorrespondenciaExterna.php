@@ -185,7 +185,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		
 	},
 	liberaMenu:function(){
-        var tb = Phx.vista.RecepcionCorrespondenciaExterna.superclass.liberaMenu.call(this);
+        var tb = Phx.vista.DerivacionCorrespondenciaExterna.superclass.liberaMenu.call(this);
         if(tb){
             //this.getBoton('SubirDocumento').disable();
 			//this.getBoton('Adjuntos').disable();
