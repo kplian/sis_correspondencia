@@ -122,7 +122,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			}else{
 			
 			this.getBoton('Corregir').show();
-			this.getBoton('ImpCodigo').show();
+			this.getBoton('ImpCodigo').show();//habilita impresion de sticker en administracion
 		
 		}
 		this.swEstado = name;
