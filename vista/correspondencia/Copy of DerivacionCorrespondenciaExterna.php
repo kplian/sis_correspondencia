@@ -79,7 +79,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		 
 	        this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
-            this.getBoton('ImpCodigo').enable();
+            this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
             this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
@@ -102,24 +102,21 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 	actualizarSegunTab: function (name, indice) {
 		console.log('derivar',name);
-		
          this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
-            //this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
             this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide();
             this.getBoton('Archivar').hide();
             this.getBoton('Habilitar').hide();
-            this.getBoton('ImpBorrador').enable();
-            this.getBoton('ImpCodigo').hide();
+                this.getBoton('ImpBorrador').enable();
 	
 		if(name=='enviado'){
 			this.getBoton('HojaRuta').show();
 			this.getBoton('Historico').show();
 			this.getBoton('Adjuntos').show();
 			this.getBoton('SubirDocumento').show();
-			this.getBoton('ImpCodigo').show();
 
 			this.getBoton('ImpBorrador').hide();
 			//this.getBoton('anularCorrespondencia').show();
@@ -128,7 +125,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			this.getBoton('HojaRuta').enable();
 			this.getBoton('Historico').enable();
 			this.getBoton('Archivar').enable();
-			//this.getBoton('ImpCodigo').enable();
 			
 			 this.getBoton('del').hide();
 			 
@@ -138,7 +134,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('Adjuntos').show();
             this.getBoton('Corregir').hide();
-            this.getBoton('ImpCodigo').show();
+            this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
             this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
@@ -146,7 +142,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
             this.getBoton('Archivar').hide();
             this.getBoton('ImpBorrador').show();
             this.getBoton('ImpBorrador').enable();
-            //this.getBoton('ImpCodigo').enable();
 		}
 		
 		
@@ -171,11 +166,8 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			this.getBoton('VerDocumento').enable();
 			this.getBoton('Derivar').enable();
 			this.getBoton('SubirDocumento').enable();
-		   //habilitacion CITE
-			this.getBoton('ImpCodigo').enable();
-			
 			if (data['estado'] =='enviado'){
-				
+			
 				this.getBoton('edit').disable();
 				this.getBoton('SubirDocumento').enable();
 				//this.getBoton('del').disable();
@@ -184,21 +176,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
    	     return tb
 		
 	},
-	liberaMenu:function(){
-        var tb = Phx.vista.DerivacionCorrespondenciaExterna.superclass.liberaMenu.call(this);
-        if(tb){
-            //this.getBoton('SubirDocumento').disable();
-			//this.getBoton('Adjuntos').disable();
-			//this.getBoton('VerDocumento').disable();
-			//this.getBoton('Finalizar').disable();
-		    // this.getBoton('ImpCodigoDoc').disable();
-		    // this.getBoton('edit').disable();
-			//this.getBoton('del').disable();
-			  this.getBoton('ImpCodigo').disable();
-                    
-        }
-       return tb
- },
 	onButtonEdit: function () {
 		
 		

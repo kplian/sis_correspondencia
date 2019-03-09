@@ -18,7 +18,7 @@ $body$
  DESCRIPCION:
  AUTOR:
  FECHA:
-***************************************************************************/
+****************************************************************************/
 
 DECLARE
 
@@ -102,19 +102,23 @@ BEGIN
       --obtener el uo del funcionario que esta reenviando
 --        raise exception '%','ASDFASDF'||v_parametros.tipo;
      
-        --obtener el departamento
+         --obtener el departamento
          IF( v_parametros.tipo='saliente') THEN
-              	  v_id_funcionario=v_parametros.id_funcionario_saliente;
-             ELSE
-            
-                 v_id_funcionario=v_parametros.id_funcionario;
-              END IF;
+               v_id_uo= ARRAY[1];
+               v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
+               v_id_funcionario=v_parametros.id_funcionario_saliente;
+         ELSE 
+           	 v_id_uo = corres.f_get_uo_correspondencia_funcionario(
+	         v_parametros.id_funcionario, array ['activo', 'suplente'],
+	         v_parametros.fecha_documento);
+	         v_id_funcionario=v_parametros.id_funcionario;
+         END IF;
               
-       v_id_uo= ARRAY[1];
+     /*  v_id_uo= ARRAY[1];
       -- v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
             v_id_uo = corres.f_get_uo_correspondencia_funcionario(
             v_id_funcionario, array ['activo', 'suplente'],
-            v_parametros.fecha_documento);
+            v_parametros.fecha_documento);*/
               
       SELECT dep.id_depto
       INTO v_id_depto
@@ -149,29 +153,30 @@ BEGIN
             g.gestion = to_char(now()::date, 'YYYY')::integer;
 
       --2 obtener el identificar del periodo
-   /*   IF (now()::date=v_parametros.fecha_documento)THEN
+      IF (now()::date=v_parametros.fecha_documento)THEN
           v_fecha_documento=now();
       ELSE
           v_fecha_documento=v_parametros.fecha_documento;
-      END IF;*/
+      END IF;
 
       
 
        if (v_parametros.vista='CorrespondenciaAdministracion') then
-          /*  select p.id_periodo, p.fecha_ini, p.fecha_fin
-            into v_id,v_fecha_ini,v_fecha_fin
+            select p.id_periodo, p.fecha_ini, p.fecha_fin,ges.id_gestion
+            into v_id,v_fecha_ini,v_fecha_fin,v_id_gestion
             from param.tperiodo p
             inner join param.tgestion ges 
             on ges.id_gestion = p.id_gestion 
             and ges.estado_reg ='activo'
             where p.estado_reg='activo' and
-           v_parametros.fecha_documento between p.fecha_ini and p.fecha_fin ;*/
+           v_parametros.fecha_documento between p.fecha_ini and p.fecha_fin ;
            
             --Validar la fecha del Documento.
             IF (EXISTS(select 1
             			from corres.tcorrespondencia cor
            				where cor.fecha_documento > v_fecha_documento
-                		and 
+                		and  cor.id_uo=v_id_uo[2] and cor.id_correspondencia_fk is null and  
+
                         tipo=v_parametros.tipo and id_documento=v_parametros.id_documento and  cor.fecha_documento between v_fecha_ini and v_fecha_fin
                     ))THEN
                  RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_documento;
@@ -179,7 +184,7 @@ BEGIN
             
           
             v_fecha_creacion_documento=now();
-             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id_periodo,v_id_uo
+             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,v_id_uo
                             [2],v_id_depto,p_id_usuario,'CORRES',NULL);
            /* v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);*/
@@ -782,8 +787,10 @@ BEGIN
       
         ELSE
           update corres.tcorrespondencia
+
           set estado = 'enviado',
-          fecha_ult_derivado = now()::timestamp,
+     
+         -- fecha_ult_derivado = now()::timestamp,
            id_usuario_mod = p_id_usuario,
           fecha_mod = now()
           
@@ -1169,6 +1176,17 @@ BEGIN
       into v_codigo_documento
       FROM param.tdocumento d
       WHERE d.id_documento = v_parametros.id_documento;
+      --Validar cite 
+     IF EXISTS( SELECT 1 
+                FROM corres.tcorrespondencia
+                WHERE 
+                id_institucion=v_parametros.id_institucion_remitente AND
+
+                cite like '%'||v_parametros.cite||'%' and (v_parametros.cite!=null or v_parametros.cite!=''))THEN
+
+      RAISE EXCEPTION '%','EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.';
+
+      END IF;
       
       --Validar la fecha del Documento.
       if (v_parametros.fecha_creacion_documento is not null) then
@@ -1338,6 +1356,18 @@ elsif(p_transaccion='CO_COREXT_MOD')then
            v_id_correspondencias_asociadas=string_to_array(v_id_correspondencias_asociadas_aux, ',')::integer [ ];
            
       END IF;
+      --Validar cite
+      IF EXISTS( SELECT 1 
+                FROM corres.tcorrespondencia
+                WHERE 
+                id_institucion=v_parametros.id_institucion_remitente AND
+
+                cite like '%'||v_parametros.cite||'%' AND id_correspondencia != v_parametros.id_correspondencia and (v_parametros.cite!=null or v_parametros.cite!=''))THEN
+
+
+      RAISE EXCEPTION '%','EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.';
+
+      END IF;
       IF (v_parametros.id_institucion_remitente is null) THEN
       	SELECT per.nombre_completo1
         into v_origen
@@ -1401,7 +1431,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
     ***********************************/
 	elsif(p_transaccion='SCO_GETQR_MOD')THEN
     	begin
-          SELECT docume.descripcion,cor.referencia,to_char(cor.fecha_reg,'dd-mm-yyyy HH24:MI:SS') as fecha_reg,cor.numero,cor.tipo  
+          SELECT docume.descripcion,cor.referencia,to_char(cor.fecha_creacion_documento,'dd-mm-yyyy HH24:MI:SS') as fecha_reg,cor.numero,cor.tipo  
           INTO v_rec_co
           FROM corres.tcorrespondencia cor
           INNER JOIN param.tdocumento docume ON docume.id_documento = cor.id_documento
@@ -1817,6 +1847,3 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
-
-ALTER FUNCTION corres.ft_correspondencia_ime (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
-  OWNER TO postgres;

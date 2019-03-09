@@ -82,7 +82,7 @@ BEGIN
                        left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                        left join param.tinstitucion insti on insti.id_institucion = cor.id_institucion
                        left join segu.vpersona persona on persona.id_persona = cor.id_persona
-                  where  ' || v_parametros.filtro ;
+                  where cor.id_correspondencia_fk is null and  ' || v_parametros.filtro ;
 			
 			
 			v_consulta:=v_consulta||'            
@@ -117,7 +117,7 @@ BEGIN
                        left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                        left join param.tinstitucion insti on insti.id_institucion = cor.id_institucion
                        left join segu.vpersona persona on persona.id_persona = cor.id_persona
-                  where' ||v_parametros.filtro ;
+                  where cor.id_correspondencia_fk is null and ' ||v_parametros.filtro ;
 					
 			
 			--Devuelve la respuesta

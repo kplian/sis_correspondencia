@@ -34,13 +34,35 @@ class ACTReporte extends ACTbase{
             $this->objParam->addFiltro("cor.tipo =''".$this->objParam->getParametro('tipo')."'' ");
         }
 		
-		if($this->objParam->getParametro('estado')!='borrador'){
+		if($this->objParam->getParametro('tipo')=='interna'){
+            $this->objParam->addFiltro("cor.tipo =''".$this->objParam->getParametro('tipo')."'' ");
+			if($this->objParam->getParametro('estado')=='todos'){
+            $this->objParam->addFiltro("cor.estado in (''borrador_envio'', ''enviado'',''anulado'') ");
+        	}else {$this->objParam->addFiltro("cor.estado = ''".$this->objParam->getParametro('estado')."'' ");}
+			
+        }
+		
+		if($this->objParam->getParametro('tipo')=='saliente'){
+            $this->objParam->addFiltro("cor.tipo =''".$this->objParam->getParametro('tipo')."'' ");
+			if($this->objParam->getParametro('estado')=='todos'){
+            $this->objParam->addFiltro("cor.estado in (''borrador_envio'', ''enviado'',''anulado'') ");
+        	}else {$this->objParam->addFiltro("cor.estado = ''".$this->objParam->getParametro('estado')."'' ");}
+			
+        }
+	
+		/*
+			if($this->objParam->getParametro('estado')=='todos'){
+            $this->objParam->addFiltro("cor.estado in ('borrador_envio', 'enviado','anulado') ");
+        }
+		
+		if($this->objParam->getParametro('estado')!='borrador' && $this->objParam->getParametro('estado')!='todos'){
+			
             $this->objParam->addFiltro("cor.estado = ''".$this->objParam->getParametro('estado')."'' ");
         }else{
         	if($this->objParam->getParametro('tipo')!='externa'){
             $this->objParam->addFiltro("cor.estado = ''borrador_envio'' ");
         	}else{$this->objParam->addFiltro("cor.estado = ''borrador_recepcion_externa'' ");}
-        }
+        }*/
 
         if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
             $this->objReporte = new Reporte($this->objParam,$this);

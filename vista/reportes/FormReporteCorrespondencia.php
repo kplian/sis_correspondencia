@@ -53,7 +53,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			
 							store : new Ext.data.ArrayStore({
 								fields : ['ID', 'valor'],
-								data : [['interna', 'Interna'], ['saliente', 'Saliente'], ['externa', 'Externa']],
+								data : [['interna', 'Interna'], ['saliente', 'Saliente']],
 			
 							}),
 							valueField : 'ID',
@@ -84,7 +84,7 @@ header("content-type: text/javascript; charset=UTF-8");
 							//valorInicial:{ID:'interna',valor:'Interna'},
 							store : new Ext.data.ArrayStore({
 								fields : ['ID', 'valor'],
-								data : [['borrador', 'Borrador'], ['enviado', 'Enviado'], ['anulado', 'Anulado']]
+								data : [['todos', 'Todos'],['borrador', 'Borrador'], ['enviado', 'Enviado'], ['anulado', 'Anulado']]
 							}),
 							
 							valueField : 'ID',
