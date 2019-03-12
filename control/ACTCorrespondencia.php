@@ -337,6 +337,7 @@ class ACTCorrespondencia extends ACTbase
             }
             $correspondenciaDetalle = $this->res->getDatos();
             $listAccion = $this->listaAcciones(); //Devuelve la lista de las acciones de la base de datos
+            $accionesSeleccionadas = $this->listaAccionesDerivadas($correspondencia[0]['id_correspondencia']);
             
             //desc_funcionario -> es el funcionario que lo envia
             //desc_uo ->
@@ -447,7 +448,7 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor->setValue('direccion_institucion', htmlspecialchars($correspondencia[0]['direccion_institucion']));
                 $templateProcessor->setValue('desc_insti', htmlspecialchars($correspondencia[0]['desc_insti']));
 				$templateProcessor->setValue('nombre_completo', htmlspecialchars($correspondencia[0]['persona_nombre_plantilla']));
-				$templateProcessor->setValue('tablaAcciones', $this->generarTablaXmlParaWord($correspondencia[0]['id_acciones'] , $listAccion));
+				$templateProcessor->setValue('tablaAcciones', $this->generarTablaXmlParaWord($accionesSeleccionadas , $listAccion));
                
   
                 //$templateProcessor->setValue('uo', htmlspecialchars($correspondencia[0]['desc_uo']));
@@ -1160,6 +1161,35 @@ function anularCorrespondencia()
         $this->objFunc=$this->create('MODAccion');  
         $this->res=$this->objFunc->listarAccion();
         return $this->res->getDatos();
+    }
+
+    public function listaAccionesDerivadas($id_correspondencia) 
+    {
+        
+        $this->objParam->parametros_consulta['ordenacion'] = 'id_correspondencia';
+        $this->objParam->parametros_consulta['filtro'] = " 0 = 0 ";
+        $this->objParam->parametros_consulta['cantidad'] = '10000';
+        $this->objParam->parametros_consulta['puntero'] = '0';
+        
+        $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $id_correspondencia);
+        
+        $this->objParam->defecto('ordenacion','id_correspondencia');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->listarCorrespondenciaDetalle();
+        $datos = $this->res->getDatos();
+        $accionesTexto = ''; 
+
+        for ($i=0; $i < count($datos) ; $i++) { 
+            if($accionesTexto==''){
+                $accionesTexto .= $datos[$i]['id_acciones'];
+            }else{
+                $accionesTexto .= ','.$datos[$i]['id_acciones'];
+            }
+        }
+
+        return $accionesTexto;
     }
     
     public function generarTablaXmlParaWord($accionesSeleccionadas="", $listAcciones=array())
