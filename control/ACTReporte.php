@@ -75,7 +75,12 @@ class ACTReporte extends ACTbase{
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
-
+    public function reportesEstadisticos()
+    {
+        $this->objFunc=$this->create('MODReporte');
+        $this->res=$this->objFunc->listarReporteCorrespondenciaEstadistico($this->objParam);
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
   
 
 
