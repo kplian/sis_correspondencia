@@ -397,7 +397,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				growMin : 100,
 				grow : true,
 				gwidth : 200,
-				maxLength : 500
+				maxLength : 500,
+				renderer : function(value, p, record) {
+					return '<span title="'+value+'">'+value+'</span>';
+				},
 			},
 			type : 'TextArea',
 			filters : {
@@ -416,7 +419,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				width : 300,
 				growMin : 100,
 				grow : true,
-				gwidth : 200
+				gwidth : 200,
+				renderer : function(value, p, record) {
+					return '<span title="'+value+'">'+value+'</span>';
+				},
 			},
 			type : 'TextArea',
 			filters : {
@@ -450,7 +456,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				width : 300,
 				growMin : 100,
 				grow : true,
-				gwidth : 100
+				gwidth : 100,
+				renderer : function(value, p, record) {
+					return '<span title="'+value+'">'+value+'</span>';
+				},
 			},
 			type : 'TextArea',
 			filters : {
