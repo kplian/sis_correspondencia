@@ -233,9 +233,12 @@ class ACTCorrespondencia extends ACTbase
 	}
     function listarCorrespondenciaRecibida()
     {
-    	//obtener detalle de envios
-           
-		
+    	
+		 if($this->objParam->getParametro('filtro_valor')!=''){
+            $this->objParam->addFiltro($this->objParam->getParametro('filtro_campo')." = ".$this->objParam->getParametro('filtro_valor'));
+        }
+        
+        
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion', 'asc');

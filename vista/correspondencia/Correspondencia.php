@@ -41,7 +41,7 @@ header("content-type: text/javascript; charset=UTF-8");
             this.addButton('FinalizarExterna', {
 				text: 'Finalizar Recepcion',
 				iconCls: 'bgood',
-				disabled: true,
+				disabled: false,
 				handler: this.BFinalizarExterna,
 				tooltip: '<b>Finalizar Recepción</b><br/>Finalizar Recepción de documento entrante (Externa Recibida), pasa a estado de análisis'
 			});

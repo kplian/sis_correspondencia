@@ -665,10 +665,8 @@ BEGIN
 
     begin
       /*
-            verifica que tenga hijos con estado borrador detalle recibido
-
-
-            */
+        verifica que tenga hijos con estado borrador detalle recibido
+        */
       select estado_ant
       into v_estado_aux
       from corres.tcorrespondencia_estado 
@@ -700,7 +698,7 @@ BEGIN
         
          /*Adición la derivación, adición de la alarma para el envio del usuario al que va a enviar. 
         */
-      
+      --transaccion que realiza la derivacion
    FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
                               vus.desc_persona,
                               coalesce(co.referencia,'') as referencia,
@@ -729,6 +727,7 @@ BEGIN
                 ELSE
                    v_tipo:='EXTERNA';
                 END IF;
+
                v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
                                                       <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
@@ -747,7 +746,8 @@ BEGIN
                                                     g_registros.id_usuario_reg,
                                                     '',
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
-                                                    'parametros',
+                                                    --{filtro_directo:{campo:"plapa.id_proceso_wf",valor:"116477"}}
+                                                    '{filtro_directo:{campo:"cor.id_correspondencia_fk",valor:"'||v_parametros.id_correspondencia||'"}}',
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Nueva Correspondencia '||v_tipo||': '||g_registros.numero,
                                                     'rosanavq@gmail.com','',NULL,null,NULL,'si');
@@ -1787,6 +1787,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
                 ELSE
                    v_tipo:='EXTERNA';
                 END IF;
+               
                v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
                                                       <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
@@ -1805,7 +1806,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
                                                     g_registros.id_usuario_reg,
                                                     '',
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
-                                                    'parametros',
+                                                    v_parametros.id_correspondencia,
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Modificación de la Correspondencia '||v_tipo||': '||g_registros.numero,
                                                     'correspondencia@endecorani.bo','',NULL,null,NULL,'si');
@@ -1840,7 +1841,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
   v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
   raise exception '%',v_resp;
 
-END;
+END; 	 	
 $body$
 LANGUAGE 'plpgsql'
 VOLATILE
