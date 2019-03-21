@@ -347,7 +347,7 @@ class ACTCorrespondencia extends ACTbase
             //numero numero de la correspondencia
 
             /*generamos una imagen qr para ingresar a la plantilla*/
-            $cadena_qr = '|' . $correspondencia[0]['numero'] . '|' . $correspondencia[0]['desc_uo'] . '|' . $correspondencia[0]['desc_funcionario'] . '';
+            $cadena_qr = '|' . $correspondencia[0]['numero'] . '|' . $correspondencia[0]['desc_uo'] . '|' . $correspondencia[0]['desc_funcionario'] . '|' . $correspondencia[0]['fecha_documento'] . '';
             $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
 
             //todo cambiar ese nombre por algo randon
@@ -610,7 +610,7 @@ class ACTCorrespondencia extends ACTbase
 								<td class="tg-e3zv" width="25%">Remitente: </td>
 								<td class="tg-e3zv" width="25%">Referencia:</td>
 								<td class="tg-e3zv" width="25%">Adjuntos:</td>
-								<td class="tg-9hbo" width="25%">Doc. Físico Entregada A:</td>
+								<td class="tg-9hbo" width="25%">Doc. Físico Entregado A:</td>
 								
 							  </tr>
 							 
