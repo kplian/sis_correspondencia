@@ -184,7 +184,7 @@ BEGIN
             
           
             v_fecha_creacion_documento=now();
-             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,v_id_uo
+             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,v_id,v_id_uo
                             [2],v_id_depto,p_id_usuario,'CORRES',NULL);
            /* v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);*/
@@ -1234,13 +1234,13 @@ BEGIN
           
                        v_fecha_creacion_documento=v_parametros.fecha_creacion_documento+('22:25:10.222234');
  
-            v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
+            v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
             
         
       else
             v_fecha_creacion_documento=now();
-             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,NULL,NULL,
+             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,NULL,
              v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
       end if;
      -- v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,NULL,
