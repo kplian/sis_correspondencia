@@ -648,7 +648,7 @@ class ACTCorrespondencia extends ACTbase
 			          $fecha_deriv  = '       ';
 		              }else{
 		      	
-			          $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_deriv']));	
+			          $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%M", strtotime($ruta['fecha_deriv']));	
 					 // $fecha_deriv = $ruta['fecha_deriv'];	
 			         }
         	         
@@ -657,7 +657,7 @@ class ACTCorrespondencia extends ACTbase
 			          $fecha_recepcion2  = '       ';
 		              }else{
 		      	
-			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_recepcion']));
+			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%M", strtotime($ruta['fecha_recepcion']));
 					    // $fecha_recepcion2 = $ruta['fecha_recepcion'];	
 			         }
         	        
@@ -894,7 +894,7 @@ function hojaRutaBorrador()
 			          $fecha_deriv  = '       ';
 		              }else{
 		      	
-			          $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_deriv']));	
+			          $fecha_deriv = '  '.strftime("%d/%m/%Y %H:%M", strtotime($ruta['fecha_deriv']));	
 					 // $fecha_deriv = $ruta['fecha_deriv'];	
 			         }
         	         
@@ -903,7 +903,7 @@ function hojaRutaBorrador()
 			          $fecha_recepcion2  = '       ';
 		              }else{
 		      	
-			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%m", strtotime($ruta['fecha_recepcion']));
+			         $fecha_recepcion2 = $vacio.'  '.strftime("%d/%m/%Y %H:%M", strtotime($ruta['fecha_recepcion']));
 					    // $fecha_recepcion2 = $ruta['fecha_recepcion'];	
 			         }
         	        
