@@ -31,6 +31,7 @@
 	Ext.Ajax.request({
 	    url:'../../sis_correspondencia/control/Reporte/reportesEstadisticos',
 	    params:{'proceso':1},
+
 	    success:function(res){ 
 
 	    	var internas = [];
