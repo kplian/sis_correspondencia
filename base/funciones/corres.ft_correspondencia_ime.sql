@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
 )
 RETURNS varchar AS
 $body$
-/************************************************************************** SISTEMA: Correspondencia
+	/************************************************************************** SISTEMA: Correspondencia
  FUNCION:         corres.ft_correspondencia_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'corres.tcorrespondencia'
  AUTOR:          (rac)
@@ -744,8 +744,9 @@ BEGIN
                                                     'notificacion',
                                                     '',   -->
                                                     g_registros.id_usuario_reg,
-                                                    '',
+                                                    'CorrespondenciaRecibida',--clase
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
+                                                    --'parametros',
                                                     --{filtro_directo:{campo:"plapa.id_proceso_wf",valor:"116477"}}
                                                     '{filtro_directo:{campo:"cor.id_correspondencia_fk",valor:"'||v_parametros.id_correspondencia||'"}}',
                                                     g_registros.id_usuario_reg,--id_usuario
@@ -1787,7 +1788,6 @@ elsif(p_transaccion='CO_COREXT_MOD')then
                 ELSE
                    v_tipo:='EXTERNA';
                 END IF;
-               
                v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
                                                       <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
@@ -1806,7 +1806,8 @@ elsif(p_transaccion='CO_COREXT_MOD')then
                                                     g_registros.id_usuario_reg,
                                                     '',
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
-                                                    v_parametros.id_correspondencia,
+                                                   --'parametros',  
+						    v_parametros.id_correspondencia,
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Modificación de la Correspondencia '||v_tipo||': '||g_registros.numero,
                                                     'correspondencia@endecorani.bo','',NULL,null,NULL,'si');
@@ -1841,7 +1842,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
   v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
   raise exception '%',v_resp;
 
-END; 	 	
+END; 	
 $body$
 LANGUAGE 'plpgsql'
 VOLATILE
