@@ -233,9 +233,12 @@ class ACTCorrespondencia extends ACTbase
 	}
     function listarCorrespondenciaRecibida()
     {
-    	//obtener detalle de envios
-           
-		
+    	
+		 if($this->objParam->getParametro('filtro_valor')!=''){
+            $this->objParam->addFiltro($this->objParam->getParametro('filtro_campo')." = ".$this->objParam->getParametro('filtro_valor'));
+        }
+        
+        
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion', 'asc');
@@ -336,14 +339,15 @@ class ACTCorrespondencia extends ACTbase
                 exit;
             }
             $correspondenciaDetalle = $this->res->getDatos();
-
-
+            $listAccion = $this->listaAcciones(); //Devuelve la lista de las acciones de la base de datos
+            $accionesSeleccionadas = $this->listaAccionesDerivadas($correspondencia[0]['id_correspondencia']);
+            
             //desc_funcionario -> es el funcionario que lo envia
             //desc_uo ->
             //numero numero de la correspondencia
 
             /*generamos una imagen qr para ingresar a la plantilla*/
-            $cadena_qr = '|' . $correspondencia[0]['numero'] . '|' . $correspondencia[0]['desc_uo'] . '|' . $correspondencia[0]['desc_funcionario'] . '';
+            $cadena_qr = '|' . $correspondencia[0]['numero'] . '|' . $correspondencia[0]['desc_uo'] . '|' . $correspondencia[0]['desc_funcionario'] . '|' . $correspondencia[0]['fecha_documento'] . '';
             $barcodeobj = new TCPDF2DBarcode($cadena_qr, 'QRCODE,M');
 
             //todo cambiar ese nombre por algo randon
@@ -380,7 +384,7 @@ class ACTCorrespondencia extends ACTbase
           $templateProcessor->cloneRow('destinatario', count($correspondenciaDetalle));
                 for ($i = 0; $i <= count($correspondenciaDetalle); $i++) {
                      
-                 $xml_destinatario = htmlspecialchars($correspondenciaDetalle[$i]['desc_funcionario_plantilla']) . '</w:t>
+                 $xml_destinatario = htmlspecialchars(preg_replace('/\s+/', ' ', $correspondenciaDetalle[$i]['desc_funcionario_plantilla'])) . '</w:t>
                                     </w:r>
                                 </w:p>
                                 <w:p w:rsidR="003D7875" w:rsidRDefault="006C602F" w:rsidP="006C602F">
@@ -435,7 +439,7 @@ class ACTCorrespondencia extends ACTbase
                //$templateProcessor->setImgHeader('qrh',array('src' => $img_qr, 'swh'=>'250'));
                 
                 //print_r($correspondenciaDetalle);
-                $templateProcessor->setValue('remitente', htmlspecialchars($correspondencia[0]['desc_funcionario_de_plantilla']));
+                $templateProcessor->setValue('remitente', htmlspecialchars(preg_replace('/\s+/', ' ', $correspondencia[0]['desc_funcionario_de_plantilla'])));
                 $templateProcessor->setValue('cargo_remitente', htmlspecialchars($correspondencia[0]['desc_cargo']));
                 $templateProcessor->setValue('referencia', htmlspecialchars($correspondencia[0]['referencia']));
                 $templateProcessor->setValue('fecha', htmlspecialchars($fecha_documento));
@@ -447,6 +451,7 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor->setValue('direccion_institucion', htmlspecialchars($correspondencia[0]['direccion_institucion']));
                 $templateProcessor->setValue('desc_insti', htmlspecialchars($correspondencia[0]['desc_insti']));
 				$templateProcessor->setValue('nombre_completo', htmlspecialchars($correspondencia[0]['persona_nombre_plantilla']));
+				$templateProcessor->setValue('tablaAcciones', $this->generarTablaXmlParaWord($accionesSeleccionadas , $listAccion));
                
   
                 //$templateProcessor->setValue('uo', htmlspecialchars($correspondencia[0]['desc_uo']));
@@ -519,7 +524,7 @@ class ACTCorrespondencia extends ACTbase
 		$fecha_label='';
 		if ($correspondencia[0]["tipo"]=='externa'){
 			
-			$remitente=$correspondencia[0]["desc_insti"].'-'.$correspondencia[0]["nombre_completo1"];
+			$remitente=$correspondencia[0]["desc_insti"].' - '.$correspondencia[0]["nombre_persona"];
 			$fecha_label='Fecha de Recep: ';
 			/* if (is_null($correspondencia[0]['fecha_creacion_documento'])){
 			
@@ -602,10 +607,10 @@ class ACTCorrespondencia extends ACTbase
 							  </table>
 							  <table class="tg"  border="0" width="100%">
 							  <tr>
-								<td class="tg-e3zv" width="25%"> <FONT SIZE=3> Remitente: </FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Referencia:</FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Adjuntos:</FONT ></td>
-								<td class="tg-9hbo" width="25%"><FONT SIZE=3> Doc. Física Entregada A:</FONT ></td>
+								<td class="tg-e3zv" width="25%">Remitente: </td>
+								<td class="tg-e3zv" width="25%">Referencia:</td>
+								<td class="tg-e3zv" width="25%">Adjuntos:</td>
+								<td class="tg-9hbo" width="25%">Doc. Físico Entregado A:</td>
 								
 							  </tr>
 							 
@@ -620,12 +625,12 @@ class ACTCorrespondencia extends ACTbase
 						<table class="tg"  border="0">
 							  <th class="tg-e3zv1" colspan="6" >DETALLE DE DERIVACIONES</th>
 							  <tr bgcolor="#CCCCCC">
-							    <td class="tg-9hbd"> <FONT SIZE=3> Usuario Reg. </FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Derivado A:</FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Mensaje:  </FONT ></td>
-								<td class="tg-9hbd"> <FONT SIZE=3> Accion </FONT > </td>
-								<td class="tg-9hbd"><FONT SIZE=3> Fecha Recep. </FONT ></td>
+							    <td class="tg-9hbd"> Usuario Reg. </td>
+								<td class="tg-9hbd"> Derivado A:</td>
+								<td class="tg-9hbd"> Fecha Deriv. </td>
+								<td class="tg-9hbd"> Mensaje:  </td>
+								<td class="tg-9hbd"> Accion </td>
+								<td class="tg-9hbd"> Fecha Recep. </td>
 						      </tr>
 							  ';
 							  
@@ -848,10 +853,10 @@ function hojaRutaBorrador()
 							  </table>
 							  <table class="tg"  border="0" width="100%">
 							  <tr>
-								<td class="tg-e3zv" width="25%"> <FONT SIZE=3> Remitente </FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Referencia</FONT ></td>
-								<td class="tg-e3zv" width="25%"><FONT SIZE=3> Adjuntos</FONT ></td>
-								<td class="tg-9hbo" width="25%"><FONT SIZE=3> Doc. Física Entregada A</FONT ></td>
+								<td class="tg-e3zv" width="25%">Remitente </td>
+								<td class="tg-e3zv" width="25%">Referencia</td>
+								<td class="tg-e3zv" width="25%">Adjuntos</td>
+								<td class="tg-9hbo" width="25%">Doc. Física Entregada A</td>
 								
 							  </tr>
 							 
@@ -865,13 +870,13 @@ function hojaRutaBorrador()
 							  <table class="tg" border="0" >
 							  <th class="tg-e3zv" colspan="7" >DETALLE DE DERIVACIONES </th>
 							   <tr class="tg-9hbd">
-								<td class="tg-9hbd" > <FONT SIZE=3> Usuario Reg. </FONT ></td>
-								<td class="tg-9hbd" > <FONT SIZE=3> Derivado A</FONT ></td>
-								<td class="tg-9hbd" > <FONT SIZE=3> Fecha Deriv. </FONT ></td>
-							    <td class="tg-9hbd" > <FONT SIZE=3>  Mensaje  </FONT ></td>
-								<td class="tg-9hbd" > <FONT SIZE=3>  Accion </FONT > </td>
-								<td class="tg-9hbd" > <FONT SIZE=3>  Estado </FONT > </td>
-								<td class="tg-9hbd" ><FONT SIZE=3> Fecha Recep. </FONT ></td>
+								<td class="tg-9hbd"> Usuario Reg.</td>
+								<td class="tg-9hbd"> Derivado A: </td>
+								<td class="tg-9hbd"> Fecha Deriv. </td>
+							    <td class="tg-9hbd"> Mensaje</td>
+								<td class="tg-9hbd"> Accion </td>
+								<td class="tg-9hbd"> Estado </td>
+								<td class="tg-9hbd"> Fecha Recep. </td>
 							  </tr>
 							  ';
 							  
@@ -943,9 +948,6 @@ window.onload=function(){self.print();}
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-	
-	
-	
 	
 	/*****/
 	
@@ -1147,5 +1149,203 @@ function anularCorrespondencia()
         $this->res = $this->objFunc->anularCorrespondencia();
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-}
+    
+    public function listaAcciones() 
+    {
+
+        $this->objParam->parametros_consulta['ordenacion'] = 'id_accion';
+        $this->objParam->parametros_consulta['filtro'] = " 0 = 0 ";
+        $this->objParam->parametros_consulta['cantidad'] = '1000';
+        $this->objParam->parametros_consulta['puntero'] = '0';
+        
+        $this->objParam->defecto('ordenacion','id_accion');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        // $this->objParam->addFiltro(" 0 = 0 ");
+        $this->objFunc=$this->create('MODAccion');  
+        $this->res=$this->objFunc->listarAccion();
+        return $this->res->getDatos();
+    }
+
+    public function listaAccionesDerivadas($id_correspondencia) 
+    {
+        
+        $this->objParam->parametros_consulta['ordenacion'] = 'id_correspondencia';
+        $this->objParam->parametros_consulta['filtro'] = " 0 = 0 ";
+        $this->objParam->parametros_consulta['cantidad'] = '10000';
+        $this->objParam->parametros_consulta['puntero'] = '0';
+        
+        $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $id_correspondencia);
+        
+        $this->objParam->defecto('ordenacion','id_correspondencia');
+        $this->objParam->defecto('dir_ordenacion','asc');
+        
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->listarCorrespondenciaDetalle();
+        $datos = $this->res->getDatos();
+        $accionesTexto = ''; 
+
+        for ($i=0; $i < count($datos) ; $i++) { 
+            if($accionesTexto==''){
+                $accionesTexto .= $datos[$i]['id_acciones'];
+            }else{
+                $accionesTexto .= ','.$datos[$i]['id_acciones'];
+            }
+        }
+
+        return $accionesTexto;
+    }
+    
+    public function generarTablaXmlParaWord($accionesSeleccionadas="", $listAcciones=array())
+    {
+        $accionesSeleccionadas = explode(',', $accionesSeleccionadas); // convertir en arreglo todas las acciones seleccionadas
+
+        $filaCompleta = $this->generarNuevoArreglo($accionesSeleccionadas, $listAcciones); // Crea un arreglo de arreglos para la estructura que se desea
+
+        $todasAcciones = "";
+        $cantidad = sizeof($listAcciones);
+        $resultado = '';
+        if($cantidad>0)
+        {
+
+        
+        
+            $resultado = '<w:tbl>
+                    <w:tblPr>
+                        <w:tblStyle w:val="Tablaconcuadrcula"/>
+                        <w:tblpPr w:leftFromText="141" w:rightFromText="141" w:vertAnchor="text" w:horzAnchor="margin" w:tblpXSpec="center" w:tblpY="1"/>
+                        <w:tblW w:w="9067" w:type="dxa"/>
+                        <w:tblBorders>
+                            <w:top w:val="dotted" w:sz="4" w:space="0" w:color="auto"/>
+                            <w:left w:val="dotted" w:sz="4" w:space="0" w:color="auto"/>
+                            <w:bottom w:val="dotted" w:sz="4" w:space="0" w:color="auto"/>
+                            <w:right w:val="dotted" w:sz="4" w:space="0" w:color="auto"/>
+                            <w:insideH w:val="dotted" w:sz="4" w:space="0" w:color="auto"/>
+                            <w:insideV w:val="dotted" w:sz="4" w:space="0" w:color="auto"/>
+                        </w:tblBorders>
+                        <w:tblLook w:val="04A0" w:firstRow="1" w:lastRow="0" w:firstColumn="1" w:lastColumn="0" w:noHBand="0" w:noVBand="1"/>
+                    </w:tblPr>
+                    <w:tblGrid>';
+                for ($i=0; $i <$cantidad ; $i++) { 
+                    $resultado .= '<w:gridCol w:w="1277"/>
+                            <w:gridCol w:w="298"/>';
+                }
+                        
+            $resultado .='</w:tblGrid>';
+
+            foreach ($filaCompleta as $fila) 
+            {
+                $resultado .='<w:tr w:rsidR="00EE77A0" w:rsidRPr="00E21E5F" w:rsidTr="00350545">
+                            <w:trPr>
+                                <w:trHeight w:val="336"/>
+                            </w:trPr>';
+                foreach ($fila as $data) {
+                    
+                $resultado .='<w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="1277" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00EE77A0" w:rsidRPr="00E34562" w:rsidRDefault="00EE77A0" w:rsidP="00350545">
+                                    <w:pPr>
+                                        <w:autoSpaceDE w:val="0"/>
+                                        <w:autoSpaceDN w:val="0"/>
+                                        <w:adjustRightInd w:val="0"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="Tahoma" w:hAnsi="Tahoma" w:cs="Tahoma"/>
+                                            <w:sz w:val="14"/>
+                                            <w:szCs w:val="14"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00E34562">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="Tahoma" w:hAnsi="Tahoma" w:cs="Tahoma"/>
+                                            <w:sz w:val="14"/>
+                                            <w:szCs w:val="14"/>
+                                        </w:rPr>
+                                        <w:t>'.strtoupper($data['nombre']).'</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>
+                            <w:tc>
+                                <w:tcPr>
+                                    <w:tcW w:w="298" w:type="dxa"/>
+                                    <w:vAlign w:val="center"/>
+                                </w:tcPr>
+                                <w:p w:rsidR="00EE77A0" w:rsidRPr="00E34562" w:rsidRDefault="00EE77A0" w:rsidP="00350545">
+                                    <w:pPr>
+                                        <w:spacing w:line="480" w:lineRule="auto"/>
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="Tahoma" w:hAnsi="Tahoma" w:cs="Tahoma"/>
+                                            <w:sz w:val="14"/>
+                                            <w:szCs w:val="14"/>
+                                        </w:rPr>
+                                    </w:pPr>
+                                    <w:r w:rsidRPr="00E34562">
+                                        <w:rPr>
+                                            <w:rFonts w:ascii="Tahoma" w:hAnsi="Tahoma" w:cs="Tahoma"/>
+                                            <w:sz w:val="14"/>
+                                            <w:szCs w:val="14"/>
+                                        </w:rPr>
+                                        <w:t>'.strtoupper($data['selected']).'</w:t>
+                                    </w:r>
+                                </w:p>
+                            </w:tc>';
+                }
+                
+                $resultado .='</w:tr>';
+                
+            }
+
+
+            $resultado .='</w:tbl>';
+
+
+        }
+
+        return $resultado;
+    }
+
+    public function generarNuevoArreglo($accionesSeleccionadas="", $listAcciones=array())
+    {
+        $cantidadPorFila = 6;
+        $filaCompleta = array();
+        $fila = array();
+        $cant = sizeof($listAcciones);
+        $contador = 0;
+            
+        foreach ($listAcciones as $accion) 
+        {
+            $contador++;
+            array_push($fila, array("nombre"=>$accion['nombre'], 'selected'=>$this->seleccionarAccion($accion['id_accion'], $accionesSeleccionadas))) ;
+            if( $contador >= $cantidadPorFila )
+            {       
+                array_push($filaCompleta,$fila);
+                $fila = array();
+                $contador=0;
+            }
+        }
+
+        $resto = (int)($cantidadPorFila-sizeof($fila)); // resto de datos vacio para completar la fila de $cantidadPorFila y no este vacia
+        
+        if(sizeof($fila)>0)
+        {
+            for ($i=0; $i < $resto ; $i++) { 
+                array_push($fila, array("nombre"=>'', 'selected'=>''));
+            }
+            array_push($filaCompleta, $fila);
+        }
+
+        return $filaCompleta;
+    }
+
+    public function seleccionarAccion($idAccion, $accionesSeleccionadas)
+    {
+        $res = '';
+        foreach ($accionesSeleccionadas as $accionSeleccionada) {
+            if($accionSeleccionada==$idAccion)
+                $res = 'X';
+        }
+        return $res;
+    }
+} 
 ?>

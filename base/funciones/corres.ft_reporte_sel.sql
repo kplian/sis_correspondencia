@@ -82,7 +82,7 @@ BEGIN
                        left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                        left join param.tinstitucion insti on insti.id_institucion = cor.id_institucion
                        left join segu.vpersona persona on persona.id_persona = cor.id_persona
-                  where  ' || v_parametros.filtro ;
+                  where cor.id_correspondencia_fk is null and  ' || v_parametros.filtro ;
 			
 			
 			v_consulta:=v_consulta||'            
@@ -117,20 +117,153 @@ BEGIN
                        left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                        left join param.tinstitucion insti on insti.id_institucion = cor.id_institucion
                        left join segu.vpersona persona on persona.id_persona = cor.id_persona
-                  where' ||v_parametros.filtro ;
-					
-			
-			--Devuelve la respuesta
-			return v_consulta;
-						
-		end; 
-				
-	else
-					     
-		raise exception 'Transaccion inexistente';
-					         
-	end if;
-					
+                  where cor.id_correspondencia_fk is null and ' ||v_parametros.filtro ;
+          
+      
+      --Devuelve la respuesta
+      return v_consulta;
+            
+    end;        
+   /*********************************    
+  #TRANSACCION:  'CO_REPCOR_ESTA'
+  #DESCRIPCION: Reporte 
+  #AUTOR:   HPG 
+  #FECHA:   13-03-2019 11:11:11
+  ***********************************/
+
+  elsif(p_transaccion='CO_REPCOR_ESTA')then
+            
+      begin
+        
+        --Sentencia de la consulta
+      v_consulta:=' select sum(count) as cantidad ,nombre,id_accion, tipo 
+                            from (
+                            select count(cor.id_acciones[1]), ac.nombre, ac.id_accion, cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[1]
+                            WHERE cor.id_acciones[1] is not null
+                            group by cor.id_acciones[1],ac.nombre, ac.id_accion, cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[2]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[2]
+                            WHERE cor.id_acciones[2] is not null
+                            group by cor.id_acciones[2],ac.nombre, ac.id_accion , cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[3]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[3]
+                            WHERE cor.id_acciones[3] is not null
+                            group by cor.id_acciones[3],ac.nombre, ac.id_accion , cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[4]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[4]
+                            WHERE cor.id_acciones[4] is not null
+                            group by cor.id_acciones[4],ac.nombre, ac.id_accion , cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[5]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[5]
+                            WHERE cor.id_acciones[5] is not null
+                            group by cor.id_acciones[5],ac.nombre, ac.id_accion , cor.tipo
+
+                            UNION
+
+                            select count(cor.id_acciones[6]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[6]
+                            WHERE cor.id_acciones[6] is not null
+                            group by cor.id_acciones[6],ac.nombre, ac.id_accion , cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[7]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[7]
+                            WHERE cor.id_acciones[7] is not null
+                            group by cor.id_acciones[7],ac.nombre, ac.id_accion , cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[8]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[8]
+                            WHERE cor.id_acciones[8] is not null
+                            group by cor.id_acciones[8],ac.nombre, ac.id_accion , cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[9]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[9]
+                            WHERE cor.id_acciones[9] is not null
+                            group by cor.id_acciones[9],ac.nombre, ac.id_accion , cor.tipo
+
+                            UNION
+
+                            select count(cor.id_acciones[10]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[10]
+                            WHERE cor.id_acciones[10] is not null
+                            group by cor.id_acciones[10],ac.nombre, ac.id_accion , cor.tipo
+
+                            UNION
+
+                            select count(cor.id_acciones[11]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[11]
+                            WHERE cor.id_acciones[11] is not null
+                            group by cor.id_acciones[11],ac.nombre, ac.id_accion , cor.tipo
+
+                            UNION
+
+                            select count(cor.id_acciones[12]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[12]
+                            WHERE cor.id_acciones[12] is not null
+                            group by cor.id_acciones[12],ac.nombre, ac.id_accion , cor.tipo
+
+                            union
+
+                            select count(cor.id_acciones[13]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[13]
+                            WHERE cor.id_acciones[13] is not null
+                            group by cor.id_acciones[13],ac.nombre, ac.id_accion , cor.tipo
+
+                            UNION
+
+                            select count(cor.id_acciones[14]), ac.nombre, ac.id_accion , cor.tipo
+                            from corres.tcorrespondencia as cor
+                            inner join corres.taccion as ac on ac.id_accion = cor.id_acciones[14]
+                            WHERE cor.id_acciones[14] is not null
+                            group by cor.id_acciones[14],ac.nombre, ac.id_accion , cor.tipo
+                            ) as tablanueva
+                            group by id_accion,nombre, tipo
+                            order by sum(count) desc, nombre,tipo' ;
+          
+      
+      --Devuelve la respuesta
+            
+            --raise notice '%',v_consulta;
+      return v_consulta;
+            
+    end;        
+  else
+               
+    raise exception 'Transaccion inexistente';
+                   
+  end if;
+          
 EXCEPTION
 					
 	WHEN OTHERS THEN

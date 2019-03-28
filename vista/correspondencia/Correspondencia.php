@@ -21,7 +21,14 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			 
 		//Botones.
-			
+			//7
+			this.addButton('ImpCodigo', {
+				text: 'Imprimir Cite',
+				iconCls: 'bprint',
+				disabled: true,
+				handler: this.BImpCodigo,
+				tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
+			});
 			//1
             this.addButton('Plantilla', {
                 text: 'Plantilla',
@@ -63,14 +70,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				handler : this.BVerDocumento,
 				tooltip : '<b>Ver archivo</b><br/>Permite visualizar el documento escaneado'
 			});
-			//7
-			this.addButton('ImpCodigo', {
-				text: 'Imprimir Cite',
-				iconCls: 'bprint',
-				disabled: true,
-				handler: this.BImpCodigo,
-				tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
-			});
+			
 		    //8
 			this.addButton('ImpCodigoDoc', {
 				text: 'Imprimir Documento',
@@ -397,7 +397,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				growMin : 100,
 				grow : true,
 				gwidth : 200,
-				maxLength : 500
+				maxLength : 500,
+				renderer : function(value, p, record) {
+					return '<span title="'+value+'">'+value+'</span>';
+				},
 			},
 			type : 'TextArea',
 			filters : {
@@ -416,7 +419,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				width : 300,
 				growMin : 100,
 				grow : true,
-				gwidth : 200
+				gwidth : 200,
+				renderer : function(value, p, record) {
+					return '<span title="'+value+'">'+value+'</span>';
+				},
 			},
 			type : 'TextArea',
 			filters : {
@@ -450,7 +456,10 @@ header("content-type: text/javascript; charset=UTF-8");
 				width : 300,
 				growMin : 100,
 				grow : true,
-				gwidth : 100
+				gwidth : 100,
+				renderer : function(value, p, record) {
+					return '<span title="'+value+'">'+value+'</span>';
+				},
 			},
 			type : 'TextArea',
 			filters : {
@@ -573,7 +582,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				hiddenName : 'id_depto',
 				url : this.urlDepto,
 				origen : 'DEPTO',
-				allowBlank : false,
+				allowBlank : true,
 				fieldLabel : 'Depto',
 				gdisplayField : 'desc_depto', //dibuja el campo extra de la consulta al hacer un inner join con orra tabla
 				width : 250,
@@ -594,7 +603,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				type : 'string'
 			},
 			grid : false,
-			form : true
+			form : false
 		},  {
 			config : {
 				name : 'tipo',
@@ -845,7 +854,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			config : {
 				name : 'id_funcionarios',
 				fieldLabel : 'Funcionario(s). Destino',
-				allowBlank : true,
+				allowBlank : false,
 				emptyText : 'Funcionarios...',
 				store : new Ext.data.JsonStore({
 					url : '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',
@@ -1313,7 +1322,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		    'otros_adjuntos',
 		    'adjunto','origen',
 		 	{name:'acciones', type: 'string'},
-			{name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s'},
+			{name:'fecha_creacion_documento', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		 	{name:'fecha_ult_derivado', type: 'date',dateFormat:'Y-m-d H:i:s.u'},'desc_funcionario_origen',
 			{name:'observaciones_archivado', type: 'string'},
 			{name:'sw_archivado', type: 'string'},
@@ -1756,4 +1765,3 @@ header("content-type: text/javascript; charset=UTF-8");
 	
 	})
 </script>
-

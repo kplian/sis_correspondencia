@@ -57,6 +57,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
         this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
         this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
+        this.Atributos[this.getIndAtributo('id_depto')].form=true;
+        //habilitacion de campo departamento
         
 	    Phx.vista.RecepcionCorrespondenciaExterna.superclass.constructor.call(this,config);
 	    
@@ -100,8 +102,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	getParametrosFiltro: function () {
 		this.store.baseParams.estado = this.swEstado;
 	},
-	actualizarSegunTab: function (name, indice) {
-		console.log(name);
+			actualizarSegunTab: function (name, indice) {
+			console.log(name);
             this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('Corregir').hide();
@@ -110,16 +112,17 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
             this.getBoton('Historico').hide();
             this.getBoton('Archivar').hide();
             this.getBoton('Habilitar').hide();
-            this.getBoton('ImpCodigoDoc').hide();   
+            this.getBoton('ImpCodigoDoc').hide();
+            //this.getBoton('ImpCodigo').hide();   
 
-		if(name=='borrador_recepcion_externo'){
+			if(name=='borrador_recepcion_externo'){
 			
 			this.getBoton('Corregir').hide();
 			 
-		}else{
+			}else{
 			
 			this.getBoton('Corregir').show();
-			
+			this.getBoton('ImpCodigo').show();//habilita impresion de sticker en administracion
 		
 		}
 		this.swEstado = name;
@@ -163,6 +166,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		    this.getBoton('edit').disable();
 			this.getBoton('del').disable();
 			 this.getBoton('HojaRuta').enable();
+			 //habilitacion de imprpesion de CITE en el tab finalizar
+			 this.getBoton('ImpCodigo').enable();
 		}
 		
 	

@@ -48,6 +48,28 @@ class MODReporte extends MODbase{
         return $this->respuesta;
     }
 
+    function listarReporteCorrespondenciaEstadistico(){
+
+        //Definicion de variables para ejecucion del procedimientp
+        $this->procedimiento='corres.ft_reporte_sel';
+        $this->transaccion='CO_REPCOR_ESTA';
+        $this->tipo_procedimiento='SEL'; //tipo de transaccion
+        $this->setCount(false);
+
+        $this->captura('cantidad','numeric');
+        $this->captura('nombre','varchar');
+        $this->captura('id_accion','int4');
+        $this->captura('tipo','varchar');
+
+        //Ejecuta la instruccion
+        $this->armarConsulta();
+        // echo $this->getConsulta();exit;
+        $this->ejecutarConsulta();
+        
+        //Devuelve la respuesta
+        return $this->respuesta;
+    }
+
    
 }
 ?>

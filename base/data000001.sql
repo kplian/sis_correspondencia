@@ -331,3 +331,6 @@ select pxp.f_insert_tgui ('Valores', 'Valores', 'GRUPCOR.1.1.1.1.2.1.2.6', 'no',
 select pxp.f_insert_tgui ('Catálogo', 'Catálogo', 'GRUPCOR.1.1.1.1.2.1.2.6.1', 'no', 0, 'sis_parametros/vista/catalogo/Catalogo.php', 12, '', 'Catalogo', 'CORRES');
 select pxp.f_insert_tgui ('Adjuntos', 'Adjuntos', 'CEMITIDA.6', 'no', 0, 'sis_correspondencia/vista/adjunto/Adjunto.php?estado=', 4, '', 'Adjunto', 'CORRES');
 /***********************************F-DAT-JMH-CORRES-0-26/12/2018*****************************************/
+/***********************************I-DAT-HPG-CORRES-0-13/03/2019*****************************************/
+select pxp.f_insert_tgui ('Reporte Estadistico', 'Es la generacion de reportes estadisticos', 'EST', 'si', 2, 'sis_correspondencia/vista/reportes/ReportesEstadisticos.php', 3, '', 'EST', 'CORRES');
+/***********************************F-DAT-HPG-CORRES-0-13/03/2019*****************************************/
