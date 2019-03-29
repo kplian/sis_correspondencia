@@ -30,7 +30,8 @@
 
 	Ext.Ajax.request({
 	    url:'../../sis_correspondencia/control/Reporte/reportesEstadisticos',
-	    params:{'id_proceso_wf':1},
+	    params:{'proceso':1},
+
 	    success:function(res){ 
 
 	    	var internas = [];

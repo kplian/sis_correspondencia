@@ -233,9 +233,12 @@ class ACTCorrespondencia extends ACTbase
 	}
     function listarCorrespondenciaRecibida()
     {
-    	//obtener detalle de envios
-           
-		
+    	
+		 if($this->objParam->getParametro('filtro_valor')!=''){
+            $this->objParam->addFiltro($this->objParam->getParametro('filtro_campo')." = ".$this->objParam->getParametro('filtro_valor'));
+        }
+        
+        
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion', 'asc');
@@ -485,9 +488,9 @@ class ACTCorrespondencia extends ACTbase
         $this->objFunc = $this->create('MODCorrespondencia');
 		
 		if ($this->objParam->getParametro('estado_reporte')=='borrador'){
-			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA EN BORRADOR';
+			$titulo='HOJA DE RECEPCIÓN DE CORRESPONDENCIA EN BORRADOR';
 		}else{
-			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA';
+			$titulo='HOJA DE RECEPCIÓN DE CORRESPONDENCIA';
 		
 		}
 		
@@ -758,9 +761,9 @@ function hojaRutaBorrador()
       $this->objFunc = $this->create('MODCorrespondencia');
 		
 		if ($this->objParam->getParametro('estado_reporte')=='borrador'){
-			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA EN BORRADOR';
+			$titulo='HOJA DE RECEPCIÓN DE CORRESPONDENCIA EN BORRADOR';
 		}else{
-			$titulo='HOJA DE RECEPCION DE CORRESPONDENCIA';
+			$titulo='HOJA DE RECEPCIÓN DE CORRESPONDENCIA';
 		
 		}
 		
@@ -882,7 +885,7 @@ function hojaRutaBorrador()
 							      <div align="right" style="color:#F00"><!--<img src="../../../sis_correspondencia/imagenes/fondo_borrador.png">-->BORRADOR </div>
 							    </spam > 
                               <div > 
-							    <p>  <spam > <B>HOJA DE RECEPCION DE CORRESPONDENCIA </B> </spam > 
+							    <p>  <spam > <B>HOJA DE RECEPCIÓN DE CORRESPONDENCIA </B> </spam > 
 						        </p>
 							  </div>
 							</CENTER>
@@ -903,7 +906,7 @@ function hojaRutaBorrador()
 								<td class="tg-e3zv" width="25%">Remitente </td>
 								<td class="tg-e3zv" width="25%">Referencia</td>
 								<td class="tg-e3zv" width="25%">Adjuntos</td>
-								<td class="tg-9hbo" width="25%">Doc. Física Entregada A</td>
+								<td class="tg-9hbo" width="25%">Doc. Físico Entregado A</td>
 								
 							  </tr>
 							 
