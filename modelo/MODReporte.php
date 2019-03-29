@@ -13,7 +13,7 @@ class MODReporte extends MODbase{
         parent::__construct($pParam);
     }
 
-    function listarReporteCorrespondencia(){
+  function listarReporteCorrespondencia(){
         //Definicion de variables para ejecucion del procedimientp
         $this->procedimiento='corres.ft_reporte_sel';
         $this->transaccion='CO_REPCOR_SEL';
@@ -36,18 +36,22 @@ class MODReporte extends MODbase{
         $this->captura('desc_cargo','varchar');
 		$this->captura('sw_archivado','varchar');
 		$this->captura('desc_insti','varchar');
+		$this->captura('tipo','varchar');
+		$this->captura('documento','varchar');
+		$this->captura('id_documento','int4');
 		$this->captura('persona_remi','text');
 		$this->captura('acciones','text');
 
 
         //Ejecuta la instruccion
         $this->armarConsulta();
+		//echo $this->getConsulta();
+		//die;
         $this->ejecutarConsulta();
 
         //Devuelve la respuesta
         return $this->respuesta;
     }
-
     function listarReporteCorrespondenciaEstadistico(){
 
         //Definicion de variables para ejecucion del procedimientp

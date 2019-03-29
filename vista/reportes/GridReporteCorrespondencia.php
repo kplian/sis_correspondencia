@@ -1,4 +1,4 @@
-<?php
+<<?php
 /**
  * @package pxP
  * @file 	GridReporteCorrespondencia.php
@@ -24,9 +24,10 @@ header("content-type:text/javascript; charset=UTF-8");
 					fecha_ini:this.maestro.fecha_ini,
 					fecha_fin:this.maestro.fecha_fin,
 					id_uo:this.maestro.id_uo,
-                     id_usuario: this.maestro.id_usuario,
-                     tipo: this.maestro.tipo,
-                     estado: this.maestro.estado
+                    id_usuario: this.maestro.id_usuario,
+                    tipo: this.maestro.tipo,
+                    id_documento:this.maestro.id_documento,
+                    estado: this.maestro.estado
 				}
 			});
 		},
@@ -44,7 +45,7 @@ header("content-type:text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'estado',
-                    fieldLabel: 'estado',
+                    fieldLabel: 'Estado',
                     gwidth: 90
                 },
                 type: 'Field',
@@ -59,7 +60,7 @@ header("content-type:text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'fecha_documento',
-                    fieldLabel: 'fecha_documento',
+                    fieldLabel: 'Fecha Doc.',
                     gwidth: 110,
                     renderer : function(value, p, record) {
 					return value ? value.dateFormat('d/m/Y'):''
@@ -76,7 +77,7 @@ header("content-type:text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'mensaje',
-                    fieldLabel: 'mensaje',
+                    fieldLabel: 'Mensaje',
                     gwidth: 110
                 },
                 type: 'Field',
@@ -104,7 +105,7 @@ header("content-type:text/javascript; charset=UTF-8");
             {
                 config: {
                     name: 'numero',
-                    fieldLabel: 'Tipo numero',
+                    fieldLabel: 'Número',
                     gwidth: 110
                 },
                 type: 'Field',
@@ -229,14 +230,44 @@ header("content-type:text/javascript; charset=UTF-8");
                 grid: true
 
             },
-            {
+             {
                 config: {
-                    name: 'acciones',
-                    fieldLabel: 'Acciones',
+                    name: 'tipo',
+                    fieldLabel: 'Tipo',
                     gwidth: 110
                 },
                 type: 'Field',
                 grid: true
+
+            },
+            {
+                config: {
+                    name: 'documento',
+                    fieldLabel: 'Documento',
+                    gwidth: 110
+                },
+                type: 'TextField',
+                grid: true
+
+            },
+             {
+                config: {
+                    name: 'id_documento',
+                    fieldLabel: 'id_documento',
+                    gwidth: 110
+                },
+                type: 'Field',
+                grid: false
+
+            },
+            {
+                config: {
+                    name: 'acciones',
+                    fieldLabel: 'Acción',
+                    gwidth: 110
+                },
+                type: 'TextField',
+                grid: false
 
             }
 			
@@ -287,6 +318,32 @@ header("content-type:text/javascript; charset=UTF-8");
         },
         {
             name : 'desc_cargo',
+            type : 'string'
+        },
+        {
+            name : 'desc_insti',
+            type : 'string'
+        },
+        {
+            name : 'persona_remi',
+            type : 'string'
+        },
+        {
+            name : 'tipo',
+            type : 'string'
+        },
+         {
+            name : 'documento',
+            type : 'string'
+        },
+        
+        {
+            name : 'id_documento',
+            type : 'numeric'
+        },
+        
+        {
+            name : 'acciones',
             type : 'string'
         },
         {
