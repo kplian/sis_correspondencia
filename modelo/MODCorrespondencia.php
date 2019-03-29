@@ -525,7 +525,7 @@ class MODCorrespondencia extends MODbase{
 			$res->execute();
 			$result = $res->fetchAll(PDO::FETCH_ASSOC);
 			$tamano_archivo=$result[0]['tamano'];
-			  
+			 
 			try{
 				
                 $this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);		
@@ -549,10 +549,10 @@ class MODCorrespondencia extends MODbase{
 				$this->arreglo['numero']= str_replace('/','_',$this->arreglo['numero']);
 				$this->arreglo['numero']= str_replace(' ','_',$this->arreglo['numero']);
 				//validar que no sea un archvo en blanco
-				$file_name = $this->getFileName2('file_correspondencia', 'id_correspondencia', '','_v'.$version);
+				$file_name = $this->getFileName2('file_correspondencia', 'id_correspondencia', '','_v'.$version,$this->arreglo['numero']);
 				
-			  
-			    //manda como parametro la url completa del archivo 
+			
+			   //manda como parametro la url completa del archivo 
 	            $this->aParam->addParametro('ruta_archivo', $file_name[2]);
 	            $this->arreglo['ruta_archivo'] = $file_name[2];
 	            $this->setParametro('ruta_archivo','ruta_archivo','varchar'); 
@@ -582,8 +582,10 @@ class MODCorrespondencia extends MODbase{
 				   //revisamos si ya existe el archivo la verison anterior sera mayor a cero
 				   $respuesta = $resp_procedimiento['datos'];
 				     //cipiamos el nuevo archivo 
-	               $this->setFile('file_correspondencia','id_correspondencia', false,100000 ,array('doc','pdf','docx','jpg','jpeg','bmp','gif','png','PDF','DOC','DOCX','xls','xlsx','XLS','XLSX','rar'), $folder = '','_v'.$version);
-	            }
+				    
+	               $this->setFile('file_correspondencia','id_correspondencia', false,100000 ,array('doc','pdf','docx','jpg','jpeg','bmp','gif','png','PDF','DOC','DOCX','xls','xlsx','XLS','XLSX','rar'), $folder = '','_v'.$version,$this->arreglo['numero']);
+	       
+                  }
 				
 				
 				$this->link->commit();
