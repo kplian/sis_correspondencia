@@ -41,7 +41,7 @@ Phx.vista.CorrespondenciaAdministracion = {
 	
 		
 	beditGroups: [1, 1],
-	bactGroups: [0, 1],
+	bactGroups: [1, 1],
 	btestGroups: [0,0],
 	bexcelGroups: [0, 1],
 
@@ -163,7 +163,7 @@ Phx.vista.CorrespondenciaAdministracion = {
             this.getBoton('Historico').hide();
             this.getBoton('Finalizar').hide();
             this.getBoton('Archivar').hide();
-        
+        	this.getBoton('act').show();
            
 		 if(name=='anulado'){
            this.getBoton('edit').hide();
@@ -184,10 +184,8 @@ Phx.vista.CorrespondenciaAdministracion = {
             this.getBoton('del').show(); 
             this.getBoton('HabCorregir').show();
             this.getBoton('FinCorregir').show();
-        
-            
+         }else{
         	
-        }else{
         	 this.getBoton('new').show();
         	 this.getBoton('edit').show();
         	 this.getBoton('del').enable();

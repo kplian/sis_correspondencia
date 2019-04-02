@@ -1205,7 +1205,7 @@ BEGIN
             IF (v_parametros.tipo='externa') THEN
                IF (EXISTS(select 1
             			from corres.tcorrespondencia cor
-           				where cor.fecha_creacion_documento > v_parametros.fecha_creacion_documento
+           				where cor.fecha_creacion_documento::date > v_parametros.fecha_creacion_documento::date
                 		and 
                         tipo=v_parametros.tipo AND cor.fecha_creacion_documento between v_fecha_ini and v_fecha_fin
                     ))THEN
@@ -1227,8 +1227,8 @@ BEGIN
             END IF;  
             
           
-            v_fecha_creacion_documento=v_parametros.fecha_creacion_documento;
-            
+                       v_fecha_creacion_documento=v_parametros.fecha_creacion_documento+('22:25:10.222234');
+ 
             v_num_corre =  corani.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
             
@@ -1721,7 +1721,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
     
       /*  verifica que sus hijos no hayan derivado la correspondencia
     */
-          IF(exists (
+      /*    IF(exists (
             select 1
             from corres.tcorrespondencia c
             where c.id_correspondencia_fk = v_parametros.id_correspondencia and
@@ -1732,7 +1732,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
               'Existen destinatarios que ya Enviarón la correspondencia, es por tal razón que  no se puede corregir'
               ;
 
-          END IF;
+          END IF;*/
      
    /*   select estado_ant
       into v_estado_aux
@@ -1842,7 +1842,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
   v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
   raise exception '%',v_resp;
 
-END; 	
+END;
 $body$
 LANGUAGE 'plpgsql'
 VOLATILE

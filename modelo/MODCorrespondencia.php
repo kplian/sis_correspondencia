@@ -1061,7 +1061,7 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('nro_paginas','nro_paginas','int4');
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 		$this->setParametro('cite','cite','varchar');
-        $this->setParametro('fecha_creacion_documento','fecha_creacion_documento','date');
+        $this->setParametro('fecha_creacion_documento','fecha_creacion_documento','timestamp');
 		$this->setParametro('persona_firma','persona_firma','varchar');
 		$this->setParametro('tipo_documento','tipo_documento','varchar');
 		
