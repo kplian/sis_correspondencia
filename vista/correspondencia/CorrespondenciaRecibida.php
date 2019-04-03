@@ -67,10 +67,11 @@ Phx.vista.CorrespondenciaRecibida = {
 		
 		
 		this.init();
-		
-        this.store.baseParams = {'interface': 'recibida','tipo': this.tipo};
+	    this.store.baseParams = {'interface': 'recibida','tipo': this.tipo}; 
+	   
+      //EAQ:filtro_directo funcionalidad acceso directo
         if(config.filtro_directo){
-        	//console.log('='+config.filtro_directo);
+        
            this.store.baseParams.filtro_valor = config.filtro_directo.valor;
            this.store.baseParams.filtro_campo = config.filtro_directo.campo;
        }
