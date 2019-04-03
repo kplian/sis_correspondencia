@@ -1250,16 +1250,21 @@ BEGIN
             g.gestion = to_char(now()::date, 'YYYY')::integer;
 
       --2 obtener el identificar del periodo
-
-      select p.id_periodo
-      into v_id_periodo
-      from param.tperiodo p
-           inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
-             ges.estado_reg = 'activo'
-      where p.estado_reg = 'activo' and
-            now()::date between p.fecha_ini and
-            p.fecha_fin;
-
+ 
+      IF (v_id is null) THEN
+          select p.id_periodo
+            into v_id_periodo
+            from param.tperiodo p
+                 inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
+                   ges.estado_reg = 'activo'
+            where p.estado_reg = 'activo' and
+                  now()::date between p.fecha_ini and
+                  p.fecha_fin;
+          
+      ELSE
+           v_id_periodo:=v_id;
+      END IF;
+      
       --validar que tenga o persona o intitucion
 
       IF v_parametros.id_institucion_remitente is null and
