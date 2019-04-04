@@ -1514,7 +1514,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       -- Inserta en una tabla alarma
       INSERT INTO corres.talarma (SELECT * FROM param.talarma WHERE id_alarma in (select id_alarma 
                           																  from corres.tcorrespondencia
-                                                                                          where id_correspondencia=v_parametros.id_correspondencia) );
+                                                                                          where id_correspondencia_fk=v_parametros.id_correspondencia) );
       -- Elimina la fila de la tabla param.talarma.
       
       DELETE FROM param.talarma where id_alarma in (select id_alarma 
