@@ -23,7 +23,7 @@ $body$
 
    
 DECLARE
-
+	v_auxiliar			varchar;
 	v_consulta    		varchar;
 	v_parametros  		record;
 	v_nombre_funcion   	text;
@@ -1537,7 +1537,11 @@ where tiene is not null ';
             if (v_parametros.ordenacion='numero') THEN
                 v_consulta:=v_consulta||' order by fecha_reg ' ;
             ELSE
-                v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
+	    	v_auxiliar = replace(v_parametros.ordenacion, 'desc_insti', 'insti.nombre');
+                v_auxiliar = replace(v_auxiliar, 'numero', 'id_correspondencia');
+                
+                v_consulta:=v_consulta||' order by ' ||v_auxiliar|| ' ' ;
+                --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
             end if;
 
 			v_consulta:=v_consulta || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
