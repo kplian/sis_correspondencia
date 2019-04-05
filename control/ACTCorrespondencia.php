@@ -441,6 +441,8 @@ class ACTCorrespondencia extends ACTbase
                //$templateProcessor->setImgHeader('qrh',array('src' => $img_qr, 'swh'=>'250'));
                 
                 //print_r($correspondenciaDetalle);
+                //dobles espacios
+                
                 $templateProcessor->setValue('remitente', htmlspecialchars(preg_replace('/\s+/', ' ', $correspondencia[0]['desc_funcionario_de_plantilla'])));
                 $templateProcessor->setValue('cargo_remitente', htmlspecialchars($correspondencia[0]['desc_cargo']));
                 $templateProcessor->setValue('referencia', htmlspecialchars($correspondencia[0]['referencia']));
