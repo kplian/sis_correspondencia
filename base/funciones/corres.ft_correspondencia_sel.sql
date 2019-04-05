@@ -23,7 +23,7 @@ $body$
 
    
 DECLARE
-	v_auxiliar			varchar;
+
 	v_consulta    		varchar;
 	v_parametros  		record;
 	v_nombre_funcion   	text;
@@ -379,7 +379,7 @@ BEGIN
 			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-          
+           --raise exception '%',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
        end;
@@ -831,43 +831,32 @@ BEGIN
     elsif(p_transaccion='CO_CORREC_SEL')then
      				
     	begin
-
          select dep.cargo,dep.id_depto
             into v_cargo,v_id_depto
          from orga.tfuncionario fun
          inner join segu.tusuario us on us.id_persona=fun.id_persona
          inner join param.tdepto_usuario dep on dep.id_usuario =us.id_usuario
          where id_funcionario=v_parametros.id_funcionario_usuario; 
-         --  raise exception '%',v_parametros.interface;
-         --  raise exception '%',v_parametros.filtro;
-		
+         
+         
+         
          IF  v_parametros.tipo = 'externa' THEN
 			    v_filtro=  '  cor.tipo in (''externa'') ';
-		 	ELSIF v_parametros.tipo = 'interna' THEN
+			 ELSIF v_parametros.tipo = 'interna' THEN
 				v_filtro=  '  cor.tipo in (''interna'') ';
-		 	ELSE
-            	v_filtro='   cor.tipo in (''interna'')';   
-         END IF;
-         
-         IF  v_parametros.tipo is NULL THEN
-			    v_filtro=  '  cor.tipo in (''externa'') ';
-		END IF;
-         
-           --raise exception '%',v_parametros.interface;
-       
-          IF (v_parametros.interface = 'recibida_archivada') or (v_parametros.interface = 'recibida') THEN
-               
-                v_filtro= v_filtro||' and   cor.estado in (''pendiente_recibido'',''recibido'',''enviado'')  ';
-                v_filtro= v_filtro || ' and cor.id_correspondencia_fk is not null ';
+			 ELSE
+            
+                v_filtro='   cor.tipo in (''saliente'')';
+             END IF;
+             
+          IF (v_parametros.interface = 'recibida_archivada')THEN
+              v_filtro= v_filtro||' and   cor.estado in (''recibido'',''enviado'')  ';
+               v_filtro= v_filtro || ' and  0=0 ';
           ELSE
-              
-    			v_filtro= v_filtro||' and   cor.estado in (''recibido'',''enviado'')  ';
-                v_filtro= v_filtro || ' and  0=0 ';   
-    
-    
-          END IF;
-        
-    
+              v_filtro= v_filtro||' and   cor.estado in (''pendiente_recibido'',''recibido'',''enviado'')  ';
+               v_filtro= v_filtro || ' and cor.id_correspondencia_fk is not null ';
+       
+          END IF;  
           
           -- raise exception '%',v_parametros.interface; 
            
@@ -903,17 +892,13 @@ BEGIN
                                                                           where asper.id_asistente='||v_id_asistente||')';
                           END IF;	
                       ELSE 
-                   
-                      
+                         
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
-                          ELSIF v_parametros.tipo is null THEN
-                      
-                            	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                          ELSE
-                          v_filtro = v_filtro||' and (0=0)';                               
+                        ELSE
+                         v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
                          end if;
-                    
+                         
                     END IF;           
                        
                 END IF;
@@ -1022,12 +1007,10 @@ BEGIN
 			--cor.estado in (''pendiente_recibido'',''recibido'',''recibido_derivacion'',''enviado'') and 
             --            cor.tipo in (''saliente'') 
 			--Definicion de la respuesta
-            -- raise exception '%',v_parametros.filtro;
+           -- raise exception '%',v_parametros.filtro;
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by  ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-            --
-          			--raise notice '%',v_consulta;
-          			--raise exception '%',v_consulta;
+            --raise exception '%','backtone    '||v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 						
@@ -1537,11 +1520,7 @@ where tiene is not null ';
             if (v_parametros.ordenacion='numero') THEN
                 v_consulta:=v_consulta||' order by fecha_reg ' ;
             ELSE
-	    	v_auxiliar = replace(v_parametros.ordenacion, 'desc_insti', 'insti.nombre');
-                v_auxiliar = replace(v_auxiliar, 'numero', 'id_correspondencia');
-                
-                v_consulta:=v_consulta||' order by ' ||v_auxiliar|| ' ' ;
-                --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
+                v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
             end if;
 
 			v_consulta:=v_consulta || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
