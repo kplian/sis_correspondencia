@@ -1197,17 +1197,17 @@ function corregirCorrespondenciaExt()
 		
 		//Definicion de la lista del resultado del query
 		 $this->captura('numero','VARCHAR');
-  		 $this->captura('fecha_creacion_documento','TIMESTAMP');
+  		 $this->captura('fecha_creacion_documento','TIMESTAMP');		 	 
          $this->captura('tipo','VARCHAR(20)');
          $this->captura('desc_insti','VARCHAR(100)');
        	 $this->captura('nombre_persona','TEXT');
   		 $this->captura('desc_funcionario','TEXT');
   		 $this->captura('otros_adjuntos','TEXT');
 		 $this->captura('referencia','TEXT');
-  		 $this->captura('mensaje','TEXT');
-		 $this->captura('fecha_documento','date');
-         
-		
+  		 $this->captura('mensaje','TEXT');    
+
+		 $this->captura('fecha_documento','date');         
+	
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->getConsulta();

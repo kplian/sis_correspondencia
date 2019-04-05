@@ -9,7 +9,7 @@
 
 class ACTReporte extends ACTbase{
 
-    function listarReporteCorrespondencia(){
+   function listarReporteCorrespondencia(){
         $this->objParam->defecto('ordenacion','id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion','asc');
@@ -49,7 +49,34 @@ class ACTReporte extends ACTbase{
         	}else {$this->objParam->addFiltro("cor.estado = ''".$this->objParam->getParametro('estado')."'' ");}
 			
         }
+		
+		 if($this->objParam->getParametro('id_documento')!='' && $this->objParam->getParametro('id_documento')!='0'){
+            $this->objParam->addFiltro("doc.id_documento = ''".$this->objParam->getParametro('id_documento')."''");
+        }else{
+        	
+			   if($this->objParam->getParametro('id_documento')=='0' && $this->objParam->getParametro('tipo')=='interna'){
+				
+			   $this->objParam->addFiltro("cor.id_documento in (select DOCUME.id_documento from param.tdocumento DOCUME where DOCUME.tipo = ''interna'' ) ");	
+			}else{
+				
+				if($this->objParam->getParametro('id_documento')=='0' && $this->objParam->getParametro('tipo')=='saliente'){
+				
+			   $this->objParam->addFiltro("cor.id_documento in (select DOCUME.id_documento from param.tdocumento DOCUME where DOCUME.tipo = ''saliente'' ) ");	
+			   }
+				
+			}
+			
+        }
+			
 	
+	/*if($this->objParam->getParametro('id_centro_costo')!=''){
+	    	$this->objParam->addFiltro("par.id_partida in (select id_partida from pre.tpresup_partida where id_presupuesto = " . $this->objParam->getParametro('id_centro_costo') . ")");	
+		}
+		
+		if($this->objParam->getParametro('id_presupuesto')!=''){
+	    	$this->objParam->addFiltro("par.id_partida in (select id_partida from pre.tpresup_partida where id_presupuesto = " . $this->objParam->getParametro('id_presupuesto') . ")");	
+		}*/
+		
 		/*
 			if($this->objParam->getParametro('estado')=='todos'){
             $this->objParam->addFiltro("cor.estado in ('borrador_envio', 'enviado','anulado') ");
@@ -74,7 +101,6 @@ class ACTReporte extends ACTbase{
         }
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
-
     public function reportesEstadisticos()
     {
         $this->objFunc=$this->create('MODReporte');

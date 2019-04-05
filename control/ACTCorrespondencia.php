@@ -627,13 +627,45 @@ class ACTCorrespondencia extends ACTbase
 						<table class="tg"  border="0">
 							  <th class="tg-e3zv1" colspan="6" >DETALLE DE DERIVACIONES</th>
 							  <tr bgcolor="#CCCCCC">
+<<<<<<< HEAD
+<<<<<<< HEAD
+							
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td bgcolor="#CCCCCC"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Derivado A:</FONT ></td>
+									<td class="tg-9hbo"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+								
+								<td class="tg-9hbo colspan="2""><FONT SIZE=3> Fecha Recep. </FONT ></td>
+								<td class="tg-9hbo"></td>
+								
+								<td class="tg-9hbo colspan="4""> <FONT SIZE=3>  Mensaje:  </FONT ></td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								
+								<td class="tg-9hbo"> <FONT SIZE=3>  Accion </FONT > </td>
+								<td class="tg-9hbo"></td>						
+							  </tr>
+=======
+							    <td class="tg-9hbd"> <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Derivado A:</FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Mensaje:  </FONT ></td>
+								<td class="tg-9hbd"> <FONT SIZE=3> Accion </FONT > </td>
+								<td class="tg-9hbd"><FONT SIZE=3> Fecha Recep. </FONT ></td>
+=======
 							    <td class="tg-9hbd"> Usuario Reg. </td>
 								<td class="tg-9hbd"> Derivado A:</td>
 								<td class="tg-9hbd"> Fecha Deriv. </td>
 								<td class="tg-9hbd"> Mensaje:  </td>
 								<td class="tg-9hbd"> Accion </td>
 								<td class="tg-9hbd"> Fecha Recep. </td>
+>>>>>>> e57016df2649fab2883b95e027ddf11fff776d03
 						      </tr>
+>>>>>>> 55e3238bbe50aca9a97896c138a306ef1c85778c
 							  ';
 							  
 							  
@@ -670,12 +702,30 @@ class ACTCorrespondencia extends ACTbase
 							
             $html .= '
 							  <tr>
+<<<<<<< HEAD
+								<td class="tg-yw4l" colspan="2">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l" colspan="1">' . $fecha_deriv . '</td>
+								
+								<td class="tg-yw4l" colspan="1" >' . $fecha_recepcion2 . '</td>
+								<td class="tg-yw4l" colspan="1"> </td>
+								
+								<td class="tg-yw4l" colspan="4">' . $ruta['mensaje'] . '</td>
+								<td class="tg-yw4l" colspan="2"> </td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['acciones'] . '</td>								
+								<td class="tg-yw4l"></td>
+								<td class="tg-yw4l"></td>
+								<td class="tg-yw4l"></td>
+									<td class="tg-yw4l"></td>
+										<td class="tg-yw4l"></td>
+=======
 								<td class="tg-9hbd1">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
 								<td class="tg-9hbd1">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
 								<td class="tg-9hbd1">' . $fecha_deriv . '</td>
 								<td class="tg-9hbd1">' . $ruta['mensaje'] . '</td>
 								<td class="tg-9hbd1">' . $ruta['acciones'] . '</td>
 								<td class="tg-9hbd1">' . $fecha_recepcion2 . '</td>
+>>>>>>> 55e3238bbe50aca9a97896c138a306ef1c85778c
 							  </tr> 
 							  
 							 
@@ -868,10 +918,51 @@ function hojaRutaBorrador()
 								<td class="tg-yw4l" width="25%">' . $correspondencia[0]["otros_adjuntos"] . '</td>
 								<td class="tg-yw4l" width="25%">' . $correspondencia[0]["mensaje"] . '</td>
 							  </tr>
+<<<<<<< HEAD
+							  <tr>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							      <td></td>
+							  </tr>
+							  <tr bgcolor="#CCCCCC">
+							
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td bgcolor="#CCCCCC"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Derivado A:</FONT ></td>
+									<td class="tg-9hbo"></td>
+								<td class="tg-9hbo colspan="2""> <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+								
+								<td class="tg-9hbo colspan="2""><FONT SIZE=3> Fecha Recep. </FONT ></td>
+								<td class="tg-9hbo"></td>
+								
+								<td class="tg-9hbo colspan="4""> <FONT SIZE=3>  Mensaje:  </FONT ></td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo colspan="2""> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								<td class="tg-9hbo"> </td>
+								
+								<td class="tg-9hbo"> <FONT SIZE=3>  Accion </FONT > </td>
+								<td class="tg-9hbo"></td>
+								<td class="tg-9hbo"> <FONT SIZE=3>  Estado </FONT > </td>
+=======
 							  </table>
 							  <table class="tg" border="0" >
 							  <th class="tg-e3zv" colspan="7" >DETALLE DE DERIVACIONES </th>
 							   <tr class="tg-9hbd">
+<<<<<<< HEAD
+								<td class="tg-9hbd" > <FONT SIZE=3> Usuario Reg. </FONT ></td>
+								<td class="tg-9hbd" > <FONT SIZE=3> Derivado A</FONT ></td>
+								<td class="tg-9hbd" > <FONT SIZE=3> Fecha Deriv. </FONT ></td>
+							    <td class="tg-9hbd" > <FONT SIZE=3>  Mensaje  </FONT ></td>
+								<td class="tg-9hbd" > <FONT SIZE=3>  Accion </FONT > </td>
+								<td class="tg-9hbd" > <FONT SIZE=3>  Estado </FONT > </td>
+								<td class="tg-9hbd" ><FONT SIZE=3> Fecha Recep. </FONT ></td>
+>>>>>>> 55e3238bbe50aca9a97896c138a306ef1c85778c
+=======
 								<td class="tg-9hbd"> Usuario Reg.</td>
 								<td class="tg-9hbd"> Derivado A: </td>
 								<td class="tg-9hbd"> Fecha Deriv. </td>
@@ -879,6 +970,7 @@ function hojaRutaBorrador()
 								<td class="tg-9hbd"> Accion </td>
 								<td class="tg-9hbd"> Estado </td>
 								<td class="tg-9hbd"> Fecha Recep. </td>
+>>>>>>> e57016df2649fab2883b95e027ddf11fff776d03
 							  </tr>
 							  ';
 							  
@@ -916,6 +1008,28 @@ function hojaRutaBorrador()
 							
             $html .= '
 							  <tr>
+<<<<<<< HEAD
+								<td class="tg-yw4l" colspan="2">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
+								<td class="tg-yw4l" colspan="1">' . $fecha_deriv . '</td>
+								
+								<td class="tg-yw4l" colspan="1" >' . $fecha_recepcion2 . '</td>
+								<td class="tg-yw4l" colspan="1"> </td>
+								
+								<td class="tg-yw4l" colspan="4">' . $ruta['mensaje'] . '</td>
+								<td class="tg-yw4l" colspan="2"> </td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['acciones'] . '</td>
+								<td class="tg-yw4l" colspan="2">' . $ruta['estado'] . '</td>
+								<td class="tg-yw4l"></td>
+								<td class="tg-yw4l"></td>
+								<td class="tg-yw4l"></td>
+									<td class="tg-yw4l"></td>
+										<td class="tg-yw4l"></td>
+							  </tr> 
+							  <tr> 
+							  <td class="tg-yw4l"></td>
+							  <tr/>
+=======
 								<td class="tg-9hbd1"   >(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
 								<td class="tg-9hbd1"  >' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
 								<td class="tg-9hbd1"  >' . $fecha_deriv . '</td>
@@ -924,6 +1038,7 @@ function hojaRutaBorrador()
 								<td class="tg-9hbd1"  >' . $ruta['estado'] . '</td>
 								<td class="tg-9hbd1"  >' . $fecha_recepcion2 . '</td>
 								</tr> 
+>>>>>>> 55e3238bbe50aca9a97896c138a306ef1c85778c
 							  
 							  
 							 ';

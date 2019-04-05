@@ -64,6 +64,9 @@ BEGIN
                           cor.fecha_documento, ''oficial'') as desc_cargo,
                          cor.sw_archivado,
                          insti.nombre as desc_insti,
+                         doc.tipo,
+                         doc.descripcion as documento,
+                         doc.id_documento,
                          coalesce(persona.nombre_completo1, '' '') as persona_remi,
                          (CASE WHEN (cor.id_acciones is not null) then (CASE
                                WHEN (array_upper(cor.id_acciones, 1) is not null) then (
