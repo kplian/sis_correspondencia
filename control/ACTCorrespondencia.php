@@ -383,6 +383,8 @@ class ACTCorrespondencia extends ACTbase
 			
           $templateProcessor->cloneRow('destinatario', count($correspondenciaDetalle));
                 for ($i = 0; $i <= count($correspondenciaDetalle); $i++) {
+                  
+                  //dobles espacios
                      
                  $xml_destinatario = htmlspecialchars(preg_replace('/\s+/', ' ', $correspondenciaDetalle[$i]['desc_funcionario_plantilla'])) . '</w:t>
                                     </w:r>
