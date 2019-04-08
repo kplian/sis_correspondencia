@@ -895,9 +895,21 @@ BEGIN
                          
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
+<<<<<<< HEAD
                         ELSE
                          v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
                          end if;
+=======
+                          ELSE
+        					--EAQ: para filtrar en alarma notificacion de alarma
+                          	if v_parametros.tipo = 'recibida' or v_parametros.tipo = 'interna' or v_parametros.tipo='externa' THEN
+                      	        	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+                            else 
+                                    v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+                            end if;                                                     
+                            --v_filtro = v_filtro||' AND (cor.id_funcionario = ' ||v_id_funcionario || ' )';                                                        
+                          end if;
+>>>>>>> eda7e29590ed9a689ea02bd831a257e9e8b8b36a
                          
                     END IF;           
                        
