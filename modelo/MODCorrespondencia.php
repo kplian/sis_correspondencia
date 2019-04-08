@@ -389,12 +389,12 @@ class MODCorrespondencia extends MODbase{
 		$this->transaccion='CO_CORREC_SEL';
 		$this->tipo_procedimiento='SEL';//tipo de transaccion
 
-
-
+            //EAQ:envia parametro id_correspondencia padre para funcionalidad acceso directo
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
-        $this->setParametro('interface','interface','varchar');
+        $this->setParametro('interface','interface','varchar');		
 		$this->setParametro('tipo','tipo','varchar');
-		$this->setParametro('id_correspondencia','id_correspondencia_fk','int4');
+	
+		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		//Definicion de la lista del resultado del query
 		$this->captura('id_origen','int4');
 		$this->captura('id_correspondencia','int4');
@@ -477,9 +477,8 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4'); //el que envia
 
 
-
 		$this->setParametro('id_funcionario','id_funcionario','varchar'); //son a los que enviaremos
-		$this->setParametro('id_correspondencia_fk','id_correspondencia_fk','int4');
+		$this->setParametro('id_correspondencia','id_correspondencia_fk','int4'); 
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_acciones','id_acciones','varchar');
 
