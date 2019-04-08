@@ -896,7 +896,13 @@ BEGIN
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
                         ELSE
-                         v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+        					--EAQ: para filtrar en alarma notificacion de alarma
+                          	if v_parametros.tipo = 'recibida' or v_parametros.tipo = 'interna' or v_parametros.tipo='externa' THEN
+                      	        	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+                            else 
+                                    v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+                            end if;                                                     
+                            --v_filtro = v_filtro||' AND (cor.id_funcionario = ' ||v_id_funcionario || ' )';                                                        
                          end if;
                          
                     END IF;           
@@ -1090,9 +1096,16 @@ BEGIN
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
                         ELSE
-                         v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                         end if;
-                         
+                           
+                           --EAQ: para filtrar en alarma notificacion de alarma
+                                 
+                                 if v_parametros.tipo = 'recibida' or v_parametros.tipo = 'interna' or v_parametros.tipo='externa' THEN
+                                          v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+                                      else 
+                                          v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+                                 end if;  
+                           end if;
+                          
                     END IF;           
                        
                 END IF;
@@ -1665,5 +1678,3 @@ CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
 
-ALTER FUNCTION corres.ft_correspondencia_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
-  OWNER TO postgres;
