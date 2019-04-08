@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
 )
 RETURNS varchar AS
 $body$
-	/************************************************************************** SISTEMA: Correspondencia
+/************************************************************************** SISTEMA: Correspondencia
  FUNCION:         corres.ft_correspondencia_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'corres.tcorrespondencia'
  AUTOR:          (rac)
@@ -666,7 +666,9 @@ BEGIN
     begin
       /*
         verifica que tenga hijos con estado borrador detalle recibido
-        */
+	
+	
+	       */
       select estado_ant
       into v_estado_aux
       from corres.tcorrespondencia_estado 
@@ -697,8 +699,9 @@ BEGIN
       --actualiza padre
         
          /*Adición la derivación, adición de la alarma para el envio del usuario al que va a enviar. 
+	 EAQ: agregacion de parametros a insertar en talarma, para acceso directo
         */
-      --transaccion que realiza la derivacion
+    
    FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
                               vus.desc_persona,
                               coalesce(co.referencia,'') as referencia,
@@ -746,8 +749,9 @@ BEGIN
                                                     g_registros.id_usuario_reg,
                                                     'CorrespondenciaRecibida',--clase
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
+                                                   
                                                     --'parametros',
-                                                    --{filtro_directo:{campo:"plapa.id_proceso_wf",valor:"116477"}}
+                                                    --{filtro_directo:{campo:"plapa.id_proceso_wf",valor:"116477"}} --para sistemas con workflow
                                                     '{filtro_directo:{campo:"cor.id_correspondencia_fk",valor:"'||v_parametros.id_correspondencia||'"}}',
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Nueva Correspondencia '||v_tipo||': '||g_registros.numero,
@@ -948,10 +952,11 @@ BEGIN
     elsif(p_transaccion='CO_CORDET_INS')then
 
     begin
+  
       select *
       into v_datos_maestro
       from corres.tcorrespondencia
-      where id_correspondencia = v_parametros.id_correspondencia_fk;
+      where id_correspondencia = v_parametros.id_correspondencia;
 
       --RAISE EXCEPTION '%',v_datos_maestro.estado;
      
@@ -973,12 +978,12 @@ BEGIN
       select id_origen
       into v_id_origen
       from corres.tcorrespondencia
-      where id_correspondencia = v_parametros.id_correspondencia_fk;
+      where id_correspondencia = v_parametros.id_correspondencia;
    --  RAISE EXCEPTION '%','id_funcionario '|| v_datos_maestro.id_depto;
  
       v_resp_cm=corres.f_proc_mul_cmb_empleado(
         v_parametros.id_funcionario,
-        v_parametros.id_correspondencia_fk::INTEGER,
+        v_parametros.id_correspondencia::INTEGER,
         v_parametros.mensaje::varchar,
         p_id_usuario,
         v_datos_maestro.id_documento,
@@ -1003,7 +1008,7 @@ BEGIN
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia eliminado(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
-        v_parametros.id_correspondencia_fk::varchar);
+        v_parametros.id_correspondencia::varchar);
 
       --Devuelve la respuesta
       return v_resp;
@@ -1514,7 +1519,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       -- Inserta en una tabla alarma
       INSERT INTO corres.talarma (SELECT * FROM param.talarma WHERE id_alarma in (select id_alarma 
                           																  from corres.tcorrespondencia
-                                                                                          where id_correspondencia=v_parametros.id_correspondencia) );
+                                                                                          where id_correspondencia_fk=v_parametros.id_correspondencia) );
       -- Elimina la fila de la tabla param.talarma.
       
       DELETE FROM param.talarma where id_alarma in (select id_alarma 
@@ -1532,7 +1537,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
       return v_resp;
 
     end;
-     /*********************************
+/*********************************
 #TRANSACCION:  'CO_CORHAB_INS'
 #DESCRIPCION:    habilita una correspondencia anulada externa
 #AUTOR:        fernando
@@ -1793,6 +1798,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
                 ELSE
                    v_tipo:='EXTERNA';
                 END IF;
+	       --EAQ: agregacion de parametros a insertar en talarma, para acceso directo
                v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
                                                       <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
@@ -1809,13 +1815,14 @@ elsif(p_transaccion='CO_COREXT_MOD')then
                                                     'notificacion',
                                                     '',   -->
                                                     g_registros.id_usuario_reg,
-                                                    '',
+                                                    'CorrespondenciaRecibida',--clase
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.numero||'</font></font>',--titulo
                                                    --'parametros',  
-						    v_parametros.id_correspondencia,
+						   --{filtro_directo:{campo:"plapa.id_proceso_wf",valor:"116477"}} --para sistemas con workflow
+                                                    '{filtro_directo:{campo:"cor.id_correspondencia_fk",valor:"'||v_parametros.id_correspondencia||'"}}',
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Modificación de la Correspondencia '||v_tipo||': '||g_registros.numero,
-                                                    'correspondencia@endecorani.bo','',NULL,null,NULL,'si');
+                                                    'correspondencia@endecorani.bo','',NULL,null,NULL,'si');						   
                                                    
      
      		 END LOOP;

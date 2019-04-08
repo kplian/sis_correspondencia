@@ -235,16 +235,15 @@ class ACTCorrespondencia extends ACTbase
     {
     	
 		 if($this->objParam->getParametro('filtro_valor')!=''){
-            $this->objParam->addFiltro($this->objParam->getParametro('filtro_campo')." = ".$this->objParam->getParametro('filtro_valor'));
+            $this->objParam->addFiltro($this->objParam->getParametro('filtro_campo')." = ".$this->objParam->getParametro('filtro_valor'));	
         }
-        
         
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
 
         $this->objParam->defecto('dir_ordenacion', 'asc');
 
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
-
+		
         $this->objParam->addFiltro("cor.sw_archivado = ''no'' ");
 
 		if ($this->objParam->getParametro('vista')=='CorrespondenciaAdministracion' && $this->objParam->getParametro('estado')=='enviado')
