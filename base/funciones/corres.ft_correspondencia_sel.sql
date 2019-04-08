@@ -23,7 +23,7 @@ $body$
 
    
 DECLARE
-
+    v_auxiliar			varchar;
 	v_consulta    		varchar;
 	v_parametros  		record;
 	v_nombre_funcion   	text;
@@ -896,13 +896,7 @@ BEGIN
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
                         ELSE
-        					--EAQ: para filtrar en alarma notificacion de alarma
-                          	if v_parametros.tipo = 'recibida' or v_parametros.tipo = 'interna' or v_parametros.tipo='externa' THEN
-                      	        	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                            else 
-                                    v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                            end if;                                                     
-                            --v_filtro = v_filtro||' AND (cor.id_funcionario = ' ||v_id_funcionario || ' )';                                                        
+                         v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
                          end if;
                          
                     END IF;           
@@ -1096,16 +1090,9 @@ BEGIN
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
                         ELSE
-                           
-                           --EAQ: para filtrar en alarma notificacion de alarma
-                                 
-                                 if v_parametros.tipo = 'recibida' or v_parametros.tipo = 'interna' or v_parametros.tipo='externa' THEN
-                                          v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                                      else 
-                                          v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                                 end if;  
-                           end if;
-                          
+                         v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
+                         end if;
+                         
                     END IF;           
                        
                 END IF;
@@ -1533,7 +1520,11 @@ where tiene is not null ';
             if (v_parametros.ordenacion='numero') THEN
                 v_consulta:=v_consulta||' order by fecha_reg ' ;
             ELSE
-                v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
+	    	v_auxiliar = replace(v_parametros.ordenacion, 'desc_insti', 'insti.nombre');
+                v_auxiliar = replace(v_auxiliar, 'numero', 'id_correspondencia');
+                
+                v_consulta:=v_consulta||' order by ' ||v_auxiliar|| ' ' ;
+                --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
             end if;
 
 			v_consulta:=v_consulta || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
@@ -1677,4 +1668,3 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
-
