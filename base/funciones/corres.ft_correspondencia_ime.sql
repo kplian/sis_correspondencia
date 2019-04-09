@@ -1194,7 +1194,7 @@ BEGIN
             from param.tperiodo p
             inner join param.tgestion ges 
             on ges.id_gestion = p.id_gestion 
-            and ges.estado_reg ='activo'
+            and ges.estado_reg ='activo'  
             where p.estado_reg='activo' and
            v_parametros.fecha_creacion_documento between p.fecha_ini and p.fecha_fin ;
            
