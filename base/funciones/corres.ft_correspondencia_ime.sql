@@ -1,11 +1,3 @@
-CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
-  p_administrador integer,
-  p_id_usuario integer,
-  p_tabla varchar,
-  p_transaccion varchar
-)
-RETURNS varchar AS
-$body$
 /************************************************************************** SISTEMA: Correspondencia
  FUNCION:         corres.ft_correspondencia_ime
  DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'corres.tcorrespondencia'
@@ -1212,7 +1204,7 @@ BEGIN
             			from corres.tcorrespondencia cor
            				where cor.fecha_creacion_documento::date > v_parametros.fecha_creacion_documento::date
                 		and 
-                        tipo=v_parametros.tipo AND cor.fecha_creacion_documento between v_fecha_ini and v_fecha_fin
+                        tipo=v_parametros.tipo AND cor.fecha_creacion_documento::date between v_fecha_ini and v_fecha_fin
                     ))THEN
                  RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;
                 
@@ -1221,9 +1213,9 @@ BEGIN
             ELSE
                 IF (EXISTS(select 1
             			from corres.tcorrespondencia cor
-           				where cor.fecha_creacion_documento > v_parametros.fecha_creacion_documento
+           				where cor.fecha_creacion_documento::date > v_parametros.fecha_creacion_documento::date
                 		and 
-                        tipo=v_parametros.tipo and id_documento=v_parametros.id_documento and  cor.fecha_creacion_documento between v_fecha_ini and v_fecha_fin
+                        tipo=v_parametros.tipo and id_documento=v_parametros.id_documento and  cor.fecha_creacion_documento::date between v_fecha_ini and v_fecha_fin
                     ))THEN
                  RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;
                 
@@ -1855,9 +1847,3 @@ elsif(p_transaccion='CO_COREXT_MOD')then
   raise exception '%',v_resp;
 
 END;
-$body$
-LANGUAGE 'plpgsql'
-VOLATILE
-CALLED ON NULL INPUT
-SECURITY INVOKER
-COST 100;
