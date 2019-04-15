@@ -828,6 +828,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
                  else{
                 	 this.mostrarComponente(cmpInstitucion);
                 	 this.mostrarComponente(cmpPersona);
+                	 //this.mostrarComponente(cmpFuncionarios);
                 	 this.ocultarComponente(cmpFuncionarios);
                 	 cmpFuncionarios.reset();
 
