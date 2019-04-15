@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.f_encuentra_raiz (
   fl_id_correspondencia integer
 )

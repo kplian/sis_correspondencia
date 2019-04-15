@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado (
   fl_cadena varchar,
   fl_id_correspondencia integer,
@@ -100,15 +98,20 @@ BEGIN
 
    v_nombre_funcion = 'f_proc_mul_cmb_empleado';
   
-
    v_array_var= corres.f_arma_arbol_inicia(fl_id_correspondencia,'id_funcionario');
+   
    v_array = string_to_array(v_array_var,',');
 
 --  1)  partir la cadena dividiendo por la comas
-
-
-   v_partes = string_to_array(fl_cadena,',');
-
+  -- if (select position(',' in fl_cadena)=0)THEN
+    --  v_partes = string_to_array(fl_cadena,null);
+   --else
+  
+      v_partes = string_to_array(fl_cadena,',');
+   --end if;
+ 
+   
+--raise exception '%',''||v_partes;
 
 
    v_num=array_upper(v_partes,1);
@@ -117,6 +120,7 @@ BEGIN
 
 -- 2) FOR recorre las partes trozadas de la cadena en un for
 
+ 
 
      FOR v_i IN 1..v_num
       loop
@@ -134,15 +138,15 @@ BEGIN
 
      	 IF v_id_funcionario is not null THEN
 
-
                  v_id_uo = corres.f_get_uo_correspondencia_funcionario(v_id_funcionario,array['activo','suplente'], fl_fecha_documento);
 
 
                   if(array_upper(v_id_uo,1)=1) then
-                     raise exception 'El funcionario: %, no pertenece a ninguna Unidad Organizacional',v_nombre_funcionario;
+                  
+                     raise exception 'El funcionario: %, no pertenece a ninguna Unidad Organizacional o la fecha de Asignación del funcionario es menor a la fecha del Documento',v_nombre_funcionario;
                   end if;
                  -- obtiene el departemo de correspondeic a de la uo
-
+                  
                   SELECT
                       dep.id_depto
                   INTO
@@ -164,17 +168,17 @@ BEGIN
 
                   -- RAC verifica que el empleado no tenga otra derivación
 
-                     IF (v_array_var is not NULL  and v_array_var != '') THEN
+                  /*   IF (v_array_var is not NULL  and v_array_var != '') THEN
                         v_num_emp =array_upper(v_array,1);
                         FOR v_j IN 1..v_num_emp loop
                             IF v_id_funcionario =v_array[v_j] THEN
                             raise exception 'El empleado % ya tiene derivaciones de este mismo mensaje',v_nombre_funcionario;
                            end if;
                         end loop;
-    				  END IF;
+    				  END IF;*/
 
 
-                   insert into corres.tcorrespondencia
+                   INSERT INTO corres.tcorrespondencia
                      (id_depto,
                       id_funcionario,
                       id_correspondencia_fk,
@@ -196,7 +200,8 @@ BEGIN
                       nivel_prioridad,
                       origen,
                       fecha_documento,
-                         id_origen
+                         id_origen,
+                      fecha_creacion_documento
                       )
                       values
                       (
@@ -221,7 +226,8 @@ BEGIN
                       fl_nivel_prioridad,
                       fl_origen,
                       fl_fecha_documento,
-                          f1_id_origen
+                          f1_id_origen,
+                      now()
                       ) RETURNING id_correspondencia into v_id_correspondencia;
 
 

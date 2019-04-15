@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.f_arma_arbol (
   fl_id_correspondencia integer
 )

@@ -35,11 +35,11 @@ Phx.vista.CorrespondenciaFisicaEmitida = {
 		});
 
 
-		this.getBoton('verCorrespondencia').hide();
-		this.getBoton('mandar').hide();
+		this.getBoton('VerDocumento').hide();
+		this.getBoton('Derivar').hide();
 		this.getBoton('Adjuntos').hide();
-		this.getBoton('corregir').hide();
-		this.getBoton('Hoja de Ruta').hide();
+		this.getBoton('Corregir').hide();
+		this.getBoton('HojaRuta').hide();
 		
 		this.init();
         this.store.baseParams = {'interface': 'fisica_emitida'};
@@ -64,8 +64,6 @@ Phx.vista.CorrespondenciaFisicaEmitida = {
 
 
 		}
-
-
 
 
 		return tb

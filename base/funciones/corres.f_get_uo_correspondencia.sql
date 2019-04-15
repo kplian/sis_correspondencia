@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.f_get_uo_correspondencia (
   fl_id_unidad_organizacional integer
 )
@@ -39,7 +37,6 @@ BEGIN
         into g_id_uo
         from orga.testructura_uo eo
         where eo.id_uo_hijo=fl_id_unidad_organizacional;
-                
         g_id_aux=corres.f_get_uo_correspondencia(g_id_uo);
     	return g_id_aux;
     end if;

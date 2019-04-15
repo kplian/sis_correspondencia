@@ -11,16 +11,21 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
-
+   
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
+    	console.log(config);
+    	
 		Phx.vista.Adjunto.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen}})
-		this.argumentExtraSubmit={'id_correspondencia_origen':this.id_origen};
-
-
+		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen,estado:this.estado}})
+		this.argumentExtraSubmit={'id_correspondencia_origen':this.id_origen,'id_correspondencia':this.id_correspondencia,'numero':this.numero};
+		  
+/*
+        bnew={
+        	disable:true;
+        }*/
 		this.addButton('VerArchivoAdjunto', {
 			text: 'Ver Archivo Adjunto',
 			iconCls: 'bsee',
@@ -28,6 +33,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 			handler: this.verArchivoAdjunto,
 			tooltip: '<b>Ver Archivo Adjunto</b><br/>'
 		});
+		
 
 	},
 			
@@ -42,7 +48,22 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
-
+{
+			config : {
+				name : 'numero',
+				fieldLabel : 'Numero',
+				gwidth : 120
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.numero',
+				type : 'string'
+			},
+			id_grupo : 0,
+			grid : true,
+			form : false,
+			bottom_filter : true
+	},
 
 		{
 			config: {
@@ -156,7 +177,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'adj.estado_reg',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -171,7 +192,7 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 				type:'TextField',
 				filters:{pfiltro:'adj.ruta_archivo',type:'string'},
 				id_grupo:1,
-				grid:true,
+				grid:false,
 				form:false
 		},
 		{
@@ -289,39 +310,77 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
-		
+		{name:'numero', type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_adjunto',
 		direction: 'ASC'
 	},
-	bdel:true,
-	bsave:true,
+	
 		preparaMenu:function(n){
 
 			Phx.vista.Adjunto.superclass.preparaMenu.call(this,n);
 			var data = this.getSelectedData();
-
-			console.log('data',data)
+             
+			console.log('data',data.estado)
+			
 			var tb =this.tbar;
 			//si el archivo esta escaneado se permite visualizar
+			
 			if(data != undefined){
 				this.getBoton('VerArchivoAdjunto').enable();
-
-			}
+             }
 			else{
 				this.getBoton('VerArchivoAdjunto').enable(); //aqui esta disable
-
-
-			}
-
-
-
+         	}
 
 			return tb
 
 		},
-
+       onButtonNew: function () {
+       	    // alert (this.estado_corre);
+       	    
+       	     if (this.estado_corre=='borrador_corre'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+       	        	
+	          	
+       	     }else{
+       	     	
+	       	     if ( this.estado=='enviado'){
+	             	alert ('No se puede añadir nuevos archivos ');
+	             }else{
+	             	Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+	             }
+	          }
+             
+             
+        },
+        onButtonEdit: function () {
+        	 if (this.estado_corre=='borrador_corre'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
+       	        	
+	          	
+       	     }else{
+	             if (this.estado=='enviado'){
+	             	alert ('No se puede modificar los archivos ya enviados');
+	             }else{
+	             	Phx.vista.Correspondencia.superclass.onButtonEdit.call(this);
+	             }
+	         }
+        },
+        onButtonDel: function () {
+        	 if (this.estado_corre=='borrador_corre'){
+       	        	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
+       	        	
+	          	
+       	     }else{
+		             if (this.estado=='enviado'){
+		             	alert ('No se puede eliminar los archivos ya enviados');
+		             }else{
+		             	Phx.vista.Correspondencia.superclass.onButtonDel.call(this);
+		             }
+		     }
+        },
 		verArchivoAdjunto:function(){
 
 
@@ -330,7 +389,73 @@ Phx.vista.Adjunto=Ext.extend(Phx.gridInterfaz,{
 			var nombre_archivo = data.nombre_archivo+'.'+data.extension;
 			window.open(data.ruta_archivo);
 
-		}
+		},
+		
+		definirFormularioVentana: function() {
+        var me = this;
+        //define la altura en porcentaje al repecto de body
+        me.fheight = me.calTamPor(me.fheight, Ext.getBody())
+
+        me.form = new Ext.form.FormPanel({
+            id: me.idContenedor + '_W_F',
+            items: me.Grupos.length >1 ?me.Grupos:me.Grupos[0],
+            fileUpload: me.fileUpload,
+            padding: me.paddingForm,
+            bodyStyle: me.bodyStyleForm,
+            border: me.borderForm,
+            frame: me.frameForm, 
+            autoScroll: false,
+            autoDestroy: true,
+            autoScroll: true
+        });
+
+        
+        
+        // Definicion de la ventana que contiene al formulario
+        me.window = new Ext.Window({
+            title: me.title,
+            modal: me.winmodal,
+            width: me.fwidth,
+            height: me.fheight,
+            bodyStyle: 'padding:5px;',
+            layout: 'fit',
+            hidden: true,
+            autoScroll: false,
+            maximizable: true,
+            buttons: [ {
+	                //xtype: 'splitbutton',
+	                text: '<i class="fa fa-check"></i> Guardar + Nuevo',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': true,
+	                    def: 'reset'
+	                },
+	                scope: me,
+	                
+                }, 
+                {
+	                text: '<i class="fa fa-check"></i> Guardar',
+	                arrowAlign: 'bottom',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': false
+	                },
+	                scope: me
+
+                },
+                {
+	                text: '<i class="fa fa-times"></i> Declinar',
+	                handler: me.onDeclinar,
+					scope: me
+               }],
+            items: me.form,
+            autoDestroy: true,
+            closeAction: 'hide'
+        });
+
+    },
+
+		
 	}
 )
 </script>

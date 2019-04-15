@@ -13,19 +13,51 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
+		//* Creación para el combo en la grilla/
+		
+		if ((config.idContenedorPadre=='docs-CORADMG')|| (config.idContenedorPadre=='docs-ADMCORINT')){
+	 	 	  this.initButtons=[this.cmbEstado];
+	 	 }
+
     	//llama al constructor de la clase padre
 		Phx.vista.CorrespondenciaDetalle.superclass.constructor.call(this,config);
 
+		
+
 		this.init();
 		this.bloquearMenus();
+		
+		this.cmbEstado.on('select', function(c,r,i){
+	    	if(this.validarFiltros()){
+                  this.capturaFiltros();
+           }
+		},this);
+		
+		this.cmbEstado.on('clearcmb', function() {this.DisableSelect();this.store.removeAll();}, this);
+		
+		/*this.getBoton('new').disable();
+	    this.getBoton('save').disable();*/
 		if(Phx.CP.getPagina(this.idContenedorPadre)){
       	 var dataMaestro=Phx.CP.getPagina(this.idContenedorPadre).getSelectedData();
 	 	 if(dataMaestro){ 
 	 	 	
 	 	 	this.onEnablePanel(this,dataMaestro)
 	 	 }
+	 	
 	  }
-		
+	
+	  //9
+			this.addButton('Derivar', {
+				text : 'Derivar',
+				iconCls : 'badelante',
+				disabled : true,
+				handler : this.BDerivar,
+				tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
+			});
+			 console.log(config);
+			 
+	this.iniciarEventos();
+	 	 
 	},
 			
 	Atributos:[
@@ -50,12 +82,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			form:true 
 		},
 	
-
-		
-	
-		
-    	
-   	    
+	    
    	{
 			config:{
 				name: 'acciones',
@@ -95,7 +122,6 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 				tpl:'<tpl for="."><div class="x-combo-list-item" ><div class="awesomecombo-item {checked}">{codigo}-{desc_funcionario1}</div><p style="padding-left: 20px;">{nombre_cargo}</p><p style="padding-left: 20px;">{email_empresa}</p> </div></tpl>',
 			    valueField: 'id_funcionario',
    				displayField: 'desc_funcionario1',
-   				
    				hiddenName: 'id_funcionarios',
    				typeAhead: true,
        			triggerAction: 'all',
@@ -105,8 +131,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    				queryDelay:1000,
    				width:250,
    				minChars:2,
-       			enableMultiSelect:true
-       			
+       			enableMultiSelect:false
+       			  
    			},
    			type:'AwesomeCombo',
    			id_grupo:3,
@@ -291,7 +317,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		{name:'desc_funcionario', type: 'string'},
 		{name:'desc_persona', type: 'string'},
 		{name:'desc_institucion', type: 'string'},
-		{name:'acciones', type: 'string'}
+		{name:'acciones', type: 'string'},
+		{name:'estado_corre', type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_correspondencia',
@@ -299,138 +326,71 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 	},
 	bdel:true,
 	bsave:true,
+	bnew:true,
 	
-	/*Grupos: [
-	            {
-	                layout: 'column',
-	                border: false,
-	                defaults: {
-	                   border: false
-	                },            
-	                items: [
-	                        {
-	                        bodyStyle: 'padding-left:5px;padding-left:5px;',
-	                        border: false,
-	                        defaults: {
-		     	                   border: false
-		     	                },   
-					        width: 500,
-					        items: [
-					           
-	    	               			 {
-	                	          	bodyStyle: 'padding-left:5px;padding-left:5px;',
-						          	 items: [{
-								            xtype: 'fieldset',
-								            title: 'Parametros',
-								           
-								            //autoHeight: true,
-								            items: [],
-									        id_grupo:0
-								        }]
-								    },{
-								    	 bodyStyle: 'padding-left:5px;padding-left:5px;',
-								        items: [{
-								            xtype: 'fieldset',
-								            title: 'Datos Remitente',
-								          
-								           // autoHeight: true,
-								            items: [],
-									        id_grupo:1
-								        }]
-								    },
-								    {
-								        bodyStyle: 'padding-left:5px;padding-left:5px;',
-								        items: [{
-								            xtype: 'fieldset',
-								          
-								            title: 'Datos Destinatario',
-								           // autoHeight: true,
-								            items: [],
-									        id_grupo:3
-								        }]
-								    } 
-					        ]
-					        },
-
-						    {
-						        bodyStyle: 'padding-left:5px;padding-left:5px;',
-						        border: false,
-						        width: 500,
-						        items: [{
-						            xtype: 'fieldset',
-						         
-						            title: 'Mensaje',
-						            //autoHeight: true,
-						            items: [],
-							        id_grupo:2
-						        }]
-						    } ]
-	            }
-	           
-	        ],*/
-
-	    /* loadValoresIniciales:function(){
-
-		Phx.vista.CorrespondenciaDetalle.superclass.loadValoresIniciales.call(this);
-
-		 var cmbDoc = this.getComponente('id_documento');
-		 var cmpFuncionarios = this.getComponente('id_funcionarios');
-	     var cmpInstitucion = this.getComponente('id_institucion');
-		 var cmpPersona = this.getComponente('id_persona');
-			
-			 this.ocultarComponente(cmpInstitucion);
-	         this.ocultarComponente(cmpPersona);
-	         this.mostrarComponente(cmpFuncionarios)
-	         cmbDoc.store.baseParams.tipo='interna';//valor por dfecto es interna	
-	         cmbDoc.modificado = true;
-	         cmbDoc.reset();
-
-
-
-        },   */    
-	iniciarEventos:function(){ 
-	
-
-	/*	var cmpFuncionarios = this.getComponente('id_funcionarios');
-		var cmpInstitucion = this.getComponente('id_institucion');
-		var cmpPersona = this.getComponente('id_persona');
-		var cmbDoc = this.getComponente('id_documento');
-	*/	
+ 
+	iniciarEventos:function(){
+			  		this.getBoton('new').disable();
+			  		this.getBoton('save').disable();
+		/** PS-84 **/
+		this.Cmp.id_funcionario.on('select', function(c, r, i){
+			var aux=this.store.data.length;
+			for (i=0;i<aux;i++){
+				var funcio=this.store.data.items[i].data.id_funcionario;
+				console.log('func='+funcio+' comb='+r.id)
+				if (funcio==r.id){
+					alert ('EL FUNCIONARIO YA ESTA REGISTRADO')
+					this.Cmp.id_funcionario.reset();
+					break;
+				    }
+		    	}
+			}, this);
+		/** PS-84 **/
+	},
+	getParametrosFiltro: function () {
+   	 	this.store.baseParams.estado = this.cmbEstado.getValue();
 		
-	    //para habilitar el tipo de correspondecia para el sistema corres
-
-	/*	this.getComponente('tipo').on('select',function(combo,record,index){
-                //actualiza combos de documento segun el tipo
-        		cmbDoc.store.baseParams.tipo=record.data.ID;	
-                 cmbDoc.modificado = true;
-                 cmbDoc.reset();
-
-                 if(record.data.ID=='interna'){
-                	 this.ocultarComponente(cmpInstitucion);
-                	 this.ocultarComponente(cmpPersona);
-                	 this.mostrarComponente(cmpFuncionarios);
-                	 cmpPersona.reset();
-                	 cmpInstitucion.reset();
-                	 
-                     }
-                 else{
-                	 this.mostrarComponente(cmpInstitucion);
-                	 this.mostrarComponente(cmpPersona);
-                	 this.ocultarComponente(cmpFuncionarios);
-                	 cmpFuncionarios.reset();
-
-                     }
-        		
-    			
-		},this);*/
-
+	},
+	capturaFiltros:function(combo, record, index){
+		this.desbloquearOrdenamientoGrid();
+        this.getParametrosFiltro();
+        this.load({params:{start:0, limit:50}});
 	},
 	
-	
-	onReloadPage:function(m){
+	cmbEstado: new Ext.form.ComboBox({
+				name:'ComboEstado',
+				fieldLabel : 'Estado',
+				typeAhead : true,
+				allowBlank : false,
+				triggerAction : 'all',
+				emptyText : 'Seleccione Opcion...',
+				selectOnFocus : true,
+				mode : 'local',
+				//valorInicial:{ID:'interna',valor:'Interna'},
+				store : new Ext.data.ArrayStore({
+					fields : ['ID', 'valor'],
+					data : [['activo', 'Activos'], ['anulado', 'Anulado']]
+				}),
+				valueField : 'ID',
+				displayField : 'valor',
+				width : 150
+		}),
+		
+	validarFiltros:function(){
+		
+        if(this.cmbEstado.isValid()){// && this.cmbTipoPres.validate()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    },
+	onReloadPage:function(config){
 
        
-		this.maestro=m;
+		this.maestro=config;
+		console.log(config);
+		
 		this.Atributos[1].valorInicial=this.maestro.id_correspondencia;
 
 		if(this.maestro.tipo=='interna' || this.maestro.tipo=='externa'){
@@ -442,62 +402,232 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 			this.ocultarComponente(this.getComponente('id_funcionario'));	
 		}
 		
-
-		//actualiza combos del departamento
-		// var cmbUo = this.getComponente('id_uo');
-		 /*if(this.maestro.codigo=='COR'){
-			 cmbUo.store.baseParams.correspondencia='si'; 
-		
-		 }else{
-			delete  cmbUo.store.baseParams.correspondencia;
-			 }
-		 cmbUo.modificado = true;*/
-
-
-		// this.Atributos.config['id_subsistema'].setValue(this.maestro.id_subsistema);
-
-      /* if(m.id != 'id'){*/
+         if(this.maestro.estado=='enviado'){
+		  	  		this.getBoton('edit').disable();
+			  		this.getBoton('del').disable();
+			  		this.getBoton('Derivar').enable();
+			  		
+		  } else {
+		 	    if (this.maestro.estado=='pendiente_recibido'){
+                  	
+                  		this.getBoton('new').disable();
+			  			this.getBoton('Derivar').disable();
+			  		
+		  			}else{
+		 	
+			  		this.getBoton('edit').enable();
+			  		this.getBoton('del').enable();
+			  		this.getBoton('new').enable();
+			  		this.getBoton('Derivar').disable();
+			  		}
+			   }
+	
+		 this.cmbEstado.reset();	
     	 this.store.baseParams={id_correspondencia_fk:this.maestro.id_correspondencia};
-		 this.load({params:{start:0, limit:50}})
-       /*}
-       else{
-    	 this.grid.getTopToolbar().disable();
-   		 this.grid.getBottomToolbar().disable(); 
-   		 this.store.removeAll(); 
-    	   
-       }*/
-       
-       
-			
-	},
+    	 
+    	if ((config.idContenedorPadre!='docs-CORADMG')|| (config.idContenedorPadre!='docs-ADMCORINT')){
+	 	 	  this.load({params:{start:0, limit:50}})
+	 	 	  console.log('aqui ingreso en el load');
+	 	 }
+    	 
+		// this.load({params:{start:0, limit:50}})
+   	},
 	preparaMenu:function(n){
       	
       	Phx.vista.CorrespondenciaDetalle.superclass.preparaMenu.call(this,n);
       	
+      	
+      	
 		  var data = this.getSelectedData();
 		  var tb =this.tbar;
-		     
-		  console.log(this.maestro);
-		  //cuando el conrtato esta registrado el abogado no puede hacerle mas cambios
-		  if(this.maestro.estado=='enviado'){
-		  		if(tb){
+		    if(this.maestro.estado=='enviado' ){
+		   	if(tb){
+		  			if (data.estado_corre=='borrador_corre'){
+		  				this.getBoton('edit').enable();
+					  	this.getBoton('Derivar').enable();	
+		  				if (data.estado=='enviado'){
+		  			    	this.getBoton('del').disable();
+					  		
+						}else{
+				 			this.getBoton('del').enable();
+					  		
+					    }
+					}   
+		  			else{
+					  		this.getBoton('edit').disable();
+					  		this.getBoton('del').disable();
+					  		this.getBoton('Derivar').enable();
+					  		
+			  		}
+			  			}
+		  } else {
+		 		if(tb){
 		  			
-			  		this.getBoton('edit').disable();
-			  		this.getBoton('del').disable();
-			  		this.getBoton('new').disable();
-			  		this.getBoton('save').disable();
+			  		this.getBoton('edit').enable();
+			  		this.getBoton('del').enable();
+			  		this.getBoton('new').enable();
+			  		this.getBoton('save').enable();
+			  		this.getBoton('Derivar').disable();
+			  		
 			  	}
-		  } 
+		  	
+		  }
+		  
+		  if (data['estado']=='borrador_detalle_recibido') {
+		  	   if(this.maestro.estado=='enviado' ){
+		  	     this.getBoton('Derivar').enable();
+		  	    }
+		  	   else{
+		  	     this.getBoton('Derivar').disable();
+		  	   }
+		  	   
+		  	     this.getBoton('edit').enable();
+		  	     this.getBoton('del').enable();
+		  }else{
+		  	 	
+		  	 	if (this.maestro.estado_corre=='borrador_corre'){
+		  				this.getBoton('edit').enable();
+					  	this.getBoton('Derivar').enable();	
+		  				if (data.estado=='enviado'){
+		  					this.getBoton('del').disable();
+					  		
+						}else{
+				 			this.getBoton('del').enable();
+					  		
+					    }
+					} else{ 
+		  	 	
+					  	 	this.getBoton('Derivar').disable();
+					  	 	this.getBoton('edit').disable();
+					  	    this.getBoton('del').disable();
+		  	         }
+		  }
+		  
+		   
+		
 		  return tb
 		
 	},
 	onButtonEdit: function () {
 		
-		this.Cmp.id_funcionario.disable();	
+		//a this.Cmp.id_funcionario.disable();
+		//this.Cmp.id_funcionario.enableMultiSelect(true);	
 		Phx.vista.CorrespondenciaDetalle.superclass.onButtonEdit.call(this);
+		  	this.ocultarComponente(this.Cmp.id_funcionario);
+		      
 	}, 
+	onButtonNew: function () {
+		
+		//a this.Cmp.id_funcionario.disable();
+		//this.Cmp.id_funcionario.enableMultiSelect(true);	
+		Phx.vista.CorrespondenciaDetalle.superclass.onButtonNew.call(this);
+		this.mostrarComponente(this.Cmp.id_funcionario);
+	},
+	//9
+	BDerivar : function() {
+
+			var rec = this.sm.getSelected();
+			var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
+			if (confirm('Esta seguro de DERIVAR el documento  ?')){
+         	Phx.CP.loadingShow();
+			Ext.Ajax.request({
+				url : '../../sis_correspondencia/control/Correspondencia/derivarCorrespondencia',
+				params : {
+					id_correspondencia : this.maestro.id_correspondencia,
+					id_origen          : this.maestro.id_origen
+					/*id_correspondencia : id_correspondencia,
+					id_origen          : this.maestro.id_origen*/
+				},
+				success : this.successDerivar,
+				failure : this.conexionFailure,
+				timeout : this.timeout,
+				scope : this
+			});
+		   }
+		},
+			successDerivar : function(resp) {
+
+			Phx.CP.loadingHide();
+			var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
+			if (!reg.ROOT.error) {
+				alert(reg.ROOT.detalle.mensaje)
+
+			}
+			this.reload();
+
+		},
+	definirFormularioVentana: function() {
+        var me = this;
+        //define la altura en porcentaje al repecto de body
+        me.fheight = me.calTamPor(me.fheight, Ext.getBody())
+
+        me.form = new Ext.form.FormPanel({
+            id: me.idContenedor + '_W_F',
+            items: me.Grupos.length >1 ?me.Grupos:me.Grupos[0],
+            fileUpload: me.fileUpload,
+            padding: me.paddingForm,
+            bodyStyle: me.bodyStyleForm,
+            border: me.borderForm,
+            frame: me.frameForm, 
+            autoScroll: false,
+            autoDestroy: true,
+            autoScroll: true
+        });
+
+        
+        
+        // Definicion de la ventana que contiene al formulario
+        me.window = new Ext.Window({
+            title: me.title,
+            modal: me.winmodal,
+            width: me.fwidth,
+            height: me.fheight,
+            bodyStyle: 'padding:5px;',
+            layout: 'fit',
+            hidden: true,
+            autoScroll: false,
+            maximizable: true,
+            buttons: [ {
+	                xtype: 'splitbutton',
+	                text: '<i class="fa fa-check"></i> Guardar + Nuevo',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': true,
+	                    def: 'reset'
+	                },
+	                scope: me,
+	                menu: [{
+		                    text: 'Guardar + reset',
+		                    argument: {
+		                        'news': true,
+		                        def: 'reset'
+		                    },
+		                    handler: me.onSubmit,
+		                    scope: me
+	                	}]
+                }, 
+                {
+	                text: '<i class="fa fa-check"></i> Guardar',
+	                arrowAlign: 'bottom',
+	                handler: me.onSubmit,
+	                argument: {
+	                    'news': false
+	                },
+	                scope: me
+
+                },
+                {
+	                text: '<i class="fa fa-times"></i> Declinar',
+	                handler: me.onDeclinar,
+					scope: me
+               }],
+            items: me.form,
+            autoDestroy: true,
+            closeAction: 'hide'
+        });
+
+    },
 
 }
 )
 </script>
-
