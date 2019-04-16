@@ -192,7 +192,7 @@ BEGIN
                            [2],v_id_depto,p_id_usuario,'CORRES',NULL);
                             
         END IF;
-      
+        
         select p.id_periodo,p.fecha_ini, p.fecha_fin
         into v_id_periodo,v_fecha_ini,v_fecha_fin
         from param.tperiodo p
@@ -200,7 +200,7 @@ BEGIN
                ges.estado_reg = 'activo'
         where p.estado_reg = 'activo' and
              v_fecha_documento::date between p.fecha_ini and
-              p.fecha_fin;
+              p.fecha_fin;     
       
       
 
