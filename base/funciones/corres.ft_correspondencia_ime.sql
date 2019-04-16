@@ -752,7 +752,7 @@ BEGIN
                                                    
                                                     --'parametros',
                                                     --{filtro_directo:{campo:"plapa.id_proceso_wf",valor:"116477"}} --para sistemas con workflow
-                                                    '{filtro_directo:{campo:"cor.id_correspondencia_fk",valor:"'||v_parametros.id_correspondencia||'"}}',
+                                                    '{filtro_directo:{campo:"cor.id_correspondencia_fk",valor:"'||v_parametros.id_correspondencia||'"},"aux":"'||g_registros.tipo||'"}',
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Nueva Correspondencia '||v_tipo||': '||g_registros.numero,
                                                     'rosanavq@gmail.com','',NULL,null,NULL,'si');
