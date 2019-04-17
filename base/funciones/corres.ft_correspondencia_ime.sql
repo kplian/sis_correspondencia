@@ -158,10 +158,8 @@ BEGIN
       ELSE
           v_fecha_documento=v_parametros.fecha_documento;
       END IF;
-
-      
-
-       if (v_parametros.vista='CorrespondenciaAdministracion') then
+      --Verificacion  si la vista de Administracion
+      IF (v_parametros.vista='CorrespondenciaAdministracion') then
             select p.id_periodo, p.fecha_ini, p.fecha_fin,ges.id_gestion
             into v_id,v_fecha_ini,v_fecha_fin,v_id_gestion
             from param.tperiodo p
@@ -183,127 +181,91 @@ BEGIN
             END IF;  
             
           
-            v_fecha_creacion_documento=now();
+             v_fecha_creacion_documento=now();
              v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,v_id,v_id_uo
                             [2],v_id_depto,p_id_usuario,'CORRES',NULL);
-                --raise exception '%','ASDFASDF';
-                v_fecha_documento=v_parametros.fecha_documento;
-                
-   
-           
-  
-      else
-      
-         
-           v_fecha_documento=now();  
-            v_fecha_creacion_documento=now();
+             v_fecha_documento=v_parametros.fecha_documento;
+        ELSE     
+             v_fecha_documento=now();  
+             v_fecha_creacion_documento=now();
              v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo
                            [2],v_id_depto,p_id_usuario,'CORRES',NULL);
                             
-      end if;
+        END IF;
+        
+        select p.id_periodo,p.fecha_ini, p.fecha_fin
+        into v_id_periodo,v_fecha_ini,v_fecha_fin
+        from param.tperiodo p
+        inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
+               ges.estado_reg = 'activo'
+        where p.estado_reg = 'activo' and
+             v_fecha_documento::date between p.fecha_ini and
+              p.fecha_fin;     
       
-      select p.id_periodo,p.fecha_ini, p.fecha_fin
-      into v_id_periodo,v_fecha_ini,v_fecha_fin
-      from param.tperiodo p
-      inner join param.tgestion ges on ges.id_gestion = p.id_gestion and
-             ges.estado_reg = 'activo'
-      where p.estado_reg = 'activo' and
-           v_fecha_documento::date between p.fecha_ini and
-            p.fecha_fin;
       
-      
-      
-/*      IF( v_parametros.tipo='saliente') THEN
-          
-         v_id_uo= ARRAY[1];
 
-         v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
-         v_id_funcionario=v_parametros.id_funcionario_saliente;
-      ELSE
-         v_id_uo = corres.f_get_uo_correspondencia_funcionario(
-         v_parametros.id_funcionario, array ['activo', 'suplente'],
-         v_parametros.fecha_documento);
-         v_id_funcionario=v_parametros.id_funcionario;
-      END IF;*/
-      
-    
-      --0) Obtener numero de requerimiento en funcion del depto de legal
-    
-
-     /* v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,v_id_uo
-        [2],v_id_depto,p_id_usuario,'CORRES',NULL);
-*/
-     
-      --determinamos el origen
-    /*  IF( v_parametros.tipo='saliente') THEN
-         v_mensaje:='v_pa';
-      ELSE
-         v_mensaje:=v_parametros.mensaje;
-      END IF;*/
-      
-    --  raise exception '%','fga'||v_parametros.id_correspondencias_asociadas;
       --3 Sentencia de la insercion
-      insert into corres.tcorrespondencia(estado,estado_reg, fecha_documento,
-                
-                  id_depto, id_documento,
-                  id_funcionario, id_gestion,
-                  id_institucion,
-                  id_periodo,
-                  id_persona,
-                  id_uo, mensaje, nivel, nivel_prioridad, numero,
-                  referencia,
-                  tipo, fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador,id_correspondencias_asociadas,fecha_creacion_documento)
-      values ( 'borrador_envio','activo', 
-            v_fecha_documento,
-            -- now()::date,
-             v_id_depto, v_parametros.id_documento,
-             v_id_funcionario, v_id_gestion,
-             v_parametros.id_institucion_destino,
-             v_id_periodo,
-             v_parametros.id_persona_destino,
-             v_id_uo [ 2 ], v_parametros.mensaje, 0,
-             --nivel de anidamiento del arbol
-             v_parametros.nivel_prioridad, v_num_corre,
-             v_parametros.referencia,
-             v_parametros.tipo, now(), p_id_usuario, null, null,
-             v_parametros.id_clasificador,case when v_parametros.id_correspondencias_asociadas='' THEN
-                                                     NULL
-                                               ELSE
-              string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ]
-              END,
-              now()
-             ) RETURNING id_correspondencia
-      into v_id_correspondencia;
-  
-      v_id_origen = v_id_correspondencia;
-      UPDATE corres.tcorrespondencia
-      set id_origen = v_id_correspondencia
-      where id_correspondencia = v_id_correspondencia;
+        insert into corres.tcorrespondencia(estado,estado_reg, fecha_documento,
+                  
+                    id_depto, id_documento,
+                    id_funcionario, id_gestion,
+                    id_institucion,
+                    id_periodo,
+                    id_persona,
+                    id_uo, mensaje, nivel, nivel_prioridad, numero,
+                    referencia,
+                    tipo, fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
+                      id_clasificador,id_correspondencias_asociadas,fecha_creacion_documento)
+        values ( 'borrador_envio','activo', 
+              v_fecha_documento,
+              -- now()::date,
+               v_id_depto, v_parametros.id_documento,
+               v_id_funcionario, v_id_gestion,
+               v_parametros.id_institucion_destino,
+               v_id_periodo,
+               v_parametros.id_persona_destino,
+               v_id_uo [ 2 ], v_parametros.mensaje, 0,
+               --nivel de anidamiento del arbol
+               v_parametros.nivel_prioridad, v_num_corre,
+               v_parametros.referencia,
+               v_parametros.tipo, now(), p_id_usuario, null, null,
+               v_parametros.id_clasificador,case when v_parametros.id_correspondencias_asociadas='' THEN
+                                                       NULL
+                                                 ELSE
+                string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ]
+                END,
+                now()
+               ) RETURNING id_correspondencia
+        into v_id_correspondencia;
+    
+        v_id_origen = v_id_correspondencia;
+         
+         UPDATE corres.tcorrespondencia
+         set id_origen = v_id_correspondencia
+         where id_correspondencia = v_id_correspondencia;
 
-      -- Inserta estados a la tabla corres.tcorrespondencia_estado.
-     
-      if( v_parametros.tipo='interna' or v_parametros.tipo='saliente' ) then
-        --si es de tipo interna el origen siempre sera un empleado
+         
+        if( v_parametros.tipo='interna' or v_parametros.tipo='saliente' ) then
+          --si es de tipo interna el origen siempre sera un empleado
 
-        SELECT f.desc_funcionario1
-        into v_nombre_funcionario
-        FROM orga.vfuncionario f
-        WHERE f.id_funcionario = v_id_funcionario;
+          SELECT f.desc_funcionario1
+          into v_nombre_funcionario
+          FROM orga.vfuncionario f
+          WHERE f.id_funcionario = v_id_funcionario;
 
-        v_origen = v_nombre_funcionario;
+          v_origen = v_nombre_funcionario;
 
-        else
-        --en caso contratio sera del tipo entrante
-        --y el orgine es una persona o una institucion
+          else
+          --en caso contrario sera del tipo entrante
+          --y el orgine es una persona o una institucion
 
-        /* POR EL MOMENTO ESTA FUNCIONA SOLO ES PARA INTERNAS Y SALIENTES*/
-        raise exception
-          'POR EL MOMENTO ESTA FUNCIONA SOLO ES PARA INTERNAS Y SALIENTES';
+          /* POR EL MOMENTO ESTA FUNCIONA SOLO ES PARA INTERNAS Y SALIENTES*/
+          raise exception
+            'POR EL MOMENTO ESTA FUNCIONA SOLO ES PARA INTERNAS Y SALIENTES';
 
-      end if;
+        end if;
 
-      --si la correspondencia es del tipo internea analiza combo de empleado
+      --si la correspondencia es del tipo interna analiza combo de empleado
       if( v_parametros.tipo='interna') THEN
 
         --analiza el combo de funcionarios destinos para hacer la insercion de hijos
@@ -369,34 +331,18 @@ BEGIN
 
     begin
       --obtenemos estado de correpondencia
-	/*	  IF( v_parametros.tipo='saliente') THEN
-          
-         v_id_uo= ARRAY[1];
-
-         v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
-         v_id_funcionario=v_parametros.id_funcionario_saliente;
-      ELSE
-         v_id_uo = corres.f_get_uo_correspondencia_funcionario(
-                    v_parametros.id_funcionario, array ['activo', 'suplente'],
-                    v_parametros.fecha_documento);
-         v_id_funcionario=v_parametros.id_funcionario;
-      END IF;
-      */
-     
+	    
       
       select estado
       into v_estado
       from corres.tcorrespondencia c
       where c.id_correspondencia = v_parametros.id_correspondencia;
 
-     -- raise exception '%',v_parametros.id_clasificador;
-      --if si estado borrador_envio
+       --if si estado borrador_envio
       if(v_estado = 'borrador_envio') then
 
         --Sentencia de la modificacion
-         
-        -- raise exception '%',v_parametros.otros_adjuntos ;
-         
+          
         IF( v_parametros.tipo='interna') THEN  
             update corres.tcorrespondencia
             set id_correspondencias_asociadas = case when v_parametros.id_correspondencias_asociadas='' THEN
@@ -439,16 +385,6 @@ BEGIN
               id_usuario_mod = p_id_usuario
           WHERE id_correspondencia_fk=v_parametros.id_correspondencia;
 
-        /*elseif(v_estado = 'enviado') then
-        --  si ya fue enviado solo se puede modificar las correspodencia asociada
-        --Sentencia de la modificacion
-
-        update corres.tcorrespondencia
-        set id_correspondencias_asociadas = string_to_array(
-          v_parametros.id_correspondencias_asociadas, ',')::integer [ ],
-            fecha_mod = now(),
-            id_usuario_mod = p_id_usuario
-        where id_correspondencia = v_parametros.id_correspondencia;*/
      
         else
 
@@ -1295,40 +1231,39 @@ BEGIN
       
       END IF;
       
-      insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
-        id_correspondencias_asociadas, id_depto, id_documento, id_funcionario,
-  -- funcionario peude ser nullo
-                  id_gestion, id_institucion, id_periodo, id_persona, id_uo,
+        insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
+                    id_correspondencias_asociadas, id_depto, id_documento, id_funcionario,
+                    -- funcionario peude ser nullo
+                    id_gestion, id_institucion, id_periodo, id_persona, id_uo,
                     mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
                     fecha_reg, id_usuario_reg, fecha_mod, id_usuario_mod,
-                    id_clasificador,nro_paginas,otros_adjuntos,cite,origen,fecha_creacion_documento,
+                    id_clasificador, nro_paginas, otros_adjuntos, cite,
+                    origen, fecha_creacion_documento,
                     --persona_firma,
                     tipo_documento)
-      values ('borrador_recepcion_externo', 'activo',
-        v_parametros.fecha_documento, v_id_correspondencias_asociadas, 
-        v_parametros.id_depto, v_parametros.id_documento, NULL,
-  -- en correpondencia externa el funcionario es NULO , v_parametros.id_funcionario_usuario,
-             v_id_gestion, v_parametros.id_institucion_remitente, v_id_periodo,
-               v_parametros.id_persona_remitente, v_id_uo [ 2 ],
-               v_parametros.mensaje, 0, --nivel de anidamiento del arbol
-             v_parametros.nivel_prioridad, v_num_corre, v_parametros.referencia,
-               'externa', now(), p_id_usuario, null, null,
-               v_parametros.id_clasificador, v_parametros.nro_paginas, 
-               v_parametros.otros_adjuntos, v_parametros.cite,v_origen,
-               v_fecha_creacion_documento,
-               --v_parametros.persona_firma,
-               v_parametros.tipo_documento) RETURNING id_correspondencia
-      into v_id_correspondencia;
+        values ('borrador_recepcion_externo', 'activo',
+          		v_parametros.fecha_documento, v_id_correspondencias_asociadas,
+          		v_parametros.id_depto, v_parametros.id_documento, NULL,
+               	-- en correpondencia externa el funcionario es NULO , v_parametros.id_funcionario_usuario,
+               	v_id_gestion, v_parametros.id_institucion_remitente,
+                v_id_periodo, v_parametros.id_persona_remitente, v_id_uo [ 2 ],
+                v_parametros.mensaje, 0, --nivel de anidamiento del arbol
+               	v_parametros.nivel_prioridad, v_num_corre,
+                v_parametros.referencia, 'externa', now(), p_id_usuario, null,
+                null, v_parametros.id_clasificador, v_parametros.nro_paginas,
+                v_parametros.otros_adjuntos, v_parametros.cite, v_origen,
+                v_fecha_creacion_documento,
+               	--v_parametros.persona_firma,
+               	v_parametros.tipo_documento) RETURNING id_correspondencia
+        into v_id_correspondencia;
 
       v_id_origen = v_id_correspondencia;
+      
       UPDATE corres.tcorrespondencia
       set id_origen = v_id_correspondencia
       where id_correspondencia = v_id_correspondencia;
-    /*  -- Inserta estados a la tabla corres.tcorrespondencia_estado.
-      INSERT INTO corres.tcorrespondencia_estado (id_usuario_reg,id_correspondencia,estado,observaciones_estado) 
-      VALUES (p_id_usuario,v_id_correspondencia,'borrador_recepcion_externo','Registro Nuevo');*/
-
-      --Definicion de la respuesta	
+  
+     --Definicion de la respuesta	
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia externa recepcionada(a)');
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
