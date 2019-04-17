@@ -44,7 +44,7 @@ Phx.vista.CorrespondenciaRecibida = {
         this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=false;
         this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
          
-         if (config.tipo=='interna'){
+         if (config.tipo=='interna'|| config.aux=='interna'){
         	this.Atributos[this.getIndAtributo('cite')].grid=false;
 		    this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=false;
 		    this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=false;
