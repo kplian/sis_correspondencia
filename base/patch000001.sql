@@ -173,7 +173,11 @@ ALTER TABLE corres.tcorrespondencia
   ADD COLUMN observaciones_archivado TEXT;
 
 /***********************************F-SCP-AVQ-CORRES-0-15/01/2019*****************************************/
-
-
+  
+/***********************************I-SCP-AVQ-CORRES-0-25/04/2019*****************************************/
+ALTER TABLE corres.tasistente_permisos
+  ADD COLUMN id_funcionarios_permitidos INTEGER [];
+  
+/***********************************F-SCP-AVQ-CORRES-0-25/04/2019*****************************************/
 
 
