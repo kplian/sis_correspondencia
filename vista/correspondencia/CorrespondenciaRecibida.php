@@ -12,6 +12,7 @@ header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
 Phx.vista.CorrespondenciaRecibida = {
+	
     bsave:false,
     bnew:false,
 	bedit:false,
@@ -20,68 +21,114 @@ Phx.vista.CorrespondenciaRecibida = {
 	requireclase: 'Phx.vista.Correspondencia',
 	title: 'Recibida',
 	nombreVista: 'CorrespondenciaRecibida',
+	swTipo: 'externa',
+	
+	beditGroups: [0, 1],
+	bactGroups: [0, 1],
+	btestGroups: [0,1],
+	bexcelGroups: [0, 1],
 	
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibida',
 	
 	constructor: function(config) {
-		this.Atributos[this.getIndAtributo('origen')].grid=true;
-        this.Atributos[this.getIndAtributo('origen')].form=false;
+		//this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
+		
+		
+		this.Atributos[this.getIndAtributo('id_documento')].grid=false;
+		this.Atributos[this.getIndAtributo('id_uo')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionario_saliente')].grid=false;
+        this.Atributos[this.getIndAtributo('id_institucion_destino')].grid=false;
+        this.Atributos[this.getIndAtributo('id_persona_destino')].grid=false;
+        this.Atributos[this.getIndAtributo('id_funcionarios')].grid=false;
+        this.Atributos[this.getIndAtributo('asociar')].grid=false;
+        this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=false;
+        this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
+         
+         if (config.tipo=='interna'|| config.aux=='interna'){
+        	this.Atributos[this.getIndAtributo('cite')].grid=false;
+		    this.Atributos[this.getIndAtributo('id_institucion_remitente')].grid=false;
+		    this.Atributos[this.getIndAtributo('id_persona_remitente')].grid=false;
+		    this.Atributos[this.getIndAtributo('otros_adjuntos')].grid=false;
+		    this.Atributos[this.getIndAtributo('nro_paginas')].grid=false;
+		    this.Atributos[this.getIndAtributo('id_correspondencias_asociadas')].grid=true;
+		    this.Atributos[this.getIndAtributo('id_documento')].grid=true;
+		    this.Atributos[this.getIndAtributo('id_uo')].grid=true;
+		   // this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
+	      }
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
-
-		this.addButton('finalizarRecibido', {
-			text: 'Finalizar Recepcion',
-			iconCls: 'bgood',
-			disabled: true,
-			handler: this.finalizarRecepcion,
-			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
-		});		
+	     //this.bloquearOrdenamientoGrid();
+           this.getBoton('Plantilla').hide();
+            this.getBoton('SubirDocumento').hide();
+            this.getBoton('ImpCodigo').hide();
+            this.getBoton('ImpCodigoDoc').hide();
+             this.getBoton('Finalizar').hide(); 
+             this.getBoton('Habilitar').hide();
 		
-		this.addButton('archivar', {
-			text: 'Archivar',
-			iconCls: 'bsave',
-			disabled: false,
-			handler: this.archivar,
-			tooltip: '<b>Archivar</b><br/>'
-		});
-		//
-		/*this.addButton('btnImpCodigo', {
-			text: 'Imp Sticker',
-			iconCls: 'bprintcheck',
-			disabled: true,
-			handler: this.impCodigo,
-			tooltip: '<b>Imprimir</b><br/>'
-		});
-		
-		this.addButton('btnImpCodigo2', {
-			text: 'Imp Codigo',
-			iconCls: 'bprintcheck',
-			disabled: true,
-			handler: this.impCodigo2,
-			tooltip: '<b>Imprimir</b><br/>'
-		});*/
 		
 		this.init();
-        this.store.baseParams = {'interface': 'recibida'};
+	    this.store.baseParams = {'interface': 'recibida','tipo': this.tipo}; 
+	   
+      //EAQ:filtro_directo funcionalidad acceso directo
+        if(config.filtro_directo){
+        
+           this.store.baseParams.filtro_valor = config.filtro_directo.valor;
+           this.store.baseParams.filtro_campo = config.filtro_directo.campo;
+       }
         this.load({params: {start: 0, limit: 50}})
 	  
     
    },
+   getParametrosFiltro: function () {
+		this.store.baseParams.tipo = this.tipo;
+	}
+	,
 	preparaMenu:function(n){
-		Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n);      	
+		     	
 		var data = this.getSelectedData();
 		console.log('data',data)
 		var tb =this.tbar;
 		//si el archivo esta escaneado se permite visualizar
-		if(data['version']>0){
-			this.getBoton('verCorrespondencia').enable();
-			this.getBoton('mandar').enable()
-			this.getBoton('finalizarRecibido').enable();
+		
+		if(data['estado']=='pendiente_recibido'){
+			 this.getBoton('FinalizarExterna').enable();
+            this.getBoton('Adjuntos').disable();
+            this.getBoton('VerDocumento').disable();
+            this.getBoton('Derivar').disable();
+            this.getBoton('HojaRuta').disable();
+            this.getBoton('Historico').disable();
+            this.getBoton('Archivar').disable();
+            this.getBoton('Corregir').disable();
+			
+		
 		}
 		else{
-			this.getBoton('verCorrespondencia').enable(); //aqui esta disable
-			this.getBoton('mandar').enable(); //aqui tambien
-			this.getBoton('finalizarRecibido').enable();
-		}
+			if(data['estado']=='enviado'){
+			this.getBoton('FinalizarExterna').disable();
+            this.getBoton('Adjuntos').enable();
+            this.getBoton('VerDocumento').enable();
+            this.getBoton('Derivar').disable();
+            this.getBoton('HojaRuta').enable();
+            this.getBoton('Historico').enable();
+            this.getBoton('Archivar').enable();
+            this.getBoton('Corregir').enable();
+            
+			
+		}else {
+			this.getBoton('FinalizarExterna').disable();
+            this.getBoton('Adjuntos').enable();
+            this.getBoton('VerDocumento').enable();
+            this.getBoton('Derivar').enable();
+            this.getBoton('HojaRuta').enable();
+            this.getBoton('Historico').enable();
+            this.getBoton('Archivar').enable();
+            this.getBoton('Corregir').disable();
+          }
+      }
+      
+		
+		
+		Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n); 
 		return tb	
 	},
 	
@@ -98,53 +145,7 @@ Phx.vista.CorrespondenciaRecibida = {
 			scope: this
 		});
 	},
-	successFinalizar:function(resp){
-
-		this.load({params: {start: 0, limit: 50}});
 
 
-		console.log(resp)
-	},
-	archivar:function(){
-		var rec = this.sm.getSelected();
-
-		Ext.Ajax.request({
-			url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',
-			params: {
-				id_correspondencia: rec.data.id_correspondencia,
-				sw_archivado :'si'
-			},
-			success: this.successFinalizar,
-			failure: this.conexionFailure,
-			timeout: this.timeout,
-			scope: this
-		});
-	},
-	//manu,06/10/2017 ingresar boton qr
-	/*impCodigo: function(){
-		var rec = this.sm.getSelected();
-		Phx.CP.loadingShow();		
-		Ext.Ajax.request({
-			url: '../../sis_correspondencia/control/Correspondencia/impCodigoCorrespondecia',
-			params: { 'id_correspondencia': rec.data.id_correspondencia },
-			success : this.successExport,
-			failure: this.conexionFailure,
-			timeout: this.timeout,
-			scope: this
-		});
-	},	
-	//
-	impCodigo2: function(){
-		var rec = this.sm.getSelected();
-		Phx.CP.loadingShow();		
-		Ext.Ajax.request({
-			url: '../../sis_correspondencia/control/Correspondencia/impCodigoCorrespondecia2',
-			params: { 'id_correspondencia': rec.data.id_correspondencia },
-			success : this.successExport,
-			failure: this.conexionFailure,
-			timeout: this.timeout,
-			scope: this
-		});
-	}*/
 };
 </script>

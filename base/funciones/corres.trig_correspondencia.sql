@@ -1,6 +1,4 @@
---------------- SQL ---------------
-
-CREATE OR REPLACE FUNCTION corres.trigfl_correspondencia (
+CREATE OR REPLACE FUNCTION corres.trig_correspondencia (
 )
 RETURNS trigger AS
 $body$
@@ -16,18 +14,18 @@ BEGIN
     
     select id_usuario
     into v_id_usuario
-    from sss.tsg_usuario u
-    where u.login=v_nombre_usuario;
-    
+    from segu.tusuario u
+    where u.cuenta=v_nombre_usuario;
+     --raise exception 'llega%',v_nombre_usuario;
     if(v_id_usuario is not null)then
     
         IF TG_OP = 'INSERT' THEN
             BEGIN
                
-                g_consulta:='insert into corres.tfcorrespondencia_estado(
+                g_consulta:='insert into corres.tcorrespondencia_estado(
                     id_correspondencia,
                     estado,
-                    id_usuario,
+                    id_usuario_reg,
                     fecha_reg,
                     observaciones_estado,
                     estado_reg)
@@ -46,14 +44,14 @@ BEGIN
         BEGIN
             if(OLD.estado!=NEW.estado)then
             
-            update flujo.tfl_correspondencia_estado set estado_reg='inactivo'
+            update corres.tcorrespondencia_estado set estado_reg='inactivo'
             where id_correspondencia=NEW.id_correspondencia;
         
             g_consulta:='insert into corres.tcorrespondencia_estado(
                     id_correspondencia,
                     estado,
                     estado_ant,
-                    id_usuario,
+                    id_usuario_reg,
                     fecha_reg,
                     observaciones_estado,
                     estado_reg)

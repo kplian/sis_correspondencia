@@ -105,7 +105,11 @@ class FuncionesCorrespondencia{
 		$res=$obj->corregirCorrespondencia();
 		return $res;
 	}
-	
+	function corregirCorrespondenciaExt(CTParametro $parametro){
+		$obj=new MODCorrespondencia($parametro);
+		$res=$obj->corregirCorrespondenciaExt();
+		return $res;
+	}
 	function subirCorrespondencia(CTParametro $parametro){
 		$obj=new MODCorrespondencia($parametro);
 		$res=$obj->subirCorrespondencia();

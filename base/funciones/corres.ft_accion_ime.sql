@@ -4,11 +4,12 @@ CREATE OR REPLACE FUNCTION corres.ft_accion_ime (
   p_tabla varchar,
   p_transaccion varchar
 )
-RETURNS varchar AS'
+RETURNS varchar AS
+$body$
 /**************************************************************************
  SISTEMA:		Correspondencia
  FUNCION: 		corres.ft_accion_ime
- DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla ''corres.taccion''
+ DESCRIPCION:   Funcion que gestiona las operaciones basicas (inserciones, modificaciones, eliminaciones de la tabla 'corres.taccion'
  AUTOR: 		 (rac)
  FECHA:	        13-12-2011 13:49:30
  COMENTARIOS:	
@@ -32,17 +33,17 @@ DECLARE
 			    
 BEGIN
 
-    v_nombre_funcion = ''corres.ft_accion_ime'';
+    v_nombre_funcion = 'corres.ft_accion_ime';
     v_parametros = pxp.f_get_record(p_tabla);
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_ACCO_INS''
+ 	#TRANSACCION:  'CO_ACCO_INS'
  	#DESCRIPCION:	Insercion de registros
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 13:49:30
 	***********************************/
 
-	if(p_transaccion=''CO_ACCO_INS'')then
+	if(p_transaccion='CO_ACCO_INS')then
 					
         begin
         	--Sentencia de la insercion
@@ -54,7 +55,7 @@ BEGIN
 			fecha_mod,
 			id_usuario_mod
           	) values(
-			''activo'',
+			'activo',
 			v_parametros.nombre,
 			now(),
 			p_id_usuario,
@@ -63,8 +64,8 @@ BEGIN
 			)RETURNING id_accion into v_id_accion;
                
 			--Definicion de la respuesta
-			v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Accion almacenado(a) con exito (id_accion''||v_id_accion||'')''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_accion'',v_id_accion::varchar);
+			v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Accion almacenado(a) con exito (id_accion'||v_id_accion||')'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_accion',v_id_accion::varchar);
 
             --Devuelve la respuesta
             return v_resp;
@@ -72,13 +73,13 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_ACCO_MOD''
+ 	#TRANSACCION:  'CO_ACCO_MOD'
  	#DESCRIPCION:	Modificacion de registros
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 13:49:30
 	***********************************/
 
-	elsif(p_transaccion=''CO_ACCO_MOD'')then
+	elsif(p_transaccion='CO_ACCO_MOD')then
 
 		begin
 			--Sentencia de la modificacion
@@ -89,8 +90,8 @@ BEGIN
 			where id_accion=v_parametros.id_accion;
                
 			--Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Accion modificado(a)''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_accion'',v_parametros.id_accion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Accion modificado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_accion',v_parametros.id_accion::varchar);
                
             --Devuelve la respuesta
             return v_resp;
@@ -98,13 +99,13 @@ BEGIN
 		end;
 
 	/*********************************    
- 	#TRANSACCION:  ''CO_ACCO_ELI''
+ 	#TRANSACCION:  'CO_ACCO_ELI'
  	#DESCRIPCION:	Eliminacion de registros
  	#AUTOR:		rac	
  	#FECHA:		13-12-2011 13:49:30
 	***********************************/
 
-	elsif(p_transaccion=''CO_ACCO_ELI'')then
+	elsif(p_transaccion='CO_ACCO_ELI')then
 
 		begin
 			--Sentencia de la eliminacion
@@ -112,8 +113,8 @@ BEGIN
             where id_accion=v_parametros.id_accion;
                
             --Definicion de la respuesta
-            v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',''Accion eliminado(a)''); 
-            v_resp = pxp.f_agrega_clave(v_resp,''id_accion'',v_parametros.id_accion::varchar);
+            v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Accion eliminado(a)'); 
+            v_resp = pxp.f_agrega_clave(v_resp,'id_accion',v_parametros.id_accion::varchar);
               
             --Devuelve la respuesta
             return v_resp;
@@ -122,21 +123,22 @@ BEGIN
          
 	else
      
-    	raise exception ''Transaccion inexistente: %'',p_transaccion;
+    	raise exception 'Transaccion inexistente: %',p_transaccion;
 
 	end if;
 
 EXCEPTION
 				
 	WHEN OTHERS THEN
-		v_resp='''';
-		v_resp = pxp.f_agrega_clave(v_resp,''mensaje'',SQLERRM);
-		v_resp = pxp.f_agrega_clave(v_resp,''codigo_error'',SQLSTATE);
-		v_resp = pxp.f_agrega_clave(v_resp,''procedimientos'',v_nombre_funcion);
-		raise exception ''%'',v_resp;
+		v_resp='';
+		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
+		v_resp = pxp.f_agrega_clave(v_resp,'codigo_error',SQLSTATE);
+		v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
+		raise exception '%',v_resp;
 				        
 END;
-'LANGUAGE 'plpgsql'
+$body$
+LANGUAGE 'plpgsql'
 VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
