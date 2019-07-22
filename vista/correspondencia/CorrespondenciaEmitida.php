@@ -18,7 +18,7 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase: 'Phx.vista.Correspondencia',
         title: 'Emitidas',
         nombreVista: 'CorrespondenciaEmitida',
-
+		fwidth: '35%',
 
         constructor: function (config) {
         	
@@ -62,7 +62,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
       
       onButtonNew: function () {
-            console.log('llega');
+            console.log('llegasssss');
 
             console.log('inicia_eventos');
             this.cmpFechaDoc = this.getComponente('fecha_documento');
@@ -71,9 +71,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 callback : function (r) {
                     if (r.length == 1 ) {
                         this.Cmp.id_funcionario.setValue(r[0].data.id_funcionario);
-                    }
-
+                    }					
                 }, scope : this
+                
             });
 
             var cmbDoc = this.getComponente('id_documento');
@@ -159,7 +159,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.getBoton('Plantilla').enable();
                 this.getBoton('Adjuntos').enable();
                 this.getBoton('Corregir').disable();
-                 this.getBoton('Historico').disable();
+                 //this.getBoton('Historico').disable();
                  this.getBoton('Archivar').disable();
             }
             if (data['estado'] == 'enviado') {

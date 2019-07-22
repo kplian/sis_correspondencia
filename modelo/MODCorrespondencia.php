@@ -455,7 +455,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_correspondencias_asociadas','text');
 		$this->captura('tipo_documento','varchar');
 		$this->captura('persona_firma','varchar');
-		
+		$this->captura('estado_fisico','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -829,6 +829,10 @@ function corregirCorrespondenciaExt()
 
 		$this->setParametro('id_correspondencia','id_correspondencia','integer');
         $this->setParametro('estado_reporte','estado_reporte','varchar');
+
+        //mgarcia para obtener el historico
+		$this->setParametro('id_institucion','id_institucion','integer');
+		//
 		$this->captura('numero','varchar');
 		$this->captura('id_correspondencia_fk','int4');
 		$this->captura('desc_person_fk','text');
@@ -1020,8 +1024,8 @@ function corregirCorrespondenciaExt()
 		$this->captura('desc_correspondencias_asociadas','text');
 		$this->captura('tipo_documento','varchar');
 		$this->captura('persona_firma','varchar');
+		$this->captura('estado_fisico','varchar');
 		
-
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		//echo $this->getConsulta();
@@ -1029,7 +1033,7 @@ function corregirCorrespondenciaExt()
 
 
 	
-
+ 
 		//Devuelve la respuesta
 		return $this->respuesta;
 
@@ -1192,6 +1196,8 @@ function corregirCorrespondenciaExt()
 		//$this->setParametro('id_','id_origen','int4');
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
+		
+		$this->setParametro('id_institucion','id_institucion','integer'); //mgarcia
 		
 		
 		//Definicion de la lista del resultado del query

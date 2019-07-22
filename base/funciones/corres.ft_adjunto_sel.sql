@@ -43,7 +43,7 @@ BEGIN
 	if(p_transaccion='CORRES_ADJ_SEL')then
      				
     	begin
-                    
+                      
         v_consulta:='
         WITH RECURSIVE corres_asoc(id_correspondencia,id_correspondencia_asociada) AS (
           select cor.id_correspondencia,
@@ -51,10 +51,9 @@ BEGIN
           from corres.tcorrespondencia cor
           where '||v_parametros.filtro||'
           UNION
-              SELECT cor2.id_correspondencia,
-                     cor2.id_correspondencias_asociadas
-                from corres.tcorrespondencia cor2,corres_asoc ca
-            where cor2.id_correspondencia_fk = ca.id_correspondencia
+          SELECT cor2.id_correspondencia,cor2.id_correspondencias_asociadas
+          FROM corres.tcorrespondencia cor2--,corres_asoc ca
+          WHERE cor2.id_correspondencia_fk = cor2.id_correspondencia--ca.id_correspondencia
 
         )
          select
@@ -78,7 +77,7 @@ BEGIN
               
               inner join segu.tusuario usu1 on usu1.id_usuario = adj.id_usuario_reg
               left join segu.tusuario usu2 on usu2.id_usuario = adj.id_usuario_mod
-              inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia
+              inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia_origen
               where adj.estado_reg=''activo''
         UNION ALL
            select
@@ -101,7 +100,7 @@ BEGIN
               inner join corres.tadjunto adj on adj.id_correspondencia_origen=ANY(ca.id_correspondencia_asociada)
               inner join segu.tusuario usu1 on usu1.id_usuario = adj.id_usuario_reg
               left join segu.tusuario usu2 on usu2.id_usuario = adj.id_usuario_mod
-              inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia
+              inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia_origen
               where adj.estado_reg=''activo''
          UNION ALL
           select
@@ -150,49 +149,48 @@ BEGIN
 
 		begin
 			--Sentencia de la consulta de conteo de registros
-         v_consulta:=
-             'WITH RECURSIVE corres_asoc(id_correspondencia,id_correspondencia_asociada) AS (
-          select cor.id_correspondencia,
-                 cor.id_correspondencias_asociadas
-          from corres.tcorrespondencia cor
-          where '||v_parametros.filtro||'
-          UNION
-              SELECT cor2.id_correspondencia,
-                     cor2.id_correspondencias_asociadas
-                from corres.tcorrespondencia cor2,corres_asoc ca
-            where cor2.id_correspondencia_fk = ca.id_correspondencia
-
-        )
+         v_consulta:=             
+          'WITH RECURSIVE corres_asoc(id_correspondencia,id_correspondencia_asociada) AS (
+          		select cor.id_correspondencia,
+                cor.id_correspondencias_asociadas
+                from corres.tcorrespondencia cor
+                where '||v_parametros.filtro||'
+                
+                UNION
+                
+                SELECT cor2.id_correspondencia,cor2.id_correspondencias_asociadas
+                FROM corres.tcorrespondencia cor2--,corres_asoc ca
+                WHERE cor2.id_correspondencia_fk = cor2.id_correspondencia--ca.id_correspondencia
+        	)
         
-        select count(adjuntos.id)::bigint
-                          from
-        
-         (select
-                    adj.id_adjunto as id
-                    
-              from corres_asoc ca
-              inner join corres.tadjunto adj on adj.id_correspondencia_origen= ca.id_correspondencia --or ca.id_correspondencia_asociada)
-              
-              inner join segu.tusuario usu1 on usu1.id_usuario = adj.id_usuario_reg
-              left join segu.tusuario usu2 on usu2.id_usuario = adj.id_usuario_mod
-              inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia
-        UNION ALL
-           select
-                    adj.id_adjunto as id
-                  
-              from corres_asoc ca
-              inner join corres.tadjunto adj on adj.id_correspondencia_origen=ANY(ca.id_correspondencia_asociada)
-              inner join segu.tusuario usu1 on usu1.id_usuario = adj.id_usuario_reg
-              left join segu.tusuario usu2 on usu2.id_usuario = adj.id_usuario_mod
-              inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia
-         UNION ALL
-          select
-                                  1 as id
-                                 
+        	select count(adjuntos.id)::bigint
+            from                                
+            (select
+            adj.id_adjunto as id
+                                                        
             from corres_asoc ca
-               inner join corres.tcorrespondencia cor on cor.id_correspondencia= ANY(ca.id_correspondencia_asociada)
-               inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
-              left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod)as adjuntos
+            inner join corres.tadjunto adj on adj.id_correspondencia_origen= ca.id_correspondencia --or ca.id_correspondencia_asociada)
+                                                  
+            inner join segu.tusuario usu1 on usu1.id_usuario = adj.id_usuario_reg
+            left join segu.tusuario usu2 on usu2.id_usuario = adj.id_usuario_mod
+            inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia_origen
+            UNION ALL
+            select
+            adj.id_adjunto as id
+                                                      
+            from corres_asoc ca
+            inner join corres.tadjunto adj on adj.id_correspondencia_origen=ANY(ca.id_correspondencia_asociada)
+            inner join segu.tusuario usu1 on usu1.id_usuario = adj.id_usuario_reg
+            left join segu.tusuario usu2 on usu2.id_usuario = adj.id_usuario_mod
+            inner join corres.tcorrespondencia cor on cor.id_correspondencia= adj.id_correspondencia_origen
+            UNION ALL
+            select
+            1 as id
+                                                                     
+            from corres_asoc ca
+            inner join corres.tcorrespondencia cor on cor.id_correspondencia= ANY(ca.id_correspondencia_asociada)
+            inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
+            left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod)as adjuntos
            
     ';
      

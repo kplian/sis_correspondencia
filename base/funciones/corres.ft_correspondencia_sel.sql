@@ -379,7 +379,8 @@ BEGIN
 			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-           --raise exception '%',v_consulta;
+         	--raise notice '%',v_parametros.puntero;
+			--raise exception '%',v_parametros.puntero;
 			--Devuelve la respuesta
 			return v_consulta;
        end;
@@ -489,7 +490,7 @@ BEGIN
      				
     	begin
             
-        
+        --raise exception '%',v_parametros.filtro;
     		--Sentencia de la consulta
 			v_consulta:='select
 						cor.id_origen,
@@ -607,7 +608,7 @@ BEGIN
                         ';
 			
 			           v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-
+			--raise exception '%', v_parametros.filtro;
 			--Devuelve la respuesta
 			return v_consulta;
 						
@@ -986,7 +987,8 @@ BEGIN
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
                                    END ),'' '')AS  correspondencias_asociadas,
                                        cor.tipo_documento,
-                                   cor.persona_firma
+                                   cor.persona_firma,
+                                   cor.estado_fisico
                                 
                                 
                      	from corres.tcorrespondencia cor
@@ -1191,37 +1193,56 @@ BEGIN
 #AUTOR:		    Favio Figueroa
 #FECHA:		    21-04-2016
 ***********************************/
+/*********************************
+#TRANSACCION:  'CO_CORHOJ_SEL'
+#DESCRIPCION:	Adecuaciones en la forma de obtener el v_id_persona, v_id_funcionario_origen, cuando es persona o institución
+#AUTOR:		    Marcela García
+#FECHA:		    07-06-2019
+***********************************/
   elsif(p_transaccion='CO_CORHOJ_SEL')then
 
     begin
-   --   raise exception '%',v_parametros.id_correspondencia;
+     --raise exception '%',v_parametros.id_institucion;
 
-      select id_origen, tipo, id_usuario_reg
-      into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg
+
+
+      select id_origen, tipo, id_usuario_reg, id_persona
+      into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg, v_id_persona
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
---      raise exception '%',v_parametros.estado_reporte;
+      --raise exception '%,%',v_id_persona,v_id_usuario_reg;
       if (v_parametros.estado_reporte='finalizado')then
           v_filtro=' cor.estado not in (''borrador_detalle_recibido'',''anulado'') ';
       else
           v_filtro=' 0=0 ';
       end if;
-	  SELECT id_persona INTO v_id_persona
-      FROM segu.tusuario
-      WHERE id_usuario=v_id_usuario_reg;
       
-		IF (v_tipo_correspondencia='interna')THEN
+	  	
+		IF (v_tipo_correspondencia='interna')THEN 
 			select id_funcionario
 			into v_id_funcionario_origen
 				from corres.tcorrespondencia
 					where id_correspondencia = v_id_origen;
         ELSE
-        	SELECT fun.id_funcionario INTO v_id_funcionario_origen
-            FROM orga.tfuncionario fun
-            WHERE fun.id_persona=v_id_persona;
+        	IF (v_id_persona is not null) THEN
+                SELECT fun.id_funcionario INTO v_id_funcionario_origen
+                FROM orga.tfuncionario fun
+                WHERE fun.id_persona=v_id_persona;
+            ELSE
+            	--para instituciones
+                IF (v_parametros.id_institucion is not null) THEN
+                	v_id_funcionario_origen := v_parametros.id_institucion;
+                ELSE
+                	--raise exception 'En los registros hijos no se insertan el id_institucion, solo en el padre';
+                    select id_institucion into v_id_funcionario_origen
+                    from corres.tcorrespondencia
+                        where id_correspondencia = v_id_origen;
+                END IF;
+        	END IF;
+                
         END IF;  
         IF (v_id_funcionario_origen is null)THEN
-         raise exception '%', 'La correspondencia no ha sido registrada por un funcionario.';
+         raise exception '%', 'La correspondencia no ha sido registrada por un funcionario.'; 
         END IF; 
      
 			--obtenemos el id_origen de la correspondencia
@@ -1408,7 +1429,7 @@ where tiene is not null ';
 			ELSE
             	--v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
                 v_filtro = '0=0  ';
-
+					--RAISE EXCEPTION '%',p_id_usuario;
 				IF EXISTS (SELECT 0 FROM param.tdepto_usuario depus
 					inner join param.tdepto dep on dep.id_depto = depus.id_depto
 					inner join segu.tsubsistema sis 	on sis.id_subsistema = dep.id_subsistema
@@ -1510,7 +1531,9 @@ where tiene is not null ';
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
                                    END ),'' '')AS  correspondencias_asociadas,
                                        cor.tipo_documento,
-                                   cor.persona_firma
+                                   cor.persona_firma,
+                                   
+                        cor.estado_fisico
 
 
                         from corres.tcorrespondencia cor

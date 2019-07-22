@@ -17,9 +17,8 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
     	//llama al constructor de la clase padre
 		Phx.vista.Historico.superclass.constructor.call(this,config);
 		this.init();
-		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen,'estado_reporte':'finalizado'}})
-		this.argumentExtraSubmit={'id_correspondencia':this.id_origen,'estado_reporte':'finalizado'};
-
+		this.load({params:{start:0, limit:this.tam_pag,id_origen:this.id_origen,'estado_reporte':'finalizado', id_institucion:this.id_institucion}});
+		this.argumentExtraSubmit={'id_correspondencia':this.id_origen,'estado_reporte':'finalizado', 'id_institucion':this.id_institucion};
 
 	},
 			
@@ -30,6 +29,16 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 					labelSeparator:'',
 					inputType:'hidden',
 					name: 'id_correspondencia'
+			},
+			type:'Field',
+			form:true 
+		},
+		{
+			//configuracion del componente
+			config:{
+					labelSeparator:'',
+					inputType:'hidden',
+					name: 'id_institucion'
 			},
 			type:'Field',
 			form:true 
@@ -231,7 +240,8 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 	id_store:'id_correspondencia',
 	fields: [
 		{name:'id_correspondencia', type: 'numeric'},
-		{name:'desc_person_fk', type: 'string'},
+		{name:'id_institucion', type: 'numeric'},
+        {name:'desc_person_fk', type: 'string'},
 		{name:'desc_cargo_fk', type: 'string'},
 		{name:'desc_person', type: 'string'},
 		{name:'desc_cargo', type: 'string'},

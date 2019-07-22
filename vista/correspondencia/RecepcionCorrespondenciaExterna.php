@@ -39,6 +39,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	requireclase: 'Phx.vista.Correspondencia',
 	title: 'Correspondencia Recibida',
 	nombreVista: 'RecepcionCorrespondenciaExterna',
+	fwidth: '35%',
 	
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaExterna',
 	ActSave: '../../sis_correspondencia/control/Correspondencia/insertarCorrespondenciaExterna',
@@ -121,7 +122,8 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 			 
 			}else{
 			
-			this.getBoton('Corregir').show();
+			//this.getBoton('Corregir').show();
+			this.getBoton('Corregir').hide();
 			this.getBoton('ImpCodigo').show();//habilita impresion de sticker en administracion
 		
 		}
