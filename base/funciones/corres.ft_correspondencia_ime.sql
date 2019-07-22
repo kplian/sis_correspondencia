@@ -71,7 +71,8 @@ DECLARE
     v_fecha_fin                    date;
     v_fecha_ultima                 date;
     v_id_correspondencia_detalle   integer;
-    v_id_funcionario               integer;
+    --v_id_funcionario               integer;
+    v_id_funcionario               varchar;
     v_estado_ant                   varchar;
     v_responsable                  varchar;
     --v_estado                       varchar;
@@ -81,8 +82,15 @@ DECLARE
     v_id_alarma_reg                 integer;
     v_observaciones_archivado       text;
     v_estado_corre                  varchar;
-           
-   
+    v_descripcion_correo    varchar;    
+	v_acceso_directo        varchar;           
+    v_tipo_noti             varchar;
+    v_titulo                varchar;
+    v_clase                 varchar;
+    v_parametros_ad         varchar;
+    v_correo                varchar;
+    v_nro_tramite           varchar;
+    v_obs                   varchar;
 BEGIN
 
   v_nombre_funcion = 'corres.ft_correspondencia_ime';
@@ -100,7 +108,7 @@ BEGIN
 
     begin
       --obtener el uo del funcionario que esta reenviando
---        raise exception '%','ASDFASDF'||v_parametros.tipo;
+      --  raise exception '%',v_parametros.tipo;
      
          --obtener el departamento
          IF( v_parametros.tipo='saliente') THEN
@@ -119,7 +127,8 @@ BEGIN
             v_id_uo = corres.f_get_uo_correspondencia_funcionario(
             v_id_funcionario, array ['activo', 'suplente'],
             v_parametros.fecha_documento);*/
-              
+      
+      --raise exception '%,%',v_id_uo,v_id_funcionario;        
       SELECT dep.id_depto
       INTO v_id_depto
       FROM param.tdepto_uo duo
@@ -220,7 +229,8 @@ BEGIN
               v_fecha_documento,
               -- now()::date,
                v_id_depto, v_parametros.id_documento,
-               v_id_funcionario, v_id_gestion,
+               CAST (v_id_funcionario AS INTEGER), 
+               v_id_gestion,
                v_parametros.id_institucion_destino,
                v_id_periodo,
                v_parametros.id_persona_destino,
@@ -251,7 +261,7 @@ BEGIN
           SELECT f.desc_funcionario1
           into v_nombre_funcionario
           FROM orga.vfuncionario f
-          WHERE f.id_funcionario = v_id_funcionario;
+          WHERE f.id_funcionario = CAST (v_id_funcionario AS INTEGER);
 
           v_origen = v_nombre_funcionario;
 
@@ -597,28 +607,21 @@ BEGIN
 
     begin
       /*
-        verifica que tenga hijos con estado borrador detalle recibido
-	
-	
-	       */
+      	verifica que tenga hijos con estado borrador detalle recibido
+      */           
       select estado_ant
       into v_estado_aux
       from corres.tcorrespondencia_estado 
       where estado_reg='activo'
       and id_correspondencia=v_parametros.id_correspondencia;
-       -- raise exception '%',''||v_parametros.id_correspondencia;
-      IF (v_estado_aux!='enviado')THEN
-      
+      IF (v_estado_aux!='enviado')THEN      
         IF(not exists (
           select 1
           from corres.tcorrespondencia c
           where c.id_correspondencia_fk = v_parametros.id_correspondencia and
                 c.estado = 'borrador_detalle_recibido')) THEN
-
           raise exception 'No existen envios pendientes';
-
-        END IF;
-      
+        END IF;      
       END IF;
      
       select estado,tipo
@@ -627,14 +630,19 @@ BEGIN
       where id_correspondencia = v_parametros.id_correspondencia;
       
       
-
+      IF(NOT EXISTS (SELECT 1
+                    FROM corres.tcorrespondencia c
+                    WHERE c.id_correspondencia_fk = v_parametros.id_correspondencia and
+                    c.estado_reg = 'activo')) THEN
+      			RAISE EXCEPTION 'No agrego a la(s) persona(s) que derivará';
+      END IF;
       --actualiza padre
         
-         /*Adición la derivación, adición de la alarma para el envio del usuario al que va a enviar. 
-	 EAQ: agregacion de parametros a insertar en talarma, para acceso directo
-        */
+    /*Adición la derivación, adición de la alarma para el envio del usuario al que va a enviar. 
+	 	EAQ: agregacion de parametros a insertar en talarma, para acceso directo
+    */
     
-   FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
+	FOR g_registros IN ( select co.id_funcionario,co.id_usuario_reg,co.numero,
                               vus.desc_persona,
                               coalesce(co.referencia,'') as referencia,
                               co.fecha_documento,
@@ -662,7 +670,14 @@ BEGIN
                 ELSE
                    v_tipo:='EXTERNA';
                 END IF;
-
+		 
+               --obtener el correo del funcionario
+               select email_empresa into v_correo
+               from orga.tfuncionario
+               where id_funcionario = g_registros.id_funcionario;
+               
+               --raise exception '%,%', g_registros.id_funcionario, v_correo;
+               
                v_id_alarma[1]:=param.f_inserta_alarma(g_registros.id_funcionario,
                                                     '<font color="99CC00" size="5"><font size="4">'||g_registros.referencia||'</font></font><br>
                                                       <br><b>&nbsp;</b>Estimad@:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; <br>
@@ -687,7 +702,9 @@ BEGIN
                                                     '{filtro_directo:{campo:"cor.id_correspondencia_fk",valor:"'||v_parametros.id_correspondencia||'"},"aux":"'||g_registros.tipo||'"}',
                                                     g_registros.id_usuario_reg,--id_usuario
                                                     'Nueva Correspondencia '||v_tipo||': '||g_registros.numero,
-                                                    'rosanavq@gmail.com','',NULL,null,NULL,'si');
+                                                    --'rosanavq@gmail.com',
+                                                    v_correo,
+                                                    '',NULL,null,NULL,'si');
    
    
       --busqueda de la alarma generada
@@ -1119,16 +1136,12 @@ BEGIN
                 FROM corres.tcorrespondencia
                 WHERE 
                 id_institucion=v_parametros.id_institucion_remitente AND
-
-                cite like '%'||v_parametros.cite||'%' and (v_parametros.cite!=null or v_parametros.cite!=''))THEN
-
-      RAISE EXCEPTION '%','EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.';
-
-      END IF;
-      
+                cite like '%'||v_parametros.cite||'%' and 
+                (v_parametros.cite!=null or v_parametros.cite!=''))THEN
+      		RAISE EXCEPTION '%','EXISTE UN CITE IDENTICO DE LA EMPRESA QUE ACTUALMENTE ESTA REGISTRANDO, FAVOR VERIFICAR DATOS.';
+      END IF;      
       --Validar la fecha del Documento.
-      if (v_parametros.fecha_creacion_documento is not null) then
-      
+      if (v_parametros.fecha_creacion_documento is not null) then      
             select p.id_periodo, p.fecha_ini, p.fecha_fin
             into v_id,v_fecha_ini,v_fecha_fin
             from param.tperiodo p
@@ -1136,7 +1149,7 @@ BEGIN
             on ges.id_gestion = p.id_gestion 
             and ges.estado_reg ='activo'
             where p.estado_reg='activo' and
-           v_parametros.fecha_creacion_documento between p.fecha_ini and p.fecha_fin ;
+           	v_parametros.fecha_creacion_documento between p.fecha_ini and p.fecha_fin ;
            
             --Validar la fecha del Documento.
             IF (v_parametros.tipo='externa') THEN
@@ -1146,10 +1159,8 @@ BEGIN
                 		and 
                         tipo=v_parametros.tipo AND cor.fecha_creacion_documento::date between v_fecha_ini and v_fecha_fin
                     ))THEN
-                 RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;
-                
-                END IF;
-               
+                 	RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;                
+                END IF;               
             ELSE
                 IF (EXISTS(select 1
             			from corres.tcorrespondencia cor
@@ -1157,23 +1168,18 @@ BEGIN
                 		and 
                         tipo=v_parametros.tipo and id_documento=v_parametros.id_documento and  cor.fecha_creacion_documento::date between v_fecha_ini and v_fecha_fin
                     ))THEN
-                 RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;
-                
-                END IF;
-            
+                 RAISE EXCEPTION '%', 'Existe un Documento Mayor a la fecha '||v_parametros.fecha_creacion_documento;                
+                END IF;            
             END IF;  
-            
-          
-                       v_fecha_creacion_documento=v_parametros.fecha_creacion_documento+('22:25:10.222234');
- 
+                      
+            v_fecha_creacion_documento=v_parametros.fecha_creacion_documento+('22:25:10.222234'); 
             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,v_id,NULL,
-            v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
-            
-        
+            v_parametros.id_depto, p_id_usuario,'CORRES',NULL);  
       else
+      --raise exception 'La fecha de creación de documento es nula'; 
             v_fecha_creacion_documento=now();
-             v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,NULL,
-             v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
+            v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,NULL,
+            v_parametros.id_depto, p_id_usuario,'CORRES',NULL);
       end if;
      -- v_num_corre =  param.f_obtener_correlativo(v_codigo_documento,NULL,NULL,
      
@@ -1196,43 +1202,37 @@ BEGIN
                    ges.estado_reg = 'activo'
             where p.estado_reg = 'activo' and
                   now()::date between p.fecha_ini and
-                  p.fecha_fin;
-          
+                  p.fecha_fin;          
       ELSE
            v_id_periodo:=v_id;
-      END IF;
-      
+      END IF;      
       --validar que tenga o persona o intitucion
-
-      IF v_parametros.id_institucion_remitente is null and
-        v_parametros.id_persona_remitente is null THEN
-        raise exception
-          'Por lo menos debe definir una intitución o persona remitente';
+      IF v_parametros.id_institucion_remitente is null and v_parametros.id_persona_remitente is null THEN
+        raise exception 'Por lo menos debe definir una intitución o persona remitente';
       END IF;
 
       --3 Sentencia de la insercion
       IF v_parametros.id_correspondencias_asociadas = '' THEN
-      v_id_correspondencias_asociadas=NULL;
+      	v_id_correspondencias_asociadas=NULL;
       else
-      v_id_correspondencias_asociadas=string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ];
+      	v_id_correspondencias_asociadas=string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ];
       END IF;
       -- Obtenemos el origen (institucion o persona)
       IF (v_parametros.id_institucion_remitente is null) THEN
       	SELECT per.nombre_completo1
         into v_origen
         FROM segu.vpersona2 per
-        WHERE per.id_persona = v_parametros.id_persona_remitente;
-    
+        WHERE per.id_persona = v_parametros.id_persona_remitente;    
       ELSE
       	SELECT insti.nombre
         into v_origen
         FROM param.tinstitucion insti
-        WHERE insti.id_institucion = v_parametros.id_institucion_remitente;
-      
+        WHERE insti.id_institucion = v_parametros.id_institucion_remitente;      
       END IF;
       
-        insert into corres.tcorrespondencia(estado, estado_reg, fecha_documento,
-                    id_correspondencias_asociadas, id_depto, id_documento, id_funcionario,
+      insert into corres.tcorrespondencia(estado, estado_reg, 
+      				fecha_documento,id_correspondencias_asociadas, 
+                    id_depto, id_documento,id_funcionario,
                     -- funcionario peude ser nullo
                     id_gestion, id_institucion, id_periodo, id_persona, id_uo,
                     mensaje, nivel, nivel_prioridad, numero, referencia, tipo,
@@ -1241,22 +1241,22 @@ BEGIN
                     origen, fecha_creacion_documento,
                     --persona_firma,
                     tipo_documento)
-        values ('borrador_recepcion_externo', 'activo',
-          		v_parametros.fecha_documento, v_id_correspondencias_asociadas,
-          		v_parametros.id_depto, v_parametros.id_documento, NULL,
-               	-- en correpondencia externa el funcionario es NULO , v_parametros.id_funcionario_usuario,
-               	v_id_gestion, v_parametros.id_institucion_remitente,
-                v_id_periodo, v_parametros.id_persona_remitente, v_id_uo [ 2 ],
-                v_parametros.mensaje, 0, --nivel de anidamiento del arbol
-               	v_parametros.nivel_prioridad, v_num_corre,
-                v_parametros.referencia, 'externa', now(), p_id_usuario, null,
-                null, v_parametros.id_clasificador, v_parametros.nro_paginas,
-                v_parametros.otros_adjuntos, v_parametros.cite, v_origen,
-                v_fecha_creacion_documento,
-               	--v_parametros.persona_firma,
-               	v_parametros.tipo_documento) RETURNING id_correspondencia
-        into v_id_correspondencia;
-
+            values ('borrador_recepcion_externo', 'activo',
+                    v_parametros.fecha_documento, v_id_correspondencias_asociadas,
+                    v_parametros.id_depto, v_parametros.id_documento, NULL,
+                    -- en correpondencia externa el funcionario es NULO , v_parametros.id_funcionario_usuario,
+                    v_id_gestion, v_parametros.id_institucion_remitente,
+                    v_id_periodo, v_parametros.id_persona_remitente, v_id_uo [ 2 ],
+                    v_parametros.mensaje, 0, --nivel de anidamiento del arbol
+                    v_parametros.nivel_prioridad, v_num_corre,
+                    v_parametros.referencia, 'externa', now(), p_id_usuario, null,
+                    null, v_parametros.id_clasificador, v_parametros.nro_paginas,
+                    v_parametros.otros_adjuntos, v_parametros.cite, v_origen,
+                    v_fecha_creacion_documento,
+                    --v_parametros.persona_firma,
+                    v_parametros.tipo_documento) RETURNING id_correspondencia
+      into v_id_correspondencia;
+      
       v_id_origen = v_id_correspondencia;
       
       UPDATE corres.tcorrespondencia
@@ -1264,11 +1264,8 @@ BEGIN
       where id_correspondencia = v_id_correspondencia;
   
      --Definicion de la respuesta	
-      v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
-        'Correspondencia externa recepcionada(a)');
-      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
-        v_id_correspondencia::varchar);
-
+      v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Correspondencia externa recepcionada(a)');
+      v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia', v_id_correspondencia::varchar);
       --Devuelve la respuesta
       return v_resp;
 
@@ -1430,7 +1427,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
         return v_resp;
 	end;
     /*********************************
-#TRANSACCION:  'CO_COREXTEST_INS'
+  #TRANSACCION:  'CO_COREXTEST_INS'
 #DESCRIPCION:    camba el estado al finalizar la recepcion de la correspondencia externa
 #AUTOR:        favio figueroa
 #FECHA:            27-04-2016 20:43:21
@@ -1444,18 +1441,24 @@ elsif(p_transaccion='CO_COREXT_MOD')then
           id_usuario_mod = p_id_usuario,
           fecha_mod = now()
       WHERE id_correspondencia = v_parametros.id_correspondencia;
-      
+
       --AVQ
+      --110
       --Correspondencia Recibida eso significa que se actualizará la alarma en un estado inactivo para que no le muestre en la ventanitas de alarma
       -- Inserta en una tabla alarma
-      INSERT INTO corres.talarma (SELECT * FROM param.talarma WHERE id_alarma in (select id_alarma 
-                          																  from corres.tcorrespondencia
-                                                                                          where id_correspondencia_fk=v_parametros.id_correspondencia) );
+      --v_obs='obs';
+      --v_nro_tramite='nro_tramite';
+
+      /*INSERT INTO corres.talarma (SELECT * 
+      								FROM param.talarma 
+                                    WHERE id_alarma in (select id_alarma 
+                                                        from corres.tcorrespondencia
+                                                        where id_correspondencia_fk=v_parametros.id_correspondencia) );
       -- Elimina la fila de la tabla param.talarma.
       
       DELETE FROM param.talarma where id_alarma in (select id_alarma 
                           							 from corres.tcorrespondencia
-                                                     where id_correspondencia=v_parametros.id_correspondencia);
+                                                     where id_correspondencia=v_parametros.id_correspondencia);*/
      -- raise exception '%',v_parametros.id_correspondencia;
    
       --Definicion de la respuesta

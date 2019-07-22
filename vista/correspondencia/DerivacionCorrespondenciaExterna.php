@@ -42,7 +42,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	requireclase: 'Phx.vista.Correspondencia',
 	title: 'Correspondencia Recibida',
 	nombreVista: 'DerivacionCorrespondenciaExterna',
-	
+	fwidth: '35%',
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaExterna',
 	ActSave: '../../sis_correspondencia/control/Correspondencia/insertarCorrespondenciaExterna',
 
@@ -123,7 +123,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 			this.getBoton('ImpBorrador').hide();
 			//this.getBoton('anularCorrespondencia').show();
-			//this.getBoton('Corregir').hide();
+			this.getBoton('Corregir').hide();
 
 			this.getBoton('HojaRuta').enable();
 			this.getBoton('Historico').enable();
@@ -255,6 +255,7 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 					id_origen: rec.data.id_origen,
 					tipo_corres:rec.data.tipo,
 					estado_reporte:'borrador',
+					id_institucion: rec.data.id_institucion,
 					start : 0,
 					limit : 1
 				},

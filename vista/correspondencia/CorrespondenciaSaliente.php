@@ -17,7 +17,7 @@ header("content-type: text/javascript; charset=UTF-8");
         requireclase: 'Phx.vista.Correspondencia',
         title: 'Saliente',
         nombreVista: 'CorrespondenciaSaliente',
-
+		fwidth: '35%',
 
         constructor: function (config) {
         	
@@ -78,22 +78,31 @@ header("content-type: text/javascript; charset=UTF-8");
          
      },
             
-            iniciarEventos: function () {
-            	
-             this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
-             this.cmpAsocia = this.getComponente('asociar');
-             this.cmpAsocia.on('change', function (groupRadio,radio) {
-            	                                  if(radio.inputValue){this.enableDisable(radio.inputValue);}
-                                        },this);
-               this.Cmp.id_institucion_destino.on('select',function(combo,record,index){
-	    					this.Cmp.id_persona_destino.store.baseParams.id_institucion=combo.getValue();
-	   						this.Cmp.id_persona_destino.reset();
-	   						this.Cmp.id_persona_destino.modificado=true;
-	   			       },this);
-	   		            
-	   		            console.log();
-
-             },
+		iniciarEventos: function () {
+			this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
+			this.cmpAsocia = this.getComponente('asociar');
+			this.cmpAsocia.on('change', function (groupRadio,radio) {
+				if(radio.inputValue){
+					this.enableDisable(radio.inputValue);
+				}
+			},this);
+			this.Cmp.id_institucion_destino.on('select',function(combo,record,index){
+				this.Cmp.id_persona_destino.store.baseParams.id_institucion=combo.getValue();
+				this.Cmp.id_persona_destino.reset();
+				this.Cmp.id_persona_destino.modificado=true;
+			},this);
+			this.Cmp.id_funcionario_saliente.on('select',function(rec){ 
+				this.Cmp.id_uo.store.load({params:{start:0,limit:this.tam_pag}, 
+	               callback : function (r) {                        
+	                    if (r.length > 0 ) {                        
+	                        this.Cmp.id_uo.setValue(r[0].data.id_uo);
+	                    }     
+	                                    
+	                }, scope : this
+	            });
+			},this);
+			//console.log();
+		},
      
 		east : undefined,
      

@@ -102,7 +102,7 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
    			config:{
    				name:'id_funcionario',
    				fieldLabel:'Funcionario(s). Destino',
-   				allowBlank:true,
+   				allowBlank:false,
    				emptyText:'Funcionarios...',
    				store: new Ext.data.JsonStore({  
 					url: '../../sis_organigrama/control/Funcionario/listarFuncionarioCargo',

@@ -91,7 +91,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						allowBlank : false,
 						emptyText : 'Documento...',
 						store : new Ext.data.JsonStore({
-						url : '../../sis_parametros/control/Documento/listarDocumento_mas_Todos',
+						url : '../../sis_parametros/control/Documento/listarDocumento',
 					
 						id : 'id_documento',
 			    		root : 'datos',

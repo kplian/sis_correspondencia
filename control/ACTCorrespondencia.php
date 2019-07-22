@@ -289,9 +289,13 @@ class ACTCorrespondencia extends ACTbase
     {
     	if($this->objParam->getParametro('id_origen')!=''){
     		$id_correspondencia=$this->objParam->getParametro('id_origen');
-		}
+            $id_institucion=$this->objParam->getParametro('id_institucion');
+        }
 			$this->objParam->addParametro('id_correspondencia',$id_correspondencia);
 			$this->objParam->addParametro('estado_reporte','finalizado');
+			//mgarcia para obtener el historico
+			$this->objParam->addParametro('id_institucion',$id_institucion);
+			//
     	if($this->objParam->getParametro('tipoReporte')=='excel_grid' || $this->objParam->getParametro('tipoReporte')=='pdf_grid'){
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODCorrespondencia','hojaRuta');
@@ -317,24 +321,22 @@ class ACTCorrespondencia extends ACTbase
             $this->objFunc = $this->create('MODCorrespondencia');
             $this->res = $this->objFunc->listarCorrespondencia();
  
-
-            if ($this->res->getTipo() == 'ERROR') {
-                $this->res->imprimirRespuesta($this->res->generarJson());
+			if ($this->res->getTipo() == 'ERROR') {
+            	$this->res->imprimirRespuesta($this->res->generarJson());
                 exit;
             }
             $correspondencia = $this->res->getDatos();
-
 
             //obtener detalle de envios
             $this->objParam->parametros_consulta['ordenacion'] = 'id_correspondencia';
             $this->objParam->parametros_consulta['filtro'] = ' 0 = 0 ';
             $this->objParam->parametros_consulta['cantidad'] = '1000';
-            $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia'));
+			$this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia'));
             $this->objFunc = $this->create('MODCorrespondencia');
             $this->res = $this->objFunc->listarCorrespondenciaDetalle($this->objParam);
 
             if ($this->res->getTipo() == 'ERROR') {
-                $this->res->imprimirRespuesta($this->res->generarJson());
+            	$this->res->imprimirRespuesta($this->res->generarJson());
                 exit;
             }
             $correspondenciaDetalle = $this->res->getDatos();
@@ -354,24 +356,24 @@ class ACTCorrespondencia extends ACTbase
 
            // print_r ($correspondencia);
             //$nombre_archivo= $correspondencia[0]['desc_ruta_plantilla_documento'];
-            $png = $barcodeobj->getBarcodePngData($w = 4, $h = 4, $color = array(0, 0, 0));
+            $png = $barcodeobj->getBarcodePngData($w = 40, $h = 40, $color = array(0, 0, 0));
 
-
+			
+			
+			
             $im = imagecreatefromstring($png);
-			  
+			
             if ($im !== false) {
               
                 header('Content-Type: image/png');
                 imagepng($im, dirname(__FILE__) . "/../../reportes_generados/" . $nombre_archivo . ".png");
                 imagedestroy($im);
 
-                $img_qr = dirname(__FILE__) . "/../../reportes_generados/" . $nombre_archivo . ".png";
-
-
-
+                $img_qr = dirname(__FILE__) . "/../../reportes_generados/" . $nombre_archivo . ".png"; //ESTABA COMENTADO
+                //var_dump('DescRutaaaaaa: ',$correspondencia[0]['desc_ruta_plantilla_documento']);
+				
                 if($correspondencia[0]['desc_ruta_plantilla_documento'] == NULL){
-
-                    throw new Exception('no tiene plantilla o no esta en el formato correspondiente');
+                	throw new Exception('no tiene plantilla o no esta en el formato correspondiente');
 
                 }
 
@@ -380,7 +382,9 @@ class ACTCorrespondencia extends ACTbase
                 $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($correspondencia[0]['desc_ruta_plantilla_documento']);
 							
 			
-          $templateProcessor->cloneRow('destinatario', count($correspondenciaDetalle));
+		//var_dump('Aquiiiiii ', count($correspondenciaDetalle));
+            $templateProcessor->cloneRow('destinatario', count($correspondenciaDetalle));
+		  	//$templateProcessor->cloneRow('destinatario', 0);
                 for ($i = 0; $i <= count($correspondenciaDetalle); $i++) {
                  //dobles espacios
                  $xml_destinatario = htmlspecialchars(preg_replace('/\s+/', ' ', $correspondenciaDetalle[$i]['desc_funcionario_plantilla'])) . '</w:t>
@@ -425,14 +429,15 @@ class ACTCorrespondencia extends ACTbase
 								
                     $templateProcessor->setValueDestinatario($key_name, $xml_destinatario);
                     $templateProcessor->setValue($key_name, $correspondenciaDetalle[$i]['desc_funcionario'].'<br /> '.$correspondenciaDetalle[$i]['desc_cargo']);
+					
+					
                     }
+								
                setlocale(LC_ALL, "es_ES@euro", "es_ES", "esp");
 
                 $fecha_documento = strftime("%d/%m/%Y", strtotime($correspondencia[0]['fecha_documento']));
 
-
                 $templateProcessor->setImg('firma_digital', array('src' => $img_qr, 'swh' => '80'));
-
 
                 $templateProcessor->setImgFooter('qr', array('src' => $img_qr, 'swh' => '50'));
                //$templateProcessor->setImgHeader('qrh',array('src' => $img_qr, 'swh'=>'250'));
@@ -495,7 +500,7 @@ class ACTCorrespondencia extends ACTbase
 		
 		}
 		
-        $this->res = $this->objFunc->hojaRuta();
+		$this->res = $this->objFunc->hojaRuta();
 
 
         if ($this->res->getTipo() == 'ERROR') {
@@ -732,10 +737,16 @@ function hojaRutaBorrador()
         $id_origen = $hoja_ruta[0]['desc_id_origen'];
         $id_funcionario_origen = $hoja_ruta[0]['desc_id_funcionario_origen'];
 		$estado = $hoja_ruta[0]['estado'];
+		
+		$id_institucion=$hoja_ruta[0]['id_institucion']; //mgarcia
+		//var_dump($id_institucion);
         //obtenemos la correspondencia original el origen
         
               
         $this->objParam->addParametro('id_funcionario_usuario', $id_funcionario_origen);
+		
+		$this->objParam->addParametro('id_institucion',$id_institucion); //mgarcia
+	
 		$this->objFunc = $this->create('MODCorrespondencia');
 			
 		$this->res = $this->objFunc->listarHojaPrincipal();
@@ -1098,7 +1109,7 @@ window.onload=function(){self.print();}
 		
 		$nombreArchivo = 'CodigoCO'.uniqid(md5(session_id())).'.pdf'; 				
 		$dataSource = $this->recuperarCodigoQR();		
-		$orientacion = 'L';
+	
 		$titulo = 'Códigos Correspondencia';				
 		$width = 200;  
 		$height = 150;
@@ -1108,7 +1119,6 @@ window.onload=function(){self.print();}
 		$this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 		
 		$clsRep = $dataSource->getDatos();
-		//var_dump($clsRep);
 		eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
 		$reporte->datosHeader('unico', $dataSource->getDatos());
 		$reporte->generarReporte();
@@ -1134,7 +1144,8 @@ window.onload=function(){self.print();}
 		
 		$clsRep = $dataSource->getDatos();
 
-		eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
+		//eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
+		$reporte = new RCodigoQRCORR($this->objParam);  
 		$reporte->datosHeader('unico', $dataSource->getDatos());
 		$reporte->generarReporte();
 		$reporte->output($reporte->url_archivo,'F');  		

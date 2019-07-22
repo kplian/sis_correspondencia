@@ -35,6 +35,7 @@ class RCodigoQRCORR extends ReportePDF {
 	var $referencia;
 	
 	function datosHeader ( $tipo, $detalle ) {
+		
 		$this->ancho_hoja = $this->getPageWidth()-PDF_MARGIN_LEFT-PDF_MARGIN_RIGHT-2;
 		$this->datos_detalle = $detalle;
 		$this->datos_titulo = $totales;
@@ -70,18 +71,18 @@ class RCodigoQRCORR extends ReportePDF {
 
 		//$line_width = 0.99 / $this->getScaleFactor();
 		//$this->SetLineStyle(array('width' => $line_width, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
-		$fontname = TCPDF_FONTS::addTTFfont('/var/www/html/kerp/pxp/lib/tcpdf/fonts/pixelmix.ttf', 'TrueTypeUnicode', '', 96); 
+		$fontname = TCPDF_FONTS::addTTFfont('/var/www/html/etr/pxp/lib/tcpdf/fonts/pixelmix.ttf', 'TrueTypeUnicode', '', 96); 
 		$this->SetFont($fontname, '', 11, '', false);
 		$this->Cell(75, 0, '', '', 0, 'R');
-		$pagenumtxt2 = 'ENDE CORANI S.A.';
-		$this->Cell(71, 0, $pagenumtxt2, '', 0, 'R');
+		$pagenumtxt2 = 'ETR';
+		$this->Cell(45, 0, $pagenumtxt2, '', 0, 'R');
 		
 		$c1 = substr(($this->cod['num']),-4);
 		$c2 = substr($c1,2);
 		$resultado = substr(($this->cod['num']),0,-4);
 		$res=strlen(($this->cod['num']));
 		
-		$this->Cell(39, 0,$resultado.$c2, '', 0, 'R');
+		$this->Cell(55, 0,$resultado.$c2, '', 0, 'R');
 			
 		$this->Ln();
 		$this->Cell(75, 0, $pagenumtxt, '', 0, 'R');

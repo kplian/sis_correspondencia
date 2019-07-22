@@ -1,7 +1,7 @@
 <?php
 /**
  * @file gen-Correspondencia.php
- * @author  (rac)
+ * @author  ()
  * @date 13-12-2011 16:13:21
  * @description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
  */
@@ -137,6 +137,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				text : 'Corregir',
 				iconCls : 'bundo',
 				disabled : true,
+				hidden : true,
 				handler : this.BCorregir,
 				tooltip : '<b>Corregir</b><br/>Si todos los envios de destinatarios se encuentran pendientes de lectura puede solicitar la corrección'
 			});   
@@ -522,6 +523,7 @@ header("content-type: text/javascript; charset=UTF-8");
 				name : 'id_clasificador',
 				origen : 'CLASIFICADOR',
 				fieldLabel : 'Clasificación',
+				allowBlank : false,
 				gdisplayField : 'desc_clasificador', //mapea al store del grid
 				gwidth : 200,
 				renderer : function(value, p, record) {
@@ -558,7 +560,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 2,
 			grid : false,
 			form : false
-		}, */ 
+		}, 
 		{
 			config : {
 				name : 'estado',
@@ -576,7 +578,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 0,
 			grid : false,
 			form : false
-		},{
+		},*/ {
 			config : {
 				name : 'id_depto',
 				hiddenName : 'id_depto',
@@ -753,29 +755,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		},
 		{
 			config : {
-				name : 'id_uo',
-				baseParams : {
-					correspondencia : 'si'
-				},
-				origen : 'UO',
-				fieldLabel : 'UO Remitente',
-				gdisplayField : 'desc_uo', //mapea al store del grid
-				gwidth : 200,
-				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_uo']);
-				}
-			},
-			type : 'ComboRec',
-			id_grupo : 4,
-			filters : {
-				pfiltro : 'desc_uo',
-				type : 'string'
-			},
-			grid : true,
-			form : true
-		},
-		{
-			config : {
 				name : 'id_funcionario_saliente',
 				origen : 'FUNCIONARIOCAR',
 				fieldLabel : 'Funcionario Remitente Saliente',
@@ -799,7 +778,32 @@ header("content-type: text/javascript; charset=UTF-8");
 
 			grid : true,
 			form : true
-		}, {
+		}, 
+		{
+			config : {
+				name : 'id_uo',
+				baseParams : {
+					correspondencia : 'si'
+				},
+				origen : 'UO',
+				fieldLabel : 'UO Remitente',
+				allowBlank : true,
+				gdisplayField : 'desc_uo', //mapea al store del grid
+				gwidth : 200,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['desc_uo']);
+				}
+			},
+			type : 'ComboRec',
+			id_grupo : 4,
+			filters : {
+				pfiltro : 'desc_uo',
+				type : 'string'
+			},
+			grid : true,
+			form : true
+		},
+		{
 			config : {
 				name : 'id_institucion_destino',
 				allowBlank : true,
@@ -1255,6 +1259,38 @@ header("content-type: text/javascript; charset=UTF-8");
 			id_grupo : 0,
 			grid : true,
 			form : true
+		},
+		/*{
+			config : {
+				name : 'estado_fisico',
+				allowBlank : true,
+				tinit : true,
+				fieldLabel : 'Estado',
+				
+			},
+			type : 'TextField',
+			id_grupo : 1,
+			
+			grid : true,
+			form : false
+		}*/
+		{
+			config : {
+				name : 'estado',
+				fieldLabel : 'Estado',
+				allowBlank : true,
+				anchor : '80%',
+				gwidth : 100,
+				maxLength : 4
+			},
+			type : 'TextField',
+			filters : {
+				pfiltro : 'cor.estado',
+				type : 'string'
+			},
+			id_grupo : 1,
+			grid : true, //mgarcia
+			form : false
 		}
 		   
 		],
@@ -1329,7 +1365,8 @@ header("content-type: text/javascript; charset=UTF-8");
 			{name:'desc_correspondencias_asociadas', type: 'string'},
 			{name:'estado_corre', type: 'string'},
 			{name:'tipo_documento', type: 'string'},
-			{name:'persona_firma', type: 'string'}
+			{name:'persona_firma', type: 'string'},
+			'estado_fisico'
 			],
 		 	arrayDefaultColumHidden:['estado','nivel_prioridad','id_clasificador','estado','tipo','fecha_creacion_documento','origen','estado_reg','fecha_mod','usr_mod','id_uo'],
 	
@@ -1583,6 +1620,7 @@ header("content-type: text/javascript; charset=UTF-8");
 					id_origen: rec.data.id_origen,
 					tipo_corres:rec.data.tipo,
 					estado_reporte:'finalizado',
+					id_institucion : rec.data.id_institucion,//mgarcia
 					start : 0,
 					limit : 1
 				},

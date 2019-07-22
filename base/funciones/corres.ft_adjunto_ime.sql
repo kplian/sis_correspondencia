@@ -56,8 +56,10 @@ BEGIN
 
           FOR v_registros_json
           IN (SELECT *
-              FROM json_populate_recordset(NULL :: corres.json_adjuntos_ins, v_parametros.arra_json :: JSON))
+              FROM json_populate_recordset(NULL::corres.json_adjuntos_ins, v_parametros.arra_json::JSON))
+
           LOOP
+          
                --Verificar los adjuntos que 
               FOR v_adjuntos
               IN (SELECT *
@@ -69,7 +71,7 @@ BEGIN
                  END IF;
               END LOOP;
           
-          
+
              SELECT estado,sw_archivado,estado_corre
              INTO v_estado,v_archivado,v_estado_corre
              FROM corres.tcorrespondencia
@@ -82,7 +84,7 @@ BEGIN
              INTO v_estado,v_archivado
              FROM corres.tcorrespondencia
              WHERE id_correspondencia=v_registros_json.id_correspondencia;
-            
+                    --  raise exception 'ddd%', v_registros_json.id_correspondencia;
             --Sentencia de la insercion
             insert into corres.tadjunto(
               extension,
@@ -113,7 +115,7 @@ BEGIN
               v_registros_json.id_correspondencia
              );
 
-						END LOOP ;
+			END LOOP ;
 
 			
 			--Definicion de la respuesta

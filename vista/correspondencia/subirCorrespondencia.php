@@ -68,8 +68,9 @@ Phx.vista.subirCorrespondencia=Ext.extend(Phx.frmInterfaz,{
 					anchor:'100%',
 					validateValue:function(archivo){
 						var extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase(); 
-						if(extension!='.pdf' && extension!='.PDF'){
-								this.markInvalid('solo se admiten archivos PDF');
+						//if(extension!='.pdf' && extension!='.PDF'){
+						if(extension!='.pdf' && extension!='.PDF' && extension!='.docx' && extension!='.DOCX' && extension!='.doc' && extension!='.DOC' && extension!='.jpg' && extension!='.png'){
+								this.markInvalid('solo se admiten archivos PDF, DOC, DOCX, JPG, PNG');
 								return false
 						}
 						else{
