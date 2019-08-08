@@ -180,4 +180,17 @@ ALTER TABLE corres.tasistente_permisos
   
 /***********************************F-SCP-AVQ-CORRES-0-25/04/2019*****************************************/
 
+/***********************************I-SCP-MCGH-CORRES-0-08/08/2019*****************************************/
+ALTER TABLE corres.tcorrespondencia ADD persona_remitente VARCHAR(250) null;
+COMMENT ON COLUMN corres.tcorrespondencia.persona_remitente
+IS 'Campo que registra el nombre de la persona que remite la correspondencia';
+ALTER TABLE corres.tcorrespondencia ADD persona_destino VARCHAR(250) null;
+COMMENT ON COLUMN corres.tcorrespondencia.persona_destino
+IS 'Campo que registra el nombre de la persona destinataria la correspondencia';
+ALTER TABLE corres.tcorrespondencia ADD fecha_envio DATE null;
+COMMENT ON COLUMN corres.tcorrespondencia.fecha_envio
+IS 'Campo que registra la fecha de envio de la correspondencia';
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN id_clasificador DROP NOT NULL;
+/***********************************F-SCP-MCGH-CORRES-0-08/08/2019*****************************************/
 
