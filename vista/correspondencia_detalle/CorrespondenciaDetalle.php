@@ -318,7 +318,8 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		{name:'desc_persona', type: 'string'},
 		{name:'desc_institucion', type: 'string'},
 		{name:'acciones', type: 'string'},
-		{name:'estado_corre', type: 'string'}
+		{name:'estado_corre', type: 'string'},
+        {name:'persona_remitente', type: 'string'}
 	],
 	sortInfo:{
 		field: 'id_correspondencia',
@@ -517,9 +518,9 @@ Phx.vista.CorrespondenciaDetalle=Ext.extend(Phx.gridInterfaz,{
 		      
 	}, 
 	onButtonNew: function () {
-		
+
 		//a this.Cmp.id_funcionario.disable();
-		//this.Cmp.id_funcionario.enableMultiSelect(true);	
+		//this.Cmp.id_funcionario.enableMultiSelect(true);
 		Phx.vista.CorrespondenciaDetalle.superclass.onButtonNew.call(this);
 		this.mostrarComponente(this.Cmp.id_funcionario);
 	},

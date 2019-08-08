@@ -1359,5 +1359,18 @@ function anularCorrespondencia()
         }
         return $res;
     }
+	//manu
+	function listarUO()
+    {
+        $this->objParam->defecto('ordenacion', 'id_correspondencia');
+        $this->objParam->defecto('dir_ordenacion', 'desc');
+		if ($this->objParam->getParametro('id_uo') != '') {            
+			$this->objParam->addFiltro("c.id_uo = " . $this->objParam->getParametro('id_uo'));  
+        }
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->listarUO();
+		$this->res->imprimirRespuesta($this->res->generarJson());
+    }
+	
 } 
 ?>

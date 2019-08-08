@@ -8,6 +8,12 @@
  *dar el visto a solicitudes de compra
  *
  */
+#HISTORIAL DE MODIFICACIONES:
+#ISSUE          FECHA        AUTOR        DESCRIPCION
+#4      		25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción,
+#										  Eliminación del campo id_clasificador,
+#										  Adición del campo persona_destino
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -37,7 +43,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			    this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
 			  //  this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
 			    this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
-			    
+
 			    
                     
             Phx.vista.CorrespondenciaEmitida.superclass.constructor.call(this, config);   
@@ -62,9 +68,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
       
       onButtonNew: function () {
-            console.log('llegasssss');
 
-            console.log('inicia_eventos');
             this.cmpFechaDoc = this.getComponente('fecha_documento');
             this.Cmp.id_funcionario.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
             this.Cmp.id_funcionario.store.load({params:{start:0,limit:this.tam_pag},
@@ -94,13 +98,15 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.nro_paginas);
          //   this.ocultarComponente(this.Cmp.persona_firma);
             this.ocultarComponente(this.Cmp.tipo_documento);
- 			    
+            this.ocultarComponente(this.Cmp.persona_remitente); //#4
+            this.ocultarComponente(this.Cmp.persona_destino); //#4
+
             this.getComponente('id_clasificador').enable();
             this.getComponente('fecha_documento').disable();
             this.getComponente('mensaje').enable();
             this.getComponente('nivel_prioridad').enable();
             this.getComponente('referencia').enable();
-            
+
             this.tipo = this.getComponente('tipo');
             this.tipo.setValue('interna');
 		    this.tipo.disable(true);
@@ -206,6 +212,7 @@ header("content-type: text/javascript; charset=UTF-8");
          
      },
 		  iniciarEventos: function () {
+
 		  	this.getBoton('Habilitar').hide();
 	         this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
              this.cmpAsocia = this.getComponente('asociar');

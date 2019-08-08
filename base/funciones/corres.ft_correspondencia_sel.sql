@@ -16,35 +16,36 @@ $body$
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION:	
- AUTOR:			
- FECHA:		
+ #ISSUE         FECHA        AUTOR        DESCRIPCION
+ #4  	      	25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción, 
+ 										  Eliminación del campo id_clasificador   
+                                          Adición del campo persona_destino, fecha envio
 ****************************************************************************/
 
    
 DECLARE
-    v_auxiliar			varchar;
-	v_consulta    		varchar;
-	v_parametros  		record;
-	v_nombre_funcion   	text;
-	v_resp				varchar;
-
-  v_filtro                varchar;
-  v_id_origen			  INTEGER;
-  v_id_funcionario_origen integer;
-  v_permiso               VARCHAR;
-  v_deptos                VARCHAR;
-  v_tipo_correspondencia  varchar;
-  v_id_usuario_reg        INTEGER;
-  v_id_persona            INTEGER;
-  v_cargo                 varchar;
-  v_id_depto              integer;
-  v_permitir_todo         varchar;
-  v_fecha_consulta        date;
-  v_id_funcionario        integer;
-  v_id_funcionarios_permitidos   INTEGER[];
-  v_id_asistente     INTEGER;
-			    
+    v_auxiliar				varchar;
+	v_consulta    			varchar;
+	v_parametros  			record;
+	v_nombre_funcion   		text;
+	v_resp					varchar;
+    v_filtro                varchar;
+    v_id_origen			  	INTEGER;
+    v_id_funcionario_origen integer;
+    v_permiso               VARCHAR;
+    v_deptos                VARCHAR;
+    v_tipo_correspondencia  varchar;
+    v_id_usuario_reg        INTEGER;
+    v_id_persona            INTEGER;
+    v_cargo                 varchar;
+    v_id_depto              integer;
+    v_permitir_todo         varchar;
+    v_fecha_consulta        date;
+    v_id_funcionario        integer;
+    v_id_funcionarios_permitidos   INTEGER[];
+	v_id_asistente     		INTEGER;
+    v_filadd           		varchar;
+				    
 			    
 BEGIN
 
@@ -309,13 +310,13 @@ BEGIN
                             cor.ruta_archivo,
                             cor.version,                            
                             uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
-                            clasif.descripcion as desc_clasificador,
+                            --clasif.descripcion as desc_clasificador, --#4
                             cor.id_clasificador,
                             doc.ruta_plantilla as desc_ruta_plantilla_documento,
                             orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
                             cor.sw_archivado,
                             lower(substring(split_part(person.nombre,'' '',1),1,1)||''''||substring(split_part(person.nombre,'' '',2),1,1)||''''||substring(split_part(person.nombre,'' '',3),1,1)||''''||substring(person.ap_paterno,1,1)||''''||substring(person.ap_materno,1,1)) as iniciales,
-                            insti.nombre as desc_insti,
+                            COALESCE(insti.nombre,'''') as desc_insti,
                             coalesce(persona.nombre_completo1,'' ''),
                             cor.id_institucion as id_institucion_destino,
                             cor.id_persona as id_persona_destino,
@@ -348,7 +349,8 @@ BEGIN
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
                                    END ),'' '')AS  correspondencias_asociadas,
                                    cor.tipo_documento,
-                                   cor.persona_firma
+                                   cor.persona_firma,
+                                   cor.persona_destino
                                  
                        	from corres.tcorrespondencia cor						
                         inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
@@ -362,7 +364,7 @@ BEGIN
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join corres.tcorrespondencia coror on coror.id_correspondencia=cor.id_origen
                      
-                        inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
+                        --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador --#4
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                          left join segu.vpersona persona on persona.id_persona=cor.id_persona                         
@@ -459,7 +461,7 @@ BEGIN
                         inner join segu.vpersona person on person.id_persona=fun.id_persona
 				       
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
-                        inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
+                        --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador --#4
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                          left join segu.vpersona persona on persona.id_persona=cor.id_persona  where  '||v_filtro||' and ';
@@ -545,7 +547,8 @@ BEGIN
                         orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
                         pxp.f_fecha_literal(cor.fecha_documento) as fecha_documento_literal,
                         initcap(person.nombre)||'' ''||initcap(person.ap_paterno)||'' ''||initcap(person.ap_materno) as desc_funcionario_plantilla,
-                        cor.estado_corre
+                        cor.estado_corre,
+                        cor.persona_remitente
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
@@ -988,8 +991,8 @@ BEGIN
                                    END ),'' '')AS  correspondencias_asociadas,
                                        cor.tipo_documento,
                                    cor.persona_firma,
-                                   cor.estado_fisico
-                                
+                                   cor.estado_fisico,
+                                   cor.persona_remitente
                                 
                      	from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
@@ -1019,7 +1022,7 @@ BEGIN
            -- raise exception '%',v_parametros.filtro;
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by  ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-            --raise exception '%','backtone    '||v_consulta;
+            --raise notice '%',v_consulta;
 			--Devuelve la respuesta
 			return v_consulta;
 						
@@ -1496,8 +1499,8 @@ where tiene is not null ';
                             depto.nombre as desc_depto,
                             cor.ruta_archivo,
                             cor.version,
-                            clasif.descripcion as desc_clasificador,
-                            cor.id_clasificador,
+                            --clasif.descripcion as desc_clasificador,
+                            --cor.id_clasificador,
                             doc.ruta_plantilla as desc_ruta_plantilla_documento,
                             cor.sw_archivado,
 							coalesce (insti.nombre,'''') as desc_institucion,
@@ -1533,7 +1536,8 @@ where tiene is not null ';
                                        cor.tipo_documento,
                                    cor.persona_firma,
                                    
-                        cor.estado_fisico
+                        cor.estado_fisico,
+                        cor.persona_remitente
 
 
                         from corres.tcorrespondencia cor
@@ -1543,7 +1547,7 @@ where tiene is not null ';
                         inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         left join param.tinstitucion insti on insti.id_institucion=coror.id_institucion
                         left join segu.vpersona persona on persona.id_persona=coror.id_persona                     
-                        inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
+                        --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                        	left join orga.vfuncionario emp_recepciona1 on emp_recepciona1.id_funcionario=cor.id_funcionario
                       
@@ -1566,7 +1570,6 @@ where tiene is not null ';
 			v_consulta:=v_consulta || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 
-			
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -1629,7 +1632,7 @@ where tiene is not null ';
                         inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona                     
-                        inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
+                        --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 				        where '||v_filtro||'  ';
 
@@ -1682,6 +1685,120 @@ where tiene is not null ';
 
     end;
   
+    /*******************************
+    #TRANSACCION:  CO_UO_SEL
+    #DESCRIPCION:	Listado de uos
+    #AUTOR:		
+    #FECHA:		23/05/11	
+    ***********************************/
+    elsif(p_transaccion='CO_UO_SEL')then          
+         BEGIN     
+            v_consulta:='WITH RECURSIVE uo_centro(ids,
+                                                  id_uo,
+                                                  id_uo_padre,
+                                                  nombre_unidad,
+                                                  codigo,
+                                                  gerencia,
+                                                  correspondencia,
+                                                  uo_centro_orden) AS
+                        (
+                        SELECT ARRAY [ c_1.id_uo ] AS "array",
+                        c_1.id_uo,
+                        NULL::integer AS id_uo_padre,
+                        c_1.nombre_unidad,
+                        c_1.codigo,
+                        c_1.gerencia,
+                        c_1.correspondencia,
+                        c_1.orden_centro AS uo_centro_orden
+                        FROM orga.tuo c_1
+                        WHERE c_1.centro::text = ''si''::text AND c_1.estado_reg::text = ''activo''::text
+                        UNION
+                        SELECT pc.ids || c2.id_uo,
+                        c2.id_uo,
+                        euo.id_uo_padre,
+                        c2.nombre_unidad,
+                        c2.codigo,
+                        c2.gerencia,
+                        c2.correspondencia,
+                        c2.orden_centro AS uo_centro_orden
+                        FROM orga.tuo c2
+                        JOIN orga.testructura_uo euo ON euo.id_uo_hijo = c2.id_uo
+                        JOIN uo_centro pc ON pc.id_uo = euo.id_uo_padre
+                        WHERE c2.centro::text = ''no''::text AND c2.estado_reg::text = ''activo''::text
+                        )
+                        SELECT 
+                        c.id_uo,
+                        cl.codigo AS codigo_uo_centro,
+                        cl.nombre_unidad AS nombre_uo_centro,
+                        cl.id_uo AS id_uo_centro,
+                        c.ids::varchar,
+                        c.id_uo_padre,
+                        c.codigo::varchar,
+                        c.nombre_unidad,
+                        c.gerencia,
+                        c.correspondencia,
+                        cl.orden_centro::numeric AS uo_centro_orden
+                        FROM uo_centro c
+                        JOIN orga.tuo cl ON cl.id_uo = c.ids [ 1 ] and';                              
+            v_consulta:=v_consulta||v_parametros.filtro;
+            v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;
+            raise notice '%',v_consulta;
+            --raise exception '%',v_consulta;
+            return v_consulta;
+         END;
+
+    /*******************************
+    #TRANSACCION:  CO_UO_CONT
+    #DESCRIPCION:	Conteo de uos
+    #AUTOR:		
+    #FECHA:		23/05/11	
+    ***********************************/
+    elsif(p_transaccion='CO_UO_CONT')then
+      BEGIN          
+          v_consulta:='WITH RECURSIVE uo_centro(ids,
+                                                  id_uo,
+                                                  id_uo_padre,
+                                                  nombre_unidad,
+                                                  codigo,
+                                                  gerencia,
+                                                  correspondencia,
+                                                  uo_centro_orden) AS
+                        (
+                        SELECT ARRAY [ c_1.id_uo ] AS "array",
+                        c_1.id_uo,
+                        NULL::integer AS id_uo_padre,
+                        c_1.nombre_unidad,
+                        c_1.codigo,
+                        c_1.gerencia,
+                        c_1.correspondencia,
+                        c_1.orden_centro AS uo_centro_orden
+                        FROM orga.tuo c_1
+                        WHERE c_1.centro::text = ''si''::text AND c_1.estado_reg::text = ''activo''::text
+                        UNION
+                        SELECT pc.ids || c2.id_uo,
+                        c2.id_uo,
+                        euo.id_uo_padre,
+                        c2.nombre_unidad,
+                        c2.codigo,
+                        c2.gerencia,
+                        c2.correspondencia,
+                        c2.orden_centro AS uo_centro_orden
+                        FROM orga.tuo c2
+                        JOIN orga.testructura_uo euo ON euo.id_uo_hijo = c2.id_uo
+                        JOIN uo_centro pc ON pc.id_uo = euo.id_uo_padre
+                        WHERE c2.centro::text = ''no''::text AND c2.estado_reg::text = ''activo''::text
+                        )
+                        SELECT                         
+                        count(c.id_uo)
+                        FROM uo_centro c
+                        JOIN orga.tuo cl ON cl.id_uo = c.ids [ 1 ] and';                              
+            v_consulta:=v_consulta||v_parametros.filtro;            
+            raise notice '%',v_consulta;
+          return v_consulta;
+      END;
+  
+  
+  
 	else
 					     
 		raise exception 'Transaccion inexistente';
@@ -1704,3 +1821,6 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
+
+ALTER FUNCTION corres.ft_correspondencia_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
+  OWNER TO postgres;

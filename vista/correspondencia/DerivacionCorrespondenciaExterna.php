@@ -216,10 +216,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.asociar);
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
-		this.ocultarComponente(this.Cmp.fecha_creacion_documento);  
-		
+		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
+        this.ocultarComponente(this.Cmp.id_persona_remitente);
 
-		this.tipo.setValue('externa');
+        this.tipo.setValue('externa');
 		this.tipo.disable(true);
 
 		

@@ -7,13 +7,17 @@
 *@description Clase que envia los parametros requeridos a la Base de datos para la ejecucion de las funciones, y que recibe la respuesta del resultado de la ejecucion de las mismas
 */
 
+#HISTORIAL DE MODIFICACIONES:
+#ISSUE          FECHA        AUTOR        DESCRIPCION
+#4      		25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción,
+#										  Eliminación del campo id_clasificador,
+#										  Adición del campo persona_destino, fecha envio
 
 class MODCorrespondencia extends MODbase{
 	
 	function __construct(CTParametro $pParam){
 		parent::__construct($pParam);
 	}
-	
 							
 	function listarCorrespondenciaSimplificada(){
 		//funcionon inserta correpondecia interna  y la esterna emitida
@@ -98,7 +102,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('version','int4');
 		
 		$this->captura('desc_uo','text');
-        $this->captura('desc_clasificador','text');
+        //$this->captura('desc_clasificador','text'); //#4
         $this->captura('id_clasificador','integer');
         $this->captura('desc_ruta_plantilla_documento','varchar');
         $this->captura('desc_cargo','varchar');
@@ -123,6 +127,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_correspondencias_asociadas','text');
 		$this->captura('tipo_documento','varchar');
 		$this->captura('persona_firma','varchar');
+		$this->captura('persona_destino','varchar'); //#4
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -188,6 +193,7 @@ class MODCorrespondencia extends MODbase{
         $this->captura('fecha_documento_literal','text');
 		$this->captura('desc_funcionario_plantilla','text');
 		$this->captura('estado_corre','varchar');
+		$this->captura('persona_remitente','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -262,7 +268,7 @@ class MODCorrespondencia extends MODbase{
 		return $this->respuesta;
 	}
 			
-	function insertarCorrespondencia(){ 
+	function insertarCorrespondencia(){
 		//Definicion de variables para ejecucion del procedimiento
 		$this->procedimiento='corres.ft_correspondencia_ime';
 		$this->transaccion='CO_COR_INS';
@@ -295,21 +301,18 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('respuestas','respuestas','varchar');
 		$this->setParametro('sw_responsable','sw_responsable','varchar');
 		$this->setParametro('tipo','tipo','varchar');
-		
 		//$this->setParametro('id_funcionarios','id_funcionarios','varchar');
 		$this->setParametro('id_clasificador','id_clasificador','int4');
-		
 		//para correspodencia destino
 		$this->setParametro('id_institucion_destino','id_institucion_destino','int4');
 		$this->setParametro('id_persona_destino','id_persona_destino','int4');
 		$this->setParametro('id_funcionarios','id_funcionarios','varchar');
 		$this->setParametro('id_acciones','id_acciones','varchar');
 		$this->setParametro('fecha_creacion_documento','fecha_creacion_documento','date');
-		
-		
 		$this->setParametro('cite','cite','varchar');
-
 		$this->setParametro('id_funcionario_saliente','id_funcionario_saliente','varchar');
+		$this->setParametro('persona_destino','persona_destino','varchar'); //#4
+		$this->setParametro('fecha_envio','fecha_envio','date'); //#4
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -356,6 +359,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_persona_destino','id_persona_destino','int4');
 	    $this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
 		$this->setParametro('id_funcionario_saliente','id_funcionario_saliente','varchar');
+		$this->setParametro('persona_destino','persona_destino','varchar'); //#4
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -456,6 +460,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('tipo_documento','varchar');
 		$this->captura('persona_firma','varchar');
 		$this->captura('estado_fisico','varchar');
+		$this->captura('persona_remitente','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1004,8 +1009,8 @@ function corregirCorrespondenciaExt()
 		$this->captura('desc_depto','varchar');
 		$this->captura('ruta_archivo','varchar');
 		$this->captura('version','int4');		
-		$this->captura('desc_clasificador','text');
-		$this->captura('id_clasificador','integer');
+		//$this->captura('desc_clasificador','text');
+		//$this->captura('id_clasificador','integer');
 		$this->captura('desc_ruta_plantilla_documento','varchar');
 		$this->captura('sw_archivado','varchar');
 		$this->captura('desc_insti','varchar');
@@ -1025,6 +1030,7 @@ function corregirCorrespondenciaExt()
 		$this->captura('tipo_documento','varchar');
 		$this->captura('persona_firma','varchar');
 		$this->captura('estado_fisico','varchar');
+		$this->captura('persona_remitente','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1054,12 +1060,12 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('id_documento','id_documento','int4');
 		$this->setParametro('fecha_documento','fecha_documento','date');
 		$this->setParametro('id_institucion_remitente','id_institucion_remitente','int4');
-		$this->setParametro('id_persona_remitente','id_persona_remitente','int4');
+		//$this->setParametro('id_persona_remitente','id_persona_remitente','int4');
 		$this->setParametro('referencia','referencia','varchar');
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_correspondencias_asociadas','id_correspondencias_asociadas','varchar');
 		$this->setParametro('nivel_prioridad','nivel_prioridad','varchar');
-		$this->setParametro('id_clasificador','id_clasificador','int4');		
+		//$this->setParametro('id_clasificador','id_clasificador','int4');
 		$this->setParametro('id_depto','id_depto','int4');
 		$this->setParametro('nro_paginas','nro_paginas','int4');
 		$this->setParametro('otros_adjuntos','otros_adjuntos','varchar');
@@ -1067,6 +1073,7 @@ function corregirCorrespondenciaExt()
         $this->setParametro('fecha_creacion_documento','fecha_creacion_documento','timestamp');
 		$this->setParametro('persona_firma','persona_firma','varchar');
 		$this->setParametro('tipo_documento','tipo_documento','varchar');
+		$this->setParametro('persona_remitente','persona_remitente','varchar');  //#4 MCGH
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1087,7 +1094,7 @@ function corregirCorrespondenciaExt()
 		$this->setParametro('id_documento','id_documento','int4');
 		$this->setParametro('fecha_documento','fecha_documento','date');
 		$this->setParametro('id_institucion_remitente','id_institucion_remitente','int4');
-		$this->setParametro('id_persona_remitente','id_persona_remitente','int4');
+		//$this->setParametro('id_persona_remitente','id_persona_remitente','int4');
 		$this->setParametro('referencia','referencia','varchar');
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_correspondencias_asociadas','id_correspondencias_asociadas','varchar');
@@ -1099,7 +1106,7 @@ function corregirCorrespondenciaExt()
 	    $this->setParametro('cite','cite','varchar');
 		$this->setParametro('persona_firma','persona_firma','varchar');
 		$this->setParametro('tipo_documento','tipo_documento','varchar');
-		
+		$this->setParametro('persona_remitente','persona_remitente','varchar');//#4 MCGH
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1243,6 +1250,34 @@ function eliminarAlarmaAnulada()
 		return $this->respuesta;
 		
 		
+	}
+	//
+	function listarUO(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='corres.ft_correspondencia_sel';
+		$this->transaccion='CO_UO_SEL';
+		$this->tipo_procedimiento='SEL';
+		$this->setParametro('id_uo','id_uo','int4');	
+		$this->setParametro('correspondencia','correspondencia','varchar');
+		$this->setParametro('gerencia','gerencia','varchar');
+		$this->setParametro('presupuesta','presupuesta','varchar');	
+		//Definicion de la lista del resultado del query
+		$this->captura('id_uo','int4');
+		$this->captura('codigo_uo_centro','varchar');
+		$this->captura('nombre_uo_centro','varchar');
+		$this->captura('id_uo_centro','int4');
+		$this->captura('ids','varchar');
+		$this->captura('id_uo_padre','int4');        
+        $this->captura('codigo','varchar');
+        $this->captura('nombre_unidad','varchar');
+        $this->captura('gerencia','varchar');        
+        $this->captura('correspondencia','varchar');
+		$this->captura('uo_centro_orden','numeric');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();		
+		//Devuelve la respuesta
+		return $this->respuesta;
 	}
 			
 }

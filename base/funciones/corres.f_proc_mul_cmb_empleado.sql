@@ -17,7 +17,8 @@ CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado (
   fl_origen varchar,
   fl_fecha_documento date,
   f1_id_origen integer,
-  f1_id_depto integer
+  f1_id_depto integer,
+  fl_persona_remitente varchar
 )
 RETURNS boolean AS
 $body$
@@ -31,11 +32,10 @@ $body$
  FECHA:			24/01/2012
  COMENTARIOS:
 ***************************************************************************
- HISTORIA DE MODIFICACIONES:
+HISTORIAL DE MODIFICACIONES:
 
- DESCRIPCION:
- AUTOR:
- FECHA
+ #ISSUE         FECHA        AUTOR        DESCRIPCION
+ #4  	      	31/07/2019   MCGH         Adición del parametro persona_remitente, fecha recepción
 
 ******************/
 
@@ -97,20 +97,20 @@ BEGIN
  --    diferentes niveles armando un vector
 
    v_nombre_funcion = 'f_proc_mul_cmb_empleado';
-  
+
    v_array_var= corres.f_arma_arbol_inicia(fl_id_correspondencia,'id_funcionario');
-   
+
    v_array = string_to_array(v_array_var,',');
 
 --  1)  partir la cadena dividiendo por la comas
   -- if (select position(',' in fl_cadena)=0)THEN
     --  v_partes = string_to_array(fl_cadena,null);
    --else
-  
+
       v_partes = string_to_array(fl_cadena,',');
    --end if;
- 
-   
+
+
 --raise exception '%',''||v_partes;
 
 
@@ -120,7 +120,7 @@ BEGIN
 
 -- 2) FOR recorre las partes trozadas de la cadena en un for
 
- 
+
 
      FOR v_i IN 1..v_num
       loop
@@ -142,11 +142,11 @@ BEGIN
 
 
                   if(array_upper(v_id_uo,1)=1) then
-                  
+
                      raise exception 'El funcionario: %, no pertenece a ninguna Unidad Organizacional o la fecha de Asignación del funcionario es menor a la fecha del Documento',v_nombre_funcionario;
                   end if;
                  -- obtiene el departemo de correspondeic a de la uo
-                  
+
                   SELECT
                       dep.id_depto
                   INTO
@@ -201,7 +201,8 @@ BEGIN
                       origen,
                       fecha_documento,
                          id_origen,
-                      fecha_creacion_documento
+                      fecha_creacion_documento,
+                      persona_remitente  --#4
                       )
                       values
                       (
@@ -227,7 +228,8 @@ BEGIN
                       fl_origen,
                       fl_fecha_documento,
                           f1_id_origen,
-                      now()
+                      now(),
+                      fl_persona_remitente   --#4
                       ) RETURNING id_correspondencia into v_id_correspondencia;
 
 
@@ -278,7 +280,7 @@ BEGIN
 return true;
 
 EXCEPTION
-				
+
 	WHEN OTHERS THEN
 		v_resp='';
 		v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);

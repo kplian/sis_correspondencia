@@ -115,8 +115,8 @@ class RGeneralCorres extends  ReportePDF {
 		
 		
 		//arma cabecera de la tabla  17  - 13   20   -    ;  (15,  14  21,   2,,4,6)
-		$conf_par_tablewidths=array(5,25,23,18,25,15,25,15,18,20,20,17,15,15);
-        $conf_par_tablealigns=array('C','C','C','C','C','C','C','C','C','C','C','C','C','C');
+		$conf_par_tablewidths=array(5,25,23,18,25,15,25,15,20,20,17,15,15);
+        $conf_par_tablealigns=array('C','C','C','C','C','C','C','C','C','C','C','C','C');
         //$conf_par_tablenumbers=array(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 		$conf_tableborders=array();
         $conf_tabletextcolor=array();
@@ -142,15 +142,15 @@ class RGeneralCorres extends  ReportePDF {
 				's6' => "REFERENCIA",   
 				//'s7' => "OBSERVACIÓN",    
 				's7' => "NIVEL\nPRIORIDAD",
-				's8' => "CLASIFICADOR",
+				//'s8' => "CLASIFICADOR",
 				
-				's9' => "FUNCIONARIO\nDESTINATARIO",     
-				's10' => 'MENSAJE',           
-				's11' => 'ACCIONES',
+				's8' => "FUNCIONARIO\nDESTINATARIO",
+				's9' => 'MENSAJE',
+				's10' => 'ACCIONES',
 				//'s13' => "INSTITUCION \nDESTINATARIO",
 				
-				's12' => "USUARIO REGISTRO",       
-				's13' => "ARCHIVADO",      
+				's11' => "USUARIO REGISTRO",
+				's12' => "ARCHIVADO",
 				
 				);
 		
@@ -189,10 +189,10 @@ class RGeneralCorres extends  ReportePDF {
         $this->SetFont('','',5.5);
 			
 		
-		$conf_par_tablewidths=array(5,25,23,18,25,15,25,15,18,20,20,17,15,15);
-        $conf_par_tablealigns=array('C','C','R','L','R','R','R','R','R','R','R','R','C','C');
+		$conf_par_tablewidths=array(5,25,23,18,25,15,25,15,20,20,17,15,15);
+        $conf_par_tablealigns=array('C','C','R','L','R','R','R','R','R','R','R','C','C');
         //$conf_par_tablenumbers=array(0,0,0,0,0,0,0,2,2,2,2,2,2,0,0);
-        $conf_tableborders=array('LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB');
+        $conf_tableborders=array('LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB','LRB');
 		
 		$this->tablewidths=$conf_par_tablewidths;
         $this->tablealigns=$conf_par_tablealigns;
@@ -213,15 +213,15 @@ class RGeneralCorres extends  ReportePDF {
 						's6' => trim($val['referencia']),
 						//'s7' => $this->cortar_cadena(trim($val['observaciones_estado']),58),
 						's7' => trim($val['nivel_prioridad']),
-						's8' => trim($val['desc_clasificador']),
+						//'s8' => trim($val['desc_clasificador']),
 						
-						's9' => trim($val['desc_funcionario']),
-                        's10' => $this->cortar_cadena(trim($val['mensaje']),58),
-                        's11' => trim($val['acciones']),
+						's8' => trim($val['desc_funcionario']),
+                        's9' => $this->cortar_cadena(trim($val['mensaje']),58),
+                        's10' => trim($val['acciones']),
 						//'s13' => trim($val['desc_insti']),
                         
-                        's12' => trim($val['usr_reg']),
-						's13' => trim($val['sw_archivado']),
+                        's11' => trim($val['usr_reg']),
+						's12' => trim($val['sw_archivado']),
 					);
 
 		$this-> MultiRow($RowArray,$fill,0);

@@ -186,6 +186,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
        return tb
   },
 	onButtonNew: function () {
+        console.log("boton nuevo");
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
 		
@@ -201,7 +202,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.asociar);
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
-		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
+		this.ocultarComponente(this.Cmp.fecha_creacion_documento); 
 		/*this.ocultarComponente(this.Cmp.asociar);
         this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);*/
 		     

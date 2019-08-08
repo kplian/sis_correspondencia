@@ -46,7 +46,7 @@ class MODReporteGeneral extends MODbase{
 			$this->captura('usr_reg','varchar');
 			$this->captura('desc_funcionario','text');
 			$this->captura('version','int4');
-			$this->captura('desc_clasificador','text');
+			//$this->captura('desc_clasificador','text');
 			$this->captura('sw_archivado','varchar');
 			//$this->captura('desc_insti','varchar');
 			$this->captura('tipo','varchar');
