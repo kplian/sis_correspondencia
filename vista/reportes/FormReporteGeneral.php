@@ -62,7 +62,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						config : {
 							name : 'fecha_ini',
                             id:'fecha_ini'+this.idContenedor,
-							fieldLabel : 'Fecha Desde',
+							fieldLabel : 'Fecha Documento Desde',
 							labelStyle: 'width:150px; margin: 5;',
 							allowBlank : false,
 							format : 'd/m/Y',
@@ -82,7 +82,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						config : {
 							name : 'fecha_fin',
 							id:'fecha_fin'+this.idContenedor,
-							fieldLabel: 'Fecha Hasta',
+							fieldLabel: 'Fecha Documento Hasta',
 							labelStyle: 'width:150px; margin: 5;',
 							allowBlank: false,
 							gwidth: 250,
@@ -259,7 +259,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 {
                     config: {
                         name: 'id_usuario',
-                        fieldLabel: 'Usuario',
+                        fieldLabel: 'Usuario Registro',
                         labelStyle: 'width:150px; margin: 5;',
                        
                         allowBlank: true,
@@ -421,29 +421,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		});		
 	}
 	
-    /*successSave :function(resp){
-   
-       Phx.CP.loadingHide();
-       var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-       if (reg.ROOT.error) {
-            alert('error al procesar');
-            return
-       } 
-       var nomRep = reg.ROOT.detalle.archivo_generado;
-        if(Phx.CP.config_ini.x==1){  			
-        	nomRep = Phx.CP.CRIPT.Encriptar(nomRep);
-        }
 
-		
-		//console.log('esto es el nombre: '+nomRep);
-		window.open('../../../lib/lib_control/Intermediario.php?r='+nomRep+'&t='+new Date().toLocaleTimeString());
-		
-        /*if(this.Cmp.formato_reporte.getValue()=='pdf'){
-        	window.open('../../../lib/lib_control/Intermediario.php?r='+nomRep+'&t='+new Date().toLocaleTimeString())
-        }
-        else{
-        	window.open('../../../reportes_generados/'+nomRep+'?t='+new Date().toLocaleTimeString())
-        }*/
-	//}
 })
 </script>

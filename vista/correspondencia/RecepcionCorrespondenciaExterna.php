@@ -8,6 +8,11 @@
 *dar el visto a solicitudes de compra
 *
 */
+
+#HISTORIAL DE MODIFICACIONES:
+#ISSUE          FECHA        AUTOR        DESCRIPCION
+#4      		25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción, hora recepción
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -193,6 +198,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
        return tb
   },
 	onButtonNew: function () {
+        console.log("Entro aqui ");
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
 		
@@ -208,10 +214,9 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.asociar);
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
-		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
-		/*this.ocultarComponente(this.Cmp.asociar);
-        this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);*/
-		     
+		//this.ocultarComponente(this.Cmp.fecha_creacion_documento); //#4 MCGH
+        this.ocultarComponente(this.Cmp.id_persona_remitente);
+
 		
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
@@ -240,7 +245,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.asociar);
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
-		  
+        this.ocultarComponente(this.Cmp.fecha_creacion_documento); //#4 MCGH
 
 		this.adminGrupo({ ocultar: [0,3,4]});
 

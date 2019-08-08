@@ -13,8 +13,9 @@ Phx.vista.subirCorrespondencia=Ext.extend(Phx.frmInterfaz,{
 
 	constructor:function(config)
 	{
-		
-		
+		this.maestro = config;
+		//console.log(this.maestro.numero);
+
     	//llama al constructor de la clase padre
 		Phx.vista.subirCorrespondencia.superclass.constructor.call(this,config);
 		this.init();	
@@ -32,8 +33,7 @@ Phx.vista.subirCorrespondencia=Ext.extend(Phx.frmInterfaz,{
 		this.argumentExtraSubmit.version = this.version;
 		this.argumentExtraSubmit.id_gestion = this.id_gestion;
 		this.argumentExtraSubmit.numero = this.numero;
-		
-				
+        this.getComponente('numeroCorres').setValue(this.numero);
 	},
 	
 	
@@ -56,10 +56,20 @@ Phx.vista.subirCorrespondencia=Ext.extend(Phx.frmInterfaz,{
 		  form:true 
 		
 	    },
+        {
+            config : {
+                fieldLabel : 'Número',
+                readOnly : true,
+                name:'numeroCorres',
+                width: 230,
+            },
+            type : 'Field',
+            form:true
+        },
 		{
 			//configuracion del componente
 		   config:{
-					fieldLabel: "Archivo",
+                    fieldLabel: "Archivo",
 					gwidth: 130,
 					labelSeparator:'',
 					inputType:'file',

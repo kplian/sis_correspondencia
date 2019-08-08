@@ -7,6 +7,12 @@
  * @description Archivo Correspondencia Saliente
  *
  */
+#HISTORIAL DE MODIFICACIONES:
+#ISSUE          FECHA        AUTOR        DESCRIPCION
+#4      		25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción,
+#										  Eliminación del campo id_clasificador,
+#
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -91,27 +97,34 @@ header("content-type: text/javascript; charset=UTF-8");
 				this.Cmp.id_persona_destino.reset();
 				this.Cmp.id_persona_destino.modificado=true;
 			},this);
-			this.Cmp.id_funcionario_saliente.on('select',function(rec){ 
-				this.Cmp.id_uo.store.load({params:{start:0,limit:this.tam_pag}, 
-	               callback : function (r) {                        
-	                    if (r.length > 0 ) {                        
-	                        this.Cmp.id_uo.setValue(r[0].data.id_uo);
-	                    }     
-	                                    
+			
+			this.Cmp.id_funcionario_saliente.on('select',function(combo, record, index){				
+				if(!record.data.id_uo){
+					alert('El funcionario no tiene depto definido');
+					return
+				}
+				this.Cmp.id_uo.reset();
+				this.Cmp.id_uo.store.baseParams.id_uo = record.data.id_uo;
+				this.Cmp.id_uo.modificado = true;				
+				this.Cmp.id_uo.store.load({params:{start:0,limit:this.tam_pag},
+	               callback : function (r) {
+	                    if (r.length == 1) {
+	                        this.Cmp.id_uo.setValue(r[0].data.id_uo);                 
+	                    }
 	                }, scope : this
 	            });
 			},this);
-			//console.log();
 		},
      
 		east : undefined,
      
         onButtonNew: function () {
-            
+
             this.cmpFechaDoc = this.getComponente('fecha_documento');
             this.Cmp.id_funcionario_saliente.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
             this.Cmp.id_funcionario_saliente.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
+                	console.log('-ssssss->>',r[0].data);	 
                     if (r.length == 1 ) {
                         this.Cmp.id_funcionario_saliente.setValue(r[0].data.id_funcionario);
                       
@@ -126,7 +139,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
 
             Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
-            this.adminGrupo({mostrar: [0,1,2,3,4]});
+            this.adminGrupo({mostrar: [0,1,2,3,4], ocultar: [1]});
             this.ocultarComponente(this.Cmp.cite);
             this.ocultarComponente(this.Cmp.otros_adjuntos);
             this.ocultarComponente(this.Cmp.nro_paginas);
@@ -140,9 +153,11 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.id_acciones);
           //  this.ocultarComponente(this.Cmp.persona_firma);
             this.ocultarComponente(this.Cmp.tipo_documento);
-            
+            this.ocultarComponente(this.Cmp.persona_remitente); //#4
+            this.ocultarComponente(this.Cmp.id_persona_destino); //#4 en lugar de esto se mostrara la persona destino para typear
+
             this.fecha_documento = this.getComponente('fecha_documento');
-            this.fecha_documento.disable(true);
+            //this.fecha_documento.disable(true);
             
             this.tipo = this.getComponente('tipo');
             this.tipo.setValue('saliente');
@@ -160,11 +175,11 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.id_funcionarios);
             this.ocultarComponente(this.Cmp.id_persona_remitente);
             this.ocultarComponente(this.Cmp.id_institucion_remitente);
-                this.ocultarComponente(this.Cmp.id_acciones);
-        
-               console.log('ver',this.Cmp.id_institucion_destino);
+            this.ocultarComponente(this.Cmp.id_acciones);
+            this.ocultarComponente(this.Cmp.id_persona_destino); //#4
+
             var data = this.sm.getSelected().data;
-            //console.log(data, data.estado)
+
             
         },
  
