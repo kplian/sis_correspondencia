@@ -6,6 +6,11 @@
  *@date    26-06-2019
  *@description Archivo con la interfaz y los parametros para generaci�n de reporte
  */
+
+#HISTORIAL DE MODIFICACIONES:
+#ISSUE          FECHA        AUTOR        DESCRIPCION
+#5      		21/08/2019   MCGH         Eliminación de Código Basura
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -194,8 +199,6 @@ header("content-type: text/javascript; charset=UTF-8");
 							}
 						}),
 				
-											
-				
 						valueField : 'id_documento',
 						displayField : 'descripcion',
 						gdisplayField : 'desc_documento', //mapea al store del grid
@@ -211,9 +214,7 @@ header("content-type: text/javascript; charset=UTF-8");
 						width : 250,
 						gwidth : 150,
 						minChars : 2,
-					//renderer : function(value, p, record) {
-				//	return String.format('{0}', record.data['desc_documento']);
-				//}
+
 					},
 				type : 'ComboBox',
 				id_grupo : 0,
@@ -238,7 +239,6 @@ header("content-type: text/javascript; charset=UTF-8");
 							emptyText : 'Seleccione Opcion...',
 							selectOnFocus : true,
 							mode : 'local',
-							//valorInicial:{ID:'interna',valor:'Interna'},
 							store : new Ext.data.ArrayStore({
 								fields : ['ID', 'valor'],
 								data : [['todos', 'Todos'],['borrador_envio', 'Borrador Recepción Interno'],['borrador_recepcion_externo', 'Borrador Recepción Externo'], ['pendiente_recepcion_externo', 'Pendiente Recepción Externo'], ['enviado', 'Enviado'], ['borrador_detalle_recibido', 'Borrador Detalle Recibido'], ['pendiente_recibido','Pendiente Recibido'], ['recibido','Recibido']]
@@ -290,18 +290,12 @@ header("content-type: text/javascript; charset=UTF-8");
                         mode: 'remote',
                         pageSize: 15,
                         queryDelay: 1000,
-                        
-                        //anchor: '100%',
-                       // gwidth: 250,
                         width : 250,
                         minChars: 2,
-                        /*renderer : function(value, p, record) {
-                            return String.format('{0}', record.data['desc_persona']); //para la grilla
-                        }*/
+
                     },
                     type: 'ComboBox',
                     id_grupo: 0,
-                    //filters: {pfiltro: 'desc_persona',type: 'string'},//para el filtrado de la grilla 
                     grid: true,
                     form: true
                 }
@@ -379,11 +373,6 @@ header("content-type: text/javascript; charset=UTF-8");
 		this.cmpFechaIni = this.getComponente('fecha_ini');
 		this.cmpFechaFin = this.getComponente('fecha_fin');
 		this.cmpIdUsuario = this.getComponente('id_usuario');
-		
-		//console.log(Phx.CP.config_ini.id_usuario);
-        //console.log(Phx.CP.config_ini.nombre_usuario);
-        //this.Cmp.id_usuario.setValue(Phx.CP.config_ini.id_usuario);
-        //this.Cmp.id_usuario.setRawValue(Phx.CP.config_ini.nombre_usuario);
         
 	},	
 	
@@ -397,9 +386,7 @@ header("content-type: text/javascript; charset=UTF-8");
 		    fechaIni = this.cmpFechaIni.getValue().format('d-m-Y'),
 		    fechaFin = this.cmpFechaFin.getValue().format('d-m-Y'),
 		    idUsuario = this.cmpIdUsuario.getValue();
-		
-		    
-		//console.log(idUo);	
+
 		Phx.CP.loadingShow();		
 		Ext.Ajax.request({
 			url:'../../sis_correspondencia/control/ReporteGeneral/reporteGeneral',
@@ -420,7 +407,6 @@ header("content-type: text/javascript; charset=UTF-8");
 			scope:this
 		});		
 	}
-	
 
 })
 </script>

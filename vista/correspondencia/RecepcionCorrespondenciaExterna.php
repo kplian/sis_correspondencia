@@ -13,6 +13,8 @@
 #ISSUE          FECHA        AUTOR        DESCRIPCION
 #4      		25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción, hora recepción
 
+#5      		21/08/2019   MCGH         Eliminación de Código Basura
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -217,17 +219,13 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		//this.ocultarComponente(this.Cmp.fecha_creacion_documento); //#4 MCGH
         this.ocultarComponente(this.Cmp.id_persona_remitente);
 
-		
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
 	
 		cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es externa
 		cmbDoc.modificado = true;
 		cmbDoc.reset();
-
-
-		
-
+        
 	},
 	
 	onButtonEdit: function () {

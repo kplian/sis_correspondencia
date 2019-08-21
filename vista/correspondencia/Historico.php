@@ -7,6 +7,10 @@
 *@description     Archivo con la interfaz de Hoja de ruta permite ver un listado de todas las personas a las que se ha derivado.
 */
 
+#HISTORIAL DE MODIFICACIONES:
+#ISSUE          FECHA        AUTOR        DESCRIPCION
+#5      		21/08/2019   MCGH         Eliminación de Código Basura
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -164,22 +168,6 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 			grid : true,
 			form : false
 		},
-		/*{
-			config : {
-				name : 'fecha_recepcion',
-				fieldLabel : 'Fecha Recepcion',
-				gwidth : 120
-			},
-			type : 'TextField',
-			filters : {
-				pfiltro : 'fecha_recepcion',
-				type : 'string'
-			},
-			id_grupo : 0,
-			grid : true,
-			form : false,
-			bottom_filter : true
-		},*/
 		{
 			config : {
 				name : 'estado',
@@ -270,11 +258,8 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 
 			console.log('data',data)
 			var tb =this.tbar;
-			
-
 
 			return tb
-
 		},
 
 	}
