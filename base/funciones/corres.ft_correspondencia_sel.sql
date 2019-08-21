@@ -12,17 +12,18 @@ $body$
  DESCRIPCION:   Funcion que devuelve conjuntos de registros de las consultas relacionadas con la tabla 'corres.tcorrespondencia'
  AUTOR: 		 (rac)
  FECHA:	        13-12-2011 16:13:21
- COMENTARIOS:	
+ COMENTARIOS:
 ***************************************************************************
  HISTORIAL DE MODIFICACIONES:
 
  #ISSUE         FECHA        AUTOR        DESCRIPCION
- #4  	      	25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción, 
- 										  Eliminación del campo id_clasificador   
+ #4  	      	25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción,
+ 										  Eliminación del campo id_clasificador
                                           Adición del campo persona_destino, fecha envio
+ #5      		21/08/2019   MCGH         Eliminación de Código Basura
 ****************************************************************************/
 
-   
+
 DECLARE
     v_auxiliar				varchar;
 	v_consulta    			varchar;
@@ -45,37 +46,36 @@ DECLARE
     v_id_funcionarios_permitidos   INTEGER[];
 	v_id_asistente     		INTEGER;
     v_filadd           		varchar;
-				    
-			    
+
+
 BEGIN
 
 	v_nombre_funcion = 'corres.ft_correspondencia_sel';
     v_parametros = pxp.f_get_record(p_tabla);
-    
+
     SELECT id_funcionario
     INTO v_id_funcionario
     FROM segu.tusuario us
     INNER JOIN orga.tfuncionario fun on fun.id_persona=us.id_persona
     WHERE us.id_usuario=p_id_usuario and fun.estado_reg='activo';
-    
-    --raise exception '%',p_transaccion;
-    
-    /*********************************    
+
+
+    /*********************************
  	#TRANSACCION:  'CO_CORSIM_SEL'
  	#DESCRIPCION:	Consulta de Correspodencia simplificada
- 	#AUTOR:		rac	
+ 	#AUTOR:		rac
  	#FECHA:		29-02-2012 16:13:21
 	***********************************/
 
 	if(p_transaccion='CO_CORSIM_SEL')then
-     				
-    	begin   
+
+    	begin
               v_filtro=' and 0 = 0 ';
-            
+
            IF p_administrador = 1 THEN
                   v_filtro =v_filtro|| ' and 0=0';
                 ELSE
-                     
+
                      SELECT permitir_todo,asper.id_funcionarios_permitidos,asper.id_asistente
                             INTO v_permitir_todo,v_id_funcionarios_permitidos,v_id_asistente
                      FROM corres.tasistente_permisos asper
@@ -83,28 +83,28 @@ BEGIN
                                   inner join orga.tfuncionario func on func.id_funcionario=asis.id_funcionario
                                   inner join segu.tusuario usua on usua.id_persona=func.id_persona
                                   where usua.id_usuario=p_id_usuario;
-                                
+
                         IF (v_permitir_todo ='si') THEN
-                          
-                           
+
+
                            v_fecha_consulta=now()::date;
                            IF (v_id_funcionarios_permitidos is null) THEN
-                            
-                             v_filtro=v_filtro||' and cor.id_funcionario IN (select * 
+
+                             v_filtro=v_filtro||' and cor.id_funcionario IN (select *
                                                 FROM orga.f_get_funcionarios_x_usuario_asistente('''|| v_fecha_consulta||''','||p_id_usuario||') AS (id_funcionario INTEGER))';
         				   ELSE
                              v_filtro=v_filtro||'and cor.id_funcionario IN (select fun.id_funcionario
                                                                           from corres.tasistente_permisos asper
                                                                           inner join orga.tfuncionario fun on fun.id_funcionario= ANY (asper.id_funcionarios_permitidos)
                                                                           where asper.id_asistente='||v_id_asistente||')';
-                          END IF;	
-                      ELSE 
+                          END IF;
+                      ELSE
                          v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                         
-                    END IF;           
-                       
+
+                    END IF;
+
                 END IF;
-          
+
           --Sentencia de la consulta
 			v_consulta:='select
 						cor.id_correspondencia,
@@ -114,46 +114,46 @@ BEGIN
 						cor.numero,
 						cor.referencia,
 						cor.tipo,
-						cor.fecha_reg,						
+						cor.fecha_reg,
 						coalesce(funcionario.desc_funcionario1,coalesce(insti.nombre,per.nombre)) as desc_funcionario,
                         cor.id_origen
-                        
+
                         from corres.tcorrespondencia cor
 						left join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                		    left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                         left join segu.tpersona per on per.id_persona=cor.id_persona
                      where cor.estado in (''enviado'',''recibido'')  '||v_filtro||' and ';
-			
-			
+
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 			if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
 			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
-			
+
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'CO_CORSIM_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		rac	
+ 	#AUTOR:		rac
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
 	elsif(p_transaccion='CO_CORSIM_CONT')then
-        
+
 		begin
               v_filtro=' and 0 = 0 ';
 
            IF p_administrador = 1 THEN
                   v_filtro =v_filtro|| ' and 0=0';
                 ELSE
-                     
+
                      SELECT permitir_todo,asper.id_funcionarios_permitidos,asper.id_asistente
                             INTO v_permitir_todo,v_id_funcionarios_permitidos,v_id_asistente
                      FROM corres.tasistente_permisos asper
@@ -161,28 +161,28 @@ BEGIN
                                   inner join orga.tfuncionario func on func.id_funcionario=asis.id_funcionario
                                   inner join segu.tusuario usua on usua.id_persona=func.id_persona
                                   where usua.id_usuario=p_id_usuario;
-                                
+
                         IF (v_permitir_todo ='si') THEN
-                          
-                           
+
+
                            v_fecha_consulta=now()::date;
                            IF (v_id_funcionarios_permitidos is null) THEN
-                            
-                             v_filtro=v_filtro||' and cor.id_funcionario IN (select * 
+
+                             v_filtro=v_filtro||' and cor.id_funcionario IN (select *
                                                 FROM orga.f_get_funcionarios_x_usuario_asistente('''|| v_fecha_consulta||''','||p_id_usuario||') AS (id_funcionario INTEGER))';
         				   ELSE
                              v_filtro=v_filtro||'and cor.id_funcionario IN (select fun.id_funcionario
                                                                           from corres.tasistente_permisos asper
                                                                           inner join orga.tfuncionario fun on fun.id_funcionario= ANY (asper.id_funcionarios_permitidos)
                                                                           where asper.id_asistente='||v_id_asistente||')';
-                          END IF;	
-                      ELSE 
+                          END IF;
+                      ELSE
                          v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                         
-                    END IF;           
-                       
+
+                    END IF;
+
                 END IF;
-        
+
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_correspondencia)
 					     from corres.tcorrespondencia cor
@@ -190,35 +190,35 @@ BEGIN
                		    left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                         left join segu.tpersona per on per.id_persona=cor.id_persona
                    where cor.estado in (''enviado'',''recibido'') '||v_filtro||' and ';
-			
-			--Definicion de la respuesta		    
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;
 
 		end;
-    
 
-	/*********************************    
+
+	/*********************************
  	#TRANSACCION:  'CO_COR_SEL'
  	#DESCRIPCION:	Consulta de datos
- 	#AUTOR:		rac	
+ 	#AUTOR:		rac
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
 	ELSEIF(p_transaccion='CO_COR_SEL')then
-     				
-    	begin  
+
+    	begin
                  v_filtro='0= 0 ';
-              
+
               	IF pxp.f_existe_parametro(p_tabla,'interface') THEN
                    IF v_parametros.interface = 'externa' THEN
                                 v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
                             ELSIF  v_parametros.interface = 'derivacion_externa' THEN
                                 v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
                             ELSIF v_parametros.interface = 'interna' THEN
-                               
+
                                 v_filtro= v_filtro || ' and cor.estado in (''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''interna''';
                             ELSIF v_parametros.interface = 'saliente' THEN
                                 v_filtro= v_filtro || ' and cor.estado in (''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''saliente''';
@@ -226,18 +226,18 @@ BEGIN
                          IF v_parametros.interface = 'recibida' THEN
                             v_filtro= v_filtro || ' and cor.estado in (''pendiente_recibido'',''pendiente_recepcion_externo'',''recibido'') ';
                          END IF;
-                        
+
                         -- IF v_parametros.interface = 'interna' THEN
-                          
+
                          --END IF;
 				END IF;
-                
+
                 v_filtro= v_filtro || ' and cor.id_correspondencia_fk is null ';
-               --  raise exception '%',v_filtro;
+
              IF p_administrador = 1 THEN
                   v_filtro =v_filtro|| ' and 0=0';
                 ELSE
-                     
+
                      SELECT permitir_todo,asper.id_funcionarios_permitidos,asper.id_asistente
                             INTO v_permitir_todo,v_id_funcionarios_permitidos,v_id_asistente
                      FROM corres.tasistente_permisos asper
@@ -245,31 +245,31 @@ BEGIN
                                   inner join orga.tfuncionario func on func.id_funcionario=asis.id_funcionario
                                   inner join segu.tusuario usua on usua.id_persona=func.id_persona
                                   where usua.id_usuario=p_id_usuario;
-                                
+
                         IF (v_permitir_todo ='si') THEN
-                          
-                           
+
+
                            v_fecha_consulta=now()::date;
                            IF (v_id_funcionarios_permitidos is null) THEN
-                            
-                             v_filtro=v_filtro||' and cor.id_funcionario IN (select * 
+
+                             v_filtro=v_filtro||' and cor.id_funcionario IN (select *
                                                 FROM orga.f_get_funcionarios_x_usuario_asistente('''|| v_fecha_consulta||''','||p_id_usuario||') AS (id_funcionario INTEGER))';
         				   ELSE
                               v_filtro=v_filtro||'and (cor.id_funcionario IN (select fun.id_funcionario
                                                   from corres.tasistente_permisos asper
                                                   inner join orga.tfuncionario fun on fun.id_funcionario= ANY (asper.id_funcionarios_permitidos)
                                                     where asper.id_asistente='||v_id_asistente||') or cor.id_usuario_reg = '||p_id_usuario||') ';
-                          END IF;	      	
+                          END IF;
 
-                      ELSE 
+                      ELSE
 
                           v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar || ' or cor.id_usuario_reg = '||p_id_usuario||')';
-          
-                    END IF;           
-                       
+
+                    END IF;
+
                 END IF;
-                
-		
+
+
     		--Sentencia de la consulta
 			v_consulta:='select
                             cor.id_origen,
@@ -305,10 +305,10 @@ BEGIN
                             usu2.cuenta as usr_mod,
                             doc.descripcion as desc_documento,
                             depto.nombre as desc_depto,
-                            
+
                             funcionario.desc_funcionario1 as desc_funcionario,
                             cor.ruta_archivo,
-                            cor.version,                            
+                            cor.version,
                             uo.codigo ||''-''|| uo.nombre_unidad as desc_uo,
                             --clasif.descripcion as desc_clasificador, --#4
                             cor.id_clasificador,
@@ -325,12 +325,12 @@ BEGIN
                             initcap(person.nombre)||'' ''||initcap(person.ap_paterno)||'' ''||initcap(person.ap_materno) as desc_funcionario_de_plantilla,
                               (SELECT count(adjun.id_adjunto) FROM corres.tadjunto adjun WHERE adjun.id_correspondencia_origen=cor.id_origen and estado_reg=''activo'') as adjunto,
                               cor.fecha_creacion_documento as fecha_creacion_documento,
-                                 
+
                         (CASE WHEN (cor.id_acciones is not null) then
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
                                       (
-                                       SELECT  pxp.list(acor.nombre)   
+                                       SELECT  pxp.list(acor.nombre)
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
@@ -344,36 +344,36 @@ BEGIN
                         (CASE WHEN (coror.id_correspondencias_asociadas is not null) then
 
                                       (
-                                       SELECT   pxp.list(corr.numero) 
+                                       SELECT   pxp.list(corr.numero)
                                        FROM corres.tcorrespondencia corr
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
                                    END ),'' '')AS  correspondencias_asociadas,
                                    cor.tipo_documento,
                                    cor.persona_firma,
                                    cor.persona_destino
-                                 
-                       	from corres.tcorrespondencia cor						
+
+                       	from corres.tcorrespondencia cor
                         inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
-                        
+
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
                         inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                         inner join orga.tfuncionario fun on fun.id_funcionario=cor.id_funcionario
                         inner join segu.vpersona person on person.id_persona=fun.id_persona
-				       
+
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         inner join corres.tcorrespondencia coror on coror.id_correspondencia=cor.id_origen
-                     
+
                         --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador --#4
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
-                         left join segu.vpersona persona on persona.id_persona=cor.id_persona                         
-				        where 
-                         '||v_filtro||' 
-                        and 
+                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
+				        where
+                         '||v_filtro||'
+                        and
                         ';
 
-   
+
 			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
@@ -381,16 +381,15 @@ BEGIN
 			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-         	--raise notice '%',v_parametros.puntero;
-			--raise exception '%',v_parametros.puntero;
+
 			--Devuelve la respuesta
 			return v_consulta;
        end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'CO_COR_CONT'
  	#DESCRIPCION:	Conteo de registros
- 	#AUTOR:		rac	
+ 	#AUTOR:		rac
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
@@ -404,7 +403,7 @@ BEGIN
                             ELSIF  v_parametros.interface = 'derivacion_externa' THEN
                                 v_filtro= v_filtro || ' and cor.estado in (''pendiente_recepcion_externo'',''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''externa''  and vista = ''externos'' ';
                             ELSIF v_parametros.interface = 'interna' THEN
-                               
+
                                 v_filtro= v_filtro || ' and cor.estado in (''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''interna''';
                             ELSIF v_parametros.interface = 'saliente' THEN
                                 v_filtro= v_filtro || ' and cor.estado in (''borrador_envio'',''enviado'',''recibido'') and cor.tipo = ''saliente''';
@@ -412,14 +411,14 @@ BEGIN
                          IF v_parametros.interface = 'recibida' THEN
                             v_filtro= v_filtro || ' and cor.estado in (''pendiente_recibido'',''pendiente_recepcion_externo'',''recibido'') ';
                          END IF;
-                        
-                      
+
+
 				END IF;
                 v_filtro= v_filtro || ' and cor.id_correspondencia_fk is null ';
                IF p_administrador = 1 THEN
                   v_filtro =v_filtro|| ' and 0=0';
                 ELSE
-                     
+
                      SELECT permitir_todo,asper.id_funcionarios_permitidos,asper.id_asistente
                             INTO v_permitir_todo,v_id_funcionarios_permitidos,v_id_asistente
                      FROM corres.tasistente_permisos asper
@@ -427,29 +426,29 @@ BEGIN
                                   inner join orga.tfuncionario func on func.id_funcionario=asis.id_funcionario
                                   inner join segu.tusuario usua on usua.id_persona=func.id_persona
                                   where usua.id_usuario=p_id_usuario;
-                                
+
                         IF (v_permitir_todo ='si') THEN
-                          
-                           
+
+
                            v_fecha_consulta=now()::date;
                            IF (v_id_funcionarios_permitidos is null) THEN
-                            
-                             v_filtro=v_filtro||' and cor.id_funcionario IN (select * 
+
+                             v_filtro=v_filtro||' and cor.id_funcionario IN (select *
                                                 FROM orga.f_get_funcionarios_x_usuario_asistente('''|| v_fecha_consulta||''','||p_id_usuario||') AS (id_funcionario INTEGER))';
         				   ELSE
                              v_filtro=v_filtro||'and (cor.id_funcionario IN (select fun.id_funcionario
                                                                           from corres.tasistente_permisos asper
                                                                           inner join orga.tfuncionario fun on fun.id_funcionario= ANY (asper.id_funcionarios_permitidos)
                                                                           where asper.id_asistente='||v_id_asistente||') or cor.id_usuario_reg = '||p_id_usuario||') ';
-                          END IF;	
-                      ELSE 
+                          END IF;
+                      ELSE
                          v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar || ' or cor.id_usuario_reg = '||p_id_usuario||')';
-          
-                    END IF;           
-                       
+
+                    END IF;
+
                 END IF;
-                 
-                 
+
+
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_correspondencia)
 					     from corres.tcorrespondencia cor
@@ -459,40 +458,39 @@ BEGIN
                         inner join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                         inner join orga.tfuncionario fun on fun.id_funcionario=cor.id_funcionario
                         inner join segu.vpersona person on person.id_persona=fun.id_persona
-				       
+
                         inner join orga.tuo uo on uo.id_uo= cor.id_uo
                         --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador --#4
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                          left join segu.vpersona persona on persona.id_persona=cor.id_persona  where  '||v_filtro||' and ';
-                        
-                  
-				      
+
+
+
             if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
 			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
-			           
-			
-			--Definicion de la respuesta		    
+
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;
 
 		end;
-        
-     /*********************************    
+
+     /*********************************
  	#TRANSACCION:  'CO_CORDET_SEL'
  	#DESCRIPCION:	Consulta de resgistro de correspondecia detalle
- 	#AUTOR:		rac	
+ 	#AUTOR:		rac
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
 	elseif(p_transaccion='CO_CORDET_SEL')then
-     				
+
     	begin
-            
-        --raise exception '%',v_parametros.filtro;
+
     		--Sentencia de la consulta
 			v_consulta:='select
 						cor.id_origen,
@@ -533,12 +531,12 @@ BEGIN
                         cor.version,
                         persona.nombre_completo1 as desc_persona,
                         insti.nombre as desc_institucion,
-                        
+
                         (CASE WHEN (cor.id_acciones is not null) then
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
                                       (
-                                       SELECT  pxp.list(acor.nombre)   
+                                       SELECT  pxp.list(acor.nombre)
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
@@ -560,17 +558,17 @@ BEGIN
                         left join orga.tfuncionario fun on fun.id_funcionario=cor.id_funcionario
                         left join segu.vpersona person on person.id_persona=fun.id_persona
 				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'',''recibido_derivacion'',''enviado'') and ';
-			
+
 			--Definicion de la respuesta
 			           v_consulta:=v_consulta||v_parametros.filtro;
-			
+
      	v_consulta:=v_consulta||'      GROUP BY cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
 						cor.fecha_documento,
 						cor.fecha_fin,
 						cor.id_acciones ,
-						
+
 						cor.id_correspondencia_fk,
 						cor.id_correspondencias_asociadas,
 						cor.id_depto,
@@ -606,21 +604,20 @@ BEGIN
                         person.nombre,
                         person.ap_paterno,
                         person.ap_materno
-                      
-                        
+
+
                         ';
-			
+
 			           v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-			--raise exception '%', v_parametros.filtro;
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'CO_CORDET_CONT'
  	#DESCRIPCION:	Conteo de registros de correspondencia detalle
- 	#AUTOR:		rac	
+ 	#AUTOR:		rac
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
@@ -638,28 +635,28 @@ BEGIN
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                         left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'',''recibido_derivacion'') and ';
-			
-			
-			--Definicion de la respuesta		    
+
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;
 
-		end;   
-    
-      /*********************************    
+		end;
+
+      /*********************************
  	#TRANSACCION:  'CO_CODEAN_SEL'
  	#DESCRIPCION:	Consulta de resgistro de correspondecia detalle
- 	#AUTOR:		JOS	
+ 	#AUTOR:		JOS
  	#FECHA:		11-12-2018 16:13:21
 	***********************************/
 
 	elseif(p_transaccion='CO_CODEAN_SEL')then
-     				
+
     	begin
-            
-        
+
+
     		--Sentencia de la consulta
 			v_consulta:='select
 						cor.id_origen,
@@ -700,12 +697,12 @@ BEGIN
                         cor.version,
                         persona.nombre_completo1 as desc_persona,
                         insti.nombre as desc_institucion,
-                        
+
                         (CASE WHEN (cor.id_acciones is not null) then
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
                                       (
-                                       SELECT  pxp.list(acor.nombre)   
+                                       SELECT  pxp.list(acor.nombre)
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
@@ -715,9 +712,9 @@ BEGIN
                         pxp.f_fecha_literal(cor.fecha_documento) as fecha_documento_literal,
                         initcap(person.nombre)||'' ''||initcap(person.ap_paterno)||'' ''||initcap(person.ap_materno) as desc_funcionario_plantilla
                         -- substring(person.nombre,1,1)||''''||substring(person.ap_paterno,1,1)||''''||substring(person.ap_materno,1,1) as iniciales
-                      
+
                         --coalesce((substring(person.nombre,1,1),''''))||''''||coalesce((substring(person.ap_paterno,1,1),''''))||''''||coalesce((substring(person.ap_materno,1,1),'''')) as iniciales
-                        
+
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
@@ -729,14 +726,14 @@ BEGIN
                         left join orga.tfuncionario fun on fun.id_funcionario=cor.id_funcionario
                         left join segu.vpersona person on person.id_persona=fun.id_persona
 				        where cor.estado in (''anulado'') and ';
-			
+
 			--Definicion de la respuesta
 			           v_consulta:=v_consulta||v_parametros.filtro;
-			
 
 
 
-			
+
+
 			           --v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 
 
@@ -746,7 +743,7 @@ BEGIN
 						cor.fecha_documento,
 						cor.fecha_fin,
 						cor.id_acciones ,
-						
+
 						cor.id_correspondencia_fk,
 						cor.id_correspondencias_asociadas,
 						cor.id_depto,
@@ -782,21 +779,21 @@ BEGIN
                         person.nombre,
                         person.ap_paterno,
                         person.ap_materno
-                      
-                        
+
+
                         ';
-			
+
 			           v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
 			return v_consulta;
-						
+
 		end;
 
-	/*********************************    
+	/*********************************
  	#TRANSACCION:  'CO_CODEAN_CONT'
  	#DESCRIPCION:	Conteo de registros de correspondencia detalle
- 	#AUTOR:		rac	
+ 	#AUTOR:		rac
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
@@ -814,18 +811,18 @@ BEGIN
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                         left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 				        where cor.estado in (''anulado'') and ';
-			
-			
-			--Definicion de la respuesta		    
+
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
 			return v_consulta;
 
-		end;       
-        
-        
-        
+		end;
+
+
+
     /*********************************
  	#TRANSACCION:  'CO_CORREC_SEL'
  	#DESCRIPCION:	Listado de correspondencia recibida (tanto interna como entrante)
@@ -833,46 +830,41 @@ BEGIN
  	#FECHA:		    13-12-2011
 	***********************************/
     elsif(p_transaccion='CO_CORREC_SEL')then
-     				
+
     	begin
          select dep.cargo,dep.id_depto
             into v_cargo,v_id_depto
          from orga.tfuncionario fun
          inner join segu.tusuario us on us.id_persona=fun.id_persona
          inner join param.tdepto_usuario dep on dep.id_usuario =us.id_usuario
-         where id_funcionario=v_parametros.id_funcionario_usuario; 
-         
-         
-         
+         where id_funcionario=v_parametros.id_funcionario_usuario;
+
+
+
          IF  v_parametros.tipo = 'externa' THEN
 			    v_filtro=  '  cor.tipo in (''externa'') ';
 			 ELSIF v_parametros.tipo = 'interna' THEN
 				v_filtro=  '  cor.tipo in (''interna'') ';
 			 ELSE
-            
+
                 v_filtro='   cor.tipo in (''saliente'')';
              END IF;
-             
+
           IF (v_parametros.interface = 'recibida_archivada')THEN
               v_filtro= v_filtro||' and   cor.estado in (''recibido'',''enviado'')  ';
                v_filtro= v_filtro || ' and  0=0 ';
           ELSE
               v_filtro= v_filtro||' and   cor.estado in (''pendiente_recibido'',''recibido'',''enviado'')  ';
                v_filtro= v_filtro || ' and cor.id_correspondencia_fk is not null ';
-       
-          END IF;  
-          
-          -- raise exception '%',v_parametros.interface; 
-           
-       -- v_filtro='';
-        -- end if;
-            -- raise exception '%','backt'||v_filtro;
-    
-        
+
+          END IF;
+
+
+
            IF p_administrador = 1 THEN
                   v_filtro =v_filtro|| ' and 0=0';
                 ELSE
-                     
+
                      SELECT permitir_todo,asper.id_funcionarios_permitidos,asper.id_asistente
                             INTO v_permitir_todo,v_id_funcionarios_permitidos,v_id_asistente
                      FROM corres.tasistente_permisos asper
@@ -880,23 +872,23 @@ BEGIN
                                   inner join orga.tfuncionario func on func.id_funcionario=asis.id_funcionario
                                   inner join segu.tusuario usua on usua.id_persona=func.id_persona
                                   where usua.id_usuario=p_id_usuario;
-                                
+
                         IF (v_permitir_todo ='si') THEN
-                          
-                           
+
+
                            v_fecha_consulta=now()::date;
                            IF (v_id_funcionarios_permitidos is null) THEN
-                            
-                             v_filtro=v_filtro||' and cor.id_funcionario IN (select * 
+
+                             v_filtro=v_filtro||' and cor.id_funcionario IN (select *
                                                 FROM orga.f_get_funcionarios_x_usuario_asistente('''|| v_fecha_consulta||''','||p_id_usuario||') AS (id_funcionario INTEGER))';
         				   ELSE
                              v_filtro=v_filtro||'and cor.id_funcionario IN (select fun.id_funcionario
                                                                           from corres.tasistente_permisos asper
                                                                           inner join orga.tfuncionario fun on fun.id_funcionario= ANY (asper.id_funcionarios_permitidos)
                                                                           where asper.id_asistente='||v_id_asistente||')';
-                          END IF;	
-                      ELSE 
-                         
+                          END IF;
+                      ELSE
+
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
 
@@ -904,17 +896,17 @@ BEGIN
         					--EAQ: para filtrar en alarma notificacion de alarma
                           	if v_parametros.tipo = 'recibida' or v_parametros.tipo = 'interna' or v_parametros.tipo='externa' THEN
                       	        	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                            else 
+                            else
                                     v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                            end if;                                                     
-                            --v_filtro = v_filtro||' AND (cor.id_funcionario = ' ||v_id_funcionario || ' )';                                                        
+                            end if;
+                            --v_filtro = v_filtro||' AND (cor.id_funcionario = ' ||v_id_funcionario || ' )';
                           end if;
-                         
-                    END IF;           
-                       
+
+                    END IF;
+
                 END IF;
-        
- 
+
+
   		--Sentencia de la consulta
 			v_consulta:='select
 						cor.id_origen,
@@ -958,7 +950,7 @@ BEGIN
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
                                       (
-                                       SELECT   pxp.list(acor.nombre) 
+                                       SELECT   pxp.list(acor.nombre)
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
@@ -985,7 +977,7 @@ BEGIN
                         (CASE WHEN (coror.id_correspondencias_asociadas is not null) then
 
                                       (
-                                       SELECT   pxp.list(corr.numero) 
+                                       SELECT   pxp.list(corr.numero)
                                        FROM corres.tcorrespondencia corr
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
                                    END ),'' '')AS  correspondencias_asociadas,
@@ -993,14 +985,14 @@ BEGIN
                                    cor.persona_firma,
                                    cor.estado_fisico,
                                    cor.persona_remitente
-                                
+
                      	from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
-                        
+
 						inner join orga.vfuncionario emp_recepciona on emp_recepciona.id_funcionario=cor.id_funcionario
-                        
+
 						inner join param.tdepto depto on depto.id_depto=cor.id_depto
 						--inner join param.tdocumento docume on docume.id_documento=cor.id_documento
 						inner join orga.tuo uo on uo.id_uo=cor.id_uo
@@ -1009,72 +1001,67 @@ BEGIN
                         inner join corres.tcorrespondencia coror on coror.id_correspondencia=cor.id_origen
                        	left join segu.vpersona persona on persona.id_persona=coror.id_persona
 						left join param.tinstitucion insti on insti.id_institucion=coror.id_institucion
-                        left join corres.tcorrespondencia corp on corp.id_correspondencia=cor.id_correspondencia_fk 
+                        left join corres.tcorrespondencia corp on corp.id_correspondencia=cor.id_correspondencia_fk
                        	left join orga.vfuncionario emp_recepciona1 on emp_recepciona1.id_funcionario=corp.id_funcionario
-                        
+
                         left join orga.tuo uop on uop.id_uo=corp.id_uo
-						where  '||v_filtro||' and   
-                       
+						where  '||v_filtro||' and
+
                          ';
-			--cor.estado in (''pendiente_recibido'',''recibido'',''recibido_derivacion'',''enviado'') and 
-            --            cor.tipo in (''saliente'') 
-			--Definicion de la respuesta
-           -- raise exception '%',v_parametros.filtro;
+
 			v_consulta:=v_consulta||v_parametros.filtro;
 			v_consulta:=v_consulta||' order by  ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
-            --raise notice '%',v_consulta;
+
 			--Devuelve la respuesta
 			return v_consulta;
-						
-		end;       
-     
+
+		end;
+
     /*********************************
  	#TRANSACCION:  'CO_CORREC_CONT'
  	#DESCRIPCION:	Conteo de registros de correspondencia detalle
- 	#AUTOR:			
+ 	#AUTOR:
  	#FECHA:		    07-03-2012 16:13:21
 	***********************************/
 
 	elsif(p_transaccion='CO_CORREC_CONT')then
 
-       
+
 
 		begin
-          
-   -- raise exception '%','dfgasdf';
-        
+
           select dep.cargo,dep.id_depto
             into v_cargo,v_id_depto
          from orga.tfuncionario fun
          inner join segu.tusuario us on us.id_persona=fun.id_persona
          inner join param.tdepto_usuario dep on dep.id_usuario =us.id_usuario
-         where id_funcionario=v_parametros.id_funcionario_usuario; 
-         
-         
+         where id_funcionario=v_parametros.id_funcionario_usuario;
+
+
          IF  v_parametros.tipo = 'externa' THEN
 			    v_filtro=  '  cor.tipo in (''externa'') ';
 			 ELSIF v_parametros.tipo = 'interna' THEN
 				v_filtro=  '  cor.tipo in (''interna'') ';
 			 ELSE
-            
+
                 v_filtro='   cor.tipo in (''saliente'')';
              END IF;
-             
+
           IF (v_parametros.interface = 'recibida_archivada')THEN
               v_filtro= v_filtro||' and   cor.estado in (''recibido'',''enviado'')  ';
                v_filtro= v_filtro || ' and  0=0 ';
           ELSE
               v_filtro= v_filtro||' and   cor.estado in (''pendiente_recibido'',''recibido'',''enviado'')  ';
                v_filtro= v_filtro || ' and cor.id_correspondencia_fk is not null ';
-       
-          END IF; 
-        
-        
-     
+
+          END IF;
+
+
+
            IF p_administrador = 1 THEN
                   v_filtro =v_filtro|| ' and 0=0';
                 ELSE
-                     
+
                      SELECT permitir_todo,asper.id_funcionarios_permitidos,asper.id_asistente
                             INTO v_permitir_todo,v_id_funcionarios_permitidos,v_id_asistente
                      FROM corres.tasistente_permisos asper
@@ -1082,39 +1069,39 @@ BEGIN
                                   inner join orga.tfuncionario func on func.id_funcionario=asis.id_funcionario
                                   inner join segu.tusuario usua on usua.id_persona=func.id_persona
                                   where usua.id_usuario=p_id_usuario;
-                                
+
                         IF (v_permitir_todo ='si') THEN
-                          
-                           
+
+
                            v_fecha_consulta=now()::date;
                            IF (v_id_funcionarios_permitidos is null) THEN
-                            
-                             v_filtro=v_filtro||' and cor.id_funcionario IN (select * 
+
+                             v_filtro=v_filtro||' and cor.id_funcionario IN (select *
                                                 FROM orga.f_get_funcionarios_x_usuario_asistente('''|| v_fecha_consulta||''','||p_id_usuario||') AS (id_funcionario INTEGER))';
         				   ELSE
                              v_filtro=v_filtro||'and cor.id_funcionario IN (select fun.id_funcionario
                                                                           from corres.tasistente_permisos asper
                                                                           inner join orga.tfuncionario fun on fun.id_funcionario= ANY (asper.id_funcionarios_permitidos)
                                                                           where asper.id_asistente='||v_id_asistente||')';
-                          END IF;	
-                      ELSE 
-                         
+                          END IF;
+                      ELSE
+
                       	IF v_parametros.tipo = 'saliente' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
                         ELSE
                         --EAQ: para filtrar en alarma notificacion de alarma
                           	if v_parametros.tipo = 'recibida' or v_parametros.tipo = 'interna' or v_parametros.tipo='externa' THEN
                       	        	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                            else 
+                            else
                                     v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
-                            end if;                                                     
+                            end if;
                           --v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
                          end if;
-                         
-                    END IF;           
-                       
+
+                    END IF;
+
                 END IF;
-        
+
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(cor.id_correspondencia)
 					    from corres.tcorrespondencia cor
@@ -1129,12 +1116,12 @@ BEGIN
 						inner join param.tperiodo per on per.id_periodo=cor.id_periodo
 						left join segu.vpersona persona on persona.id_persona=cor.id_persona
 						left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
-                        left join corres.tcorrespondencia corp on corp.id_correspondencia=cor.id_correspondencia_fk 
+                        left join corres.tcorrespondencia corp on corp.id_correspondencia=cor.id_correspondencia_fk
 						left join orga.vfuncionario emp_recepciona1 on emp_recepciona1.id_funcionario=corp.id_funcionario
                         left join orga.tuo uop on uop.id_uo=corp.id_uo
 						where  '||v_filtro||' and ';
-			
-			--Definicion de la respuesta		
+
+			--Definicion de la respuesta
 			v_consulta:=v_consulta||v_parametros.filtro;
 
 			--Devuelve la respuesta
@@ -1205,7 +1192,6 @@ BEGIN
   elsif(p_transaccion='CO_CORHOJ_SEL')then
 
     begin
-     --raise exception '%',v_parametros.id_institucion;
 
 
 
@@ -1213,15 +1199,14 @@ BEGIN
       into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg, v_id_persona
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
-      --raise exception '%,%',v_id_persona,v_id_usuario_reg;
       if (v_parametros.estado_reporte='finalizado')then
           v_filtro=' cor.estado not in (''borrador_detalle_recibido'',''anulado'') ';
       else
           v_filtro=' 0=0 ';
       end if;
-      
-	  	
-		IF (v_tipo_correspondencia='interna')THEN 
+
+
+		IF (v_tipo_correspondencia='interna')THEN
 			select id_funcionario
 			into v_id_funcionario_origen
 				from corres.tcorrespondencia
@@ -1236,18 +1221,17 @@ BEGIN
                 IF (v_parametros.id_institucion is not null) THEN
                 	v_id_funcionario_origen := v_parametros.id_institucion;
                 ELSE
-                	--raise exception 'En los registros hijos no se insertan el id_institucion, solo en el padre';
                     select id_institucion into v_id_funcionario_origen
                     from corres.tcorrespondencia
                         where id_correspondencia = v_id_origen;
                 END IF;
         	END IF;
-                
-        END IF;  
+
+        END IF;
         IF (v_id_funcionario_origen is null)THEN
-         raise exception '%', 'La correspondencia no ha sido registrada por un funcionario.'; 
-        END IF; 
-     
+         raise exception '%', 'La correspondencia no ha sido registrada por un funcionario.';
+        END IF;
+
 			--obtenemos el id_origen de la correspondencia
 			v_consulta = '
 			WITH RECURSIVE correspondencia_detalle(id_correspondencia) AS (
@@ -1291,8 +1275,8 @@ coalesce((select fecha_reg ::timestamp
   from corres.tcorrespondencia_estado corest
   where corest.id_correspondencia=cordet.id_correspondencia and estado=''pendiente_recibido''
   order by corest.id_correspondencia_estado asc limit 1),''01-01-01''::timestamp)::timestamp as fecha_ult_derivado,
-  
- (select fecha_reg 
+
+ (select fecha_reg
   from corres.tcorrespondencia_estado corest
   where corest.id_correspondencia=cordet.id_correspondencia and estado=''recibido''
   order by corest.id_correspondencia_estado asc limit 1)::timestamp as fecha_recepcion
@@ -1310,7 +1294,6 @@ left join segu.vpersona per_fk on per_fk.id_persona = fun_fk.id_persona
 	WHERE '||v_filtro||'
 ORDER BY  id_correspondencia ASC ';
 
---raise exception '%','llega'||v_id_funcionario_origen;
       --Devuelve la respuesta
 
       return v_consulta;
@@ -1425,21 +1408,19 @@ where tiene is not null ';
 	ELSEIF(p_transaccion='CO_COREXTE_SEL')then
 
 		begin
-             
+
 			IF p_administrador = 1 THEN
 				v_filtro = '0=0 and';
 				v_deptos = '';
 			ELSE
-            	--v_filtro = ' cor.id_funcionario = ' ||v_parametros.id_funcionario_usuario::varchar;
                 v_filtro = '0=0  ';
-					--RAISE EXCEPTION '%',p_id_usuario;
 				IF EXISTS (SELECT 0 FROM param.tdepto_usuario depus
 					inner join param.tdepto dep on dep.id_depto = depus.id_depto
 					inner join segu.tsubsistema sis 	on sis.id_subsistema = dep.id_subsistema
 				where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
 							and sis.codigo = 'CORRES')
 				THEN
-				
+
 					select pxp.list(depus.id_depto::VARCHAR)
 					into v_deptos
 					from param.tdepto_usuario depus
@@ -1519,23 +1500,23 @@ where tiene is not null ';
 
                                   (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
                                       (
-                                       SELECT   pxp.list(acor.nombre) 
+                                       SELECT   pxp.list(acor.nombre)
                                        FROM corres.taccion acor
                                        WHERE acor.id_accion = ANY ( cor.id_acciones))
                                     END )
                                 END )AS  acciones,
-                                
+
                                  coalesce(
                         (CASE WHEN (coror.id_correspondencias_asociadas is not null) then
 
                                       (
-                                       SELECT   pxp.list(corr.numero) 
+                                       SELECT   pxp.list(corr.numero)
                                        FROM corres.tcorrespondencia corr
                                        WHERE corr.id_correspondencia = ANY ( coror.id_correspondencias_asociadas))
                                    END ),'' '')AS  correspondencias_asociadas,
                                        cor.tipo_documento,
                                    cor.persona_firma,
-                                   
+
                         cor.estado_fisico,
                         cor.persona_remitente
 
@@ -1546,11 +1527,11 @@ where tiene is not null ';
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
                         inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         left join param.tinstitucion insti on insti.id_institucion=coror.id_institucion
-                        left join segu.vpersona persona on persona.id_persona=coror.id_persona                     
+                        left join segu.vpersona persona on persona.id_persona=coror.id_persona
                         --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                        	left join orga.vfuncionario emp_recepciona1 on emp_recepciona1.id_funcionario=cor.id_funcionario
-                      
+
 				        where   '||v_filtro||'
                          ';
 
@@ -1562,7 +1543,7 @@ where tiene is not null ';
             ELSE
 	    	v_auxiliar = replace(v_parametros.ordenacion, 'desc_insti', 'insti.nombre');
                 v_auxiliar = replace(v_auxiliar, 'numero', 'id_correspondencia');
-                
+
                 v_consulta:=v_consulta||' order by ' ||v_auxiliar|| ' ' ;
                 --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
             end if;
@@ -1614,16 +1595,16 @@ where tiene is not null ';
 					v_permiso = 'si';
 
 				ELSE
-                
+
 					RAISE EXCEPTION '%','no eres responsable ni auxiliar de ningun departamento';
-                    
+
 				END IF;
 
 
 			END IF;
 
 
-      	
+
 			--Sentencia de la consulta de conteo de registros
 			v_consulta:='select count(id_correspondencia)
 					     from corres.tcorrespondencia cor
@@ -1631,7 +1612,7 @@ where tiene is not null ';
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
                         inner join  param.tdepto depto on depto.id_depto=cor.id_depto
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
-                        left join segu.vpersona persona on persona.id_persona=cor.id_persona                     
+                        left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         --inner join segu.tclasificador clasif on clasif.id_clasificador=cor.id_clasificador
 						left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
 				        where '||v_filtro||'  ';
@@ -1647,7 +1628,7 @@ where tiene is not null ';
 
 /*********************************
 #TRANSACCION:  'CO_HOJORIG_SEL'
-#DESCRIPCION:	Obtener Correspondencia Principal 
+#DESCRIPCION:	Obtener Correspondencia Principal
 #AUTOR:		    AVQ
 #FECHA:		    29/10/2018
 #Modificacion   Ana Maria  17/12/2018 se ha modificado el criterio de filtro.
@@ -1660,7 +1641,6 @@ where tiene is not null ';
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
 
-      --raise exception '%',v_parametros.filtro;
       --Sentencia de la consulta
       v_consulta:=' select
                     numero,
@@ -1672,7 +1652,7 @@ where tiene is not null ';
                     replace(otros_adjuntos,''.'',''<br>'') as otros_adjuntos,
                      replace(referencia,''.'',''<br>'')as referencia,
                     mensaje,
-                    cor.fecha_documento                                                    
+                    cor.fecha_documento
                     from corres.tcorrespondencia cor
                    left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                    left join segu.vpersona persona on persona.id_persona=cor.id_persona
@@ -1684,15 +1664,15 @@ where tiene is not null ';
       return v_consulta;
 
     end;
-  
+
     /*******************************
     #TRANSACCION:  CO_UO_SEL
     #DESCRIPCION:	Listado de uos
-    #AUTOR:		
-    #FECHA:		23/05/11	
+    #AUTOR:
+    #FECHA:		23/05/11
     ***********************************/
-    elsif(p_transaccion='CO_UO_SEL')then          
-         BEGIN     
+    elsif(p_transaccion='CO_UO_SEL')then
+         BEGIN
             v_consulta:='WITH RECURSIVE uo_centro(ids,
                                                   id_uo,
                                                   id_uo_padre,
@@ -1726,7 +1706,7 @@ where tiene is not null ';
                         JOIN uo_centro pc ON pc.id_uo = euo.id_uo_padre
                         WHERE c2.centro::text = ''no''::text AND c2.estado_reg::text = ''activo''::text
                         )
-                        SELECT 
+                        SELECT
                         c.id_uo,
                         cl.codigo AS codigo_uo_centro,
                         cl.nombre_unidad AS nombre_uo_centro,
@@ -1739,22 +1719,21 @@ where tiene is not null ';
                         c.correspondencia,
                         cl.orden_centro::numeric AS uo_centro_orden
                         FROM uo_centro c
-                        JOIN orga.tuo cl ON cl.id_uo = c.ids [ 1 ] and';                              
+                        JOIN orga.tuo cl ON cl.id_uo = c.ids [ 1 ] and';
             v_consulta:=v_consulta||v_parametros.filtro;
             v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;
             raise notice '%',v_consulta;
-            --raise exception '%',v_consulta;
             return v_consulta;
          END;
 
     /*******************************
     #TRANSACCION:  CO_UO_CONT
     #DESCRIPCION:	Conteo de uos
-    #AUTOR:		
-    #FECHA:		23/05/11	
+    #AUTOR:
+    #FECHA:		23/05/11
     ***********************************/
     elsif(p_transaccion='CO_UO_CONT')then
-      BEGIN          
+      BEGIN
           v_consulta:='WITH RECURSIVE uo_centro(ids,
                                                   id_uo,
                                                   id_uo_padre,
@@ -1788,26 +1767,26 @@ where tiene is not null ';
                         JOIN uo_centro pc ON pc.id_uo = euo.id_uo_padre
                         WHERE c2.centro::text = ''no''::text AND c2.estado_reg::text = ''activo''::text
                         )
-                        SELECT                         
+                        SELECT
                         count(c.id_uo)
                         FROM uo_centro c
-                        JOIN orga.tuo cl ON cl.id_uo = c.ids [ 1 ] and';                              
-            v_consulta:=v_consulta||v_parametros.filtro;            
+                        JOIN orga.tuo cl ON cl.id_uo = c.ids [ 1 ] and';
+            v_consulta:=v_consulta||v_parametros.filtro;
             raise notice '%',v_consulta;
           return v_consulta;
       END;
-  
-  
-  
+
+
+
 	else
-					     
+
 		raise exception 'Transaccion inexistente';
-					         
+
 	end if;
- 
-					
+
+
 EXCEPTION
-					
+
 	WHEN OTHERS THEN
 			v_resp='';
 			v_resp = pxp.f_agrega_clave(v_resp,'mensaje',SQLERRM);
@@ -1821,6 +1800,3 @@ VOLATILE
 CALLED ON NULL INPUT
 SECURITY INVOKER
 COST 100;
-
-ALTER FUNCTION corres.ft_correspondencia_sel (p_administrador integer, p_id_usuario integer, p_tabla varchar, p_transaccion varchar)
-  OWNER TO postgres;

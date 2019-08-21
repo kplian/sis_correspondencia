@@ -8,6 +8,11 @@
 *dar el visto a solicitudes de compra
 *
 */
+
+#HISTORIAL DE MODIFICACIONES:
+#ISSUE          FECHA        AUTOR        DESCRIPCION
+#5      		21/08/2019   MCGH         Eliminación de Código Basura
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -148,13 +153,10 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
             this.getBoton('ImpBorrador').enable();
             //this.getBoton('ImpCodigo').enable();
 		}
-		
-		
 
 		this.swEstado = name;
 		this.getParametrosFiltro();
 		this.load();
-		
 
 	},
 
@@ -187,13 +189,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	liberaMenu:function(){
         var tb = Phx.vista.DerivacionCorrespondenciaExterna.superclass.liberaMenu.call(this);
         if(tb){
-            //this.getBoton('SubirDocumento').disable();
-			//this.getBoton('Adjuntos').disable();
-			//this.getBoton('VerDocumento').disable();
-			//this.getBoton('Finalizar').disable();
-		    // this.getBoton('ImpCodigoDoc').disable();
-		    // this.getBoton('edit').disable();
-			//this.getBoton('del').disable();
 			  this.getBoton('ImpCodigo').disable();
                     
         }
@@ -222,15 +217,11 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
         this.tipo.setValue('externa');
 		this.tipo.disable(true);
 
-		
-
 		 this.ocultarComponente(this.Cmp.id_funcionario);
-
 	
 	},
 	SubirCorrespondencia: function () {
 		var rec = this.sm.getSelected();
-
 
 		Phx.CP.loadWindows('../../../sis_correspondencia/vista/correspondencia/subirCorrespondencia.php',
 			'Subir Correspondencia',
@@ -282,8 +273,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		});
 
 	}
-
-	
 	
 };
 </script>

@@ -12,6 +12,8 @@
 #										  Eliminación del campo id_clasificador,
 #										  Adición del campo persona_destino
 
+#5      		21/08/2019   MCGH         Eliminación de Código Basura
+
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -723,6 +725,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     name : 'id_funcionario_saliente',
                     origen : 'FUNCIONARIOCAR',
                     fieldLabel : 'Funcionario Remitente Saliente',
+                    allowBlank: false,
                     gdisplayField : 'desc_funcionario', //mapea al store del grid
                     valueField : 'id_funcionario',
                     width : 300,
@@ -743,45 +746,40 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 grid : true,
                 form : true
-            },         
-            {	   		
-				config:{				
-				    name: 'id_uo',
-					fieldLabel: 'UO Remitente',
-					allowBlank: false,
-					store : new Ext.data.JsonStore({
-						url:'../../sis_correspondencia/control/Correspondencia/listarUO',
-						id : 'id_uo',
-						root: 'datos',
-						sortInfo:{
-							field: 'id_uo',
-							direction: 'ASC'
-						},
-						totalProperty: 'total',				
-						fields: ['id_uo','nombre_uo_centro'],
-						remoteSort: true,
-						baseParams : {correspondencia : 'si'},
-					}),
-					valueField: 'id_uo',
-					displayField: 'nombre_uo_centro',
-					gdisplayField: 'nombre_uo_centro',
-					hiddenName: 'id_uo',					
-					typeAhead: false,
-					triggerAction: 'all',
-					lazyRender:true,
-					mode:'remote',
-					pageSize:6,
-					queryDelay:1000,
-					anchor: '80%',
-					listWidth: 350,
-					gwidth: 150,
-					minChars:2,					
-				},
-				type:'ComboBox',
-				id_grupo:4,
-				grid:true,
-				form:true
-			},
+            },
+            {
+                config:{
+                    name: 'id_uo',
+                    fieldLabel: 'UO Remitente',
+                    allowBlank: false,
+                    store : new Ext.data.JsonStore({
+                        url:'../../sis_correspondencia/control/Correspondencia/obtenerUoPorFuncionario',
+                        id : 'id_uo',
+                        root: 'datos',
+                        fields: ['id_uo','nombre_unidad'],
+                        remoteSort: true,
+                    }),
+                    readOnly:true,
+                    valueField: 'id_uo',
+                    displayField: 'nombre_unidad',
+                    gdisplayField: 'nombre_unidad',
+                    hiddenName: 'id_uo',
+                    typeAhead: false,
+                    triggerAction: 'all',
+                    lazyRender:true,
+                    mode:'remote',
+                    pageSize:6,
+                    queryDelay:1000,
+                    anchor: '80%',
+                    listWidth: 350,
+                    gwidth: 150,
+                    minChars:2,
+                },
+                type:'ComboBox',
+                id_grupo:4,
+                grid:true,
+                form:true
+            },
             {
                 config : {
                     name : 'fecha_envio',
@@ -936,7 +934,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid: false,
                 form: true
             },
-
             {
                 config : {
                     name : 'id_correspondencias_asociadas',

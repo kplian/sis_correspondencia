@@ -36,7 +36,7 @@ HISTORIAL DE MODIFICACIONES:
 
  #ISSUE         FECHA        AUTOR        DESCRIPCION
  #4  	      	31/07/2019   MCGH         Adición del parametro persona_remitente, fecha recepción
-
+ #5      		21/08/2019   MCGH         Eliminación de Código Basura
 ******************/
 
 
@@ -111,9 +111,6 @@ BEGIN
    --end if;
 
 
---raise exception '%',''||v_partes;
-
-
    v_num=array_upper(v_partes,1);
 
 
@@ -164,18 +161,6 @@ BEGIN
                     if(v_id_depto is null)THEN
                       raise exception 'La UO % no tiene un departamento relacionado',v_id_uo[2];
                     end if;
-
-
-                  -- RAC verifica que el empleado no tenga otra derivación
-
-                  /*   IF (v_array_var is not NULL  and v_array_var != '') THEN
-                        v_num_emp =array_upper(v_array,1);
-                        FOR v_j IN 1..v_num_emp loop
-                            IF v_id_funcionario =v_array[v_j] THEN
-                            raise exception 'El empleado % ya tiene derivaciones de este mismo mensaje',v_nombre_funcionario;
-                           end if;
-                        end loop;
-    				  END IF;*/
 
 
                    INSERT INTO corres.tcorrespondencia
