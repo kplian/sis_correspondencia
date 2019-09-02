@@ -21,6 +21,8 @@ $body$
                                           Adición del campo persona_destino, fecha envio
 
  #5      		21/08/2019   MCGH         Eliminación de Código Basura
+
+ #6      		02/09/2019   MCGH         Correcciones a observaciones de forma
 ****************************************************************************/
 
 
@@ -1205,7 +1207,7 @@ BEGIN
                     v_parametros.otros_adjuntos, v_parametros.cite, v_origen,
                     v_fecha_creacion_documento,
                     --v_parametros.persona_firma,
-                    v_parametros.tipo_documento,
+                    null,--v_parametros.tipo_documento, --#6 MCGH
                     v_parametros.persona_remitente  --#4 MCGH
                     ) RETURNING id_correspondencia
       into v_id_correspondencia;
@@ -1287,7 +1289,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
             mensaje = v_parametros.mensaje,
             id_correspondencias_asociadas = v_id_correspondencias_asociadas,
             nivel_prioridad = v_parametros.nivel_prioridad,
-           -- id_clasificador = v_parametros.id_clasificador, #4
+           -- id_clasificador = v_parametros.id_clasificador, --#4
            -- id_depto = v_parametros.id_depto,
             nro_paginas = v_parametros.nro_paginas,
             otros_adjuntos = v_parametros.otros_adjuntos,
@@ -1295,7 +1297,7 @@ elsif(p_transaccion='CO_COREXT_MOD')then
             fecha_mod = now(),
             id_usuario_mod = p_id_usuario,
            -- persona_firma=v_parametros.persona_firma,
-            tipo_documento=v_parametros.tipo_documento,
+            --tipo_documento=v_parametros.tipo_documento, --#6
             --origen = v_origen
             persona_remitente = v_parametros.persona_remitente --#4
         where id_correspondencia = v_parametros.id_correspondencia;
