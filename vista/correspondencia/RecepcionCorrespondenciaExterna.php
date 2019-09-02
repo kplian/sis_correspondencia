@@ -14,6 +14,7 @@
 #4      		25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción, hora recepción
 
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
+#6      		02/09/2019   MCGH         Correcciones a observaciones de forma
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -218,6 +219,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_acciones);
 		//this.ocultarComponente(this.Cmp.fecha_creacion_documento); //#4 MCGH
         this.ocultarComponente(this.Cmp.id_persona_remitente);
+        this.mostrarComponente(this.Cmp.fecha_creacion_documento); //#6 MCGH
 
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);

@@ -13,6 +13,7 @@
 #										  Adición del campo persona_destino
 
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
+#6      		02/09/2019   MCGH         Correcciones a observaciones de forma
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -307,6 +308,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 config : {
                     name : 'cite',
                     fieldLabel : 'Cite',
+                    allowBlank : false, //#6
                     gwidth : 100,
                     width : 300
                 },
@@ -325,7 +327,7 @@ header("content-type: text/javascript; charset=UTF-8");
             {
                 config : {
                     name : 'id_institucion_remitente',
-                    allowBlank : true,
+                    allowBlank : false, //#6
                     fieldLabel : 'Institucion Remitente',
                     valueField : 'id_institucion',
                     //anchor : '90%',
@@ -581,8 +583,8 @@ header("content-type: text/javascript; charset=UTF-8");
                     hiddenName : 'id_depto',
                     url : this.urlDepto,
                     origen : 'DEPTO',
-                    allowBlank : true,
-                    fieldLabel : 'Depto',
+                    allowBlank : false, //#6
+                    fieldLabel : 'Gerencia', //#6
                     gdisplayField : 'desc_depto', //dibuja el campo extra de la consulta al hacer un inner join con orra tabla
                     width : 300,
                     gwidth : 180,
@@ -606,7 +608,7 @@ header("content-type: text/javascript; charset=UTF-8");
             },  {
                 config : {
                     name : 'id_documento',
-                    fieldLabel : 'Documento',
+                    fieldLabel : 'Tipo Documento', //#6
                     allowBlank : false,
                     emptyText : 'Documento...',
                     store : new Ext.data.JsonStore({
@@ -1212,7 +1214,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 bottom_filter : false,
                 egrid : false
 
-            },  {
+            },  /* //#6
+                {
                 config : {
                     name : 'tipo_documento',
                     fieldLabel : 'Tipo Documento',
@@ -1261,7 +1264,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 id_grupo : 0,
                 grid : true,
                 form : true
-            },
+            },*/
             {
                 config : {
                     name : 'fecha_documento',
