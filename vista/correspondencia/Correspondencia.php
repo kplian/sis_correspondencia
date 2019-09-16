@@ -91,8 +91,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 tooltip: '<b>Imprimir Codigo</b><br/>imprimir codigo correspondencia'
 
             });
-
-
             //9
             this.addButton('Derivar', {
                 text : 'Derivar',
