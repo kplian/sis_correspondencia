@@ -6,7 +6,7 @@
 *@date 20-09-2011 10:22:05
 *@description Archivo con la interfaz de usuario que permite 
 *dar el visto a solicitudes de compra
-*
+*   
 */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -54,7 +54,7 @@ Phx.vista.CorrespondenciaRecibida = {
 		    this.Atributos[this.getIndAtributo('id_documento')].grid=true;
 		    this.Atributos[this.getIndAtributo('id_uo')].grid=true;
 		   // this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
-			this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
+			//this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
 	      }
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
 	     //this.bloquearOrdenamientoGrid();

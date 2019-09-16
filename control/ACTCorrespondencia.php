@@ -619,6 +619,7 @@ class ACTCorrespondencia extends ACTbase
 						<table class="tg"  border="0">
 							  <th class="tg-e3zv1" colspan="6" >DETALLE DE DERIVACIONES</th>
 							  <tr bgcolor="#CCCCCC">
+							    <td class="tg-9hbd"> ¿Tiene el Fisico? </td>
 							    <td class="tg-9hbd"> Usuario Reg. </td>
 								<td class="tg-9hbd"> Derivado A:</td>
 								<td class="tg-9hbd"> Fecha Deriv. </td>
@@ -662,6 +663,7 @@ class ACTCorrespondencia extends ACTbase
 
             $html .= '
 							  <tr>
+							    <td class="tg-9hbd1">' . $ruta['fisico'] . '</td>
 								<td class="tg-9hbd1">(' . $ruta['cuenta'] . ') ' . $ruta['desc_person_fk'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo_fk"] . '</b></td>
 								<td class="tg-9hbd1">' . $ruta['desc_person'] . '<br /><b style="font-size:8pt;">' . $ruta["desc_cargo"] . '</b></td>
 								<td class="tg-9hbd1">' . $fecha_deriv . '</td>

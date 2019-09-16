@@ -1,11 +1,4 @@
 <?php
-/**
-*@package pXP
-*@file gen-Grupo.php
-*@author  (rac)
-*@date 10-01-2012 16:02:20
-*@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
-*/
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>

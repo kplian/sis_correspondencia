@@ -42,7 +42,7 @@ header("content-type: text/javascript; charset=UTF-8");
 			    this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
 			    this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
 			  //  this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
-			    this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
+			    //this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
 
 			    
                     
@@ -68,24 +68,25 @@ header("content-type: text/javascript; charset=UTF-8");
         },
       
       onButtonNew: function () {
-
+            console.log("Entro aqui Corres Emitida Interna");
+          Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
             this.cmpFechaDoc = this.getComponente('fecha_documento');
             this.Cmp.id_funcionario.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
             this.Cmp.id_funcionario.store.load({params:{start:0,limit:this.tam_pag},
                 callback : function (r) {
                     if (r.length == 1 ) {
                         this.Cmp.id_funcionario.setValue(r[0].data.id_funcionario);
-                    }					
+                    }
                 }, scope : this
-                
+
             });
 
             var cmbDoc = this.getComponente('id_documento');
             var cmpFuncionarios = this.getComponente('id_funcionarios');
-          
 
 
-            Phx.vista.Correspondencia.superclass.onButtonNew.call(this);
+
+
             this.adminGrupo({ocultar:[4],mostrar: [0, 1, 2, 3]});
             this.mostrarComponente(cmpFuncionarios);
             this.ocultarComponente(this.Cmp.id_persona_destino);
@@ -97,11 +98,11 @@ header("content-type: text/javascript; charset=UTF-8");
             this.ocultarComponente(this.Cmp.otros_adjuntos);
             this.ocultarComponente(this.Cmp.nro_paginas);
          //   this.ocultarComponente(this.Cmp.persona_firma);
-            this.ocultarComponente(this.Cmp.tipo_documento);
+            //this.ocultarComponente(this.Cmp.tipo_documento);
             this.ocultarComponente(this.Cmp.persona_remitente); //#4
             this.ocultarComponente(this.Cmp.persona_destino); //#4
 
-            this.getComponente('id_clasificador').enable();
+            //this.getComponente('id_clasificador').enable();
             this.getComponente('fecha_documento').disable();
             this.getComponente('mensaje').enable();
             this.getComponente('nivel_prioridad').enable();

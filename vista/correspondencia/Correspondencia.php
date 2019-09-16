@@ -14,6 +14,7 @@
 
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
 #6      		02/09/2019   MCGH         Correcciones a observaciones de forma
+#7      		06/09/2019   MCGH         Adición del campo Tiene el Fisico
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -279,8 +280,6 @@ header("content-type: text/javascript; charset=UTF-8");
                         if (record.data.adjunto > 0) {
                             return "<div style='text-align:center'><img title='Cantidad de Adjuntos: "+record.data.adjunto+"' src = '../../../sis_correspondencia/imagenes/adjunto.png' align='center' width='20' height='20'/></div>";
                         }
-
-
                     }
                 },
                 type : 'Field',
@@ -297,6 +296,29 @@ header("content-type: text/javascript; charset=UTF-8");
                 type : 'TextField',
                 filters : {
                     pfiltro : 'cor.numero',
+                    type : 'string'
+                },
+                id_grupo : 0,
+                grid : true,
+                form : false,
+                bottom_filter : true
+            },
+            { //#7
+                config : {
+                    name : 'fisico',
+                    fieldLabel : '¿Tiene el Fisico?',
+                    gwidth : 80,
+                    renderer:function (value, p, record){
+                        if(record.data['fisico']=='si')
+                            return String.format('<b><font size="5" color="red">{0}</font></b>', record.data['fisico']);
+                        else
+                            return String.format('{0}', record.data['fisico']);
+
+                    }
+                },
+                type : 'TextField',
+                filters : {
+                    pfiltro : 'cor.fisico',
                     type : 'string'
                 },
                 id_grupo : 0,
@@ -487,6 +509,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     triggerAction : 'all',
                     selectOnFocus : true,
                     forceSelection: true,
+                    disabled:true,
                     mode : 'local',
                     minChars: 2,
                     //valorInicial:{ID:'interna',valor:'Interna'},
@@ -503,14 +526,13 @@ header("content-type: text/javascript; charset=UTF-8");
                             return 'Media';
                         }else{
                             return 'Baja';
-
                         }
-
                         //return String.format('{0}', record.data['desc_clasificador']);
                     },
                     valueField : 'ID',
                     displayField : 'valor',
-                    width : 300
+                    width : 300,
+
 
                 },
                 type : 'ComboBox',
@@ -558,7 +580,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     selectOnFocus : true,
                     width : 300,
                     mode : 'local',
-                    disabled: true,
+                    //disabled: true,
                     store : new Ext.data.ArrayStore({
                         fields : ['ID', 'valor'],
                         data : [['interna', 'Interna'], ['saliente', 'Saliente'], ['externa', 'Externa']],
@@ -569,7 +591,7 @@ header("content-type: text/javascript; charset=UTF-8");
 
                 },
                 type : 'ComboBox',
-                valorInicial : 'interna',
+                //valorInicial : 'interna',
                 filters : {
                     pfiltro : 'cor.tipo',
                     type : 'string'
@@ -584,7 +606,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     url : this.urlDepto,
                     origen : 'DEPTO',
                     allowBlank : false, //#6
-                    fieldLabel : 'Gerencia', //#6
+                    fieldLabel : 'Depto Corres.', //#6
                     gdisplayField : 'desc_depto', //dibuja el campo extra de la consulta al hacer un inner join con orra tabla
                     width : 300,
                     gwidth : 180,
@@ -597,6 +619,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     }
                 },
                 //type:'TrigguerCombo',
+                valorInicial: 'Correspondencia Oficina Central',
                 type : 'ComboRec',
                 id_grupo : 0,
                 filters : {
@@ -653,7 +676,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     type : 'string'
                 },
 
-                grid : true,
+                grid : false,
                 form : true
             },
             {
@@ -1309,6 +1332,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 form : false
             }
 
+
         ],
         title : 'Correspondencia',
         ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
@@ -1385,7 +1409,8 @@ header("content-type: text/javascript; charset=UTF-8");
             'estado_fisico',
             'persona_remitente', //#4
             'persona_destino',   //#4
-            'nombre_uo_centro'
+            'nombre_uo_centro',
+            'fisico' //#7
         ],
         arrayDefaultColumHidden:['estado','nivel_prioridad','estado','tipo','fecha_creacion_documento','origen','estado_reg','fecha_mod','usr_mod','id_uo'],
 
@@ -1463,6 +1488,7 @@ header("content-type: text/javascript; charset=UTF-8");
         loadValoresIniciales : function() {
 
             Phx.vista.Correspondencia.superclass.loadValoresIniciales.call(this);
+
         },
         //0
         Bfactura: function(){

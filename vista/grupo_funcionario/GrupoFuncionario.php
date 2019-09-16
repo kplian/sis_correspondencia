@@ -1,11 +1,8 @@
 <?php
-/**
-*@package pXP
-*@file gen-GrupoFuncionario.php
-*@author  (rac)
-*@date 10-01-2012 16:15:05
-*@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
-*/
+/*
+ISSUE            FECHA:		      AUTOR                 DESCRIPCION
+#7   		06/09/2019			manuel guerra		correccion de bug(padre-hijo)
+ */
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -18,17 +15,8 @@ Phx.vista.GrupoFuncionario=Ext.extend(Phx.gridInterfaz,{
 		Phx.vista.GrupoFuncionario.superclass.constructor.call(this,config);
 		this.init();
 		this.bloquearMenus();
-		//this.load({params:{start:0, limit:50}})
 	},
-	/*funcion corre cuando el padre cambia el nodo maestero*/
-	onReloadPage:function(m)
-	{
-		this.maestro=m;						
-		this.store.baseParams={id_grupo:this.maestro.id_grupo};
-		this.load({params:{start:0, limit:50}});			
-	},	
-	
-			
+
 	Atributos:[
 		{
 			//configuracion del componente
@@ -169,9 +157,21 @@ Phx.vista.GrupoFuncionario=Ext.extend(Phx.gridInterfaz,{
 		direction: 'ASC'
 	},
 	bdel:true,
-	bsave:true
-	}
-)
+	bsave:true,
+    //
+    onReloadPage:function(m)
+    {
+        this.maestro=m;
+        this.store.baseParams={id_grupo:this.maestro.id_grupo};
+        this.load({params:{start:0, limit:this.tam_pag}});
+    },
+    //#7
+    loadValoresIniciales:function()
+    {
+        Phx.vista.GrupoFuncionario.superclass.loadValoresIniciales.call(this);
+        this.Cmp.id_grupo.setValue(this.maestro.id_grupo);
+    },
+})
 </script>
 		
 		
