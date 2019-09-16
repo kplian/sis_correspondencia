@@ -1268,11 +1268,11 @@ BEGIN
             '||v_id_funcionario_origen||' as desc_id_funcionario_origen,
             cor.estado,
             cor.fecha_documento,
-            -- cor.fecha_ult_derivado,
-            coalesce((select fecha_reg ::timestamp
+            cor.fecha_ult_derivado,
+            /*coalesce((select fecha_reg ::timestamp
             from corres.tcorrespondencia_estado corest
             where corest.id_correspondencia=cordet.id_correspondencia and estado=''pendiente_recibido''
-            order by corest.id_correspondencia_estado asc limit 1),''01-01-01''::timestamp)::timestamp as fecha_ult_derivado,
+            order by corest.id_correspondencia_estado asc limit 1),''01-01-01''::timestamp)::timestamp as fecha_ult_derivado,*/
 
             (select fecha_reg
             from corres.tcorrespondencia_estado corest
@@ -1292,8 +1292,6 @@ BEGIN
             ORDER BY  id_correspondencia ASC ';
 
       	--Devuelve la respuesta
-		RAISE notice '%',v_filtro;
-		RAISE EXCEPTION '%',v_filtro;
    		return v_consulta;
 
     end;
