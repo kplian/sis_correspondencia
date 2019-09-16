@@ -23,6 +23,7 @@ $body$
  #5      		21/08/2019   MCGH         Eliminación de Código Basura
 
  #6      		02/09/2019   MCGH         Correcciones a observaciones de forma
+ #7      		06/09/2019   MCGH         Adición del campo Tiene el Fisico
 ****************************************************************************/
 
 
@@ -97,6 +98,7 @@ DECLARE
     v_correo                varchar;
     v_nro_tramite           varchar;
     v_obs                   varchar;
+    v_count integer; --#7
 BEGIN
 
   v_nombre_funcion = 'corres.ft_correspondencia_ime';
@@ -115,8 +117,10 @@ BEGIN
     begin
       --obtener el uo del funcionario que esta reenviando
          --obtener el departamento
+        -- raise exception '%',v_parametros.id_grupo;
          IF( v_parametros.tipo='saliente') THEN
                v_id_uo= ARRAY[1];
+               --raise exception '%',v_id_uo;
                v_id_uo =array_append(v_id_uo,v_parametros.id_uo);
                v_id_funcionario=v_parametros.id_funcionario_saliente;
          ELSE
@@ -299,7 +303,8 @@ BEGIN
           v_fecha_documento,
           v_id_origen,
           v_id_depto,
-          null  --#4 persona_remitente
+          null,  --#4 persona_remitente
+          null  --#7
         );
         ELSE
         --si es del tipo saliente detalle para persona o institucion
@@ -604,6 +609,28 @@ BEGIN
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
 
+      --#7 verificar que al menos exista un funcionario que tendra la correspondencia fisica siempre y cuando el padre tenga el fisico
+     -----*****PRIMERO VERIFICAMOS QUE EL PADRE TENGA EL FISICO PARA QUE PUEDA DERIVAR CON EL FISICO
+      SELECT COUNT(*) INTO v_count
+          FROM corres.tcorrespondencia c
+          WHERE c.id_correspondencia = v_parametros.id_correspondencia::INTEGER
+          and c.sw_fisico = 'si'
+          and c.estado <> 'anulado';
+      IF ( v_count > 0 )THEN
+      		------*****validamos que al menos exista un funcionario que tendra la correspondencia fisica
+            SELECT COUNT(*) INTO v_count
+                  FROM corres.tcorrespondencia c
+                  WHERE c.id_correspondencia_fk = v_parametros.id_correspondencia::INTEGER
+                  and c.sw_fisico = 'si'
+                  and c.estado <> 'anulado';
+
+            IF ( v_count <= 0) THEN
+                raise exception 'Debe registrar un funcionario que recibirá la correspondencia física';
+            END IF;
+
+      END IF;
+
+
 
       IF(NOT EXISTS (SELECT 1
                     FROM corres.tcorrespondencia c
@@ -880,9 +907,7 @@ BEGIN
       if v_datos_maestro.estado = 'pendiente_recibido'
       --if v_datos_maestro.estado != 'enviado'
         THEN
-        RAISE EXCEPTION '%',
-          'No puedes agregar nuevos por que aun no finalizaste esta correspondencia'
-          ;
+        RAISE EXCEPTION '%','No puedes agregar nuevos por que aun no finalizaste esta correspondencia';
       END IF ;
 
      /* if v_datos_maestro.estado = 'recibido'
@@ -917,7 +942,9 @@ BEGIN
         v_datos_maestro.fecha_documento,
         v_id_origen,
         v_datos_maestro.id_depto,
-		v_datos_maestro.persona_remitente
+		v_datos_maestro.persona_remitente,
+        v_parametros.fisico,  --#7
+        v_parametros.id_grupo
       );
 
       --Definicion de la respuesta
@@ -960,15 +987,42 @@ BEGIN
           END IF ;
      -- END IF;
 
-       update corres.tcorrespondencia
-        set mensaje = v_parametros.mensaje,
-            id_acciones = string_to_array(v_parametros.id_acciones,',')::integer[],
-            fecha_mod = now(),
-            id_funcionario=v_parametros.id_funcionario,
-            id_usuario_mod = p_id_usuario
-        where id_correspondencia = v_parametros.id_correspondencia;
-        v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
-        'Correspondencia modificado(a)');
+       --******* #7 VERIFICAR QUE LA CORRESPONDENCIA FISICA SOLO ESTE CON UN FUNCIONARIO
+        -----*****PRIMERO VERIFICAMOS QUE EL PADRE TENGA EL FISICO PARA QUE PUEDA EDITAR Y DERIVAR CON EL FISICO
+
+        SELECT COUNT(*) INTO v_count
+            FROM corres.tcorrespondencia c
+            WHERE c.id_correspondencia = v_parametros.id_correspondencia_fk::INTEGER
+            and c.sw_fisico = 'si'
+            and c.estado <> 'anulado';
+        IF (v_parametros.fisico = 'si' AND v_count <= 0 )THEN
+        	raise exception 'No puede derivar el documento físico, porque usted no lo tiene.';
+        END IF;
+        ------*****
+         SELECT COUNT(*) INTO v_count
+            FROM corres.tcorrespondencia c
+            WHERE c.id_correspondencia_fk = v_parametros.id_correspondencia_fk::INTEGER
+            and c.sw_fisico = 'si'
+            and c.estado <> 'anulado'
+            and c.id_correspondencia <> v_parametros.id_correspondencia::INTEGER;
+
+        IF (v_parametros.fisico = 'si' AND v_count > 0) THEN
+           	raise exception 'Otro funcionario ya tiene registrado que recibirá el fisico';
+        ELSE
+
+             update corres.tcorrespondencia
+              set mensaje = v_parametros.mensaje,
+                  id_acciones = string_to_array(v_parametros.id_acciones,',')::integer[],
+                  sw_fisico = v_parametros.fisico, --#7
+                  fecha_mod = now(),
+                  id_funcionario=v_parametros.id_funcionario,
+                  id_usuario_mod = p_id_usuario
+              where id_correspondencia = v_parametros.id_correspondencia;
+              v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
+              'Correspondencia modificado(a)');
+
+       	END IF;
+
       v_resp = pxp.f_agrega_clave(v_resp,'id_correspondencia',
         v_parametros.id_correspondencia::varchar);
 

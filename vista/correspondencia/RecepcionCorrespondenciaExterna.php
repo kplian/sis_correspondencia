@@ -104,6 +104,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	   		this.Cmp.id_persona_remitente.modificado=true;
 	   		
 	   	},this)
+
    },
   // east : undefined,
    
@@ -155,6 +156,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 
 			this.getBoton('SubirDocumento').enable();
 			this.getBoton('Adjuntos').enable();
+            this.getBoton('ImpCodigo').enable();
 		}
 
 
@@ -201,7 +203,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
        return tb
   },
 	onButtonNew: function () {
-        console.log("Entro aqui ");
+        console.log("Entro aqui Recepcion Corres Externa");
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
 		
@@ -227,6 +229,13 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es externa
 		cmbDoc.modificado = true;
 		cmbDoc.reset();
+
+        this.Cmp.id_depto.store.load({params:{start:0,limit:30},
+            callback : function (r) {
+                this.Cmp.id_depto.setValue(r[0].data.id_depto);
+            }, scope : this
+
+        });
         
 	},
 	

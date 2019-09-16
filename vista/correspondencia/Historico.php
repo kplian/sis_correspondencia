@@ -47,6 +47,29 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 			type:'Field',
 			form:true 
 		},
+        {
+            config : {
+                name : 'fisico',
+                fieldLabel : '¿Tiene el fisico?',
+                gwidth : 120,
+                renderer:function (value, p, record){
+                    if(record.data['fisico']=='si')
+                        return String.format('<b><font color="red">{0}</font></b>', record.data['fisico']);
+                    else
+                        return String.format('{0}', record.data['fisico']);
+
+                }
+            },
+            type : 'TextField',
+            filters : {
+                pfiltro : 'fisico',
+                type : 'string'
+            },
+            id_grupo : 0,
+            grid : true,
+            form : false,
+            bottom_filter : true
+        },
 		{
 			config : {
 				name : 'desc_person_fk',
@@ -238,8 +261,9 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 		{name:'estado', type: 'string'},
 		{name:'fecha_documento', type: 'date',dateFormat:'Y-m-d'},
 		{name:'fecha_deriv', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
-		{name:'fecha_recepcion', type: 'date',dateFormat:'Y-m-d H:i:s.u'}/*,
-		
+		{name:'fecha_recepcion', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
+        {name:'fisico', type: 'string'}/*,
+
 		{name:'fecha_recepcion', type: 'string'},*/
 		
 	],

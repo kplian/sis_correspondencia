@@ -14,6 +14,8 @@
 #										  Adición del campo persona_destino, fecha envio
 
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
+#7      		06/09/2019   MCGH         Adición del campo Tiene el Fisico
+#7				06/09/2019	 MGHERRA	  Derivacion a Grupos
 
 class MODCorrespondencia extends MODbase{
 
@@ -194,6 +196,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_funcionario_plantilla','text');
 		$this->captura('estado_corre','varchar');
 		$this->captura('persona_remitente','varchar');
+		$this->captura('fisico','varchar');  //#7
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -459,6 +462,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('persona_firma','varchar');
 		$this->captura('estado_fisico','varchar');
 		$this->captura('persona_remitente','varchar');
+		$this->captura('fisico','varchar');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -480,7 +484,8 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_correspondencia','id_correspondencia_fk','int4');
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_acciones','id_acciones','varchar');
-
+		$this->setParametro('fisico','fisico','varchar');//#7
+		$this->setParametro('id_grupo','id_grupo','varchar'); //#7
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -500,6 +505,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('mensaje','mensaje','text');
 		$this->setParametro('id_acciones','id_acciones','varchar');
 		$this->setParametro('id_funcionario','id_funcionario','integer'); //son a los que enviaremos
+		$this->setParametro('fisico','fisico','varchar'); //#7
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -842,6 +848,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('fecha_documento','date');
 		$this->captura('fecha_deriv','timestamp');
 		$this->captura('fecha_recepcion','timestamp');
+		$this->captura('fisico','varchar'); //#7
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1011,6 +1018,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('persona_firma','varchar');
 		$this->captura('estado_fisico','varchar');
 		$this->captura('persona_remitente','varchar');
+		$this->captura('fisico','varchar'); ///#7
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

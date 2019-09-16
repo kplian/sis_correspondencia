@@ -21,6 +21,9 @@ $body$
  										  Eliminación del campo id_clasificador
                                           Adición del campo persona_destino, fecha envio
  #5      		21/08/2019   MCGH         Eliminación de Código Basura
+
+ #7				05/09/2019	 MCGH		  Correcciones varias:
+ 										  Obtener el UO por el id_funcionario
 ****************************************************************************/
 
 
@@ -46,7 +49,7 @@ DECLARE
     v_id_funcionarios_permitidos   INTEGER[];
 	v_id_asistente     		INTEGER;
     v_filadd           		varchar;
-
+	v_id_uo 				integer [ ];--#7
 
 BEGIN
 
@@ -546,7 +549,8 @@ BEGIN
                         pxp.f_fecha_literal(cor.fecha_documento) as fecha_documento_literal,
                         initcap(person.nombre)||'' ''||initcap(person.ap_paterno)||'' ''||initcap(person.ap_materno) as desc_funcionario_plantilla,
                         cor.estado_corre,
-                        cor.persona_remitente
+                        cor.persona_remitente,
+                        cor.sw_fisico as fisico
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
@@ -971,7 +975,7 @@ BEGIN
                                  cor.fecha_ult_derivado,
                                  cor.observaciones_archivado,
                                  coror.cite,
-                                 coror.otros_adjuntos,
+                                 coalesce(coror.otros_adjuntos,''''),
                                  coror.nro_paginas,
                                  coalesce(
                         (CASE WHEN (coror.id_correspondencias_asociadas is not null) then
@@ -984,7 +988,8 @@ BEGIN
                                        cor.tipo_documento,
                                    cor.persona_firma,
                                    cor.estado_fisico,
-                                   cor.persona_remitente
+                                   cor.persona_remitente,
+                                   cor.sw_fisico
 
                      	from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
@@ -1177,12 +1182,7 @@ BEGIN
     end;
 
 
-  /*********************************
-#TRANSACCION:  'CO_CORHOJ_SEL'
-#DESCRIPCION:	Ver Archivo de correspondencia con id_origen
-#AUTOR:		    Favio Figueroa
-#FECHA:		    21-04-2016
-***********************************/
+
 /*********************************
 #TRANSACCION:  'CO_CORHOJ_SEL'
 #DESCRIPCION:	Adecuaciones en la forma de obtener el v_id_persona, v_id_funcionario_origen, cuando es persona o institución
@@ -1192,8 +1192,6 @@ BEGIN
   elsif(p_transaccion='CO_CORHOJ_SEL')then
 
     begin
-
-
 
       select id_origen, tipo, id_usuario_reg, id_persona
       into v_id_origen, v_tipo_correspondencia, v_id_usuario_reg, v_id_persona
@@ -1234,69 +1232,69 @@ BEGIN
 
 			--obtenemos el id_origen de la correspondencia
 			v_consulta = '
-			WITH RECURSIVE correspondencia_detalle(id_correspondencia) AS (
-  select cor.id_correspondencia
-  from corres.tcorrespondencia cor
-  where id_origen = '||v_id_origen||'
-  UNION
-      SELECT cor2.id_correspondencia
-        from corres.tcorrespondencia cor2,correspondencia_detalle cordet
-    where cor2.id_correspondencia_fk = cordet.id_correspondencia
+			WITH RECURSIVE correspondencia_detalle(id_correspondencia) AS
+            (
+                select cor.id_correspondencia
+                from corres.tcorrespondencia cor
+                where id_origen = '||v_id_origen||'
+                UNION
+                SELECT cor2.id_correspondencia
+                from corres.tcorrespondencia cor2,correspondencia_detalle cordet
+                where cor2.id_correspondencia_fk = cordet.id_correspondencia
+			)
+            SELECT
+            cor.numero,
+            cor.id_correspondencia_fk,
+            coalesce(initcap(per_fk.nombre_completo2),usu1.cuenta) as desc_person_fk,
+            upper(orga.f_get_cargo_x_funcionario_str(cor_fk.id_funcionario,cor_fk.fecha_documento,''oficial'')) as desc_cargo_fk,
+            cor.id_correspondencia,
+            initcap(per.nombre_completo2) as desc_person,
+            upper(orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'')) as desc_cargo,
+            cor.mensaje,
+            cor.referencia,
+            (
+            	CASE WHEN (cor.id_acciones is not null) then
+            (
+            	CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
+            (
+              SELECT  pxp.list(acor.nombre)
+              FROM corres.taccion acor
+              WHERE acor.id_accion = ANY ( cor.id_acciones))
+              END
+            )
+            END )AS acciones,
+            usu1.cuenta,
+            '||v_id_origen||' as desc_id_origen,
+            '||v_id_funcionario_origen||' as desc_id_funcionario_origen,
+            cor.estado,
+            cor.fecha_documento,
+            -- cor.fecha_ult_derivado,
+            coalesce((select fecha_reg ::timestamp
+            from corres.tcorrespondencia_estado corest
+            where corest.id_correspondencia=cordet.id_correspondencia and estado=''pendiente_recibido''
+            order by corest.id_correspondencia_estado asc limit 1),''01-01-01''::timestamp)::timestamp as fecha_ult_derivado,
 
-)
-SELECT cor.numero,
-  cor.id_correspondencia_fk,
-  coalesce(initcap(per_fk.nombre_completo2),usu1.cuenta) as desc_person_fk,
-   upper(orga.f_get_cargo_x_funcionario_str(cor_fk.id_funcionario,cor_fk.fecha_documento,''oficial'')) as desc_cargo_fk,
+            (select fecha_reg
+            from corres.tcorrespondencia_estado corest
+            where corest.id_correspondencia=cordet.id_correspondencia and estado=''recibido''
+            order by corest.id_correspondencia_estado asc limit 1)::timestamp as fecha_recepcion,
+            cor.sw_fisico
 
-cor.id_correspondencia,
-  initcap(per.nombre_completo2) as desc_person,
-   upper(orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'')) as desc_cargo,
+            FROM correspondencia_detalle cordet
+            INNER JOIN corres.tcorrespondencia cor on cor.id_correspondencia = cordet.id_correspondencia
+            INNER JOIN orga.tfuncionario fun on fun.id_funcionario = cor.id_funcionario
+            inner join segu.vpersona per on per.id_persona = fun.id_persona
+            inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
+            INNER JOIN corres.tcorrespondencia cor_fk on cor_fk.id_correspondencia = cor.id_correspondencia_fk
+            left JOIN orga.tfuncionario fun_fk on fun_fk.id_funcionario = cor_fk.id_funcionario
+            left join segu.vpersona per_fk on per_fk.id_persona = fun_fk.id_persona
+            WHERE '||v_filtro||'
+            ORDER BY  id_correspondencia ASC ';
 
-  cor.mensaje,
-  cor.referencia,
-  (CASE WHEN (cor.id_acciones is not null) then
-
-    (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
-      (
-        SELECT  pxp.list(acor.nombre)
-        FROM corres.taccion acor
-        WHERE acor.id_accion = ANY ( cor.id_acciones))
-     END )
-   END )AS  acciones,
-  usu1.cuenta,
-  '||v_id_origen||' as desc_id_origen,
-  '||v_id_funcionario_origen||' as desc_id_funcionario_origen,
-  cor.estado,
-  cor.fecha_documento,
- -- cor.fecha_ult_derivado,
-
-coalesce((select fecha_reg ::timestamp
-  from corres.tcorrespondencia_estado corest
-  where corest.id_correspondencia=cordet.id_correspondencia and estado=''pendiente_recibido''
-  order by corest.id_correspondencia_estado asc limit 1),''01-01-01''::timestamp)::timestamp as fecha_ult_derivado,
-
- (select fecha_reg
-  from corres.tcorrespondencia_estado corest
-  where corest.id_correspondencia=cordet.id_correspondencia and estado=''recibido''
-  order by corest.id_correspondencia_estado asc limit 1)::timestamp as fecha_recepcion
-
-
-FROM correspondencia_detalle cordet
-INNER JOIN corres.tcorrespondencia cor on cor.id_correspondencia = cordet.id_correspondencia
-INNER JOIN orga.tfuncionario fun on fun.id_funcionario = cor.id_funcionario
-inner join segu.vpersona per on per.id_persona = fun.id_persona
- inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
-
-  INNER JOIN corres.tcorrespondencia cor_fk on cor_fk.id_correspondencia = cor.id_correspondencia_fk
-left JOIN orga.tfuncionario fun_fk on fun_fk.id_funcionario = cor_fk.id_funcionario
-left join segu.vpersona per_fk on per_fk.id_persona = fun_fk.id_persona
-	WHERE '||v_filtro||'
-ORDER BY  id_correspondencia ASC ';
-
-      --Devuelve la respuesta
-
-      return v_consulta;
+      	--Devuelve la respuesta
+		RAISE notice '%',v_filtro;
+		RAISE EXCEPTION '%',v_filtro;
+   		return v_consulta;
 
     end;
 
@@ -1518,7 +1516,8 @@ where tiene is not null ';
                                    cor.persona_firma,
 
                         cor.estado_fisico,
-                        cor.persona_remitente
+                        cor.persona_remitente,
+                        cor.sw_fisico as fisico
 
 
                         from corres.tcorrespondencia cor
@@ -1547,7 +1546,6 @@ where tiene is not null ';
                 v_consulta:=v_consulta||' order by ' ||v_auxiliar|| ' ' ;
                 --v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' ;
             end if;
-
 			v_consulta:=v_consulta || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 
@@ -1776,7 +1774,60 @@ where tiene is not null ';
           return v_consulta;
       END;
 
+  /*******************************  #7
+    #TRANSACCION:  CO_UOPFUN_SEL
+    #DESCRIPCION:	Obtener UO por funcionario
+    #AUTOR:		MCGH
+    #FECHA:		05/09/2019
+    ***********************************/
+    elsif(p_transaccion='CO_UOPFUN_SEL')then
+         BEGIN
+         	 v_id_uo = corres.f_get_uo_correspondencia_funcionario(
+	         v_parametros.id_fun, array ['activo', 'suplente'],
+             now()::date);
 
+            IF (v_id_uo[1] = '-1') THEN
+            	 v_consulta:='select '||v_id_uo[2]|| 'id_uo,
+                                  uo.nombre_unidad
+                          from orga.tuo uo
+                          where uo.id_uo = '||v_id_uo[2]||
+                          'and uo.estado_reg = ''activo''';
+
+                 --Devuelve la respuesta
+                return v_consulta;
+            ELSE
+            	RAISE EXCEPTION '%', 'La UO no existe';
+            END IF;
+
+
+         END;
+
+  	  /*******************************  #7
+    #TRANSACCION:  CO_UOPFUN_CONT
+    #DESCRIPCION:	Obtener UO por funcionario
+    #AUTOR:		MCGH
+    #FECHA:		05/09/2019
+    ***********************************/
+    elsif(p_transaccion='CO_UOPFUN_CONT')then
+         BEGIN
+         	 v_id_uo = corres.f_get_uo_correspondencia_funcionario(
+	         v_parametros.id_fun, array ['activo', 'suplente'],
+             now()::date);
+
+            IF (v_id_uo[1] = '-1') THEN
+            	 v_consulta:='select COUNT(uo.nombre_unidad)
+                          from orga.tuo uo
+                          where uo.id_uo = '||v_id_uo[2]||
+                          'and uo.estado_reg = ''activo''';
+
+                 --Devuelve la respuesta
+                return v_consulta;
+            ELSE
+            	RAISE EXCEPTION '%', 'La UO no existe';
+            END IF;
+
+
+         END;
 
 	else
 
