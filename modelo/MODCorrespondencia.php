@@ -387,7 +387,6 @@ class MODCorrespondencia extends MODbase{
 		return $this->respuesta;
 	}
 
-	/*13/12/11*/
 	function listarCorrespondenciaRecibida(){
 		//Definicion de variables para ejecucion del procedimientp
 		$this->procedimiento='corres.ft_correspondencia_sel';
@@ -1275,6 +1274,7 @@ class MODCorrespondencia extends MODbase{
 		//Definicion de la lista del resultado del query
 		$this->captura('id_uo','int4');
 		$this->captura('nombre_unidad','varchar');
+		$this->captura('id_gerencia','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -1282,6 +1282,23 @@ class MODCorrespondencia extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-
+	//
+	function obtenerFuncGerencia(){
+		//Definicion de variables para ejecucion del procedimientp
+		$this->procedimiento='corres.ft_correspondencia_sel';
+		$this->transaccion='CO_FUNGER_SEL';
+		$this->tipo_procedimiento='SEL';
+		//$this->setParametro('id_uo','id_uo','int4');
+		//Definicion de la lista del resultado del query
+		$this->captura('id_uo','int4');
+		$this->captura('codigo','varchar');
+		$this->captura('nombre_unidad','varchar');
+		$this->captura('id_funcionario','int4');
+		//Ejecuta la instruccion
+		$this->armarConsulta();
+		$this->ejecutarConsulta();
+		//Devuelve la respuesta
+		return $this->respuesta;
+	}
 }
 ?>

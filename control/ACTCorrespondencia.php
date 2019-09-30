@@ -1362,6 +1362,16 @@ window.onload=function(){self.print();}
         $this->res = $this->objFunc->obtenerUoPorFuncionario();
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    //
+    //#4
+    function obtenerFuncGerencia()
+    {
+        $this->objParam->defecto('ordenacion', 'id_uo');
+        $this->objParam->defecto('dir_ordenacion', 'desc');
 
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->obtenerFuncGerencia();
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 ?>

@@ -85,7 +85,7 @@ header("content-type: text/javascript; charset=UTF-8");
             }
 
         },
-
+        //
         iniciarEventos: function () {
             this.cmpResponde = this.getComponente('id_correspondencias_asociadas');
             this.cmpAsocia = this.getComponente('asociar');
@@ -105,7 +105,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     alert('El funcionario no tiene depto definido');
                     return
                 }
-
+                console.log(record.data);
                 //
                 this.Cmp.id_uo.store.baseParams.id_fun = record.data.id_funcionario;
                 this.Cmp.id_uo.store.baseParams.fecha_doc = this.getComponente('fecha_documento').value;
@@ -113,7 +113,8 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.Cmp.id_uo.store.load({params:{start:0,limit:this.tam_pag},
                     callback : function (r) {
                         if (r.length == 1) {
-                            this.Cmp.id_uo.setValue(r[0].data.id_uo);
+                            //this.Cmp.id_uo.setValue(r[0].data.id_uo);
+                            this.Cmp.id_uo.setValue(r[0].data.id_gerencia);
                         }
                     }, scope : this
                 });
@@ -123,7 +124,6 @@ header("content-type: text/javascript; charset=UTF-8");
         east : undefined,
 
         onButtonNew: function () {
-            console.log("Entro aqui Emitida Externa");
             this.cmpFechaDoc = this.getComponente('fecha_documento');
             this.Cmp.id_funcionario_saliente.store.baseParams.fecha = new Date().dateFormat(this.cmpFechaDoc.format);
             var cmbDoc = this.getComponente('id_documento');
