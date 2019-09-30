@@ -14,7 +14,7 @@
 #										  Adición del campo persona_destino, fecha envio
 
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
-
+#8          25/09/2019   Manuel Guerra      nuevas funcionalidades
 require_once(dirname(__FILE__) . '/../../lib/tcpdf/tcpdf_barcodes_2d.php');
 require_once(dirname(__FILE__) . '/../reporte/RReportes.php');
 
@@ -1362,6 +1362,16 @@ window.onload=function(){self.print();}
         $this->res = $this->objFunc->obtenerUoPorFuncionario();
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
+    //
+    //#8
+    function obtenerFuncGerencia()
+    {
+        $this->objParam->defecto('ordenacion', 'id_uo');
+        $this->objParam->defecto('dir_ordenacion', 'desc');
 
+        $this->objFunc = $this->create('MODCorrespondencia');
+        $this->res = $this->objFunc->obtenerFuncGerencia();
+        $this->res->imprimirRespuesta($this->res->generarJson());
+    }
 }
 ?>

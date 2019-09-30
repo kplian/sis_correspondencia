@@ -86,7 +86,6 @@ Phx.vista.CorrespondenciaRecibida = {
 	preparaMenu:function(n){
 		     	
 		var data = this.getSelectedData();
-		console.log('data',data)
 		var tb =this.tbar;
 		//si el archivo esta escaneado se permite visualizar
 		
