@@ -15,7 +15,7 @@
 
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
 #7      		06/09/2019   MCGH         Adición del campo Tiene el Fisico
-#7				06/09/2019	 MGHERRA	  Derivacion a Grupos
+#8          25/09/2019   Manuel Guerra      nuevas funcionalidades
 
 class MODCorrespondencia extends MODbase{
 

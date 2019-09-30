@@ -1,12 +1,5 @@
 <?php
-/**
- * @package pXP
- * @file gen-SistemaDist.php
- * @author  (fprudencio)
- * @date 11/07/2018
- * @description Archivo Correspondencia Saliente
- *
- */
+/*
 #HISTORIAL DE MODIFICACIONES:
 #ISSUE          FECHA        AUTOR        DESCRIPCION
 #4      		25/07/2019   MCGH         Adición del campo persona_remitente, fecha recepción,
@@ -14,7 +7,8 @@
 #                                         Adición del campo persona_destino, fecha envio
 
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
-
+#8          25/09/2019   Manuel Guerra      nuevas funcionalidades
+*/
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
@@ -105,7 +99,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     alert('El funcionario no tiene depto definido');
                     return
                 }
-                console.log(record.data);
                 //
                 this.Cmp.id_uo.store.baseParams.id_fun = record.data.id_funcionario;
                 this.Cmp.id_uo.store.baseParams.fecha_doc = this.getComponente('fecha_documento').value;

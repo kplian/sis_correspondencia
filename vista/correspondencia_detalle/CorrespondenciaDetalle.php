@@ -10,7 +10,7 @@
 #HISTORIAL DE MODIFICACIONES:
 #ISSUE          FECHA        AUTOR              DESCRIPCION
 #7          06/09/2019   MCGH               Adición del campo Tiene el Fisico
-#8          25/09/2019   Manuel Guerra      nuevas funcionalidades
+#8          25/09/2019   Manuel Guerra      nuevas funcionalidades  
  */
 header("content-type: text/javascript; charset=UTF-8");
 ?>

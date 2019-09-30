@@ -1,5 +1,3 @@
---------------- SQL ---------------
-
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -1753,13 +1751,10 @@ where tiene is not null ';
              now()::date);
 
             IF (v_id_uo[1] = '-1') THEN
-            	 v_consulta:='select '||v_id_uo[2]|| 'id_uo,
-                                  uo.nombre_unidad
-                          from orga.tuo uo
-                          where uo.id_uo = '||v_id_uo[2]||
-                          'and uo.estado_reg = ''activo''';
-
-                 --Devuelve la respuesta
+            	v_consulta:='select '||v_id_uo[2]|| 'id_uo, uo.nombre_unidad,
+                			 (select k.id_uo from orga.tuo k where k.id_uo in(select * from orga.f_get_uo_gerencia('||v_id_uo[2]||','||v_parametros.id_fun||',now()::date))) as id_gerencia
+                             from orga.tuo uo
+                             where uo.id_uo = '||v_id_uo[2]||' and uo.estado_reg = ''activo'' ';
                 return v_consulta;
             ELSE
             	RAISE EXCEPTION '%', 'La UO no existe';
@@ -1794,14 +1789,14 @@ where tiene is not null ';
 
 
            END;
-        /******************************* 
+        /*******************************
         #TRANSACCION:  CO_FUNGER_SEL
         #DESCRIPCION:	Obtener el gerente(id_funcionario) segun gerencia
         #AUTOR:		manuel guerra  #8
         #FECHA:		05/09/2019
         ***********************************/
     	elsif(p_transaccion='CO_FUNGER_SEL')then
-        	BEGIN                           
+        	BEGIN
                 v_consulta:='select u.id_uo,u.codigo,u.nombre_unidad,fun.id_funcionario
                             from orga.tuo u
                             join orga.tuo_funcionario uf on uf.id_uo=u.id_uo
@@ -1809,12 +1804,12 @@ where tiene is not null ';
                             where u.gerencia=''si'' and';
                 --Devuelve la respuesta
                 v_consulta:=v_consulta||v_parametros.filtro;
-                raise notice '%',v_consulta;  
-                v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;            
+                raise notice '%',v_consulta;
+                v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;
                 return v_consulta;
          	END;
 
-  	  	/*******************************  
+  	  	/*******************************
         #TRANSACCION:  CO_FUNGER_CONT
         #DESCRIPCION:	Obtener el gerente(id_funcionario) segun gerencia
         #AUTOR:		manuel guerra #8
@@ -1824,10 +1819,10 @@ where tiene is not null ';
             BEGIN
             	--raise exception '%',v_consulta;
                 v_consulta:='select count(u.id_uo)
-                              from orga.tuo u
-                              join orga.tuo_funcionario uf on uf.id_uo=u.id_uo
-                              join orga.tfuncionario fun on fun.id_funcionario=uf.id_funcionario
-                              where u.gerencia=''si''  and';
+                            from orga.tuo u
+                            join orga.tuo_funcionario uf on uf.id_uo=u.id_uo
+                            join orga.tfuncionario fun on fun.id_funcionario=uf.id_funcionario
+                            where u.gerencia=''si''  and';
                 --Devuelve la respuesta
                  v_consulta:=v_consulta||v_parametros.filtro;
                 -- raise exception '%',v_consulta;                
