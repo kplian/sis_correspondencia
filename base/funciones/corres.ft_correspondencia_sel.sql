@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_sel (
   p_administrador integer,
   p_id_usuario integer,
@@ -24,7 +26,8 @@ $body$
 
  #7				05/09/2019	 MCGH		 	 Correcciones varias:
  										 	 Obtener el UO por el id_funcionario
- #8				25/09/2019	 Manuel Guerra	 Nuevas Funcionalidades	                                          
+ #8				25/09/2019	 Manuel Guerra	 Nuevas Funcionalidades	   
+ #9          14/11/2019   Manuel Guerra      modificar campo a multiple                                       
 ****************************************************************************/
 
 
@@ -486,8 +489,8 @@ BEGIN
 
      /*********************************
  	#TRANSACCION:  'CO_CORDET_SEL'
- 	#DESCRIPCION:	Consulta de resgistro de correspondecia detalle
- 	#AUTOR:		rac
+ 	#DESCRIPCION:	Consulta de resgistro de correspondecia detalle --#9
+ 	#AUTOR:		rac manu
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
@@ -535,45 +538,42 @@ BEGIN
                         cor.version,
                         persona.nombre_completo1 as desc_persona,
                         insti.nombre as desc_institucion,
-
                         (CASE WHEN (cor.id_acciones is not null) then
-
-                                  (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
-                                      (
-                                       SELECT  pxp.list(acor.nombre)
-                                       FROM corres.taccion acor
-                                       WHERE acor.id_accion = ANY ( cor.id_acciones))
-                                    END )
-                                END )AS  acciones,
+                          (CASE WHEN (array_upper(cor.id_acciones,1) is  not null) then
+                              (
+                               SELECT  pxp.list(acor.nombre)
+                               FROM corres.taccion acor
+                               WHERE acor.id_accion = ANY ( cor.id_acciones))
+                            END )
+                        END )AS  acciones,
                         array_to_string(cor.id_acciones,'','') as id_acciones,
                         orga.f_get_cargo_x_funcionario_str(cor.id_funcionario,cor.fecha_documento,''oficial'') as desc_cargo,
                         pxp.f_fecha_literal(cor.fecha_documento) as fecha_documento_literal,
-                        initcap(person.nombre)||'' ''||initcap(person.ap_paterno)||'' ''||initcap(person.ap_materno) as desc_funcionario_plantilla,
+                        initcap(persona.nombre)||'' ''||initcap(persona.ap_paterno)||'' ''||initcap(persona.ap_materno) as desc_funcionario_plantilla,
                         cor.estado_corre,
                         cor.persona_remitente,
-                        cor.sw_fisico as fisico
+                        cor.sw_fisico as fisico,
+                        t.nombre_unidad 
                         from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
+                        inner join param.tdepto depto on depto.id_depto=cor.id_depto
                         left join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                         left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
                         left join orga.tfuncionario fun on fun.id_funcionario=cor.id_funcionario
-                        left join segu.vpersona person on person.id_persona=fun.id_persona
+                        left join orga.tuo t on t.id_uo=cor.id_gerencia or t.id_uo=cor.id_uo
 				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'',''recibido_derivacion'',''enviado'') and ';
-
 			--Definicion de la respuesta
-			           v_consulta:=v_consulta||v_parametros.filtro;
-
-     	v_consulta:=v_consulta||'      GROUP BY cor.id_correspondencia,
+		v_consulta:=v_consulta||v_parametros.filtro;
+     	v_consulta:=v_consulta||'      
+               GROUP BY cor.id_correspondencia,
 						cor.estado,
 						cor.estado_reg,
 						cor.fecha_documento,
 						cor.fecha_fin,
 						cor.id_acciones ,
-
 						cor.id_correspondencia_fk,
 						cor.id_correspondencias_asociadas,
 						cor.id_depto,
@@ -606,14 +606,13 @@ BEGIN
                         cor.version,
                         persona.nombre_completo1 ,
                         insti.nombre,
-                        person.nombre,
-                        person.ap_paterno,
-                        person.ap_materno
+                        persona.nombre,
+                        persona.ap_paterno,
+                        persona.ap_materno,
+                        t.nombre_unidad 
+						';
 
-
-                        ';
-
-			           v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
+			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 			--Devuelve la respuesta
 			return v_consulta;
 
@@ -634,11 +633,13 @@ BEGIN
 					    from corres.tcorrespondencia cor
 						inner join segu.tusuario usu1 on usu1.id_usuario = cor.id_usuario_reg
                         inner join param.tdocumento doc on doc.id_documento = cor.id_documento
-                        inner join  param.tdepto depto on depto.id_depto=cor.id_depto
+                        inner join param.tdepto depto on depto.id_depto=cor.id_depto
                         left join orga.vfuncionario funcionario on funcionario.id_funcionario=cor.id_funcionario
                         left join segu.vpersona persona on persona.id_persona=cor.id_persona
                         left join param.tinstitucion insti on insti.id_institucion=cor.id_institucion
                         left join segu.tusuario usu2 on usu2.id_usuario = cor.id_usuario_mod
+                        left join orga.tfuncionario fun on fun.id_funcionario=cor.id_funcionario
+                        left join orga.tuo t on t.id_uo=cor.id_gerencia or t.id_uo=cor.id_uo
 				        where cor.estado in (''borrador_detalle_recibido'',''pendiente_recibido'',''recibido'',''borrador_derivado'',''recibido_derivacion'') and ';
 
 
@@ -1754,7 +1755,7 @@ where tiene is not null ';
             	v_consulta:='select '||v_id_uo[2]|| 'id_uo, uo.nombre_unidad,
                 			 (select k.id_uo from orga.tuo k where k.id_uo in(select * from orga.f_get_uo_gerencia('||v_id_uo[2]||','||v_parametros.id_fun||',now()::date))) as id_gerencia
                              from orga.tuo uo
-                             where uo.id_uo = '||v_id_uo[2]||' and uo.estado_reg = ''activo'' ';
+                             where uo.id_uo = '||v_id_uo[2]||' and uo.estado_reg = ''activo'' ';				
                 return v_consulta;
             ELSE
             	RAISE EXCEPTION '%', 'La UO no existe';
@@ -1789,14 +1790,14 @@ where tiene is not null ';
 
 
            END;
-        /*******************************
+        /******************************* 
         #TRANSACCION:  CO_FUNGER_SEL
         #DESCRIPCION:	Obtener el gerente(id_funcionario) segun gerencia
         #AUTOR:		manuel guerra  #8
         #FECHA:		05/09/2019
         ***********************************/
     	elsif(p_transaccion='CO_FUNGER_SEL')then
-        	BEGIN
+        	BEGIN                           
                 v_consulta:='select u.id_uo,u.codigo,u.nombre_unidad,fun.id_funcionario
                             from orga.tuo u
                             join orga.tuo_funcionario uf on uf.id_uo=u.id_uo
@@ -1804,12 +1805,12 @@ where tiene is not null ';
                             where u.gerencia=''si'' and';
                 --Devuelve la respuesta
                 v_consulta:=v_consulta||v_parametros.filtro;
-                raise notice '%',v_consulta;
-                v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;
+                raise notice '%',v_consulta;  
+                v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' OFFSET ' || v_parametros.puntero;            
                 return v_consulta;
          	END;
 
-  	  	/*******************************
+  	  	/*******************************  
         #TRANSACCION:  CO_FUNGER_CONT
         #DESCRIPCION:	Obtener el gerente(id_funcionario) segun gerencia
         #AUTOR:		manuel guerra #8

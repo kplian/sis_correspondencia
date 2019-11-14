@@ -194,3 +194,15 @@ ALTER TABLE corres.tcorrespondencia
   ALTER COLUMN id_clasificador DROP NOT NULL;
 /***********************************F-SCP-MCGH-CORRES-0-08/08/2019*****************************************/
 
+
+
+
+/***********************************I-SCP-MANU-CORRES-0-14/11/2019*****************************************/
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN id_gerencia INTEGER;
+  
+/***********************************F-SCP-MANU-CORRES-0-14/11/2019*****************************************/  
+
+
+

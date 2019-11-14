@@ -10,7 +10,8 @@
 #HISTORIAL DE MODIFICACIONES:
 #ISSUE          FECHA        AUTOR              DESCRIPCION
 #7          06/09/2019   MCGH               Adición del campo Tiene el Fisico
-#8          25/09/2019   Manuel Guerra      nuevas funcionalidades  
+#8          25/09/2019   Manuel Guerra      nuevas funcionalidades 
+#9          14/11/2019   Manuel Guerra      modificar campo a multiple 
  */
 header("content-type: text/javascript; charset=UTF-8");
 ?>
@@ -44,15 +45,7 @@ header("content-type: text/javascript; charset=UTF-8");
                     if(dataMaestro){
                         this.onEnablePanel(this,dataMaestro)
                     }
-                }
-                //9
-                /*this.addButton('Derivar', {
-                    text : 'Derivar',
-                    iconCls : 'badelante',
-                    disabled : true,
-                    handler : this.BDerivar,
-                    tooltip : '<b>Derivar</b><br/>Despues de scanear y seleccionar los destinatarios puede derivar la correspondencia'
-                });*/
+                }              
                 this.iniciarEventos();
             },
 
@@ -138,7 +131,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 },//#8
                 {
                     config:{
-                        name: 'id_uo',
+                        name: 'id_gerencia',//#9
                         fieldLabel: 'Gerencia',
                         allowBlank: false,
                         store : new Ext.data.JsonStore({
@@ -152,7 +145,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         valueField: 'id_uo',
                         displayField: 'nombre_unidad',
                         gdisplayField: 'nombre_unidad',
-                        hiddenName: 'id_uo',
+                        hiddenName: 'id_gerencia',
                         typeAhead: false,
                         triggerAction: 'all',
                         lazyRender:true,
@@ -201,7 +194,7 @@ header("content-type: text/javascript; charset=UTF-8");
                         queryDelay:1000,
                         width:250,
                         minChars:2,
-                        enableMultiSelect:false,
+                        enableMultiSelect:true,
                         hidden:true
                     },
 
@@ -409,7 +402,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 {name:'estado_corre', type: 'string'},
                 {name:'persona_remitente', type: 'string'},
                 {name:'fisico', type: 'string'},  //#7
-                'id_grupo'
+                'id_grupo',
+                {name:'id_gerencia', type: 'numeric'},  
+                {name:'nombre_unidad', type: 'string'},
             ],
             sortInfo:{
                 field: 'id_correspondencia',
@@ -436,23 +431,23 @@ header("content-type: text/javascript; charset=UTF-8");
                 //#8
                 this.Cmp.tipo_filtro.on('change', function(cmp, check){
                     if(check.getRawValue() =='funcionario'){
-                        this.Cmp.id_uo.reset();
+                        this.Cmp.id_gerencia.reset();
                         this.Cmp.id_funcionario.reset();
-                        this.ocultarComponente(this.Cmp.id_uo);
+                        this.ocultarComponente(this.Cmp.id_gerencia);
                         this.mostrarComponente(this.Cmp.id_funcionario);
                         this.Cmp.id_funcionario.enable();
                     }
                     else{
-                        this.Cmp.id_uo.reset();
-                        this.Cmp.id_funcionario.reset();
-                        this.mostrarComponente(this.Cmp.id_uo);
+                        this.Cmp.id_gerencia.reset();
+                       // this.Cmp.id_funcionario.reset();
+                        this.mostrarComponente(this.Cmp.id_gerencia);
                         this.ocultarComponente(this.Cmp.id_funcionario);
-                        this.Cmp.id_funcionario.disable();
-                        //this.Cmp.id_funcionario.hidden();
+                        //this.Cmp.id_funcionario.disable();
+                       // this.Cmp.id_funcionario.hidden();
                     }
                 }, this);
                 //
-                this.Cmp.id_uo.on('select',function(combo, record, index){
+                this.Cmp.id_gerencia.on('select',function(combo, record, index){
                     if(!record.data.id_funcionario){
                         alert('El funcionario no tiene depto definido');
                         return
@@ -596,7 +591,9 @@ header("content-type: text/javascript; charset=UTF-8");
                 //a this.Cmp.id_funcionario.disable();
                 //this.Cmp.id_funcionario.enableMultiSelect(true);
                 Phx.vista.CorrespondenciaDetalle.superclass.onButtonNew.call(this);
-                this.mostrarComponente(this.Cmp.id_funcionario);
+                //this.mostrarComponente(this.Cmp.id_funcionario);
+                //this.ocultarComponente(this.Cmp.id_funcionario);
+                this.Cmp.id_funcionario.disable();
             },
             //9
             BDerivar : function() {

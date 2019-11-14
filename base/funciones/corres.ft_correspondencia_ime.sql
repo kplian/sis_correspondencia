@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.ft_correspondencia_ime (
   p_administrador integer,
   p_id_usuario integer,
@@ -24,6 +26,7 @@ $body$
 
  #6      		02/09/2019   MCGH         Correcciones a observaciones de forma
  #7      		06/09/2019   MCGH         Adición del campo Tiene el Fisico
+ #9          14/11/2019   Manuel Guerra      modificar campo a multiple
 ****************************************************************************/
 
 
@@ -904,19 +907,17 @@ BEGIN
       from corres.tcorrespondencia
       where id_correspondencia = v_parametros.id_correspondencia;
 
-      if v_datos_maestro.estado = 'pendiente_recibido'
-      --if v_datos_maestro.estado != 'enviado'
-        THEN
-        RAISE EXCEPTION '%','No puedes agregar nuevos por que aun no finalizaste esta correspondencia';
+      IF v_datos_maestro.estado = 'pendiente_recibido' THEN
+      --if v_datos_maestro.estado != 'enviado'       
+      		RAISE EXCEPTION '%','No puedes agregar nuevos por que aun no finalizaste esta correspondencia';
       END IF ;
 
-     /* if v_datos_maestro.estado = 'recibido'
-        THEN
+     /* if v_datos_maestro.estado = 'recibido' THEN
         update corres.tcorrespondencia
         set estado = 'recibido_derivacion'
         where id_correspondencia = v_parametros.id_correspondencia_fk;
-
-      end if;*/
+      end if;*/            
+      
       select id_origen
       into v_id_origen
       from corres.tcorrespondencia
@@ -944,7 +945,8 @@ BEGIN
         v_datos_maestro.id_depto,
 		v_datos_maestro.persona_remitente,
         v_parametros.fisico,  --#7
-        v_parametros.id_grupo
+        v_parametros.id_grupo,
+        v_parametros.id_gerencia --#9       
       );
 
       --Definicion de la respuesta
