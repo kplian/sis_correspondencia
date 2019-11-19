@@ -312,4 +312,73 @@ select pxp.f_insert_testructura_gui ('EST', 'REPCOR');
 /***********************************F-DEP-HPG-CORRES-0-13/03/2019*****************************************/
 
 
+/***********************************I-DEP-MANU-CORRES-0-19/11/2019*****************************************/
+ALTER TABLE corres.tgrupo_funcionario
+  DROP CONSTRAINT tgrupo_funcionario_id_usuario_reg_fk RESTRICT;
 
+ALTER TABLE corres.tgrupo_funcionario
+  DROP CONSTRAINT tgrupo_funcionario__if_funcionario_fk RESTRICT;
+
+ALTER TABLE corres.tgrupo_funcionario
+  DROP CONSTRAINT tgrupo_funcionario__id_usuaio_mod_fk RESTRICT;
+
+ALTER TABLE corres.tgrupo_funcionario
+  DROP CONSTRAINT tgrupo_funcionario__id_grupo_fk RESTRICT;
+
+ALTER TABLE corres.tgrupo
+  DROP CONSTRAINT tgrupo__is_usuario_mod_fk RESTRICT;
+
+ALTER TABLE corres.tgrupo
+  DROP CONSTRAINT tgrupo__id_usuario_fk RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia_estado
+  DROP CONSTRAINT fk_tcorrespondencia_estado__id_usuario_reg RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia_estado
+  DROP CONSTRAINT fk_tcorrespondencia_estado__id_correspondencia RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_usuario RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_uo RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_persona RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_periodo RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_gestion RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_funcionario RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_depto RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_correspondencia RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_codumento RESTRICT;
+
+ALTER TABLE corres.tcorrespondencia
+  DROP CONSTRAINT fk_tcorrespondencia__id_clasificacor RESTRICT;
+
+ALTER TABLE corres.tcomision
+  DROP CONSTRAINT fk_tcomision__id_usuario RESTRICT;
+
+ALTER TABLE corres.tcomision
+  DROP CONSTRAINT fk_tcomision__id_funcionario RESTRICT;
+
+ALTER TABLE corres.tcomision
+  DROP CONSTRAINT fk_tcomision__id_correspondencia RESTRICT;
+
+ALTER TABLE corres.tadjunto
+  DROP CONSTRAINT tadjunto_fk RESTRICT;
+
+DROP VIEW corres.vcorrespondencia_fisica_emitida;
+
+/***********************************F-DEP-MANU-CORRES-0-19/11/2019*****************************************/
