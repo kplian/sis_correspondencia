@@ -207,8 +207,6 @@ ALTER TABLE corres.tcorrespondencia
 
 
 /***********************************I-SCP-MANU-CORRES-1-19/11/2019*****************************************/
-ALTER TABLE corres.tcorrespondencia
-  ADD COLUMN id_gerencia INTEGER;
 
 ALTER TABLE corres.tadjunto
   ADD COLUMN id_correspondencia INTEGER;
@@ -238,8 +236,6 @@ CREATE TABLE corres.talarma (
 ) INHERITS (pxp.tbase)
 WITH (oids = false);
 
-ALTER TABLE corres.talarma
-  OWNER TO dbamguerra;
 /***********************************F-SCP-MANU-CORRES-1-19/11/2019*****************************************/
 
 
