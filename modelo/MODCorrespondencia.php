@@ -16,6 +16,7 @@
 #5      		21/08/2019   MCGH         Eliminación de Código Basura
 #7      		06/09/2019   MCGH         Adición del campo Tiene el Fisico
 #8          25/09/2019   Manuel Guerra      nuevas funcionalidades
+#9          14/11/2019   Manuel Guerra      modificar campo a multiple
 
 class MODCorrespondencia extends MODbase{
 
@@ -197,7 +198,7 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('estado_corre','varchar');
 		$this->captura('persona_remitente','varchar');
 		$this->captura('fisico','varchar');  //#7
-
+		$this->captura('nombre_unidad','varchar'); 	
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -485,6 +486,7 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_acciones','id_acciones','varchar');
 		$this->setParametro('fisico','fisico','varchar');//#7
 		$this->setParametro('id_grupo','id_grupo','varchar'); //#7
+		$this->setParametro('id_gerencia','id_gerencia','int4'); //#9
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

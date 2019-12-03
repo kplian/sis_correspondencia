@@ -1,3 +1,5 @@
+--------------- SQL ---------------
+
 CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado (
   fl_cadena varchar,
   fl_id_correspondencia integer,
@@ -20,7 +22,8 @@ CREATE OR REPLACE FUNCTION corres.f_proc_mul_cmb_empleado (
   f1_id_depto integer,
   fl_persona_remitente varchar,
   fl_fisico varchar,
-  fl_grupo varchar
+  fl_grupo varchar,
+  fl_id_gerencia integer
 )
 RETURNS boolean AS
 $body$
@@ -41,6 +44,7 @@ HISTORIAL DE MODIFICACIONES:
  #5      		21/08/2019   MCGH         		Eliminación de Código Basura
  #7      		06/09/2019   MCGH         		Adición del campo Tiene el Fisico
  #7      		06/09/2019   Manuel Guerra      Agregacion de Grupos
+ #9      		14/11/2019   Manuel Guerra      Agregacion de campo  fl_id_gerencia
 ******************/
 
 
@@ -91,7 +95,7 @@ BEGIN
   */
  -- 0) listamos todas las derivaciones de los
  --    diferentes niveles armando un vector
-
+--raise exception '%',fl_cadena;
    	v_nombre_funcion = 'f_proc_mul_cmb_empleado';
   	v_array_var= corres.f_arma_arbol_inicia(fl_id_correspondencia,'id_funcionario');
    	v_array = string_to_array(v_array_var,',');
@@ -181,7 +185,8 @@ BEGIN
                     id_origen,
                     fecha_creacion_documento,
                     persona_remitente,  --#4
-                    sw_fisico		--#7
+                    sw_fisico,		--#7
+                    id_gerencia
                     )
                 VALUES
                     (
@@ -209,7 +214,8 @@ BEGIN
                     f1_id_origen,
                     now(),
                     fl_persona_remitente,   --#4
-                    fl_fisico			--#7
+                    fl_fisico,			--#7
+                    fl_id_gerencia
                 ) RETURNING id_correspondencia into v_id_correspondencia;
             --*************
             IF f1_id_depto != v_id_depto THEN

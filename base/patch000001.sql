@@ -194,3 +194,48 @@ ALTER TABLE corres.tcorrespondencia
   ALTER COLUMN id_clasificador DROP NOT NULL;
 /***********************************F-SCP-MCGH-CORRES-0-08/08/2019*****************************************/
 
+
+
+
+/***********************************I-SCP-MANU-CORRES-0-14/11/2019*****************************************/
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN id_gerencia INTEGER;
+  
+/***********************************F-SCP-MANU-CORRES-0-14/11/2019*****************************************/  
+
+
+
+/***********************************I-SCP-MANU-CORRES-1-19/11/2019*****************************************/
+
+ALTER TABLE corres.tadjunto
+  ADD COLUMN id_correspondencia INTEGER;
+
+ALTER TABLE corres.tcorrespondencia_estado
+  ALTER COLUMN estado TYPE VARCHAR(50) COLLATE pg_catalog."default";
+
+ALTER TABLE corres.tcorrespondencia_estado
+  ALTER COLUMN estado_ant TYPE VARCHAR(50) COLLATE pg_catalog."default";
+
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN fecha_creacion_documento TIMESTAMP WITHOUT TIME ZONE;
+
+COMMENT ON COLUMN corres.tcorrespondencia.fecha_creacion_documento
+IS 'Fecha de Creación del Documento
+Fecha de recepción';
+
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN id_alarma SET DEFAULT nextval('corres.tcorrespondencia_id_alarma_seq'::text::regclass);
+
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN id_alarma SET NOT NULL;
+
+CREATE TABLE corres.talarma (
+  id_alarma SERIAL,
+  nombre VARCHAR(100)
+) INHERITS (pxp.tbase)
+WITH (oids = false);
+
+/***********************************F-SCP-MANU-CORRES-1-19/11/2019*****************************************/
+
+

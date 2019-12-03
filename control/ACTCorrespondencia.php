@@ -168,12 +168,8 @@ class ACTCorrespondencia extends ACTbase
 
     function insertarCorrespondenciaDetalle()
     {
-
         $this->objParam->addParametro('id_funcionario_usuario', $_SESSION["ss_id_funcionario"]);
-
-
         $this->objFunc = $this->create('MODCorrespondencia');
-
         if ($this->objParam->insertar('id_correspondencia')) {
             $this->res = $this->objFunc->insertarCorrespondenciaDetalle($this->objParam);
         } else {
