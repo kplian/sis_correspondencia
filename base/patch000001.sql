@@ -221,8 +221,6 @@ ALTER TABLE corres.tcorrespondencia_estado
 ALTER TABLE corres.tcorrespondencia
   ALTER COLUMN id_alarma SET DEFAULT nextval('corres.tcorrespondencia_id_alarma_seq'::text::regclass);
 
-ALTER TABLE corres.tcorrespondencia
-  ALTER COLUMN id_alarma SET NOT NULL;
 
 CREATE TABLE corres.talarma (
   id_alarma SERIAL,
