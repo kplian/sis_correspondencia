@@ -217,12 +217,6 @@ ALTER TABLE corres.tcorrespondencia_estado
 ALTER TABLE corres.tcorrespondencia_estado
   ALTER COLUMN estado_ant TYPE VARCHAR(50) COLLATE pg_catalog."default";
 
-ALTER TABLE corres.tcorrespondencia
-  ADD COLUMN fecha_creacion_documento TIMESTAMP WITHOUT TIME ZONE;
-
-COMMENT ON COLUMN corres.tcorrespondencia.fecha_creacion_documento
-IS 'Fecha de Creación del Documento
-Fecha de recepción';
 
 ALTER TABLE corres.tcorrespondencia
   ALTER COLUMN id_alarma SET DEFAULT nextval('corres.tcorrespondencia_id_alarma_seq'::text::regclass);
