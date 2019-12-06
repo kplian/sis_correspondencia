@@ -1087,20 +1087,17 @@ window.onload=function(){self.print();}
     //
     function impCodigoCorrespondecia(){
 
-        $nombreArchivo = 'CodigoCO'.uniqid(md5(session_id())).'.pdf';
+        $nombreArchivo = 'Codigo'.uniqid(md5(session_id())).'.pdf';
         $dataSource = $this->recuperarCodigoQR();
-
+		$orientacion = 'P';
         $titulo = 'Códigos Correspondencia';
-        $width = 200;
-        $height = 150;
         $this->objParam->addParametro('orientacion',$orientacion);
-        $this->objParam->addParametro('tamano',array($width, $height));
         $this->objParam->addParametro('titulo_archivo',$titulo);
         $this->objParam->addParametro('nombre_archivo',$nombreArchivo);
 
         $clsRep = $dataSource->getDatos();
         eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
-        $reporte->datosHeader('unico', $dataSource->getDatos());
+        $reporte->datosHeader($dataSource->getDatos());
         $reporte->generarReporte();
         $reporte->output($reporte->url_archivo,'F');
         $this->mensajeExito=new Mensaje();
@@ -1126,7 +1123,7 @@ window.onload=function(){self.print();}
 
         //eval('$reporte = new '.$clsRep['v_clase_reporte'].'($this->objParam);');
         $reporte = new RCodigoQRCORR($this->objParam);
-        $reporte->datosHeader('unico', $dataSource->getDatos());
+        $reporte->datosHeader($dataSource->getDatos());
         $reporte->generarReporte();
         $reporte->output($reporte->url_archivo,'F');
         $this->mensajeExito=new Mensaje();
