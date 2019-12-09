@@ -218,10 +218,6 @@ ALTER TABLE corres.tcorrespondencia_estado
   ALTER COLUMN estado_ant TYPE VARCHAR(50) COLLATE pg_catalog."default";
 
 
-ALTER TABLE corres.tcorrespondencia
-  ALTER COLUMN id_alarma SET DEFAULT nextval('corres.tcorrespondencia_id_alarma_seq'::text::regclass);
-
-
 CREATE TABLE corres.talarma (
   id_alarma SERIAL,
   nombre VARCHAR(100)
@@ -238,4 +234,18 @@ ALTER TABLE corres.tcorrespondencia
 COMMENT ON COLUMN corres.tcorrespondencia.fecha_creacion_documento
 IS 'Fecha de Creación del Documento
 Fecha de recepción';
+
+
+ALTER TABLE corres.tcorrespondencia
+  ADD CONSTRAINT tcorrespondencia_id_alarma_key 
+    UNIQUE (id_alarma) NOT DEFERRABLE;
+    
+    
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN id_alarma SET DEFAULT nextval('corres.tcorrespondencia_id_alarma_seq'::text::regclass);
+
+ALTER TABLE corres.tcorrespondencia
+  ALTER COLUMN id_alarma SET NOT NULL;    
+    
+    
 /***********************************F-SCP-MANU-CORRES-2-9/12/2019*****************************************/
