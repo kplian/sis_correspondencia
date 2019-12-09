@@ -231,3 +231,11 @@ WITH (oids = false);
 /***********************************F-SCP-MANU-CORRES-1-19/11/2019*****************************************/
 
 
+/***********************************I-SCP-MANU-CORRES-2-9/12/2019*****************************************/
+ALTER TABLE corres.tcorrespondencia
+  ADD COLUMN fecha_creacion_documento TIMESTAMP WITHOUT TIME ZONE;
+
+COMMENT ON COLUMN corres.tcorrespondencia.fecha_creacion_documento
+IS 'Fecha de Creación del Documento
+Fecha de recepción';
+/***********************************F-SCP-MANU-CORRES-2-9/12/2019*****************************************/
