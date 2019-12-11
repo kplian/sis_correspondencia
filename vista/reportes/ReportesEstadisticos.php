@@ -1,7 +1,7 @@
 <style type="text/css" >
 	#titleH1{
 		font-size: 24px;
-		margin: 10px 10px 0px 10px;		
+		margin: 10px 10px 0px 10px;
 	}
 	.columnaPie{
 		width: 49.5%;
@@ -32,7 +32,7 @@
 	    url:'../../sis_correspondencia/control/Reporte/reportesEstadisticos',
 	    params:{'proceso':1},
 
-	    success:function(res){ 
+	    success:function(res){
 
 	    	var internas = [];
 			var externas = [];
@@ -59,7 +59,7 @@
 
 	    },
 	    scope:this
-	}); 
+	});
 
 
 
@@ -203,7 +203,7 @@ function generarDataParaInternas(internas)
 {
 	var nuevaData =[];
 	var total = 0;
-	
+
 	internas.forEach(function(data){
 		total = parseInt(data.cantidad)+total;
 	});
@@ -218,7 +218,7 @@ function generarDataParaExternas(externas)
 {
 	var nuevaData =[];
 	var total = 0;
-	
+
 	externas.forEach(function(data){
 		total = parseInt(data.cantidad)+total;
 	});
@@ -251,7 +251,7 @@ function generarDataParaComparativo(internas,externas, acciones)
 
 		var cantidadI = 0;
 		internas.forEach(function(dataInterna){
-			if(dataAcciones==dataInterna.nombre)			
+			if(dataAcciones==dataInterna.nombre)
 				cantidadI = parseInt(dataInterna.cantidad);
 		});
 		arregloInternas.push(cantidadI);

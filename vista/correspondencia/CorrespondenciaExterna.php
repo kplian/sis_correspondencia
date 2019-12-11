@@ -34,7 +34,6 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 	btestGroups: [0,1],
 	bexcelGroups: [0, 1],
 
-
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
 	title: 'Correspondencia Recibida',
@@ -86,17 +85,15 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		//this.iniciarEventos();
     
    },
-   iniciarEventos(){
+   
+	iniciarEventos(){
 	   	this.Cmp.id_institucion_remitente.on('select',function(combo,record,index){
 	    	this.Cmp.id_persona_remitente.store.baseParams.id_institucion=combo.getValue();
 	   		this.Cmp.id_persona_remitente.reset();
-	   		this.Cmp.id_persona_remitente.modificado=true;
-	   		
+	   		this.Cmp.id_persona_remitente.modificado=true;	   		
 	   	},this)
-   },
+	},
   // east : undefined,
-   
-  
 	getParametrosFiltro: function () {
 		this.store.baseParams.estado = this.swEstado;
 	},
@@ -111,47 +108,30 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
             this.getBoton('Archivar').hide();
             this.getBoton('Habilitar').hide();
             this.getBoton('ImpCodigoDoc').hide();   
-
-		if(name=='borrador_recepcion_externo'){
-			
-			this.getBoton('Corregir').hide();
-			 
-		}else{
-			
-			this.getBoton('Corregir').show();
-			
-		
+		if(name=='borrador_recepcion_externo'){			
+			this.getBoton('Corregir').hide();			 
+		}else{			
+			this.getBoton('Corregir').show();				
 		}
 		this.swEstado = name;
 		this.getParametrosFiltro();
-		this.load();
-	
-
+		this.load();	
 	},
-    preparaMenu:function(n){
-      	
+    preparaMenu:function(n){      	
       	Phx.vista.RecepcionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
-		  var data = this.getSelectedData();
-
-		console.log('data',data)
-		  var tb =this.tbar;
-		  //si el archivo esta escaneado se permite visualizar
-
-
+		var data = this.getSelectedData();
+		var tb =this.tbar;
+		//si el archivo esta escaneado se permite visualizar
 		if (data['estado'] == 'borrador_recepcion_externo') {
-
 			this.getBoton('SubirDocumento').enable();
 			this.getBoton('Adjuntos').enable();
 		}
-
-
 		if (data['version'] > 0) {
 			this.getBoton('VerDocumento').enable();
 			this.getBoton('Finalizar').enable();
 			this.getBoton('ImpCodigo').enable();
 		    //this.getBoton('ImpCodigoDoc').enable();
 		}
-		
 		if (data['estado'] == 'pendiente_recepcion_externo') {
 			//this.getBoton('SubirDocumento').disable();
 			this.getBoton('Adjuntos').disable();
@@ -162,37 +142,31 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		   // this.getBoton('ImpCodigoDoc').disable();
 		    this.getBoton('edit').disable();
 			this.getBoton('del').disable();
-			 this.getBoton('HojaRuta').enable();
+			this.getBoton('HojaRuta').enable();
 		}
-		
-	
-		 return tb
-		
+		return tb
 	},
+	
 	liberaMenu:function(){
         var tb = Phx.vista.RecepcionCorrespondenciaExterna.superclass.liberaMenu.call(this);
-        if(tb){
-           
-           this.getBoton('SubirDocumento').disable();
+        if(tb){         
+			this.getBoton('SubirDocumento').disable();
 			this.getBoton('Adjuntos').disable();
 			this.getBoton('VerDocumento').disable();
 			this.getBoton('Finalizar').disable();
 			this.getBoton('ImpCodigo').disable();
-		 // this.getBoton('ImpCodigoDoc').disable();
-		    this.getBoton('edit').disable();
-			this.getBoton('del').disable();
-                    
+			 // this.getBoton('ImpCodigoDoc').disable();
+			this.getBoton('edit').disable();
+			this.getBoton('del').disable();                   
         }
        return tb
-  },
+	},
 	onButtonNew: function () {
-        console.log("boton nuevo");
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
 		
 		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonNew.call(this);
     	this.adminGrupo({ ocultar: [3,4], mostrar:[0,2]});
-
     	this.ocultarComponente(this.Cmp.id_funcionario);
 		this.ocultarComponente(this.Cmp.id_uo);
 		this.ocultarComponente(this.Cmp.id_funcionario_saliente);
@@ -204,27 +178,19 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_acciones);
 		this.ocultarComponente(this.Cmp.fecha_creacion_documento); 
 		/*this.ocultarComponente(this.Cmp.asociar);
-        this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);*/
-		     
-		
+        this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);*/     		
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
 	
 		cmbDoc.store.baseParams.tipo = 'entrante';//valor por dfecto es externa
 		cmbDoc.modificado = true;
 		cmbDoc.reset();
-
-
-		
-
 	},
 	
 	onButtonEdit: function () {
 		this.tipo = this.getComponente('tipo');
 		var cmbDoc = this.getComponente('id_documento');
-	
 		Phx.vista.RecepcionCorrespondenciaExterna.superclass.onButtonEdit.call(this);
-		
         this.ocultarComponente(this.Cmp.id_funcionario);
 		this.ocultarComponente(this.Cmp.id_uo);
 		this.ocultarComponente(this.Cmp.id_funcionario_saliente);
@@ -235,9 +201,7 @@ Phx.vista.RecepcionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_correspondencias_asociadas);
 		this.ocultarComponente(this.Cmp.id_acciones);
 		  
-
 		this.adminGrupo({ ocultar: [0,3,4]});
-
 		this.tipo.setValue('externa');
 		this.tipo.disable(true);
   	    this.ocultarComponente(this.Cmp.id_funcionario);

@@ -29,8 +29,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.maestro = config.maestro;
             //llama al constructor de la clase padre
             Phx.vista.Correspondencia.superclass.constructor.call(this, config);
-
-
             //Botones.
             //7
             this.addButton('ImpCodigo', {
@@ -141,7 +139,6 @@ header("content-type: text/javascript; charset=UTF-8");
             });
             //5
             this.addButton('Corregir', {
-
                 grupo : [0,1],
                 text : 'Corregir',
                 iconCls : 'bundo',
@@ -150,18 +147,18 @@ header("content-type: text/javascript; charset=UTF-8");
                 handler : this.BCorregir,
                 tooltip : '<b>Corregir</b><br/>Si todos los envios de destinatarios se encuentran pendientes de lectura puede solicitar la corrección'
             });
-            this.iniciarEventos()
+            
+            this.iniciarEventos();
         },
 
         east : {
-
             url: '../../../sis_correspondencia/vista/correspondencia_detalle/CorrespondenciaDetalle.php',
-
             cls : 'CorrespondenciaDetalle',
             title : 'Detalle de Derivación',
             height : '50%'
         },
-        Atributos : [{
+        Atributos : [
+        {
             //configuracion del componente
             config : {
                 labelSeparator : '',
@@ -189,8 +186,7 @@ header("content-type: text/javascript; charset=UTF-8");
                 type : 'string'
             },
             form:false
-        }
-            ,{
+        },{
                 config : {
                     name : 'nivel_prioridad_imagen',
                     fieldLabel : 'Prioridad',
@@ -204,9 +200,7 @@ header("content-type: text/javascript; charset=UTF-8");
                             prioridad='Media';
                         }else{
                             prioridad='Baja';
-
                         }
-
                         return "<div style='text-align:center'><img title="+prioridad+" src = '../../../sis_correspondencia/imagenes/" + icono + "' align='center' width='10' height='25'/></div>"
                     }
                 },
@@ -219,7 +213,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid : true,
                 form : false
             },
-
             {
                 config : {
                     name : 'version',
@@ -309,7 +302,6 @@ header("content-type: text/javascript; charset=UTF-8");
                             return String.format('<b><font size="5" color="red">{0}</font></b>', record.data['fisico']);
                         else
                             return String.format('{0}', record.data['fisico']);
-
                     }
                 },
                 type : 'TextField',
@@ -412,7 +404,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 form : true,
                 bottom_filter : true
             },
-
             {
                 config : {
                     name : 'referencia',
@@ -1324,8 +1315,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 grid : true, //mgarcia
                 form : false
             }
-
-
         ],
         title : 'Correspondencia',
         ActSave : '../../sis_correspondencia/control/Correspondencia/insertarCorrespondencia',
@@ -1479,9 +1468,7 @@ header("content-type: text/javascript; charset=UTF-8");
         }],
 
         loadValoresIniciales : function() {
-
             Phx.vista.Correspondencia.superclass.loadValoresIniciales.call(this);
-
         },
         //0
         Bfactura: function(){
@@ -1498,9 +1485,7 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         //1
         BPlantilla:function(){
-
             var rec = this.sm.getSelected();
-
             Ext.Ajax.request({
                 url: '../../sis_correspondencia/control/Correspondencia/PlantillaCorrespondencia',
                 params: {
@@ -1512,7 +1497,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout: this.timeout,
                 scope: this
             });
-
         },
         //2
         BFinalizarExterna:function () {
@@ -1529,45 +1513,37 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout: this.timeout,
                 scope: this
             });
-
         },
         //3
         BSubirDocumento: function () {
             var rec = this.sm.getSelected();
             Phx.CP.loadWindows('../../../sis_correspondencia/vista/correspondencia/subirCorrespondencia.php',
-                'Subir Correspondencia',
-                {
-                    modal: true,
-                    width: 500,
-                    height: 250
-                }, rec.data, this.idContenedor, 'subirCorrespondencia')
+            'Subir Correspondencia',
+            {
+                modal: true,
+                width: 500,
+                height: 250
+            }, rec.data, this.idContenedor, 'subirCorrespondencia')
         },
 
         //4
         BAdjuntos : function() {
             var rec = this.sm.getSelected();
-
             Phx.CP.loadWindows('../../../sis_correspondencia/vista/adjunto/Adjunto.php?estado='+rec.data.estado, 'Adjuntos', {
                 width : 900,
                 height : 400
             }, rec.data, this.idContenedor, 'Adjunto')
-
         },
         //5
         BCorregir : function() {
-
-
             var rec = this.sm.getSelected();
             var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
             Phx.CP.loadingShow();
-
             Ext.Ajax.request({
                 url : '../../sis_correspondencia/control/Correspondencia/corregirCorrespondencia',
                 params : {
                     id_correspondencia : id_correspondencia,
-
                     interfaz:'normal',
-
                     tipo:rec.data.tipo
                 },
                 success : this.successDerivar,
@@ -1575,15 +1551,11 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout : this.timeout,
                 scope : this
             });
-
         },
         //6
         BVerDocumento : function() {
             var rec = this.sm.getSelected();
-            console.log('rec', 'ingresa aqui');
-
             Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
                 url : '../../sis_correspondencia/control/Correspondencia/verCorrespondencia',
                 params : {
                     id_origen : rec.data.id_origen
@@ -1593,7 +1565,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout : this.timeout,
                 scope : this
             });
-
         },
         //7
         BImpCodigo : function () {
@@ -1623,7 +1594,6 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         //9
         BDerivar : function() {
-
             var rec = this.sm.getSelected();
             var id_correspondencia = this.sm.getSelected().data.id_correspondencia;
             if (confirm('¿Esta seguro de DERIVAR el documento '+rec.data.numero + '?, no podrá modificar información al respecto.')){
@@ -1643,7 +1613,6 @@ header("content-type: text/javascript; charset=UTF-8");
         },
         //10
         BHojaRuta : function() {
-
             var rec = this.sm.getSelected();
             Ext.Ajax.request({
                 url : '../../sis_correspondencia/control/Correspondencia/hojaRuta',
@@ -1661,7 +1630,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 timeout : this.timeout,
                 scope : this
             });
-
         },
 
         /* 11 histórico.
@@ -1681,13 +1649,12 @@ header("content-type: text/javascript; charset=UTF-8");
                 height : 400
             }, rec.data, this.idContenedor, 'Historico')
         },
+        
         BFinalizar:function () {
             var rec = this.sm.getSelected();
             var g_estado;
             if (confirm('Esta seguro de FINALIZAR el documento '+rec.data.numero)){
-
                 Phx.CP.loadingShow();
-                //alert(rec.data.tipo);
                 switch (rec.data.tipo){
                     case 'externa':
                         g_estado='pendiente_recepcion_externo';
@@ -1705,7 +1672,6 @@ header("content-type: text/javascript; charset=UTF-8");
                     params: {
                         id_correspondencia: rec.data.id_correspondencia,
                         estado:g_estado
-
                     },
                     success: this.successDerivar,
                     failure: this.conexionFailure,
@@ -1713,11 +1679,10 @@ header("content-type: text/javascript; charset=UTF-8");
                     scope: this
                 });
             }
-
         },
+        
         BArchivar:function(){
-            var rec = this.sm.getSelected();
-            console.log('manu',rec.data.fisico);
+            var rec = this.sm.getSelected();s
             if(rec.data.fisico=='si'){
                 if(confirm('Esta seguro de Archivar el documento '+rec.data.numero+'?')){
                     var result = prompt('Especifique la ubicación física del documento y las razones por las que se archiva el Documento'+rec.data.numero);
@@ -1740,10 +1705,10 @@ header("content-type: text/javascript; charset=UTF-8");
                 alert('Esta accion solo puede realizar el que tenga el archivo fisico');
             }
         },
+        
         BHabilitar:function(){
             var rec = this.sm.getSelected();
             if (confirm('Esta seguro de habilitar el anulado?'+rec.data.numero)){
-
                 Ext.Ajax.request({
                     url: '../../sis_correspondencia/control/Correspondencia/habilitarCorrespondencia',
                     params: {
@@ -1757,39 +1722,29 @@ header("content-type: text/javascript; charset=UTF-8");
                 });
             }
         },
+        
         successPlantillaCorrespondencia:function(resp){
-
             var objRes = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
-
-            var texto = objRes.datos.docx;
-            console.log(texto);
+            var texto = objRes.datos.docx;           
             window.open('../../../lib/lib_control/Intermediario.php?r=' + texto + '&t=' + new Date().toLocaleTimeString())
-
-
         },
 
         successDerivar : function(resp) {
-
             Phx.CP.loadingHide();
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             if (!reg.ROOT.error) {
                 alert(reg.ROOT.detalle.mensaje)
-
             }
             this.reload();
-
         },
 
         successVer : function(resp) {
-
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             console.log(reg.datos[0].ruta_archivo);
             window.open(reg.datos[0].ruta_archivo);
         },
 
-
-        successGestion : function(resp) {
-            console.log(resp)
+        successGestion : function(resp) {            
             Phx.CP.loadingHide();
             var reg = Ext.util.JSON.decode(Ext.util.Format.trim(resp.responseText));
             if (!reg.ROOT.error) {
@@ -1814,16 +1769,14 @@ header("content-type: text/javascript; charset=UTF-8");
         },
 
         successFinalizar:function(resp){
-
-            this.load({params: {start: 0, limit: 50}});
-            console.log(resp)
+            this.load({params: {start: 0, limit: 50}});            
         },
+        
         obtenerGestion : function(x) {
-
             var fecha = x.getValue().dateFormat(x.format);
             Phx.CP.loadingShow();
             Ext.Ajax.request({
-                // form:this.form.getForm().getEl(),
+                
                 url : '../../sis_parametros/control/Gestion/obtenerGestionByFecha',
                 params : {
                     fecha : fecha
@@ -1834,8 +1787,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 scope : this
             });
         }
-
-
 
     })
 </script>

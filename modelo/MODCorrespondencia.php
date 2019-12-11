@@ -65,7 +65,6 @@ class MODCorrespondencia extends MODbase{
 
 		//$this->setParametro('interface','interface','integer');
 		//$parametros  = $this->aParam->getArregloParametros('interface');
-
 		//Definicion de la lista del resultado del query
 		$this->captura('id_origen','int4');
 		$this->captura('id_correspondencia','int4');
@@ -99,13 +98,10 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_documento','varchar');
-
-
 		$this->captura('desc_depto','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('ruta_archivo','varchar');
 		$this->captura('version','int4');
-
 		$this->captura('desc_uo','text');
 		//$this->captura('desc_clasificador','text'); //#4
 		$this->captura('id_clasificador','integer');
@@ -113,7 +109,6 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('desc_cargo','varchar');
 		$this->captura('sw_archivado','varchar');
 		$this->captura('iniciales','text');
-
 		$this->captura('desc_insti','varchar');
 		$this->captura('nombre_completo1','text');
 		$this->captura('id_institucion_destino','integer');
@@ -181,13 +176,10 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_documento','varchar');
-
-
 		$this->captura('desc_depto','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('ruta_archivo','varchar');
 		$this->captura('version','int4');
-
 		$this->captura('desc_persona','text');
 		$this->captura('desc_institucion','varchar');
 		$this->captura('acciones','text');
@@ -247,13 +239,10 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
 		$this->captura('desc_documento','varchar');
-
-
 		$this->captura('desc_depto','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('ruta_archivo','varchar');
 		$this->captura('version','int4');
-
 		$this->captura('desc_persona','text');
 		$this->captura('desc_institucion','varchar');
 		$this->captura('acciones','text');
@@ -398,7 +387,6 @@ class MODCorrespondencia extends MODbase{
 		$this->setParametro('id_funcionario_usuario','id_funcionario_usuario','int4');
 		$this->setParametro('interface','interface','varchar');
 		$this->setParametro('tipo','tipo','varchar');
-
 		$this->setParametro('id_correspondencia','id_correspondencia','int4');
 		//Definicion de la lista del resultado del query
 		$this->captura('id_origen','int4');
@@ -436,10 +424,8 @@ class MODCorrespondencia extends MODbase{
 		$this->captura('origen','varchar');
 		$this->captura('desc_funcionario','text');
 		$this->captura('desc_funcionario_origen','text');
-
 		$this->captura('acciones','text');
 		$this->captura('desc_depto','text');
-
 		$this->captura('desc_uo','text');
 		$this->captura('desc_gestion','integer');
 		$this->captura('desc_periodo','integer');
@@ -532,7 +518,6 @@ class MODCorrespondencia extends MODbase{
 			$this->link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->link->beginTransaction();
 			//var_dump($tamano_archivo);
-
 			if((($this->arregloFiles['file_correspondencia']['size'] / 1000) / 1024) > $tamano_archivo  ){
 				throw new Exception("El tamaño del Archivo supera a la configuración");
 
@@ -551,18 +536,14 @@ class MODCorrespondencia extends MODbase{
 			$this->arreglo['numero']= str_replace(' ','_',$this->arreglo['numero']);
 			//validar que no sea un archvo en blanco
 			$file_name = $this->getFileName2('file_correspondencia', 'id_correspondencia', '','_v'.$version,$this->arreglo['numero']);
-
-
 			//manda como parametro la url completa del archivo
 			$this->aParam->addParametro('ruta_archivo', $file_name[2]);
 			$this->arreglo['ruta_archivo'] = $file_name[2];
 			$this->setParametro('ruta_archivo','ruta_archivo','varchar');
 
-
 			//Define los parametros para la funcion
 			$this->setParametro('id_correspondencia','id_correspondencia','integer');
 			$this->setParametro('version','version','integer');
-
 
 			//Ejecuta la instruccion
 			$this->armarConsulta();
@@ -571,21 +552,15 @@ class MODCorrespondencia extends MODbase{
 			$result = $stmt->fetch(PDO::FETCH_ASSOC);
 			$resp_procedimiento = $this->divRespuesta($result['f_intermediario_ime']);
 
-
 			if ($resp_procedimiento['tipo_respuesta']=='ERROR') {
 				throw new Exception("Error al ejecutar en la bd", 3);
 			}
 
-
-
 			if($resp_procedimiento['tipo_respuesta'] == 'EXITO'){
-
 				//revisamos si ya existe el archivo la verison anterior sera mayor a cero
 				$respuesta = $resp_procedimiento['datos'];
 				//cipiamos el nuevo archivo
-
 				$this->setFile('file_correspondencia','id_correspondencia', false,100000 ,array('doc','pdf','docx','jpg','jpeg','bmp','gif','png','PDF','DOC','DOCX','xls','xlsx','XLS','XLSX','rar'), $folder = '','_v'.$version,$this->arreglo['numero']);
-
 			}
 
 
@@ -595,11 +570,7 @@ class MODCorrespondencia extends MODbase{
 			$this->respuesta->setDatos($respuesta);
 		}
 		catch (Exception $e) {
-
-
 			$this->link->rollBack();
-
-
 			$this->respuesta=new Mensaje();
 			if ($e->getCode() == 3) {//es un error de un procedimiento almacenado de pxp
 				$this->respuesta->setMensaje($resp_procedimiento['tipo_respuesta'],$this->nombre_archivo,$resp_procedimiento['mensaje'],$resp_procedimiento['mensaje_tec'],'base',$this->procedimiento,$this->transaccion,$this->tipo_procedimiento,$this->consulta);
@@ -608,10 +579,7 @@ class MODCorrespondencia extends MODbase{
 			} else {//es un error lanzado con throw exception
 				throw new Exception($e->getMessage(), 2);
 			}
-
 		}
-
-
 		return $this->respuesta;
 	}
 
@@ -1262,7 +1230,6 @@ class MODCorrespondencia extends MODbase{
 		//Devuelve la respuesta
 		return $this->respuesta;
 	}
-
 	//MCGH
 	function obtenerUoPorFuncionario(){
 

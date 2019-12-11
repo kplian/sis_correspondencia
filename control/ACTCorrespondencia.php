@@ -39,7 +39,6 @@ class ACTCorrespondencia extends ACTbase
         }
         else{
             //$this->objParam->addFiltro(" cor.id_correspondencia_fk is null ");
-
             $this->objParam->addFiltro(" (cor.estado_corre is null or cor.estado_corre not in (''borrador_corre''))");
         }
 
@@ -56,7 +55,6 @@ class ACTCorrespondencia extends ACTbase
             $this->objFunc = $this->create('MODCorrespondencia');
             $this->res = $this->objFunc->listarCorrespondencia();
         }
-
 
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
@@ -86,7 +84,6 @@ class ACTCorrespondencia extends ACTbase
     {
 
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
-
         $this->objParam->defecto('dir_ordenacion', 'desc');
 
         if ($this->objParam->getParametro('estado') == 'anulado') {
@@ -117,8 +114,6 @@ class ACTCorrespondencia extends ACTbase
             }
         }
 
-
-
         $this->res->imprimirRespuesta($this->res->generarJson());
     }
 
@@ -126,9 +121,7 @@ class ACTCorrespondencia extends ACTbase
     {
 
         $this->objParam->defecto('ordenacion', 'id_correspondencia');
-
         $this->objParam->defecto('dir_ordenacion', 'desc');
-
 
         if ($this->objParam->getParametro('id_correspondencia_padre') != '') {
             $this->objParam->addFiltro("cor.id_correspondencia_fk = " . $this->objParam->getParametro('id_correspondencia_padre'));
@@ -147,8 +140,6 @@ class ACTCorrespondencia extends ACTbase
 
     function insertarCorrespondencia()
     {
-
-
         $this->objFunc = $this->create('MODCorrespondencia');
         if ($this->objParam->insertar('id_correspondencia')) {
             $this->res = $this->objFunc->insertarCorrespondencia();
@@ -202,9 +193,7 @@ class ACTCorrespondencia extends ACTbase
     function corregirCorrespondencia()
     {
         $this->objFunSeguridad = $this->create('MODCorrespondencia');
-
         $this->res = $this->objFunSeguridad->corregirCorrespondencia($this->objParam);
-
         //imprime respuesta en formato JSON
         $this->res->imprimirRespuesta($this->res->generarJson());
 
@@ -212,9 +201,7 @@ class ACTCorrespondencia extends ACTbase
     function habCorregirCorrespondencia()
     {
         $this->objFunSeguridad = $this->create('MODCorrespondencia');
-
         $this->res = $this->objFunSeguridad->habCorregirCorrespondencia($this->objParam);
-
         //imprime respuesta en formato JSON
         $this->res->imprimirRespuesta($this->res->generarJson());
 
