@@ -251,5 +251,4 @@ ALTER TABLE corres.tcorrespondencia
 ALTER TABLE corres.tcorrespondencia
   ALTER COLUMN id_alarma SET NOT NULL;    
     
-    
 /***********************************F-SCP-MANU-CORRES-2-9/12/2019*****************************************/
