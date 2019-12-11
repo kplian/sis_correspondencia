@@ -41,7 +41,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 	bactGroups: [0, 1],
 	btestGroups: [0,1],
 	bexcelGroups: [0, 1],
-	
 
     require: '../../../sis_correspondencia/vista/correspondencia/Correspondencia.php',
 	requireclase: 'Phx.vista.Correspondencia',
@@ -66,58 +65,46 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
         this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
         this.Atributos[this.getIndAtributo('id_funcionario_destino')].grid=false;
         this.Atributos[this.getIndAtributo('fecha_ult_derivado')].grid=false;
-		   
-		
-	
+		   		
         Phx.vista.DerivacionCorrespondenciaExterna.superclass.constructor.call(this,config);
-
-
-	//	this.bloquearOrdenamientoGrid();
+	 	//	this.bloquearOrdenamientoGrid();
          this.addButton('ImpBorrador', {
-				text: 'Vista Previa',
-				iconCls: 'bprintcheck',
-				disabled: false,
-				handler: this.BImpBorrador,
-				tooltip: '<b>Vista Previa</b><br/> Vista Previa Correspondencia'
-			});
-            
-		 
-	        this.getBoton('Plantilla').hide();
-            this.getBoton('FinalizarExterna').hide();
-            this.getBoton('ImpCodigo').enable();
-            this.getBoton('ImpCodigoDoc').hide();
-            this.getBoton('HojaRuta').hide();
-            this.getBoton('Historico').hide();
-            this.getBoton('Finalizar').hide();
-            this.getBoton('Archivar').hide();
-            this.getBoton('Habilitar').hide();
+			text: 'Vista Previa',
+			iconCls: 'bprintcheck',
+			disabled: false,
+			handler: this.BImpBorrador,
+			tooltip: '<b>Vista Previa</b><br/> Vista Previa Correspondencia'
+		});
+      
+        this.getBoton('Plantilla').hide();
+        this.getBoton('FinalizarExterna').hide();
+        this.getBoton('ImpCodigo').enable();
+        this.getBoton('ImpCodigoDoc').hide();
+        this.getBoton('HojaRuta').hide();
+        this.getBoton('Historico').hide();
+        this.getBoton('Finalizar').hide();
+        this.getBoton('Archivar').hide();
+        this.getBoton('Habilitar').hide();
 		this.init();
-        this.store.baseParams = {'vista': 'derivacion_correspondencia_externa','estado': this.swEstado,'tipo': this.tipo};
-        
-       
-
-        this.load({params: {start: 0, limit: 50}})
-
-
-    
-   },
+        this.store.baseParams = {'vista': 'derivacion_correspondencia_externa','estado': this.swEstado,'tipo': this.tipo};               
+        this.load({params: {start: 0, limit: 50}})   
+	},
+	
 	getParametrosFiltro: function () {
 		this.store.baseParams.estado = this.swEstado;
 	},
 
 	actualizarSegunTab: function (name, indice) {
-		console.log('derivar',name);
-		
-         this.getBoton('Plantilla').hide();
-            this.getBoton('FinalizarExterna').hide();
-            //this.getBoton('ImpCodigo').hide();
-            this.getBoton('ImpCodigoDoc').hide();
-            this.getBoton('Historico').hide();
-            this.getBoton('Finalizar').hide();
-            this.getBoton('Archivar').hide();
-            this.getBoton('Habilitar').hide();
-            this.getBoton('ImpBorrador').enable();
-            this.getBoton('ImpCodigo').hide();
+        this.getBoton('Plantilla').hide();
+        this.getBoton('FinalizarExterna').hide();
+        //this.getBoton('ImpCodigo').hide();
+        this.getBoton('ImpCodigoDoc').hide();
+        this.getBoton('Historico').hide();
+        this.getBoton('Finalizar').hide();
+        this.getBoton('Archivar').hide();
+        this.getBoton('Habilitar').hide();
+        this.getBoton('ImpBorrador').enable();
+        this.getBoton('ImpCodigo').hide();
 	
 		if(name=='enviado'){
 			this.getBoton('HojaRuta').show();
@@ -125,7 +112,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			this.getBoton('Adjuntos').show();
 			this.getBoton('SubirDocumento').show();
 			this.getBoton('ImpCodigo').show();
-
 			this.getBoton('ImpBorrador').hide();
 			//this.getBoton('anularCorrespondencia').show();
 			this.getBoton('Corregir').hide();
@@ -133,12 +119,9 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			this.getBoton('HojaRuta').enable();
 			this.getBoton('Historico').enable();
 			this.getBoton('Archivar').enable();
-			//this.getBoton('ImpCodigo').enable();
-			
-			 this.getBoton('del').hide();
-			 
-		}else{
-			
+			//this.getBoton('ImpCodigo').enable();			
+			 this.getBoton('del').hide();			 
+		}else{			
 			this.getBoton('Plantilla').hide();
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('Adjuntos').show();
@@ -157,49 +140,39 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.swEstado = name;
 		this.getParametrosFiltro();
 		this.load();
-
 	},
 
-    preparaMenu:function(n){
-      	
-      	Phx.vista.DerivacionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
-		  var data = this.getSelectedData();
-
-		  console.log('data',data)
-		  var tb =this.tbar;
-		  //si el archivo esta escaneado se permite visualizar
-		    this.getBoton('Adjuntos').enable();
-			this.getBoton('Corregir').enable();
-			this.getBoton('VerDocumento').enable();
-			this.getBoton('Derivar').enable();
+    preparaMenu:function(n){      	
+		Phx.vista.DerivacionCorrespondenciaExterna.superclass.preparaMenu.call(this,n);      	
+		var data = this.getSelectedData();
+  		var tb =this.tbar;
+  		//si el archivo esta escaneado se permite visualizar
+		this.getBoton('Adjuntos').enable();
+		this.getBoton('Corregir').enable();
+		this.getBoton('VerDocumento').enable();
+		this.getBoton('Derivar').enable();
+		this.getBoton('SubirDocumento').enable();
+		//habilitacion CITE
+		this.getBoton('ImpCodigo').enable();
+		if (data['estado'] =='enviado'){	
+			this.getBoton('edit').disable();
 			this.getBoton('SubirDocumento').enable();
-		   //habilitacion CITE
-			this.getBoton('ImpCodigo').enable();
-			
-			if (data['estado'] =='enviado'){
-				
-				this.getBoton('edit').disable();
-				this.getBoton('SubirDocumento').enable();
-				//this.getBoton('del').disable();
-			}
-			
-   	     return tb
-		
+			//this.getBoton('del').disable();
+		}
+   	    return tb	
 	},
+	
 	liberaMenu:function(){
         var tb = Phx.vista.DerivacionCorrespondenciaExterna.superclass.liberaMenu.call(this);
         if(tb){
-			  this.getBoton('ImpCodigo').disable();
-                    
+			  this.getBoton('ImpCodigo').disable();                   
         }
        return tb
- },
-	onButtonEdit: function () {
-		
-		
-		this.tipo = this.getComponente('tipo');
-		var cmbDoc = this.getComponente('id_documento');
+	},
 	
+	onButtonEdit: function () {			
+		this.tipo = this.getComponente('tipo');
+		var cmbDoc = this.getComponente('id_documento');	
 		Phx.vista.DerivacionCorrespondenciaExterna.superclass.onButtonEdit.call(this);
         this.adminGrupo({ ocultar: [0,3,4],mostrar:[2]});
 		this.ocultarComponente(this.Cmp.id_funcionario);
@@ -213,16 +186,13 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 		this.ocultarComponente(this.Cmp.id_acciones);
 		this.ocultarComponente(this.Cmp.fecha_creacion_documento);
         this.ocultarComponente(this.Cmp.id_persona_remitente);
-
         this.tipo.setValue('externa');
 		this.tipo.disable(true);
-
-		 this.ocultarComponente(this.Cmp.id_funcionario);
-	
+		this.ocultarComponente(this.Cmp.id_funcionario);	
 	},
+	
 	SubirCorrespondencia: function () {
 		var rec = this.sm.getSelected();
-
 		Phx.CP.loadWindows('../../../sis_correspondencia/vista/correspondencia/subirCorrespondencia.php',
 			'Subir Correspondencia',
 			{
@@ -234,31 +204,28 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 
 	imprimirCodigoCorrespondencia : function () {
 		var rec = this.sm.getSelected();
-
 	},
-		BImpBorrador : function() {
-			
-			var rec = this.sm.getSelected();
-			Ext.Ajax.request({
-				url : '../../sis_correspondencia/control/Correspondencia/hojaRutaBorrador',
-				params : {
-					id_correspondencia : rec.data.id_correspondencia,
-					id_origen: rec.data.id_origen,
-					tipo_corres:rec.data.tipo,
-					estado_reporte:'borrador',
-					id_institucion: rec.data.id_institucion,
-					start : 0,
-					limit : 1
-				},
-				success : this.successHojaRuta,
-				failure : this.conexionFailure,
-				timeout : this.timeout,
-				scope : this
-			});
-
-		},  
+		
+	BImpBorrador : function() {		
+		var rec = this.sm.getSelected();
+		Ext.Ajax.request({
+			url : '../../sis_correspondencia/control/Correspondencia/hojaRutaBorrador',
+			params : {
+				id_correspondencia : rec.data.id_correspondencia,
+				id_origen: rec.data.id_origen,
+				tipo_corres:rec.data.tipo,
+				estado_reporte:'borrador',
+				id_institucion: rec.data.id_institucion,
+				start : 0,
+				limit : 1
+			},
+			success : this.successHojaRuta,
+			failure : this.conexionFailure,
+			timeout : this.timeout,
+			scope : this
+		});
+	},  
 	finalizarRecepcionExterna:function () {
-
 		var rec = this.sm.getSelected();
 		Ext.Ajax.request({
 			url: '../../sis_correspondencia/control/Correspondencia/finalizarRecepcionExterna',
@@ -271,7 +238,6 @@ Phx.vista.DerivacionCorrespondenciaExterna = {
 			timeout: this.timeout,
 			scope: this
 		});
-
 	}
 	
 };

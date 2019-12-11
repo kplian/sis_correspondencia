@@ -31,8 +31,7 @@ Phx.vista.CorrespondenciaRecibida = {
 	ActList:'../../sis_correspondencia/control/Correspondencia/listarCorrespondenciaRecibida',
 	
 	constructor: function(config) {
-		//this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;
-		
+		//this.Atributos[this.getIndAtributo('id_funcionario')].grid=false;		
 		
 		this.Atributos[this.getIndAtributo('id_documento')].grid=false;
 		this.Atributos[this.getIndAtributo('id_uo')].grid=false;
@@ -57,38 +56,30 @@ Phx.vista.CorrespondenciaRecibida = {
 			//this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
 	      }
 	    Phx.vista.CorrespondenciaRecibida.superclass.constructor.call(this,config);
-	     //this.bloquearOrdenamientoGrid();
-           this.getBoton('Plantilla').hide();
-            this.getBoton('SubirDocumento').hide();
-            this.getBoton('ImpCodigo').hide();
-            this.getBoton('ImpCodigoDoc').hide();
-             this.getBoton('Finalizar').hide(); 
-             this.getBoton('Habilitar').hide();
-		
-		
+		//this.bloquearOrdenamientoGrid();
+		this.getBoton('Plantilla').hide();
+		this.getBoton('SubirDocumento').hide();
+		this.getBoton('ImpCodigo').hide();
+		this.getBoton('ImpCodigoDoc').hide();
+		this.getBoton('Finalizar').hide(); 
+		this.getBoton('Habilitar').hide();			
 		this.init();
-	    this.store.baseParams = {'interface': 'recibida','tipo': this.tipo}; 
-	   
-      //EAQ:filtro_directo funcionalidad acceso directo
-        if(config.filtro_directo){
-        
+	    this.store.baseParams = {'interface': 'recibida','tipo': this.tipo}; 	 
+        if(config.filtro_directo){        
            this.store.baseParams.filtro_valor = config.filtro_directo.valor;
            this.store.baseParams.filtro_campo = config.filtro_directo.campo;
-       }
-        this.load({params: {start: 0, limit: 50}})
-	  
-    
-   },
-   getParametrosFiltro: function () {
+        }
+        this.load({params: {start: 0, limit: 50}})	    
+   	},
+   	
+	getParametrosFiltro: function () {
 		this.store.baseParams.tipo = this.tipo;
-	}
-	,
-	preparaMenu:function(n){
-		     	
+	},
+	
+	preparaMenu:function(n){		    
 		var data = this.getSelectedData();
 		var tb =this.tbar;
-		//si el archivo esta escaneado se permite visualizar
-		
+		//si el archivo esta escaneado se permite visualizar		
 		if(data['estado']=='pendiente_recibido'){
 			 this.getBoton('FinalizarExterna').enable();
             this.getBoton('Adjuntos').disable();
@@ -97,9 +88,7 @@ Phx.vista.CorrespondenciaRecibida = {
             this.getBoton('HojaRuta').disable();
             this.getBoton('Historico').disable();
             this.getBoton('Archivar').disable();
-            this.getBoton('Corregir').disable();
-			
-		
+            this.getBoton('Corregir').disable();				
 		}
 		else{
 			if(data['estado']=='enviado'){
@@ -110,10 +99,9 @@ Phx.vista.CorrespondenciaRecibida = {
             this.getBoton('HojaRuta').enable();
             this.getBoton('Historico').enable();
             this.getBoton('Archivar').enable();
-            this.getBoton('Corregir').enable();
-            
-			
-		}else {
+            this.getBoton('Corregir').enable();            		
+		}
+		else {
 			this.getBoton('FinalizarExterna').disable();
             this.getBoton('Adjuntos').enable();
             this.getBoton('VerDocumento').enable();
@@ -123,11 +111,8 @@ Phx.vista.CorrespondenciaRecibida = {
             this.getBoton('Archivar').enable();
             this.getBoton('Corregir').disable();
           }
-      }
-      
-		
-		
-		Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n); 
+      	}
+      	Phx.vista.CorrespondenciaRecibida.superclass.preparaMenu.call(this,n); 
 		return tb	
 	},
 	

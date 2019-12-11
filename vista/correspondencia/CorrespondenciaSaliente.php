@@ -36,13 +36,9 @@ header("content-type: text/javascript; charset=UTF-8");
             this.Atributos[this.getIndAtributo('asociar')].grid=false;
             this.Atributos[this.getIndAtributo('observaciones_archivado')].grid=false;
             this.Atributos[this.getIndAtributo('id_acciones')].grid=false;
-            //  this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
+            //this.Atributos[this.getIndAtributo('persona_firma')].grid=false;
             //this.Atributos[this.getIndAtributo('tipo_documento')].grid=false;
-
-
-
             Phx.vista.CorrespondenciaSaliente.superclass.constructor.call(this, config);
-
             this.getBoton('FinalizarExterna').hide();
             this.getBoton('ImpCodigo').hide();
             this.getBoton('ImpCodigoDoc').hide();
@@ -50,8 +46,6 @@ header("content-type: text/javascript; charset=UTF-8");
             this.getBoton('HojaRuta').hide();
             this.getBoton('Historico').hide();
             this.getBoton('Habilitar').hide();
-
-
 
             this.init();
             this.argumentExtraSubmit={'vista':'CorrespondenciaInterna'};
@@ -77,7 +71,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 this.cmpResponde.disable();
                 this.cmpResponde.reset();
             }
-
         },
         //
         iniciarEventos: function () {

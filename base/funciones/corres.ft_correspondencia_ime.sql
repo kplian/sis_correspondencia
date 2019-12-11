@@ -120,7 +120,6 @@ BEGIN
     begin
       --obtener el uo del funcionario que esta reenviando
          --obtener el departamento
-        -- raise exception '%',v_parametros.id_grupo;
          IF( v_parametros.tipo='saliente') THEN
                v_id_uo= ARRAY[1];
                --raise exception '%',v_id_uo;
@@ -321,10 +320,7 @@ BEGIN
 
 
       END IF;
-
       -- Inserta estados a la tabla corres.tcorrespondencia_estado.
-
-
       --Definicion de la respuesta
       v_resp = pxp.f_agrega_clave(v_resp,'mensaje',
         'Correspondencia almacenado(a) con exito (id_correspondencia'||
@@ -348,8 +344,6 @@ BEGIN
 
     begin
       --obtenemos estado de correpondencia
-
-
       select estado
       into v_estado
       from corres.tcorrespondencia c
@@ -363,8 +357,8 @@ BEGIN
         IF( v_parametros.tipo='interna') THEN
             update corres.tcorrespondencia
             set id_correspondencias_asociadas = case when v_parametros.id_correspondencias_asociadas='' THEN
-                                                     NULL
-                                               ELSE
+               NULL
+         ELSE
               string_to_array(v_parametros.id_correspondencias_asociadas, ',')::integer [ ]
               END,
                 mensaje = v_parametros.mensaje,

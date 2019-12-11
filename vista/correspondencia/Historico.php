@@ -57,7 +57,6 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
                         return String.format('<b><font color="red">{0}</font></b>', record.data['fisico']);
                     else
                         return String.format('{0}', record.data['fisico']);
-
                 }
             },
             type : 'TextField',
@@ -86,24 +85,20 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 			form : false,
 			bottom_filter : true
 		},
-		
 		{
 			config : {
 				name : 'desc_person',
 				fieldLabel : 'Destinatario',
 				gwidth : 120,
-				renderer:function (value, p, record){
-	   			 	
-	   			 	if(record.data['estado']=='pendiente_recibido')
-	   			 	
-	   			 	return String.format('<b><font color="red">{0}</font></b>', record.data['desc_person']);
+				renderer:function (value, p, record){	   			 	
+	   			 	if(record.data['estado']=='pendiente_recibido')	   			 	
+	   			 		return String.format('<b><font color="red">{0}</font></b>', record.data['desc_person']);
 	   			 	else if(record.data['estado']=='recibido')
-	   			 	return String.format('<b><font color="green">{0}</font></b>', record.data['desc_person']);
+	   			 		return String.format('<b><font color="green">{0}</font></b>', record.data['desc_person']);
 	   			 	else if(record.data['estado']=='borrador_detalle_recibido')
-	   			 	return String.format('<b><font color="blue">{0}</font></b>', record.data['desc_person']);
+	   			 		return String.format('<b><font color="blue">{0}</font></b>', record.data['desc_person']);
 	   			 	else
-	   			 	return String.format('{0}', record.data['desc_person']);
-	   			 
+	   			 		return String.format('{0}', record.data['desc_person']);	   			
 	   			 }
 			},
 			type : 'TextField',
@@ -276,13 +271,9 @@ Phx.vista.Historico=Ext.extend(Phx.gridInterfaz,{
 	bnew: false,
 	bedit:false,
 		preparaMenu:function(n){
-
 			Phx.vista.Historico.superclass.preparaMenu.call(this,n);
 			var data = this.getSelectedData();
-
-			console.log('data',data)
 			var tb =this.tbar;
-
 			return tb
 		},
 

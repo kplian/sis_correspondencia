@@ -26,8 +26,7 @@ $body$
 
  #7				05/09/2019	 MCGH		 	 Correcciones varias:
  										 	 Obtener el UO por el id_funcionario
- #8				25/09/2019	 Manuel Guerra	 Nuevas Funcionalidades	   
- #9          14/11/2019   Manuel Guerra      modificar campo a multiple                                       
+ #8				25/09/2019	 Manuel Guerra	 Nuevas Funcionalidades	                                          
 ****************************************************************************/
 
 
@@ -387,6 +386,8 @@ BEGIN
 			if (pxp.f_existe_parametro(p_tabla,'id_correspondencia_fk')) then
 			   v_consulta:= v_consulta || ' and cor.id_correspondencia_fk='|| v_parametros.id_correspondencia_fk;
 			end if;
+            raise notice '%',v_consulta;
+           --             raise exception '%',v_consulta;
 			v_consulta:=v_consulta||' order by ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
@@ -489,8 +490,8 @@ BEGIN
 
      /*********************************
  	#TRANSACCION:  'CO_CORDET_SEL'
- 	#DESCRIPCION:	Consulta de resgistro de correspondecia detalle --#9
- 	#AUTOR:		rac manu
+ 	#DESCRIPCION:	Consulta de resgistro de correspondecia detalle
+ 	#AUTOR:		rac
  	#FECHA:		13-12-2011 16:13:21
 	***********************************/
 
@@ -886,15 +887,15 @@ BEGIN
                       END IF;
                    ELSE
 					  IF v_parametros.tipo = 'saliente' THEN
-                      	RAISE EXCEPTION 'saliente';
+                      	--RAISE EXCEPTION 'saliente';
                       	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' or cor.id_usuario_reg = '|| p_id_usuario ||'  )';
                       ELSE
                         --EAQ: para filtrar en alarma notificacion de alarma
                         IF v_parametros.tipo = 'recibida' THEN
-                        RAISE EXCEPTION 'RECIBIDA';
+                       -- RAISE EXCEPTION 'RECIBIDA';
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ' )';
                         ELSIF v_parametros.tipo = 'interna' THEN
-                        RAISE EXCEPTION 'INTERNA';
+                       -- RAISE EXCEPTION 'INTERNA';
                         	v_filtro = v_filtro||' or (cor.id_funcionario = ' ||v_id_funcionario || ' )';
                         ELSIF v_parametros.tipo='externa' THEN
                         	v_filtro = v_filtro||' and (cor.id_funcionario = ' ||v_id_funcionario || ') or (cor.id_usuario_reg = '|| p_id_usuario ||'  ';
@@ -996,6 +997,8 @@ BEGIN
 						where  '||v_filtro||' and ';
 
 			v_consulta:=v_consulta||v_parametros.filtro;
+            RAISE notice 'INTERNA%',v_consulta;
+            --RAISE EXCEPTION 'INTERNA%',v_consulta;
 			v_consulta:=v_consulta||' order by  ' ||v_parametros.ordenacion|| ' ' || v_parametros.dir_ordenacion || ' limit ' || v_parametros.cantidad || ' offset ' || v_parametros.puntero;
 
 			--Devuelve la respuesta
@@ -1358,10 +1361,8 @@ where tiene is not null ';
       return v_consulta;
 
     end;
-
-
-
-		/*********************************
+    
+	/*********************************
  	#TRANSACCION:  'CO_COREXTE_SEL'
  	#DESCRIPCION:	Consulta de datos PARA correspondencias externas
  	#AUTOR:		rac
@@ -1391,8 +1392,6 @@ where tiene is not null ';
 						inner join segu.tsubsistema sis on sis.id_subsistema = dep.id_subsistema
 					where depus.id_usuario = p_id_usuario and depus.cargo in ('responsable','auxiliar')
 								and sis.codigo = 'CORRES';
-
-
 					v_filtro = v_filtro || ' and cor.id_depto  in ('||v_deptos||')   and';
 					v_permiso = 'si';
 

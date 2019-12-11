@@ -44,10 +44,8 @@ HISTORIAL DE MODIFICACIONES:
  #5      		21/08/2019   MCGH         		Eliminación de Código Basura
  #7      		06/09/2019   MCGH         		Adición del campo Tiene el Fisico
  #7      		06/09/2019   Manuel Guerra      Agregacion de Grupos
- #9      		14/11/2019   Manuel Guerra      Agregacion de campo  fl_id_gerencia
+ #9      		14/11/2019   Manuel Guerra      Agregacion de campo 	 fl_id_gerencia
 ******************/
-
-
 DECLARE
     v_partes 			varchar[];
     v_i  				integer;
@@ -99,14 +97,12 @@ BEGIN
    	v_nombre_funcion = 'f_proc_mul_cmb_empleado';
   	v_array_var= corres.f_arma_arbol_inicia(fl_id_correspondencia,'id_funcionario');
    	v_array = string_to_array(v_array_var,',');
-
     -- 1)  partir la cadena dividiendo por la comas
     -- if (select position(',' in fl_cadena)=0)THEN
     -- v_partes = string_to_array(fl_cadena,null);
     -- else
     v_partes = string_to_array(fl_cadena,',');
    	--end if;
-
 	--raise exception '%',''||v_partes;
    	v_num=array_upper(v_partes,1);
 

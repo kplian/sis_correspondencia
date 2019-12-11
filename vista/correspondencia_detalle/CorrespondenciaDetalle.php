@@ -21,17 +21,13 @@ header("content-type: text/javascript; charset=UTF-8");
             constructor:function(config){
                 this.maestro=config.maestro;
                 //* Creación para el combo en la grilla/
-
                 if ((config.idContenedorPadre=='docs-CORADMG')|| (config.idContenedorPadre=='docs-ADMCORINT')){
                     this.initButtons=[this.cmbEstado];
                 }
-
                 //llama al constructor de la clase padre
                 Phx.vista.CorrespondenciaDetalle.superclass.constructor.call(this,config);
-
                 this.init();
                 this.bloquearMenus();
-
                 this.cmbEstado.on('select', function(c,r,i){
                     if(this.validarFiltros()){
                         this.capturaFiltros();
@@ -629,7 +625,6 @@ header("content-type: text/javascript; charset=UTF-8");
                 var me = this;
                 //define la altura en porcentaje al repecto de body
                 me.fheight = me.calTamPor(me.fheight, Ext.getBody())
-
                 me.form = new Ext.form.FormPanel({
                     id: me.idContenedor + '_W_F',
                     items: me.Grupos.length >1 ?me.Grupos:me.Grupos[0],

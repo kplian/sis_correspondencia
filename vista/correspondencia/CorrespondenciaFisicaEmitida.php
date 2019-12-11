@@ -34,7 +34,6 @@ Phx.vista.CorrespondenciaFisicaEmitida = {
 			tooltip: '<b>enviarFisico</b><br/>Permite confirmar que si estas enviando esta correspondencia'
 		});
 
-
 		this.getBoton('VerDocumento').hide();
 		this.getBoton('Derivar').hide();
 		this.getBoton('Adjuntos').hide();
@@ -48,11 +47,8 @@ Phx.vista.CorrespondenciaFisicaEmitida = {
 
    },
 	preparaMenu:function(n){
-
 		Phx.vista.CorrespondenciaFisicaEmitida.superclass.preparaMenu.call(this,n);
 		var data = this.getSelectedData();
-
-		console.log('data',data)
 		var tb =this.tbar;
 		//si el archivo esta escaneado se permite visualizar
 		if(data.id_correspondencia){
@@ -61,39 +57,23 @@ Phx.vista.CorrespondenciaFisicaEmitida = {
 		}
 		else{
 			this.getBoton('enviarFisico').disabled(); //aqui esta disable
-
-
 		}
-
-
 		return tb
-
 	},
 
     enviarFisico:function() {
 		var rec = this.sm.getSelected();
-
-		console.log(rec);
 		Ext.Ajax.request({
 			url: '../../sis_correspondencia/control/Correspondencia/cambiarEstadoCorrespondenciaFisica',
 			params: {
 				id_correspondencia: rec.data.id_correspondencia,
 				estado_fisico: 'despachado', //el estado que queremos que cambie
-
 			},
 			success: this.successFinalizar,
 			failure: this.conexionFailure,
 			timeout: this.timeout,
 			scope: this
 		});
-
-
 	}
-	
-	
-	
-   
-	
-	
 };
 </script>

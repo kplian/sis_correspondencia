@@ -32,43 +32,31 @@ Phx.vista.CorrespondenciaFisicaRecibido = {
 			disabled: true,
 			handler: this.finalizarRecepcion,
 			tooltip: '<b>finalizarRecibido</b><br/>Permite finalizar la recepcion'
-		});
-		
+		});		
 		this.init();
         this.store.baseParams = {'interface': 'fisica_recibida'};
-        this.load({params: {start: 0, limit: 50}})
-
-	  
-    
+        this.load({params: {start: 0, limit: 50}})	  
    },
     preparaMenu:function(n){
       	
       	Phx.vista.CorrespondenciaFisicaRecibido.superclass.preparaMenu.call(this,n);      	
-		  var data = this.getSelectedData();
-
-		console.log('data',data)
-		  var tb =this.tbar;
-		  //si el archivo esta escaneado se permite visualizar
-		  if(data['version']>0){
-		  	   this.getBoton('verCorrespondencia').enable();
-		       this.getBoton('mandar').enable()
-		       this.getBoton('finalizarRecibido').enable();
-	  		}
-	  		else{
-	  			this.getBoton('verCorrespondencia').enable(); //aqui esta disable
-	  			this.getBoton('mandar').enable(); //aqui tambien
-				this.getBoton('finalizarRecibido').enable();
-	  			
-	  		}
-
-
-
-	 
-		 return tb
-		
-	},finalizarRecepcion:function(){
+		var data = this.getSelectedData();
+		var tb =this.tbar;
+	  	//si el archivo esta escaneado se permite visualizar
+	  	if(data['version']>0){
+	  	   this.getBoton('verCorrespondencia').enable();
+	       this.getBoton('mandar').enable()
+	       this.getBoton('finalizarRecibido').enable();
+  		}
+  		else{
+  			this.getBoton('verCorrespondencia').enable(); //aqui esta disable
+  			this.getBoton('mandar').enable(); //aqui tambien
+			this.getBoton('finalizarRecibido').enable();	  			
+  		}
+		return tb		
+	},
+	finalizarRecepcion:function(){
 		var rec = this.sm.getSelected();
-
 		Ext.Ajax.request({
 			url: '../../sis_correspondencia/control/Correspondencia/finalizarRecepcion',
 			params: {
@@ -79,19 +67,14 @@ Phx.vista.CorrespondenciaFisicaRecibido = {
 			timeout: this.timeout,
 			scope: this
 		});
-
-
 	},
+	
 	successFinalizar:function(resp){
-
 		this.load({params: {start: 0, limit: 50}});
-
-
-		console.log(resp)
 	},
+	
 	archivar:function(){
 		var rec = this.sm.getSelected();
-
 		Ext.Ajax.request({
 			url: '../../sis_correspondencia/control/Correspondencia/archivarCorrespondencia',
 			params: {
@@ -104,11 +87,6 @@ Phx.vista.CorrespondenciaFisicaRecibido = {
 			scope: this
 		});
 	}
-	
-	
-	
-   
-	
 	
 };
 </script>

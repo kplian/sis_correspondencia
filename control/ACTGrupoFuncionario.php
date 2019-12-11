@@ -2,7 +2,7 @@
 /*
 ISSUE            FECHA:		      AUTOR                 DESCRIPCION
 #7 			06/09/2019			manuel guerra		correccion de bug(padre-hijo)
- */
+*/
 
 class ACTGrupoFuncionario extends ACTbase{    
 			

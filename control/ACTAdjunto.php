@@ -11,7 +11,6 @@ class ACTAdjunto extends ACTbase{
 			
 	function listarAdjunto(){
 		$this->objParam->defecto('ordenacion','id_adjunto');
-
 		$this->objParam->defecto('dir_ordenacion','asc');
 
 		/*if($this->objParam->getParametro('id_correspondencia')!=''){
@@ -25,8 +24,7 @@ class ACTAdjunto extends ACTbase{
 			$this->objReporte = new Reporte($this->objParam,$this);
 			$this->res = $this->objReporte->generarReporteListado('MODAdjunto','listarAdjunto');
 		} else{
-			$this->objFunc=$this->create('MODAdjunto');
-			
+			$this->objFunc=$this->create('MODAdjunto');			
 			$this->res=$this->objFunc->listarAdjunto($this->objParam);
 		}
 		$this->res->imprimirRespuesta($this->res->generarJson());
@@ -42,8 +40,7 @@ class ACTAdjunto extends ACTbase{
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 						
-	function eliminarAdjunto(){
-		    
+	function eliminarAdjunto(){		   
 		$this->objFunc=$this->create('MODAdjunto');	
 		if($this->objParam->getParametro('id_adjunto')!=''){
 			$this->objParam->addFiltro("adj.id_adjunto = ''".$this->objParam->getParametro('id_adjunto')."''");
